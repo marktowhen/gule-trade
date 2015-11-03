@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.base.intercepter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.base.util.JsonResponse;
 
 public class AuthIntercepter implements HandlerInterceptor{
 
@@ -25,13 +25,8 @@ public class AuthIntercepter implements HandlerInterceptor{
 		
 		if(method == null){
 			try {
-	            response.setContentType("application/json");
-	            response.setHeader("Cache-Control", "nocache");
-	            response.setCharacterEncoding("utf-8");
-	            PrintWriter writer = response.getWriter();
-	            writer.write(Result.fail("cast exception when casting object " + handler + "to HandlerMethod").toString());
-	            writer.flush();
-	            writer.close();
+				JsonResponse.write(response, 
+						Result.fail("cast exception when casting object " + handler + "to HandlerMethod").toString());
 	        } catch (IOException e) {}
 			return false;
 		}
@@ -41,13 +36,7 @@ public class AuthIntercepter implements HandlerInterceptor{
 			Object obj = request.getSession().getAttribute("LOGIN_ID");
 			if(obj == null){
 				try {
-		            response.setContentType("application/json;charset=UTF-8");
-		            response.setHeader("Cache-Control", "nocache");
-		            response.setCharacterEncoding("utf-8");
-		            PrintWriter writer = response.getWriter();
-		            writer.write(Result.fail("please login first.").toString());
-		            writer.flush();
-		            writer.close();
+		           JsonResponse.write(response, "please login first");
 		        } catch (IOException e) {}
 				return false;
 			}
