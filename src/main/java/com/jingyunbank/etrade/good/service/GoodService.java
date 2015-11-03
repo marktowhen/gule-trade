@@ -8,7 +8,7 @@ import com.jingyunbank.etrade.api.good.service.IGoodService;
  * @author liug
  *
  */
-@Service("orderService")
+@Service("goodService")
 public class GoodService implements IGoodService{
 
 	 
