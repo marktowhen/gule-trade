@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.base.intercepter.RequireLogin;
 import com.jingyunbank.etrade.order.bean.OrderVO;
 
 @RestController
@@ -27,7 +28,8 @@ public class OrderController {
 		return "users";
 	}
 	
-	@RequestMapping(value="/orders/new", method=RequestMethod.PUT)
+	@RequireLogin
+	@RequestMapping(value="/orders/submit", method=RequestMethod.PUT)
 	public Result submit(@Valid OrderVO order, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
