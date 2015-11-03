@@ -1,11 +1,10 @@
 package com.jingyunbank.etrade.order.controller;
 
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class OrderControllerTest extends TestCaseBase {
 
@@ -36,10 +35,13 @@ public class OrderControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		assertNotNull(orderService);
 		assertNotNull(mockMvc);
-		mockMvc.perform(get("/user").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			.andExpect(jsonPath("$.username").value("mike"));
+		mockMvc.perform(put("/orders/new").content("{'addressID':'123321123'}").contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("500"));
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}
+	
 }
