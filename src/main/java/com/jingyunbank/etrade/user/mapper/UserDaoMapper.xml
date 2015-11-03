@@ -17,7 +17,7 @@
 		id,username,mobile,email,password,tradepwd,nickname,locked
 	</sql>
 	<!-- 添加注册用户 -->
-	<insert id="insert" parameterType="UserEntity">
+	<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserEntity">
 	insert into users
 	(id,username,mobile,email,password,tradepwd,nickname,locked)
 	values

@@ -39,7 +39,7 @@ public class OrderControllerTest extends TestCaseBase {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("500"));
+				.andExpect(jsonPath("$.code").value("200"));
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}

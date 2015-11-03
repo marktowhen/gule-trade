@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GoodController {
 
-	@RequestMapping("/orders")
+	@RequestMapping("/goods")
 	public String invest(HttpServletRequest request, HttpSession session){
 		HttpSession session0 = request.getSession();
 		session0.setAttribute("abcdef", "abcdef");
