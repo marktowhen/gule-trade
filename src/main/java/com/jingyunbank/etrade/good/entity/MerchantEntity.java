@@ -8,7 +8,7 @@ import java.util.Date;
 * @author    duanxf
 * @date      2015年11月3日
  */
-public class Merchant implements Serializable {
+public class MerchantEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/**主键*/
