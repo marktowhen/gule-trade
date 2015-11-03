@@ -21,13 +21,13 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public boolean update(Orders order) throws DataUpdatingException {
+	public boolean refresh(Orders order) throws DataUpdatingException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public Optional<Orders> getByOrderNo(String orderno) {
+	public Optional<Orders> singleByOrderNo(String orderno) {
 		// TODO Auto-generated method stub
 		return null;
 	}
