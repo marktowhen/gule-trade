@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderEntity {
@@ -13,11 +14,23 @@ public class OrderEntity {
 	private Date addtime;//下单时间
 	private String paytypeID;//支付方式 id
 	private String paytypeName;
-	private double price;//订单总价
+	private BigDecimal price;//订单总价
 	private String statusID;//订单状态id
 	private String statusName;
-	private double postage;
+	private BigDecimal postage;
 	
+	public BigDecimal getPrice() {
+		return price;
+	}
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
+	}
 	public String getID() {
 		return ID;
 	}
@@ -72,12 +85,6 @@ public class OrderEntity {
 	public void setPaytypeName(String paytypeName) {
 		this.paytypeName = paytypeName;
 	}
-	public double getPrice() {
-		return price;
-	}
-	public void setPrice(double price) {
-		this.price = price;
-	}
 	public String getStatusID() {
 		return statusID;
 	}
@@ -89,12 +96,6 @@ public class OrderEntity {
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
-	}
-	public double getPostage() {
-		return postage;
-	}
-	public void setPostage(double postage) {
-		this.postage = postage;
 	}
 	
 }
