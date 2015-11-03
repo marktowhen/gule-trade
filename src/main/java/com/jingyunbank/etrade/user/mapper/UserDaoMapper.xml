@@ -13,5 +13,26 @@
 		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
 		<result column="locked" property="locked"/>
 	</resultMap>
-	
+	<sql id="column_list">
+		id,username,mobile,email,password,tradepwd,nickname,locked
+	</sql>
+	<!-- 添加注册用户 -->
+	<insert id="insert" parameterType="UserEntity">
+	insert into users
+	(id,username,mobile,email,password,tradepwd,nickname,locked)
+	values
+	(#{id},#{username},#{moblie},#{email},#{password},#{tradepwd},#{nickname},#{locked})
+	</insert>
+	<!-- 检验手机号是否已存在 -->
+	<select id="phoneExists" resultType="int" parameterType="string">
+      select count(mobile) from users where mobile= #{mobile}
+	</select>
+	<!-- 检验用户名是否已存在 -->
+	<select id="unameExists" resultType="int" parameterType="string">
+		select count(username) from users where username=#{username}
+	</select>
+	<!-- 检验邮箱是否已存在 -->
+	<select id="emailExists" resultType="int" parameterType="string">
+		select count(email) from users where email=#{email}
+	</select>
 </mapper>

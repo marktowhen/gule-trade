@@ -4,17 +4,27 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.user.dao.UserDao;
+import com.jingyunbank.etrade.user.entity.UserEntity;
 
 @Service("userService")
 public class UserService implements IUserService{
-
+	@Autowired
+	private UserDao userDao;
+	
+	
+	
+	
 	@Override
 	public Optional<Users> getByUid(String id) {
 		return null;
@@ -42,8 +52,11 @@ public class UserService implements IUserService{
 
 	@Override
 	public boolean save(Users user) throws DataSavingException {
-		return false;
+		UserEntity userEntity=new UserEntity();
+		BeanUtils.copyProperties(user, userEntity);
+			return userDao.insert(userEntity);
 	}
+	
 
 	@Override
 	public boolean update(Users user) throws DataUpdatingException {
@@ -62,17 +75,17 @@ public class UserService implements IUserService{
 
 	@Override
 	public boolean phoneExists(String phone) {
-		return false;
+		return userDao.phoneExists(phone);
 	}
 
 	@Override
 	public boolean unameExists(String uname) {
-		return false;
+		return userDao.unameExists(uname);
 	}
 
 	@Override
 	public boolean emailExists(String email) {
-		return false;
+		return userDao.emailExists(email);
 	}
 
 	@Override
