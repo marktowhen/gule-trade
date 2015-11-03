@@ -1,18 +1,21 @@
 package com.jingyunbank.etrade.order.service;
 
-import com.jingyunbank.etrade.JingYunTradeApplication;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringApplicationConfiguration(classes=JingYunTradeApplication.class)
-public class OrderServiceTest 
+import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.api.order.service.IOrderService;
+
+
+public class OrderServiceTest extends TestCaseBase
 {
-	//@Test
+	@Autowired
+	private IOrderService orderService;
+	
+	@Test
 	public void test0(){
-		
+		assertNotNull(orderService);
 	}
 }

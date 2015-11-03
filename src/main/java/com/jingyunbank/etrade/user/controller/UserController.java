@@ -15,6 +15,6 @@ public class UserController {
 		session0.setAttribute("abcdef", "abcdef");
 		session.setAttribute("ghijk", "ghijk");
 		System.out.println(session0.getAttribute("ghijk"));
-		return "users";
+		return "{username:mike, password:black mamba}";
 	}
 }
