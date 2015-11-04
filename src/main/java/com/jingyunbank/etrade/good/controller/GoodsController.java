@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-public class GoodController {
+public class GoodsController {
 
 	@RequestMapping("/goods")
 	public String invest(HttpServletRequest request, HttpSession session){

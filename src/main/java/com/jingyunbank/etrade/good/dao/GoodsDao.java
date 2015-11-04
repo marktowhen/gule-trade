@@ -12,11 +12,11 @@ import com.jingyunbank.etrade.good.entity.GoodsEntity;
  *
  */
 @Repository("goodDao")
-public interface GoodDao{
+public interface GoodsDao{
 
-	public boolean insertGood(GoodsEntity good) throws DataSavingException ;
+	public boolean insertGoods(GoodsEntity goods) throws DataSavingException ;
 
-	public boolean updateGood(GoodsEntity good) throws DataUpdatingException ;
+	public boolean updateGoods(GoodsEntity goods) throws DataUpdatingException ;
 
 	public List<GoodsEntity> select(String uid) ;
 
