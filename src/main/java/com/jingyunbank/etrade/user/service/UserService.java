@@ -42,12 +42,40 @@ public class UserService implements IUserService{
 
 	@Override
 	public Optional<Users> getByEmail(String email) {
-		return null;
+		UserEntity user = new UserEntity();
+		user.setEmail(email);
+		UserEntity userEntity = userDao.selectUser(user);
+		if(userEntity!=null){
+			//entityתΪBo
+			try {
+				Users userBo = new Users();
+				BeanUtils.copyProperties( userEntity,userBo);
+				return Optional.of(userBo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+		}
+		return Optional.empty();
 	}
-
+	/**
+	 * equals to(phoneExists(key) | unameExists(uname) | emailExists(email))
+	 * @param key (username | phone | email)
+	 * @return
+	 */
 	@Override
 	public Optional<Users> getByKey(String key) {
-		return null;
+		UserEntity userEntity = userDao.selectUserByLoginKey(key);
+		//entityתΪBo
+		if(userEntity!=null){
+			Users user = new Users();
+			try {
+				BeanUtils.copyProperties(userEntity, user);
+				return Optional.of(user);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return Optional.empty();
 	}
 
 	@Override

@@ -1,25 +1,29 @@
 package com.jingyunbank.etrade.user.controller;
+import java.util.Optional;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.user.bean.UserVO;
-import com.jingyunbank.etrade.user.service.UserService;
-
 @RestController
 public class UserController {
-  
-	@Resource
-	private UserService userService;
+  	@Autowired
+	private IUserService userService;
+	//暂时屏蔽
+//	@Resource
+//	private UserService userService;
+  	public static final String SESSION_USER = "SESSION_USER";
 	
 	@RequestMapping("/user")
 	public String invest(HttpServletRequest request, HttpSession session){
@@ -48,5 +52,76 @@ public class UserController {
 		BeanUtils.copyProperties(userVO, user);
 		userService.save(user);
 		return Result.ok(userVO);
+	}
+	
+	/**
+	 * 登录
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/login")
+	public Result login(HttpServletRequest request, HttpSession session,String loginfo ,String password,String captcha ){
+		//1、参数校验
+		if(StringUtils.isEmpty(loginfo)){
+			return Result.fail("请输入用户名/手机/邮箱");
+		}
+		if(StringUtils.isEmpty(password)){
+			return Result.fail("请输入密码");
+		}
+		//密码不正确3次后需要验证码
+		int loginWrongTimes = 0;
+		//session中存放的错误次数
+		if(session.getAttribute("loginWrongTimes")!=null){
+			loginWrongTimes = Integer.parseInt((String)session.getAttribute("loginWrongTimes"));
+			if(loginWrongTimes>=3){
+				if(!checkCaptcha(session, captcha)){
+					return Result.fail("验证码错误");
+				}
+			}
+		}
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Users> usersOptional =  userService.getByKey(loginfo);
+		//是否存在该用户
+		if(usersOptional.isPresent()){
+			Users users = usersOptional.get();
+			//密码是否正确
+			if(!users.getPassword().equals(Md5(password))){
+				//记录错误次数
+				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
+				return Result.fail("密码错误");
+			}
+			//用户被锁
+			if(users.isLocked()){
+				return Result.fail("用户被锁");
+			}
+		}else{
+			return Result.fail("未找到该用户");
+		}
+		//用户信息放入session
+		session.setAttribute(SESSION_USER, usersOptional.get());
+		
+		return Result.ok("成功");
+	}
+	/**
+	 * MD5加密
+	 * @param password
+	 * @return
+	 */
+	private Object Md5(String password) {
+		return password;
+	}
+	/**
+	 * 校验验证码
+	 * @param session
+	 * @param captcha
+	 * @return
+	 */
+	private boolean checkCaptcha(HttpSession session, String captcha) {
+		return true;
 	}
 }

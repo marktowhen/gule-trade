@@ -7,6 +7,7 @@
  */
 package com.jingyunbank.etrade.user.dao;
 
+import java.util.Optional;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
@@ -15,4 +16,18 @@ public interface UserDao {
 	public boolean phoneExists(String mobile);
 	public boolean unameExists(String username);
 	public boolean emailExists(String email);
+	
+	/**
+	 * 根据查询条件查询
+	 * @param user
+	 * @return
+	 */
+	public UserEntity selectUser(UserEntity user);
+
+	/**
+	 * 根据登录名查询用户
+	 * @param key loginName/email/phone
+	 * @return
+	 */
+	public UserEntity selectUserByLoginKey(String key);
 }
