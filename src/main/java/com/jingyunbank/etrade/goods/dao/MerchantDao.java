@@ -1,8 +1,7 @@
 package com.jingyunbank.etrade.goods.dao;
 
 import java.util.List;
-
-import org.springframework.stereotype.Repository;
+import java.util.Map;
 
 import com.jingyunbank.etrade.goods.entity.MerchantEntity;
 
@@ -12,6 +11,6 @@ import com.jingyunbank.etrade.goods.entity.MerchantEntity;
  */
 public interface MerchantDao{
 	
-	public List<MerchantEntity> selectMerchants() ;
+	public List<MerchantEntity> selectMerchants(Map<String, Integer> params) ;
 
 }

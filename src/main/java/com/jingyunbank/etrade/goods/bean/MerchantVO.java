@@ -1,14 +1,14 @@
-package com.jingyunbank.etrade.goods.entity;
+package com.jingyunbank.etrade.goods.bean;
 
 import java.io.Serializable;
 import java.util.Date;
 /**
  * 
-* Title: 商家实体表
-* @author    duanxf
-* @date      2015年11月3日
+* Title: 商家展示VO
+* @author    liug
+* @date      2015年11月4日
  */
-public class MerchantEntity implements Serializable {
+public class MerchantVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/**主键*/
@@ -132,8 +132,8 @@ public class MerchantEntity implements Serializable {
 	public void setImgPath(String imgPath) {
 		this.imgPath = imgPath;
 	}
-	public static MerchantEntity getInstance(){
-		return new MerchantEntity();
-	}
 	
+	public static MerchantVO getInstance(){
+		return new MerchantVO();
+	}
 }
