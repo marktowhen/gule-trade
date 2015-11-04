@@ -35,4 +35,50 @@
 	<select id="emailExists" resultType="int" parameterType="string">
 		select count(email) from users where email=#{email}
 	</select>
+	
+	<!-- 查询用户信息 -->
+	<select id="selectUser" resultType="com.jingyunbank.etrade.user.entity.UserEntity" 
+		parameterType="com.jingyunbank.etrade.user.entity.UserEntity">
+			select  
+			  <include refid="column_list" />
+			from users t
+			where 1=1
+			<if test="id!=null and id!=''">
+				and t.id=${id,jdbcType=CHAR}
+			</if>
+			<if test="username!=null and username!=''">
+				and t.username=${username,jdbcType=varchar}
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				and t.mobile =${mobile,jdbcType=CHAR}
+			</if>
+			<if test="email!=null and email!=''">
+				and t.email = ${email,jdbcType=varchar}
+			</if>
+			<if test="id!=null and id!=''">
+				and t.nickname=${nickname,jdbcType=varchar}
+			</if>
+			<if test="password!=null and password!=''">
+				and t.`password`=${password,jdbcType=varchar}
+			</if>
+			<if test="tradepwd!=null and tradepwd!=''">
+				and t.tradepwd=${tradepwd,jdbcType=varchar}
+			</if>
+			<if test="locked!=null and locked!=''">
+				and t.locked=${locked,jdbcType=tinyint}
+			</if>
+	
+	</select> 
+	
+	<!-- 根据登录信息查询用户 -->
+	<select id="selectUserByLoginKey" resultType="com.jingyunbank.etrade.user.entity.UserEntity" 
+		parameterType="String">
+			select  
+			  <include refid="column_list" />
+			from users t
+			where  t.username=#{key}
+				or t.mobile =#{key}
+				or t.email = #{key}
+	
+	</select> 
 </mapper>
