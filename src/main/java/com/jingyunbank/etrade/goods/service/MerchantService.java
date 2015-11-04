@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.good.service;
+package com.jingyunbank.etrade.goods.service;
 
 import java.util.List;
 
@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.good.bo.Merchant;
-import com.jingyunbank.etrade.api.good.service.IGoodService;
+import com.jingyunbank.etrade.api.goods.service.IMerchantService;
 /**
  * 
  * @author liug
  *
  */
 @Service("goodsService")
-public class GoodsService implements IGoodService{
+public class MerchantService implements IMerchantService{
 
 	@Override
 	public List<Merchant> list(Range range) {
