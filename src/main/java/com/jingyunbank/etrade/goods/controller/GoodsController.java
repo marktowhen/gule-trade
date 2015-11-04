@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.good.controller;
+package com.jingyunbank.etrade.goods.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
