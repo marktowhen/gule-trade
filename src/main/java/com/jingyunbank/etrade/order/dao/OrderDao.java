@@ -4,13 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Repository;
-
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.order.entity.OrderEntity;
 
-@Repository("orderRepo")
 public interface OrderDao{
 
 	public boolean insert(OrderEntity order) throws DataSavingException ;

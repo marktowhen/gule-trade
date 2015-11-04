@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade;
+package com.jingyunbank.etrade.config;
 
 import java.io.IOException;
 import java.util.Properties;
