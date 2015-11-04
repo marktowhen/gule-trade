@@ -2,21 +2,27 @@ package com.jingyunbank.etrade.goods.service;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.goods.bo.Merchant;
 import com.jingyunbank.etrade.api.goods.service.IMerchantService;
+import com.jingyunbank.etrade.goods.dao.MerchantDao;
 /**
  * 
  * @author liug
  *
  */
-@Service("goodsService")
-public class MerchantService implements IMerchantService{
-
+@Service("merchantService")
+public class MerchantService extends ServiceTemplate implements IMerchantService{
+	@Resource
+	private MerchantDao merchantDao;
+	
 	@Override
-	public List<Merchant> list(Range range) {
+	public List<Merchant> listMerchants() {
+		this.from = 0 ;
+		this.to = 5;
 		return null;
 	}
 
