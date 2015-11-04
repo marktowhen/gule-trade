@@ -36,7 +36,8 @@ public class AuthIntercepter implements HandlerInterceptor{
 			Object obj = request.getSession().getAttribute("LOGIN_ID");
 			if(obj == null){
 				try {
-		           JsonResponse.write(response, "please login first");
+		           JsonResponse.write(response, 
+		        		   Result.fail("please login first").toString());
 		        } catch (IOException e) {}
 				return false;
 			}

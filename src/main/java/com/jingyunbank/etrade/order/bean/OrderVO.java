@@ -23,6 +23,7 @@ public class OrderVO {
 	private String paytypeID;//支付方式 id
 	private String paytypeName;
 	@NotNull
+	@DecimalMin(value="0", inclusive=true, message="订单总价不能小于0元。")
 	private BigDecimal price;//订单总价
 	@NotNull
 	@DecimalMin(value="0", inclusive=true, message="邮费不能小于0元。")
@@ -94,5 +95,12 @@ public class OrderVO {
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
 	}
-	
+	@Override
+	public String toString() {
+		return "OrderVO [ID=" + ID + ", orderno=" + orderno + ", receiver="
+				+ receiver + ", MID=" + MID + ", addressID=" + addressID
+				+ ", UID=" + UID + ", addtime=" + addtime + ", paytypeID="
+				+ paytypeID + ", paytypeName=" + paytypeName + ", price="
+				+ price + ", postage=" + postage + "]";
+	}
 }
