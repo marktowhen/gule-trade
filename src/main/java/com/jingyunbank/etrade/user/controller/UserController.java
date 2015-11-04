@@ -99,7 +99,8 @@ public class UserController {
 			}
 			//用户被锁
 			if(users.isLocked()){
-				return Result.fail("用户被锁");
+				//暂时先不管
+				//return Result.fail("用户被锁");
 			}
 		}else{
 			return Result.fail("未找到该用户");
@@ -109,7 +110,7 @@ public class UserController {
 		session.setAttribute(Constant.SESSION_USER, usersOptional.get());
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
-		//记录登录历史??
+		//记录登录历史 未完待续
 		
 		return Result.ok("成功");
 	}
