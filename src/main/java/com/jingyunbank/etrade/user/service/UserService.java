@@ -22,22 +22,28 @@ public class UserService implements IUserService{
 	@Autowired
 	private UserDao userDao;
 	
-	
-	
-	
 	@Override
 	public Optional<Users> getByUid(String id) {
-		return null;
+		UserEntity userEntity = new UserEntity();
+		userEntity.setID(id);
+		userEntity = userDao.selectUser(userEntity);
+		return getUsersByEntity(userEntity);
 	}
 
 	@Override
 	public Optional<Users> getByPhone(String phone) {
-		return null;
+		UserEntity userEntity = new UserEntity();
+		userEntity.setMobile(phone);
+		userEntity = userDao.selectUser(userEntity);
+		return getUsersByEntity(userEntity);
 	}
 
 	@Override
 	public Optional<Users> getByUname(String username) {
-		return null;
+		UserEntity userEntity = new UserEntity();
+		userEntity.setUsername(username);
+		userEntity = userDao.selectUser(userEntity);
+		return getUsersByEntity(userEntity);
 	}
 
 	@Override
@@ -45,17 +51,7 @@ public class UserService implements IUserService{
 		UserEntity user = new UserEntity();
 		user.setEmail(email);
 		UserEntity userEntity = userDao.selectUser(user);
-		if(userEntity!=null){
-			//entityתΪBo
-			try {
-				Users userBo = new Users();
-				BeanUtils.copyProperties( userEntity,userBo);
-				return Optional.of(userBo);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		}
-		return Optional.empty();
+		return getUsersByEntity(userEntity);
 	}
 	/**
 	 * equals to(phoneExists(key) | unameExists(uname) | emailExists(email))
@@ -65,19 +61,11 @@ public class UserService implements IUserService{
 	@Override
 	public Optional<Users> getByKey(String key) {
 		UserEntity userEntity = userDao.selectUserByLoginKey(key);
-		//entityתΪBo
-		if(userEntity!=null){
-			Users user = new Users();
-			try {
-				BeanUtils.copyProperties(userEntity, user);
-				return Optional.of(user);
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return Optional.empty();
+		//entity转bo
+		return getUsersByEntity(userEntity);
 	}
 
+	
 	@Override
 	public boolean save(Users user) throws DataSavingException {
 		UserEntity userEntity=new UserEntity();
@@ -118,7 +106,24 @@ public class UserService implements IUserService{
 
 	@Override
 	public boolean exists(String key) {
+		UserEntity userEntity = userDao.selectUserByLoginKey(key);
+		if(userEntity!=null){
+			return true;
+		}
 		return false;
+	}
+	/**
+	 * userEntity转为Optional<Users>
+	 * @param userEntity
+	 * @return
+	 */
+	private Optional<Users> getUsersByEntity(UserEntity userEntity){
+		if(userEntity!=null){
+			Users users = new Users();
+			BeanUtils.copyProperties(userEntity, users);
+			return Optional.of(users);
+		}
+		return Optional.empty();
 	}
 
 }

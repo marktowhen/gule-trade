@@ -43,29 +43,29 @@
 			  <include refid="column_list" />
 			from users t
 			where 1=1
-			<if test="id!=null and id!=''">
-				and t.id=${id,jdbcType=CHAR}
+			<if test="ID!=null and ID!=''">
+				and t.id=#{ID}
 			</if>
 			<if test="username!=null and username!=''">
-				and t.username=${username,jdbcType=varchar}
+				and t.username=#{username}
 			</if>
 			<if test="mobile!=null and mobile!=''">
-				and t.mobile =${mobile,jdbcType=CHAR}
+				and t.mobile =#{mobile}
 			</if>
 			<if test="email!=null and email!=''">
-				and t.email = ${email,jdbcType=varchar}
+				and t.email = #{email}
 			</if>
-			<if test="id!=null and id!=''">
-				and t.nickname=${nickname,jdbcType=varchar}
+			<if test="nickname!=null and nickname!=''">
+				and t.nickname=#{nickname}
 			</if>
 			<if test="password!=null and password!=''">
-				and t.`password`=${password,jdbcType=varchar}
+				and t.`password`=#{password}
 			</if>
 			<if test="tradepwd!=null and tradepwd!=''">
-				and t.tradepwd=${tradepwd,jdbcType=varchar}
+				and t.tradepwd=#{tradepwd}
 			</if>
 			<if test="locked!=null and locked!=''">
-				and t.locked=${locked,jdbcType=tinyint}
+				and t.locked=#{locked}
 			</if>
 	
 	</select> 

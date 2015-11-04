@@ -30,7 +30,10 @@ public class UserControllerTest extends TestCaseBase {
 	public void init(){
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
-	
+	/**
+	 * 测试登录
+	 * @throws Exception
+	 */
 	@Test
 	public void test0() throws Exception{
 		assertNotNull(userService);
@@ -42,7 +45,7 @@ public class UserControllerTest extends TestCaseBase {
 			//请求信息
 		//put("/orders/new").content("{'addressID':'123321123'}").contentType(MediaType.APPLICATION_JSON)
 		//?loginfo=loginfo&password=password
-			.perform(post("/login?loginfo=qxstest&password=123")
+			.perform(post("/user/login").param("loginfo", "qxstest").param("password", "123456")
 					.content(json.toJSONString())
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -53,4 +56,6 @@ public class UserControllerTest extends TestCaseBase {
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}
+	
+	
 }

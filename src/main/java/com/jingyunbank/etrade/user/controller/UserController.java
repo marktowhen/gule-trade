@@ -15,15 +15,17 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.base.constant.Constant;
+import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
+@RequestMapping("/user")
 public class UserController {
   	@Autowired
 	private IUserService userService;
 	//暂时屏蔽
 //	@Resource
 //	private UserService userService;
-  	public static final String SESSION_USER = "SESSION_USER";
 	
 	@RequestMapping("/user")
 	public String invest(HttpServletRequest request, HttpSession session){
@@ -34,7 +36,7 @@ public class UserController {
 		return "{username:mike, password:black mamba}";
 	}
 	
-	@RequestMapping(value="/user/reginter",method=RequestMethod.POST)
+	@RequestMapping(value="/reginter",method=RequestMethod.POST)
 	public Result register(HttpServletRequest request,HttpSession session,UserVO userVO) throws DataSavingException{
 		if(userVO.getMobile()!=null&&userVO.getMobile().length()!=11){
 			return Result.fail("手机号必须是11位。");
@@ -64,7 +66,7 @@ public class UserController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping("/login")
+	@RequestMapping(value="/login",method=RequestMethod.POST)
 	public Result login(HttpServletRequest request, HttpSession session,String loginfo ,String password,String captcha ){
 		//1、参数校验
 		if(StringUtils.isEmpty(loginfo)){
@@ -90,7 +92,7 @@ public class UserController {
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
 			//密码是否正确
-			if(!users.getPassword().equals(Md5(password))){
+			if(!users.getPassword().equals(Md5Util.getMD5(password))){
 				//记录错误次数
 				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
 				return Result.fail("密码错误");
@@ -102,19 +104,17 @@ public class UserController {
 		}else{
 			return Result.fail("未找到该用户");
 		}
+		//3、成功之后
 		//用户信息放入session
-		session.setAttribute(SESSION_USER, usersOptional.get());
+		session.setAttribute(Constant.SESSION_USER, usersOptional.get());
+		//清空错误次数
+		session.setAttribute("loginWrongTimes", 0);
+		//记录登录历史??
 		
 		return Result.ok("成功");
 	}
-	/**
-	 * MD5加密
-	 * @param password
-	 * @return
-	 */
-	private Object Md5(String password) {
-		return password;
-	}
+	
+	
 	/**
 	 * 校验验证码
 	 * @param session
