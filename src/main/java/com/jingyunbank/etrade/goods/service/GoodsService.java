@@ -1,9 +1,9 @@
 package com.jingyunbank.etrade.goods.service;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -55,6 +55,16 @@ public class GoodsService implements IGoodsService {
 			typeslist = CollectionUtils.copyTo(types, Goods.class);
 		}
 		return typeslist;
+	}
+
+	@Override
+	public List<Goods> listGoodsByWhere(Map<String, Object> map) throws Exception{
+		List<Goods> goodswherelist = new ArrayList<Goods>();
+		List<GoodsDaoVO>  goodslist = goodsDao.selectGoodsByWhere(map);
+		if(goodslist!=null) {
+			goodswherelist = CollectionUtils.copyTo(goodslist, Goods.class);
+		}
+		return goodswherelist;
 	}
 
 }

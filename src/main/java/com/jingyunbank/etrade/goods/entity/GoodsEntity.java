@@ -25,6 +25,11 @@ public class GoodsEntity {
 	private String tid;
 	/**  商品价格*/
 	private BigDecimal price;
+	/**  商品特价*/
+	private BigDecimal special_price;
+	
+	/**  商品现价*/
+	private BigDecimal now_price;
 	/**  是否上架0否1是*/
 	private int state;
 	/**  上架时间*/
@@ -35,6 +40,8 @@ public class GoodsEntity {
 	private int count;
 	/**  销量*/
 	private int volume;
+	
+	private Date addtime;
 	/**  管理员排序*/
 	private int adminSort;
 	/**  商家排序*/
@@ -130,6 +137,24 @@ public class GoodsEntity {
 	}
 	public void setExpandSort(int expandSort) {
 		this.expandSort = expandSort;
+	}
+	public BigDecimal getSpecial_price() {
+		return special_price;
+	}
+	public void setSpecial_price(BigDecimal special_price) {
+		this.special_price = special_price;
+	}
+	public BigDecimal getNow_price() {
+		return now_price;
+	}
+	public void setNow_price(BigDecimal now_price) {
+		this.now_price = now_price;
+	}
+	public Date getAddtime() {
+		return addtime;
+	}
+	public void setAddtime(Date addtime) {
+		this.addtime = addtime;
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.goods.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +24,6 @@ public interface GoodsDao {
 	public List<GoodsDaoVO> selectBrands() throws Exception;
 
 	public List<GoodsDaoVO> selectTypes() throws Exception;
+
+	public List<GoodsDaoVO> selectGoodsByWhere(Map<String, Object> map) throws Exception;
 }
