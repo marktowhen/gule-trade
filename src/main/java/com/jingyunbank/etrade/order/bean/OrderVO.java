@@ -11,7 +11,9 @@ public class OrderVO {
 
 	private String ID;
 	private String orderno;
+	@NotNull
 	private String receiver;//收货人
+	@NotNull
 	private String MID;
 	@Size(min=22, max=22, message="收货地址错误。")
 	@NotNull
@@ -21,6 +23,7 @@ public class OrderVO {
 	@Size(min=22, max=22, message="支付类型错误。")
 	@NotNull
 	private String paytypeID;//支付方式 id
+	@NotNull
 	private String paytypeName;
 	@NotNull
 	@DecimalMin(value="0", inclusive=true, message="订单总价不能小于0元。")

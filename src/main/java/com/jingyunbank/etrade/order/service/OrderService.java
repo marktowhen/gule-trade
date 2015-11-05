@@ -6,16 +6,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
+
+
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.order.dao.OrderDao;
+import com.jingyunbank.etrade.order.entity.OrderEntity;
 
 @Service("orderService")
 public class OrderService implements IOrderService{
@@ -24,13 +31,15 @@ public class OrderService implements IOrderService{
 	private OrderDao orderDao;
 	
 	@Override
-	public boolean save(Orders order) throws DataSavingException {
-		return false;
+	@Transactional
+	public void save(Orders order) throws DataSavingException {
+		OrderEntity entity = new OrderEntity();
+		BeanUtils.copyProperties(order, entity);
+		orderDao.insertOrder(entity);
 	}
 
 	@Override
-	public boolean refresh(Orders order) throws DataUpdatingException {
-		return false;
+	public void refresh(Orders order) throws DataUpdatingException {
 	}
 
 	@Override
@@ -40,7 +49,7 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public List<Orders> list(String uid) {
-		return orderDao.select(uid)
+		return orderDao.selectByUID(uid)
 			.stream().map(entity -> {
 				Orders bo = new Orders();
 				BeanUtils.copyProperties(entity, bo);
@@ -50,7 +59,22 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public List<Orders> list(Date start, Date end) {
-		return null;
+		return orderDao.selectBetween(start, end)
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Orders> list() {
+		return orderDao.select()
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
 	}
 
 	

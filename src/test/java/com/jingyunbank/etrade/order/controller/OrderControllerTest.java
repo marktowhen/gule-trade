@@ -108,10 +108,14 @@ public class OrderControllerTest extends TestCaseBase {
 					 put("/orders/submit")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
+					.param("paytypeName", "支付宝")
+					.param("receiver", "张三四")
+					.param("MID", "XXXXX")
 					.param("price", "122")
 					.param("postage", "12.32")
 					.sessionAttr("LOGIN_ID", "USER-ID")
 					.contentType(MediaType.APPLICATION_JSON)
+					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)
 				.andExpect(status().isOk())
@@ -141,16 +145,40 @@ public class OrderControllerTest extends TestCaseBase {
 	}
 	
 	@Test
-	public void testList() throws Exception{
+	public void testUserList() throws Exception{
 		mockMvc.perform(
-					get("/orders")
-					.sessionAttr("login-uid", "123321")
+					get("/orders/123321")
+					.sessionAttr("LOGIN_ID", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200"))
 				.andExpect(jsonPath("$.body[0].postage").value(12.00))
+				.andDo(print());
+	}
+	@Test
+	public void testUserListLogin() throws Exception{
+		mockMvc.perform(
+					get("/orders/123321")
+					//.sessionAttr("login-uid", "123321")
+					.accept(MediaType.APPLICATION_JSON)
+				)
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("500"))
+				.andDo(print());
+	}
+	@Test
+	public void testAllList() throws Exception{
+		mockMvc.perform(
+					get("/orders")
+					//.sessionAttr("login-uid", "123321")
+					.accept(MediaType.APPLICATION_JSON)
+				)
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200"))
 				.andDo(print());
 	}
 }

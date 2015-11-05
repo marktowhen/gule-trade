@@ -1,6 +1,9 @@
 package com.jingyunbank.etrade.order.service.context;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.OrderDeliveringException;
 import com.jingyunbank.etrade.api.exception.OrderGenerateException;
@@ -10,14 +13,23 @@ import com.jingyunbank.etrade.api.exception.OrderPayFailException;
 import com.jingyunbank.etrade.api.exception.OrderUpdateException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.bo.Refund;
+import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
 
+	@Autowired
+	private IOrderService orderService;
+	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
 	public void generate(Orders order) throws OrderGenerateException {
-
+		try{
+			orderService.save(order);
+		}catch(Exception e){
+			throw new OrderGenerateException();
+		}
 	}
 
 	@Override
