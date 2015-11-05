@@ -139,8 +139,7 @@ public class UserController {
 		}
 		//3、成功之后
 		//用户信息放入session
-		session.setAttribute(Constant.SESSION_USER, usersOptional.get());
-		session.setAttribute(Constant.SESSION_UID, usersOptional.get().getID());
+		session.setAttribute(Constant.SESSION_USER, getUserVoFromBo(usersOptional.get()));
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
@@ -148,6 +147,22 @@ public class UserController {
 		return Result.ok("成功");
 	}
 	
+	
+	/**
+	 * user bo转vo
+	 * @param users
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	private UserVO getUserVoFromBo(Users users){
+		UserVO vo = null;
+		
+		if(users!=null){
+			vo = new UserVO();
+			BeanUtils.copyProperties(users, vo);
+		}
+		return vo;
+	}
 	
 	/**
 	 * 校验验证码
