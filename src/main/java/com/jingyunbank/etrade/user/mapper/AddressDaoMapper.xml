@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.user.dao.AddressDao">
+	<resultMap type="com.jingyunbank.etrade.user.dao.AddressDao" id="AddressEntityResultMap">
+		<id column="id" property="ID" jdbcType="CHAR"/>
+		<result column="uid" property="UID" jdbcType="CHAR"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="country" property="country" jdbcType="INTEGER"/>
+		<result column="province" property="province" jdbcType="INTEGER"/>
+		<result column="city" property="city" jdbcType="INTEGER"/>
+		<result column="address" property="address" jdbcType="VARCHAR"/>
+		<result column="zipcode" property="zipcode" jdbcType="VARCHAR"/>
+		<result column="receiver" property="receiver" jdbcType="VARCHAR"/>
+		<result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+		<result column="telephone" property="telephone" jdbcType="VARCHAR"/>
+		<result column="defaulted" property="defaulted" jdbcType="TINYINT"/>
+		<result column="valid" property="valid" jdbcType="TINYINT"/>
+	</resultMap>
+	<sql id="base_column_list">
+		id ID,uid UID,name,country,province,city,address,zipcode,receiver,mobile,telephone,defaulted,valid
+	</sql>
+	<!-- 查询 -->
+	<select id="selectList" parameterMap="AddressEntityResultMap" resultMap="AddressEntityResultMap">
+		select 
+			<include refid="base_column_list" />
+		from address 
+		 where	 uid=#{UID}
+		 <if test="ID!=null and ID!=''">
+		 	and id=#{ID}
+		 </if>
+		 <if test="name!=null and name!=''">
+		 	and name=#{name}
+		 </if>
+		 <if test="country!=null and country!=''">
+		 	and country=#{country}
+		 </if>
+		 <if test="province!=null and province!=''">
+		 	and province=#{province}
+		 </if>
+		 <if test="city!=null and city!=''">
+		 	and city=#{city}
+		 </if>
+		 <if test="address!=null and address!=''">
+		 	and address=#{address}
+		 </if>
+		 <if test="zipcode!=null and zipcode!=''">
+		 	and zipcode=#{zipcode}
+		 </if>
+		 <if test="receiver!=null and receiver!=''">
+		 	and receiver=#{receiver}
+		 </if>	
+		 <if test="mobile!=null and mobile!=''">
+		 	and mobile=#{mobile}
+		 </if>
+		 <if test="telephone!=null and telephone!=''">
+		 	and telephone=#{telephone}
+		 </if>
+		 <if test="defaulted!=null and defaulted!=''">
+		 	and defaulted=#{defaulted}
+		 </if>
+		 <if test="valid!=null and valid!=''">
+		 	and valid=#{valid}
+		 </if>
+	</select>
+	<!-- 新增 -->
+	<insert id="insert" parameterMap="AddressEntityResultMap">
+		INSERT INTO address
+		(id,uid,name,country,province,city,address,zipcode,receiver,mobile,telephone,defaulted,valid)
+		VALUES
+		(#{ID},#{UID},#{name},#{country},#{province},#{city},#{address},#{zipcode},#{receiver},#{mobile},#{telephone},#{defaulted},#{valid})
+	
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterMap="AddressEntityResultMap">
+		update address a set 
+			<if test="name!=null and name!=''">
+				a.name=#{name},
+			</if>
+			<if test="country!=null and country!=''">
+				a.country=#{country},
+			</if>
+			<if test="province!=null and province!=''">
+				a.province=#{province},
+			</if>
+			<if test="city!=null and city!=''">
+				a.city=#{city},
+			</if>
+			<if test="address!=null and address!=''">
+				a.address=#{address},
+			</if>
+			<if test="zipcode!=null and zipcode!=''">
+				a.zipcode=#{zipcode},
+			</if>
+			<if test="receiver!=null and receiver!=''">
+				a.receiver=#{receiver},
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				a.mobile=#{mobile},
+			</if>
+			<if test="telephone!=null and telephone!=''">
+				a.telephone=#{telephone}
+			</if>
+		where a.id=#{ID}	
+	</update>
+	
+	<!-- 修改状态 -->
+	<update id="updateStatus" parameterMap="AddressEntityResultMap">
+		update address a set 
+			valid = #{valid}
+		where a.id=#{ID}	
+	</update>
+</mapper>

@@ -139,6 +139,7 @@ public class UserController {
 		//3、成功之后
 		//用户信息放入session
 		session.setAttribute(Constant.SESSION_USER, usersOptional.get());
+		session.setAttribute(Constant.SESSION_UID, usersOptional.get().getID());
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
