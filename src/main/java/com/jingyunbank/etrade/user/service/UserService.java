@@ -8,7 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
@@ -76,6 +76,7 @@ public class UserService implements IUserService{
 			//密码加密
 			userEntity.setPassword(Md5Util.getMD5(user.getPassword()));
 			userEntity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
+			userEntity.setID(KeyGen.uuid());
 			result=userDao.insert(userEntity);
 			if(result>0){
 				flag=true;

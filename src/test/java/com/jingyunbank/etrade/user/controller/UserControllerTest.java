@@ -64,10 +64,9 @@ public class UserControllerTest extends TestCaseBase {
 	public void test1() throws Exception{
 		mockMvc.perform(
 				 put("/user/register")
-				.param("ID", "130")
-				.param("username", "xiaoyuxue130")
-				.param("mobile", "14788888890")
-				.param("email", "5@qq.com")
+				.param("username", "xiaoyuxue133")
+				.param("mobile", "15788888891")
+				.param("email", "555@qq.com")
 				.param("password", "123456789")
 				.param("tradepwd", "12345678")
 				.param("nickname", "xiaoxue")

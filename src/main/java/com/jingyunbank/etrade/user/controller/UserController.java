@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -51,7 +52,7 @@ public class UserController {
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
 		if(userVO.getMobile()!=null){
-			Pattern p = Pattern.compile("^((14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 			if(p.matcher(userVO.getMobile()).matches()==false){
 				return Result.fail("该类手机号不存在");
 			}
@@ -69,7 +70,7 @@ public class UserController {
 			return Result.fail("该用户名已存在。");
 		}
 		if(userVO.getEmail()!=null){
-			Pattern pattern =Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+			Pattern pattern =Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
 			if(pattern.matcher(userVO.getEmail()).matches()==false){
 				return Result.fail("邮箱格式不正确！");
 			}
