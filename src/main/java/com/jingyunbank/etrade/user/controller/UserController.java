@@ -1,8 +1,10 @@
 package com.jingyunbank.etrade.user.controller;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,7 @@ import com.jingyunbank.etrade.user.bean.UserVO;
 public class UserController {
   	@Autowired
 	private IUserService userService;
-	//暂时屏蔽
-//	@Resource
-//	private UserService userService;
+
 	
 	@RequestMapping("/user")
 	public String invest(HttpServletRequest request, HttpSession session){
@@ -36,22 +36,53 @@ public class UserController {
 		return "{username:mike, password:black mamba}";
 	}
 	
-	@RequestMapping(value="/reginter",method=RequestMethod.POST)
+	/**
+	 * 
+	 * @todo  用户注册信息
+	 * @author guoyuxue
+	 * @param request
+	 * @param session
+	 * @param userVO
+	 * @return
+	 * @throws DataSavingException
+	 */
+	@RequestMapping(value="/register",method=RequestMethod.PUT)
 	public Result register(HttpServletRequest request,HttpSession session,UserVO userVO) throws DataSavingException{
-		if(userVO.getMobile()!=null&&userVO.getMobile().length()!=11){
-			return Result.fail("手机号必须是11位。");
+		Users user=new Users();
+		BeanUtils.copyProperties(userVO, user);
+		if(userVO.getMobile()!=null){
+			Pattern p = Pattern.compile("^((14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+			if(p.matcher(userVO.getMobile()).matches()==false){
+				return Result.fail("该类手机号不存在");
+			}
+			if(userVO.getMobile().length()!=11){
+				return Result.fail("手机号必须是十一位");
+			}
+			if(userService.phoneExists(userVO.getMobile())){
+				return Result.fail("该手机号已存在。");
+			}
 		}
-		if(userService.phoneExists(userVO.getMobile())){
-			return Result.fail("该手机号已存在。");
+		if(userVO.getUsername()==null){
+			return Result.fail("用户名不能为空");
 		}
 		if(userService.unameExists(userVO.getUsername())){
 			return Result.fail("该用户名已存在。");
 		}
-		if(userService.emailExists(userVO.getEmail())){
+		if(userVO.getEmail()!=null){
+			Pattern pattern =Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+			if(pattern.matcher(userVO.getEmail()).matches()==false){
+				return Result.fail("邮箱格式不正确！");
+			}
+			if(userService.emailExists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
+			}
 		}
-		Users user=new Users();
-		BeanUtils.copyProperties(userVO, user);
+		if(userVO.getPassword().length()<7||userVO.getPassword().length()>21){
+			return Result.fail("密码必须是8-20位的");
+		}
+		if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>21){
+			return Result.fail("交易密码也应该是8-20位的");
+		}
 		userService.save(user);
 		return Result.ok(userVO);
 	}

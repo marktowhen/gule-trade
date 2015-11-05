@@ -12,10 +12,10 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
 public interface UserDao {
-	public boolean insert(UserEntity userEntity) throws DataSavingException ;
-	public boolean phoneExists(String mobile);
-	public boolean unameExists(String username);
-	public boolean emailExists(String email);
+	public int insert(UserEntity userEntity) throws DataSavingException ;
+	public int phoneExists(String mobile);
+	public int unameExists(String username);
+	public int emailExists(String email);
 	
 	/**
 	 * 根据查询条件查询

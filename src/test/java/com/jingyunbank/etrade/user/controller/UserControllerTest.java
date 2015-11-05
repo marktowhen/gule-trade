@@ -4,6 +4,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import net.minidev.json.JSONObject;
 
 import org.junit.Before;
@@ -11,6 +14,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -53,6 +57,28 @@ public class UserControllerTest extends TestCaseBase {
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 			.andDo(MockMvcResultHandlers.print())  
 		            .andReturn();
+		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
+		
+	}
+	@Test
+	public void test1() throws Exception{
+		mockMvc.perform(
+				 put("/user/register")
+				.param("ID", "130")
+				.param("username", "xiaoyuxue130")
+				.param("mobile", "14788888890")
+				.param("email", "5@qq.com")
+				.param("password", "123456789")
+				.param("tradepwd", "12345678")
+				.param("nickname", "xiaoxue")
+				.param("locked", "true")
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andExpect(jsonPath("$.code").value("200"))
+			.andDo(MockMvcResultHandlers.print())
+			.andDo(print());
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}

@@ -11,7 +11,7 @@ package com.jingyunbank.etrade.user.entity;
 //import com.jingyunbank.etrade.api.user.bo.UserInfo;
 
 /**
- * @author Administrator
+ * @author guoyuxue
  *
  */
 public class UserEntity {

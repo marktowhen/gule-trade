@@ -14,6 +14,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.user.dao.UserDao;
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
@@ -65,12 +66,24 @@ public class UserService implements IUserService{
 		return getUsersByEntity(userEntity);
 	}
 
-	
+	//保存用户的信息
 	@Override
 	public boolean save(Users user) throws DataSavingException {
 		UserEntity userEntity=new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
-			return userDao.insert(userEntity);
+			int result=0;
+			boolean flag=false;
+			//密码加密
+			userEntity.setPassword(Md5Util.getMD5(user.getPassword()));
+			userEntity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
+			result=userDao.insert(userEntity);
+			if(result>0){
+				flag=true;
+			}else{
+				flag=false;
+			}
+			return flag;
+			
 	}
 	
 
@@ -88,20 +101,44 @@ public class UserService implements IUserService{
 	public List<Users> list(Date start, Date end) {
 		return null;
 	}
-
+    //判断用户是否存在
 	@Override
 	public boolean phoneExists(String phone) {
-		return userDao.phoneExists(phone);
+		int result=0;
+		boolean flag=false;
+		result=userDao.phoneExists(phone);
+		if(result>0){
+			flag=true;
+		}else{
+			flag=false;
+		}
+		return flag;
 	}
-
+	//判断用户名是否存在
 	@Override
 	public boolean unameExists(String uname) {
-		return userDao.unameExists(uname);
+		int result=0;
+		boolean flag=false;
+		result=userDao.unameExists(uname);
+		if(result>0){
+			flag=true;
+		}else{
+			flag=false;
+		}
+		return flag;
 	}
-
+   //判断邮箱是否存在
 	@Override
 	public boolean emailExists(String email) {
-		return userDao.emailExists(email);
+		int result=0;
+		boolean flag=false;
+		result=userDao.emailExists(email);
+		if(result>0){
+			flag=true;
+		}else{
+			flag=false;
+		}
+		return flag;
 	}
 
 	@Override
