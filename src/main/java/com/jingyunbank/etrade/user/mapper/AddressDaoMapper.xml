@@ -3,7 +3,7 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.user.dao.AddressDao">
-	<resultMap type="com.jingyunbank.etrade.user.dao.AddressDao" id="AddressEntityResultMap">
+	<resultMap type="com.jingyunbank.etrade.user.entity.AddressEntity" id="AddressEntityResultMap">
 		<id column="id" property="ID" jdbcType="CHAR"/>
 		<result column="uid" property="UID" jdbcType="CHAR"/>
 		<result column="name" property="name" jdbcType="VARCHAR"/>
@@ -22,7 +22,7 @@
 		id ID,uid UID,name,country,province,city,address,zipcode,receiver,mobile,telephone,defaulted,valid
 	</sql>
 	<!-- 查询 -->
-	<select id="selectList" parameterMap="AddressEntityResultMap" resultMap="AddressEntityResultMap">
+	<select id="selectList" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity" resultMap="AddressEntityResultMap">
 		select 
 			<include refid="base_column_list" />
 		from address 
@@ -65,7 +65,7 @@
 		 </if>
 	</select>
 	<!-- 新增 -->
-	<insert id="insert" parameterMap="AddressEntityResultMap">
+	<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
 		INSERT INTO address
 		(id,uid,name,country,province,city,address,zipcode,receiver,mobile,telephone,defaulted,valid)
 		VALUES
@@ -74,7 +74,7 @@
 	</insert>
 	
 	<!-- 修改 -->
-	<update id="update" parameterMap="AddressEntityResultMap">
+	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
 		update address a set 
 			<if test="name!=null and name!=''">
 				a.name=#{name},
@@ -107,7 +107,7 @@
 	</update>
 	
 	<!-- 修改状态 -->
-	<update id="updateStatus" parameterMap="AddressEntityResultMap">
+	<update id="updateStatus" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
 		update address a set 
 			valid = #{valid}
 		where a.id=#{ID}	
