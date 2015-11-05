@@ -2,6 +2,35 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.good.dao.GoodDao">
+<mapper namespace="com.jingyunbank.etrade.goods.dao.GoodsDao">
 	
+	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsDaoVO" id="baseGoodsMap">
+		<id column="id" property="id"/>
+		<result column="brand_id" property="brand_id"/>
+		<result column="brand_name" property="brandname"/>
+		<result column="type_id" property="type_id"/>
+		<result column="type_name" property="good_type_name"/>
+		<result column="name" property="goodname"/>
+		<result column="price" property="price"/>
+		<result column="weight" property="weight"/>
+		<result column="unit" property="unit"/>
+		<result column="parameter1" property="discount"/>
+		<result column="dis" property="discount_price"/>
+	</resultMap>
+	<!-- 根据名称查询商品 -->
+	<select id="selectGoodsByLikeName" parameterType="string" resultMap="baseGoodsMap">
+		SELECT g.id id ,g.name name ,g.price price,(g.price * t.parameter1) dis,
+		d.weight weight ,d.unit unit ,t.strategy_name strategy_name ,t.parameter1 parameter1 FROM goods g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_strategy s ON g.id=s.gid
+		LEFT JOIN strategy t ON s.sid=t.id
+		WHERE g.name LIKE  CONCAT(CONCAT('%', #{goodsname}), '%');
+	</select>
+	
+	<select id="selectBrands" resultMap="baseGoodsMap">
+		SELECT id brand_id ,NAME brand_name FROM goods_brand
+	</select>
+	<select id="selectTypes" resultMap="baseGoodsMap">
+		SELECT id type_id ,NAME type_name FROM goods_type
+	</select>
 </mapper>

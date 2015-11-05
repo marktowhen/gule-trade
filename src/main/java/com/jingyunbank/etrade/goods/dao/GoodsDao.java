@@ -6,13 +6,21 @@ import org.springframework.stereotype.Repository;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
+import com.jingyunbank.etrade.goods.entity.GoodsDaoVO;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
+
 /**
- * @author liug
- *
+ * 
+ * Title: GoodsDao
+ * 
+ * @author duanxf
+ * @date 2015年11月4日
  */
 
-public interface GoodsDao{
+public interface GoodsDao {
+	public List<GoodsDaoVO> selectGoodsByLikeName(String goodsname) throws Exception;
 
+	public List<GoodsDaoVO> selectBrands() throws Exception;
 
+	public List<GoodsDaoVO> selectTypes() throws Exception;
 }
