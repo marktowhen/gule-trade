@@ -60,12 +60,13 @@ public class UserControllerTest extends TestCaseBase {
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}
+	//测试注册
 	@Test
 	public void test1() throws Exception{
 		mockMvc.perform(
 				 put("/user/register")
-				.param("username", "xiaoyuxue133")
-				.param("mobile", "15788888891")
+				.param("username", "1xiaoyuxue133")
+				.param("mobile", "15788888899")
 				.param("email", "555@qq.com")
 				.param("password", "123456789")
 				.param("tradepwd", "12345678")
@@ -75,7 +76,7 @@ public class UserControllerTest extends TestCaseBase {
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			.andExpect(jsonPath("$.code").value("200"))
+			.andExpect(jsonPath("$.code").value("500"))
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());

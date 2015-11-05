@@ -51,6 +51,21 @@ public class UserController {
 	public Result register(HttpServletRequest request,HttpSession session,UserVO userVO) throws DataSavingException{
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
+		if(userVO.getUsername()==null){
+			return Result.fail("用户名不能为空");
+		}
+		if(userVO.getUsername()!=null){
+			Pattern pm=Pattern.compile("^(a-zA-Z)(a-zA-Z0-9)$");
+			if(pm.matcher(userVO.getUsername()).matches()==false){
+				return Result.fail("用户名只能是字母开头，并且只能是字母和数字");
+			}
+			if(userVO.getUsername().length()>20||userVO.getUsername().length()<4){
+				return Result.fail("用户名的长度在5-20之间！");
+			}
+		}
+		if(userService.unameExists(userVO.getUsername())){
+			return Result.fail("该用户名已存在。");
+		}
 		if(userVO.getMobile()!=null){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 			if(p.matcher(userVO.getMobile()).matches()==false){
@@ -63,12 +78,7 @@ public class UserController {
 				return Result.fail("该手机号已存在。");
 			}
 		}
-		if(userVO.getUsername()==null){
-			return Result.fail("用户名不能为空");
-		}
-		if(userService.unameExists(userVO.getUsername())){
-			return Result.fail("该用户名已存在。");
-		}
+		
 		if(userVO.getEmail()!=null){
 			Pattern pattern =Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
 			if(pattern.matcher(userVO.getEmail()).matches()==false){
