@@ -12,9 +12,31 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
 public interface UserDao {
+	/**
+	 * 注册页面的保存
+	 * @param userEntity
+	 * @return
+	 * @throws DataSavingException
+	 */
 	public int insert(UserEntity userEntity) throws DataSavingException ;
-	public int phoneExists(String mobile);
+	/**
+	 * 验证手机号是否存在
+	 * @param moblie
+	 * @return
+	 */
+	public int phoneExists(String moblie);
+	/**
+	 * 验证用户名是否存在
+	 * @param username
+	 * @return
+	 */
+	
 	public int unameExists(String username);
+	/**
+	 * 验证邮箱是否存在
+	 * @param email
+	 * @return
+	 */
 	public int emailExists(String email);
 	
 	/**
