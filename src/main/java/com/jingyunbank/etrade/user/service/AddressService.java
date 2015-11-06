@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
@@ -37,8 +37,9 @@ public class AddressService implements IAddressService{
 	@Override
 	public boolean delete(Address address) throws DataRefreshingException {
 		AddressEntity entity = new AddressEntity();
-		entity.setID(address.getID());
+		entity.setIDArray(address.getIDArray());
 		entity.setValid(false);
+		entity.setUID(address.getUID());
 		return addressDao.updateStatus(entity);
 	}
 
@@ -60,6 +61,7 @@ public class AddressService implements IAddressService{
 		List<Address> result = null;
 		AddressEntity entity = new AddressEntity();
 		entity.setUID(uid);
+		entity.setValid(true);
 		List<AddressEntity> list = addressDao.selectList(entity);
 		if(list!=null && !list.isEmpty()){
 			result = new ArrayList<Address>();
@@ -98,6 +100,22 @@ public class AddressService implements IAddressService{
 			BeanUtils.copyProperties(addressEntity, vo);
 		}
 		return vo;
+	}
+
+	@Override
+	public List<Address> listPage(Address address, Range range) {
+		AddressEntity entityFromBo = getEntityFromBo(address);
+		entityFromBo.setFrom(range.getFrom());
+		entityFromBo.setSize(range.getTo()-range.getFrom());
+		entityFromBo.setValid(true);
+		List<AddressEntity> entityList = addressDao.selectListRang(entityFromBo);
+		List<Address> boList = new ArrayList<Address>();
+		if(entityList!=null && !entityList.isEmpty()){
+			for (AddressEntity entity : entityList) {
+				boList.add(getBoFromEntity(entity));
+			}
+		}
+		return boList;
 	}
 
 }

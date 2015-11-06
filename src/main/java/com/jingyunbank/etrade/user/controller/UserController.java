@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -20,6 +19,7 @@ import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.base.constant.Constant;
 import com.jingyunbank.etrade.base.util.Md5Util;
+import com.jingyunbank.etrade.base.util.RequestUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/user")
@@ -153,7 +153,44 @@ public class UserController {
 		
 		return Result.ok("成功");
 	}
+	/**
+	 * 根据用户名/手机/邮箱查询用户信息
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * 
+	 * @return
+	 * qxs
+	 */
+	@RequestMapping(value="/query",method=RequestMethod.GET)
+	public Result query(HttpServletRequest request, HttpSession session,String loginfo  ){
+		//1、参数校验
+		if(StringUtils.isEmpty(loginfo)){
+			return Result.fail("请输入用户名/手机/邮箱");
+		}
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Users> usersOptional =  userService.getByKey(loginfo);
+		//是否存在该用户
+		if(usersOptional.isPresent()){
+			Users users = usersOptional.get();
+			return Result.ok(getUserVoFromBo(users));
+		}else{
+			return Result.fail("未找到该用户");
+		}
+	}
 	
+	
+	/**
+	 * 获取已登录的用户
+	 * @param request
+	 * @param session
+	 * @return
+	 * 2015年11月6日 qxs
+	 */
+	@RequestMapping(value="/queryLoginUser",method=RequestMethod.GET)
+	public Result queryLoginUser(HttpServletRequest request, HttpSession session){
+		return Result.ok(RequestUtil.getLoginUser(request));
+	}
 	
 	/**
 	 * user bo转vo

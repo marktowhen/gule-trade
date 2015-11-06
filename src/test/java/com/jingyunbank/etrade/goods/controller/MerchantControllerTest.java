@@ -19,6 +19,7 @@ import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.goods.service.IMerchantService;
 
 public class MerchantControllerTest extends TestCaseBase {
+
 	@Autowired
 	private IMerchantService merchantService;
 	//private RestTemplate restTemplate = new TestRestTemplate();
@@ -30,7 +31,10 @@ public class MerchantControllerTest extends TestCaseBase {
 	public void init(){
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
-	
+	/**
+	 * 测试 首页商家推荐查询
+	 * @throws Exception
+	 */
 	@Test
 	public void test0() throws Exception{
 		assertNotNull(merchantService);
