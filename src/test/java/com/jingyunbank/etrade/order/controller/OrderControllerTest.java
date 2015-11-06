@@ -18,7 +18,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testDeleteLoginFirst() throws Exception{
 		getMockMvc().perform(
-				delete("/order/-XbGNv0RToW8LG96BNLpiw")
+				delete("/api/orders/-XbGNv0RToW8LG96BNLpiw")
 				//.sessionAttr("login-uid", "123321")
 				.accept(MediaType.APPLICATION_JSON)
 			)
@@ -31,7 +31,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testDelete() throws Exception{
 		getMockMvc().perform(
-				delete("/order/-XbGNv0RToW8LG96BNLpiw")
+				delete("/api/orders/-XbGNv0RToW8LG96BNLpiw")
 				.sessionAttr("LOGIN_ID", "123321")
 				.accept(MediaType.APPLICATION_JSON)
 			)
@@ -44,7 +44,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testAddressID() throws Exception{
 		getMockMvc().perform(
-					 put("/order")
+					 put("/api/orders")
 					.param("addressID", "123321123321123321123")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "123.32")
@@ -62,7 +62,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testPayType() throws Exception{
 		getMockMvc().perform(
-					 put("/order")
+					 put("/api/orders")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "123321123321123321123")
 					.param("price", "123.32")
@@ -80,7 +80,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testPrice() throws Exception{
 		getMockMvc().perform(
-					 put("/order")
+					 put("/api/orders")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "-122")
@@ -98,7 +98,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testPostage() throws Exception{
 		getMockMvc().perform(
-					 put("/order")
+					 put("/api/orders")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "122")
@@ -117,7 +117,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testSuccess() throws Exception{
 		getMockMvc().perform(
-					 put("/order")
+					 put("/api/orders")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("paytypeName", "支付宝")
@@ -140,7 +140,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testLoginFirst() throws Exception{
 		getMockMvc().perform(
-					 put("/order")
+					 put("/api/orders")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "122")
@@ -159,7 +159,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testUserList() throws Exception{
 		getMockMvc().perform(
-					get("/orders/list/123321")
+					get("/api/orders/list/123321")
 					.sessionAttr("LOGIN_ID", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -172,7 +172,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testUserListLogin() throws Exception{
 		getMockMvc().perform(
-					get("/orders/list/123321")
+					get("/api/orders/list/123321")
 					//.sessionAttr("login-uid", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -184,7 +184,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testAllList() throws Exception{
 		getMockMvc().perform(
-					get("/orders/list")
+					get("/api/orders/list")
 					//.sessionAttr("login-uid", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)

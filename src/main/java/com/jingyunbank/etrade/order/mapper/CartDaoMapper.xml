@@ -35,7 +35,7 @@
 		<set>
 			count = #{count}, price = #{price}
 		</set>
-		where id = #{id}
+		where id = #{ID}
 	</update>
 	<delete id="delete" parameterType="String">
 		delete from cart where id = #{id}

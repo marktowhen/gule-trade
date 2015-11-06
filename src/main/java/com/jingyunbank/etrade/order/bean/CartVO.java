@@ -6,12 +6,14 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CartVO {
 
 	private String ID;
 	@NotNull
-	private String MID;
+	@Size(min=22, max=22)
+	private String GID;
 	private String UID;//下单人
 	private Date addtime;//下单时间
 	@NotNull
@@ -26,12 +28,6 @@ public class CartVO {
 	}
 	public void setID(String iD) {
 		ID = iD;
-	}
-	public String getMID() {
-		return MID;
-	}
-	public void setMID(String mID) {
-		MID = mID;
 	}
 	public String getUID() {
 		return UID;
@@ -50,5 +46,17 @@ public class CartVO {
 	}
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
+	public String getGID() {
+		return GID;
+	}
+	public void setGID(String gID) {
+		GID = gID;
 	}
 }

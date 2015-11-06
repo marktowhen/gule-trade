@@ -35,7 +35,7 @@ public class OrderController {
 	@Autowired
 	private IOrderService orderService;
 	
-	@RequestMapping(value="/orders/list", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/list", method=RequestMethod.GET)
 	public Result listAll(HttpServletRequest request, HttpSession session){
 		return Result.ok(orderService.list()
 				.stream().map(bo-> {
@@ -59,7 +59,7 @@ public class OrderController {
 	
 	
 	@RequireLogin
-	@RequestMapping(value="/order", method=RequestMethod.PUT)
+	@RequestMapping(value="/api/orders", method=RequestMethod.PUT)
 	public Result submit(@Valid OrderVO order, BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -78,7 +78,7 @@ public class OrderController {
 	}
 	
 	@RequireLogin
-	@RequestMapping(value="/order/{id}", method=RequestMethod.DELETE)
+	@RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
 	public Result remove(@PathVariable String id) throws Exception{
 		
 		orderContextService.remove(id);

@@ -45,9 +45,9 @@ public class CartService implements ICartService {
 	}
 
 	@Override
-	public void remove(Cart cart) throws DataRemovingException{
+	public void remove(String id) throws DataRemovingException{
 		try {
-			cartDao.delete(cart.getID());
+			cartDao.delete(id);
 		} catch (Exception e) {
 			throw new DataRemovingException();
 		}
