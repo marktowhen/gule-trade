@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.base.Page;
@@ -105,8 +105,7 @@ public class AddressController {
 			if(addressService.refresh(address)){
 				return Result.ok("成功");
 			}
-		} catch (DataUpdatingException e) {
-			// TODO Auto-generated catch block
+		} catch (DataRefreshingException e) {
 			e.printStackTrace();
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -136,7 +135,7 @@ public class AddressController {
 				if(addressService.delete(getBoFromVo(addressVO))){
 					return Result.ok("成功");
 				}
-			} catch (DataUpdatingException e) {
+			} catch (DataRefreshingException e) {
 				e.printStackTrace();
 			}
 			return Result.fail("服务器繁忙,请稍后再试");
