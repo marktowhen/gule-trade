@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
@@ -22,7 +23,10 @@ public class AddressService implements IAddressService{
 
 	@Override
 	public boolean save(Address address) throws DataSavingException {
-		return addressDao.insert(getEntityFromBo(address));
+		AddressEntity addressEntity=new AddressEntity();
+		BeanUtils.copyProperties(address, addressEntity);
+		addressEntity.setID(KeyGen.uuid());
+		return addressDao.insert(addressEntity);
 	}
 
 	@Override

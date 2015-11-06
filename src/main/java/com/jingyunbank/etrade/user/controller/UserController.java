@@ -69,10 +69,7 @@ public class UserController {
 		if(userVO.getMobile()!=null){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 			if(p.matcher(userVO.getMobile()).matches()==false){
-				return Result.fail("该类手机号不存在");
-			}
-			if(userVO.getMobile().length()!=11){
-				return Result.fail("手机号必须是十一位");
+				return Result.fail("手机号的格式不正确");
 			}
 			if(userService.phoneExists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
