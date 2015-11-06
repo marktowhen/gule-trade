@@ -22,7 +22,20 @@
 		id, orderno, receiver, uid, mid, addtime, paytype_id, paytype_name, status_id, status_name,
 		price, postage, address_id
 	</sql>
-	<select id="select" parameterType="String" resultMap="OrderEntityResultMap">
+	<select id="selectByUID" parameterType="String" resultMap="OrderEntityResultMap">
 		select <include refid="orders_columns"/> from orders where uid = #{uid}
 	</select>
+	<select id="selectBetween" resultMap="OrderEntityResultMap">
+		select <include refid="orders_columns"/> from orders where addtime between #{start} and #{end}
+	</select>
+	<select id="select" resultMap="OrderEntityResultMap">
+		select <include refid="orders_columns"/> from orders
+	</select>
+	<insert id="insertOrder" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
+		insert into orders
+			(<include refid="orders_columns"/>)
+		values
+			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{addtime}, #{paytypeID},
+			#{paytypeName}, #{statusID}, #{statusName}, #{price}, #{postage}, #{addressID})
+	</insert>
 </mapper>
