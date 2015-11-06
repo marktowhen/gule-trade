@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 
 
+
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
@@ -37,7 +40,7 @@ public class OrderService implements IOrderService{
 		OrderEntity entity = new OrderEntity();
 		BeanUtils.copyProperties(order, entity);
 		try {
-			orderDao.insertOrder(entity);
+			orderDao.insert(entity);
 		} catch (Exception e) {
 			throw new DataSavingException();
 		}
@@ -80,6 +83,15 @@ public class OrderService implements IOrderService{
 					BeanUtils.copyProperties(entity, bo);
 					return bo;
 				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public void remove(String id) throws DataRemovingException {
+		try {
+			orderDao.delete(id);
+		} catch (Exception e) {
+			throw new DataRemovingException();
+		}
 	}
 
 	

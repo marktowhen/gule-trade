@@ -35,7 +35,7 @@ public class OrderController {
 	@Autowired
 	private IOrderService orderService;
 	
-	@RequestMapping(value="/orders", method=RequestMethod.GET)
+	@RequestMapping(value="/orders/list", method=RequestMethod.GET)
 	public Result listAll(HttpServletRequest request, HttpSession session){
 		return Result.ok(orderService.list()
 				.stream().map(bo-> {
@@ -45,9 +45,9 @@ public class OrderController {
 				}).collect(Collectors.toList()));
 	}
 	
-	@RequestMapping(value="/orders/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/orders/list/{uid}", method=RequestMethod.GET)
 	@RequireLogin
-	public Result listUID(@PathVariable String uid, HttpServletRequest request, HttpSession session){
+	public Result listUID(@PathVariable String uid, HttpSession session){
 		return Result.ok(orderService.list((String)session.getAttribute("LOGIN_ID"))
 				.stream().map(bo-> {
 					OrderVO vo = new OrderVO();
@@ -59,7 +59,7 @@ public class OrderController {
 	
 	
 	@RequireLogin
-	@RequestMapping(value="/orders/submit", method=RequestMethod.PUT)
+	@RequestMapping(value="/order", method=RequestMethod.PUT)
 	public Result submit(@Valid OrderVO order, BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -75,5 +75,14 @@ public class OrderController {
 		BeanUtils.copyProperties(order, orderbo);
 		orderContextService.generate(orderbo);
 		return Result.ok(order);
+	}
+	
+	@RequireLogin
+	@RequestMapping(value="/order/{id}", method=RequestMethod.DELETE)
+	public Result remove(@PathVariable String id) throws Exception{
+		
+		orderContextService.remove(id);
+		
+		return Result.ok(id);
 	}
 }

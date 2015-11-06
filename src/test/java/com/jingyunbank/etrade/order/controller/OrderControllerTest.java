@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.order.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,9 +31,35 @@ public class OrderControllerTest extends TestCaseBase {
 	}
 	
 	@Test
+	public void testDeleteLoginFirst() throws Exception{
+		mockMvc.perform(
+				delete("/order/-XbGNv0RToW8LG96BNLpiw")
+				//.sessionAttr("login-uid", "123321")
+				.accept(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andExpect(jsonPath("$.code").value("500"))
+			.andDo(print());
+	}
+	
+	@Test
+	public void testDelete() throws Exception{
+		mockMvc.perform(
+				delete("/order/-XbGNv0RToW8LG96BNLpiw")
+				.sessionAttr("LOGIN_ID", "123321")
+				.accept(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andExpect(jsonPath("$.code").value("200"))
+			.andDo(print());
+	}
+	
+	@Test
 	public void testAddressID() throws Exception{
 		mockMvc.perform(
-					 put("/orders/submit")
+					 put("/order")
 					.param("addressID", "123321123321123321123")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "123.32")
@@ -50,7 +77,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testPayType() throws Exception{
 		mockMvc.perform(
-					 put("/orders/submit")
+					 put("/order")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "123321123321123321123")
 					.param("price", "123.32")
@@ -68,7 +95,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testPrice() throws Exception{
 		mockMvc.perform(
-					 put("/orders/submit")
+					 put("/order")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "-122")
@@ -86,7 +113,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testPostage() throws Exception{
 		mockMvc.perform(
-					 put("/orders/submit")
+					 put("/order")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "122")
@@ -105,7 +132,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testSuccess() throws Exception{
 		mockMvc.perform(
-					 put("/orders/submit")
+					 put("/order")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("paytypeName", "支付宝")
@@ -128,7 +155,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testLoginFirst() throws Exception{
 		mockMvc.perform(
-					 put("/orders/submit")
+					 put("/order")
 					.param("addressID", "1233211233211233211232")
 					.param("paytypeID", "1233211233211233211232")
 					.param("price", "122")
@@ -147,7 +174,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testUserList() throws Exception{
 		mockMvc.perform(
-					get("/orders/123321")
+					get("/orders/list/123321")
 					.sessionAttr("LOGIN_ID", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -160,7 +187,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testUserListLogin() throws Exception{
 		mockMvc.perform(
-					get("/orders/123321")
+					get("/orders/list/123321")
 					//.sessionAttr("login-uid", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -172,7 +199,7 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testAllList() throws Exception{
 		mockMvc.perform(
-					get("/orders")
+					get("/orders/list")
 					//.sessionAttr("login-uid", "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -181,4 +208,5 @@ public class OrderControllerTest extends TestCaseBase {
 				.andExpect(jsonPath("$.code").value("200"))
 				.andDo(print());
 	}
+	
 }

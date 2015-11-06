@@ -9,7 +9,7 @@ import com.jingyunbank.etrade.order.entity.OrderEntity;
 
 public interface OrderDao{
 
-	public void insertOrder(OrderEntity order) throws Exception ;
+	public void insert(OrderEntity order) throws Exception ;
 
 	//public boolean update(OrderEntity order) throws DataUpdatingException ;
 
@@ -20,5 +20,7 @@ public interface OrderDao{
 	public List<OrderEntity> selectBetween(@Param(value="start") Date start, @Param(value="end") Date end) ;
 
 	public List<OrderEntity> selectByUID(String uid);
+
+	public void delete(String id) throws Exception;
 
 }

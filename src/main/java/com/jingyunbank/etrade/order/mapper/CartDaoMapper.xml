@@ -9,7 +9,7 @@
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="gid" property="GID" javaType="String"/>
 		<result column="price" property="price" jdbcType="DECIMAL"/>
-		<result column="count" property="count" jdbcType="INT"/>
+		<result column="count" property="count" jdbcType="INTEGER"/>
 	</resultMap>
 	<sql id="cart_columns">
 		id, uid, gid, addtime, price, count
