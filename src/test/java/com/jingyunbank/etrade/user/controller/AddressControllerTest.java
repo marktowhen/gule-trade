@@ -1,14 +1,15 @@
 package com.jingyunbank.etrade.user.controller;
 
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Optional;
-
-import net.minidev.json.JSONObject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,24 +45,27 @@ public class AddressControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void test0() throws Exception{
-		assertNotNull(userService);
-		assertNotNull(mockMvc);
-		JSONObject json = new JSONObject();
-		json.put("loginfo", "loginfo");
-		json.put("password", "password");
-		mockMvc
-			//请求信息
-		//put("/orders/new").content("{'addressID':'123321123'}").contentType(MediaType.APPLICATION_JSON)
-		//?loginfo=loginfo&password=password
-			.perform(post("/address/add")
-					.param("name", "利的老师靠反垄断思考")
-					.content(json.toJSONString())
+		mockMvc.perform(
+				 put("/address/add")
+				.param("UID", "1")
+				.param("name", "q")
+				.param("country", "1")
+				.param("province", "2")
+				.param("city", "1")
+				.param("address", "山东济南")
+				.param("zipcode", "25600")
+				.param("receiver", "aaa")
+				.param("mobile", "1876616980")
+				.param("telephone", "84936795")
+				.param("defaulted", "true")
+				.param("valid", "true")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			.andDo(MockMvcResultHandlers.print())  
-		            .andReturn();
+			.andExpect(jsonPath("$.code").value("500"))
+			.andDo(MockMvcResultHandlers.print())
+			.andDo(print());
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}
