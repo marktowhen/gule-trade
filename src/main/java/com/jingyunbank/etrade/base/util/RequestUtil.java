@@ -31,7 +31,7 @@ public class RequestUtil {
 	 * 2015年11月5日 qxs
 	 */
 	public static UserVO getLoginUser(HttpServletRequest request){
-		return (UserVO) request.getAttribute(Constant.SESSION_USER);
+		return (UserVO) request.getSession().getAttribute(Constant.SESSION_USER);
 	}
 	
 	

@@ -2,6 +2,9 @@ package com.jingyunbank.etrade.user.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.user.entity.AddressEntity;
@@ -46,6 +49,7 @@ public interface AddressDao {
 	/**
 	 * 分页查询
 	 * @param addressEntity
+	 * @param range 
 	 * @return
 	 * 2015年11月5日 qxs
 	 */

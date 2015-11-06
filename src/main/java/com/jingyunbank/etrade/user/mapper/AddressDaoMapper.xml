@@ -17,16 +17,17 @@
 		<result column="telephone" property="telephone" jdbcType="VARCHAR"/>
 		<result column="defaulted" property="defaulted" jdbcType="TINYINT"/>
 		<result column="valid" property="valid" jdbcType="TINYINT"/>
+		<result column="country_name" property="countryName" jdbcType="VARCHAR"/>
+		<result column="province_name" property="provinceName" jdbcType="VARCHAR"/>
+		<result column="city_name" property="cityName" jdbcType="VARCHAR"/>
 	</resultMap>
 	<sql id="base_column_list">
 		id ID,uid UID,name,country,province,city,address,zipcode,receiver,mobile,telephone,defaulted,valid
 	</sql>
-	<!-- 查询 -->
-	<select id="selectList" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity" resultMap="AddressEntityResultMap">
-		select 
-			<include refid="base_column_list" />
-		from address 
-		 where	 uid=#{UID}
+	<sql id="base_condition">
+		<if test="UID!=null and UID!=''">
+		    and uid=#{UID}
+		 </if>
 		 <if test="ID!=null and ID!=''">
 		 	and id=#{ID}
 		 </if>
@@ -63,7 +64,39 @@
 		 <if test="valid!=null and valid!=''">
 		 	and valid=#{valid}
 		 </if>
+	</sql>
+	<!-- 查询 -->
+	<select id="selectList" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity" resultMap="AddressEntityResultMap">
+		select 
+			<include refid="base_column_list" />
+			,c.country_name country_name 
+			, p.province_name province_name
+			,ct.city_name city_name
+		from address u 
+		LEFT JOIN country c on c.country_id=u.country
+		LEFT JOIN province p on u.province=p.province_id
+		LEFT JOIN city ct on u.city=ct.city_id
+		 where	 1=1
+		 <include refid="base_condition"></include>
+		 order by u.defaulted desc
 	</select>
+	<!-- 分页查询 -->
+	<select id="selectListRang" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity"  resultMap="AddressEntityResultMap">
+		select 
+			<include refid="base_column_list" />
+			,c.country_name country_name 
+			, p.province_name province_name
+			,ct.city_name city_name
+		from address u 
+		LEFT JOIN country c on c.country_id=u.country
+		LEFT JOIN province p on u.province=p.province_id
+		LEFT JOIN city ct on u.city=ct.city_id
+		 where	 1=1
+		<include refid="base_condition"></include>
+		 order by u.defaulted desc
+		 limit #{from},#{size}
+	</select>
+	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
 		INSERT INTO address
@@ -110,6 +143,10 @@
 	<update id="updateStatus" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
 		update address a set 
 			valid = #{valid}
-		where a.id=#{ID}	
+		where   a.uid=#{UID}
+		and a.id in 
+		<foreach collection="IDArray" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
 	</update>
 </mapper>
