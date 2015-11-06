@@ -19,15 +19,33 @@
 		<result column="unit" property="unit"/>
 		<result column="parameter1" property="discount"/>
 		<result column="now_price" property="discount_price"/>
-		<result column="show_path" property="show_path"/>
-		<result column="thumb_path" property="thumb_path"/>
+		<!-- 封装图片属性 -->
+		<result column="thumb_path_1" property="thumb_path_1"/>
+		<result column="thumb_path_2" property="thumb_path_2"/>
+		<result column="thumb_path_3" property="thumb_path_3"/>
+		<result column="thumb_path_4" property="thumb_path_4"/>
+		<result column="show_path_1" property="show_path_1"/>
+		<result column="show_path_2" property="show_path_2"/>
+		<result column="show_path_3" property="show_path_3"/>
+		<result column="show_path_4" property="show_path_4"/>
 	</resultMap>
 	
+	<!-- 商品图片属性 goods_img i -->
+	<sql id="imgAttr">
+		i.Thumb_path_1 thumb_path_1,
+		i.Thumb_path_2 thumb_path_2,
+		i.Thumb_path_3 thumb_path_3,
+		i.Thumb_path_4 thumb_path_4,
+		i.show_path_1, show_path_1,
+		i.show_path_2, show_path_2,
+		i.show_path_3, show_path_3,
+		i.show_path_4, show_path_4,
+	</sql>
 	
 	<!-- 根据名称like查询商品 -->
 	<select id="selectGoodsByLikeName" parameterType="string" resultMap="baseGoodsMap">
 		SELECT g.id id ,g.name name ,g.price price,g.now_price now_price,
-		i.Thumb_path thumb_path,i.show_path show_path,
+		<include refid="imgAttr"/>
 		d.weight weight ,d.unit unit ,t.strategy_name strategy_name ,t.parameter1 parameter1 FROM goods g
 		LEFT JOIN goods_detail d ON g.id=d.gid
 		LEFT JOIN goods_strategy s ON g.id=s.gid
@@ -37,7 +55,7 @@
 	</select>
 	<!-- 查询品牌列表 -->
 	<select id="selectBrands" resultMap="baseGoodsMap">
-		SELECT id brand_id ,NAME brand_name FROM goods_brand
+		SELECT id brand_id ,NAME brand_name FROM goods_brand ORDER BY admin_sort 
 	</select>
 	<!-- 查询类型列表 -->
 	<select id="selectTypes" resultMap="baseGoodsMap">
@@ -47,7 +65,7 @@
 	<sql id="goodsWhere">
 	g.id, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
 	g.price,g.now_price now_price , g.count counts, g.volume volume ,g.addtime addtime,
-	i.Thumb_path thumb_path,i.show_path show_path,
+	<include refid="imgAttr"/>
 	d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
 	<select id="selectGoodsByWhere"  parameterType="java.util.Map" resultMap="baseGoodsMap">
@@ -91,7 +109,8 @@
 		</if>
 		<!-- 评论数排序 -->
 		<if test="order ==3 ">
-			ORDER BY g.volume DESC
+			<!--  目前还没有评论功能
+			ORDER BY g.volume DESC -->
 		</if>
 		<!-- 新品排序 -->
 		<if test="order ==4 ">

@@ -19,7 +19,6 @@ import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.goods.service.IMerchantService;
 
 public class MerchantControllerTest extends TestCaseBase {
-
 	@Autowired
 	private IMerchantService merchantService;
 	//private RestTemplate restTemplate = new TestRestTemplate();

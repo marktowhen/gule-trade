@@ -72,10 +72,10 @@ public class GoodsController {
 			int typeArr [] = {2};
 
 			map.put("brandArr", "");
-			map.put("typeArr", "");
-			map.put("beginprice", "");
-			map.put("endprice", "");
-			map.put("order", "");
+			map.put("typeArr", typeArr);
+			map.put("beginprice", 50);
+			map.put("endprice", 300);
+			map.put("order", 1);
 			/*在结果中搜索时代result 属性有值,不在结果中搜索时为空--待定*/
 		List<Goods> goodsByWhere = goodsService.listGoodsByWhere(map);
 		if (goodsByWhere != null) {

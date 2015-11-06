@@ -38,7 +38,10 @@ public class GoodsControllerTest extends TestCaseBase{
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
-
+	/**
+	 * 测试商品 名称模糊查询
+	 * @throws Exception
+	 */
 	@Test
 	public void test0() throws Exception {
 		assertNotNull(goodsService);
@@ -48,6 +51,10 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
+	/**
+	 * 查询品牌
+	 * @throws Exception
+	 */
 	@Test
 	public void test1() throws Exception {
 		assertNotNull(goodsService);
@@ -57,6 +64,10 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
+	/**
+	 * 查询商品类别
+	 * @throws Exception
+	 */
 	@Test
 	public void test2() throws Exception {
 		assertNotNull(goodsService);
@@ -67,6 +78,10 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
 	
+	/**
+	 * 根据属性查询商品
+	 * @throws Exception
+	 */
 	@Test
 	public void test3() throws Exception {
 		assertNotNull(goodsService);
