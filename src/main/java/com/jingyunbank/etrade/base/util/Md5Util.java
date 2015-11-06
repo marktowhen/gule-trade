@@ -2,16 +2,8 @@ package com.jingyunbank.etrade.base.util;
 
 import java.security.MessageDigest;
 
-import org.springframework.util.StringUtils;
-
 public class Md5Util {
 	 
-    //main测试类
-    public static void main(String[] args) {
-        String result = getMD5("");
-        System.err.println(result);
-    }
- 
     /**
      * 生成md5
      * @param message
