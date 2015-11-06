@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.user.dao.AddressDao;
@@ -30,12 +30,12 @@ public class AddressService implements IAddressService{
 	}
 
 	@Override
-	public boolean refresh(Address address) throws DataUpdatingException {
+	public boolean refresh(Address address) throws DataRefreshingException {
 		return addressDao.update(getEntityFromBo(address));
 	}
 
 	@Override
-	public boolean delete(Address address) throws DataUpdatingException {
+	public boolean delete(Address address) throws DataRefreshingException {
 		AddressEntity entity = new AddressEntity();
 		entity.setID(address.getID());
 		entity.setValid(false);

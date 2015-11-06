@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.base.util.Md5Util;
@@ -89,7 +89,7 @@ public class UserService implements IUserService{
 	
 
 	@Override
-	public boolean update(Users user) throws DataUpdatingException {
+	public boolean update(Users user) throws DataRefreshingException {
 		return false;
 	}
 

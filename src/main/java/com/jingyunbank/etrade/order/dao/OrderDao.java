@@ -5,12 +5,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.order.entity.OrderEntity;
 
 public interface OrderDao{
 
-	public void insertOrder(OrderEntity order) throws DataSavingException ;
+	public void insertOrder(OrderEntity order) throws Exception ;
 
 	//public boolean update(OrderEntity order) throws DataUpdatingException ;
 
