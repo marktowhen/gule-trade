@@ -24,9 +24,8 @@ import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.base.Page;
 import com.jingyunbank.etrade.base.util.RequestUtil;
 import com.jingyunbank.etrade.user.bean.AddressVO;
-import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/api/address")
 public class AddressController {
 	@Autowired
 	private IAddressService addressService;
@@ -39,7 +38,7 @@ public class AddressController {
 	 * @param addressVO
 	 * @return 2015年11月5日 qxs
 	 */
-	@RequestMapping(value = "/new", method = RequestMethod.PUT)
+	@RequestMapping(value = "/", method = RequestMethod.PUT)
 	public Result add(HttpServletRequest request, HttpSession session, AddressVO addressVO) throws DataSavingException {
 		/*
 		 * if(addressVO==null){ return Result.fail("参数传入错误"); }
@@ -68,7 +67,7 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
-	@RequestMapping(value="/refresh",method=RequestMethod.POST)
+	@RequestMapping(value="/{ID}",method=RequestMethod.POST)
 	public Result refresh(HttpServletRequest request, HttpSession session,AddressVO addressVO ) throws DataRefreshingException{
 		//校验
 		if(addressVO==null){
@@ -114,20 +113,17 @@ public class AddressController {
 	 * @param request
 	 * @param session
 	 * @param addressVO
-	 * @param IDs 多个id逗号分隔
+	 * @param ID 多个id逗号分隔
 	 * @return
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
-	@RequestMapping(value="/delete",method=RequestMethod.DELETE)
-	public Result delete(HttpServletRequest request, HttpSession session,AddressVO addressVO, String IDs) throws DataRefreshingException{
-		UserVO userVO = RequestUtil.getLoginUser(request);
-		if(userVO!=null){
-			addressVO.setUID(userVO.getID());
-			String [] IDArray = {addressVO.getID()};
-			if(!StringUtils.isEmpty(IDs)){
-				IDArray = IDs.split(",");
-			}
+	@RequestMapping(value="/{ID}",method=RequestMethod.DELETE)
+	public Result delete(HttpServletRequest request, HttpSession session,AddressVO addressVO) throws DataRefreshingException{
+		String uid = RequestUtil.getLoginId(request);
+		if(!StringUtils.isEmpty(uid)){
+			addressVO.setUID(uid);
+			String [] IDArray = addressVO.getID().split(",");
 			addressVO.setIDArray(IDArray);
 			if(addressService.delete(getBoFromVo(addressVO))){
 				return Result.ok("成功");
@@ -145,7 +141,7 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@RequestMapping(value="/detail",method=RequestMethod.GET)
+	@RequestMapping(value="/{ID}",method=RequestMethod.GET)
 	public Result queryDetail(HttpServletRequest request, HttpSession session,AddressVO addressVO ){
 		if(addressVO.getID()==null || "".equals(addressVO.getID())){
 			return Result.ok("缺少必要参数");
@@ -158,7 +154,7 @@ public class AddressController {
 	}
 	
 	/**
-	 * 登录用户所有地址
+	 * 登录用户的所有地址
 	 * @param request
 	 * @param session
 	 * @param addressVO
@@ -171,8 +167,8 @@ public class AddressController {
 		if(addressVO==null){
 			addressVO = new AddressVO();
 		}
-		String uid = RequestUtil.getLoginUserid(request);
-		if(StringUtils.isEmpty(uid)){
+		String uid = RequestUtil.getLoginId(request);
+		if(!StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
 		}
 		List<Address> list = addressService.list(uid);
@@ -194,14 +190,14 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@RequestMapping(value="/page",method=RequestMethod.GET)
+	@RequestMapping(value="/list",method=RequestMethod.GET)
 	public Result queryPage(HttpServletRequest request, HttpSession session,AddressVO addressVO,Page page ){
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		if(addressVO==null){
 			addressVO = new AddressVO();
 		}
-		String uid = RequestUtil.getLoginUserid(request);
-		if(StringUtils.isEmpty(uid)){
+		String uid = RequestUtil.getLoginId(request);
+		if(!StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
 		}
 		addressVO.setUID(uid);
@@ -217,6 +213,7 @@ public class AddressController {
 		}
 		return Result.ok(result);
 	}
+	
 	
 	/**
 	 * vo 转 bo

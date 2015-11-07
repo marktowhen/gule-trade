@@ -3,35 +3,29 @@ package com.jingyunbank.etrade.base.util;
 import javax.servlet.http.HttpServletRequest;
 
 import com.jingyunbank.etrade.base.constant.Constant;
-import com.jingyunbank.etrade.user.bean.UserVO;
 /**
- * 测试用 等待正式工具类
- * qxs
+ * 处理请求信息
  */
 public class RequestUtil {
 
 	/**
-	 * 获取已登录的userid
+	 * 获取已登录的uid
 	 * @param request
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	public static String getLoginUserid(HttpServletRequest request){
-		UserVO loginUser = getLoginUser(request);
-		if(loginUser!=null){
-			return loginUser.getID();
-		}
-		return null;
+	public static String getLoginId(HttpServletRequest request){
+		return (String) request.getSession().getAttribute(Constant.LOGIN_ID);
 	}
 	
 	/**
-	 * 获取已登录的userVO
+	 * 获取已登录的username
 	 * @param request
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	public static UserVO getLoginUser(HttpServletRequest request){
-		return (UserVO) request.getSession().getAttribute(Constant.SESSION_USER);
+	public static String getLoginUsername(HttpServletRequest request){
+		return (String) request.getSession().getAttribute(Constant.LOGIN_USERNAME);
 	}
 	
 }

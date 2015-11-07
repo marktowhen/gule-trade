@@ -146,7 +146,9 @@ public class UserController {
 		}
 		//3、成功之后
 		//用户信息放入session
-		session.setAttribute(Constant.SESSION_USER, getUserVoFromBo(usersOptional.get()));
+		Users users = usersOptional.get();
+		session.setAttribute(Constant.LOGIN_ID, users.getID());
+		session.setAttribute(Constant.LOGIN_USERNAME, users.getUsername());
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
@@ -187,9 +189,16 @@ public class UserController {
 	 * @return
 	 * 2015年11月6日 qxs
 	 */
-	@RequestMapping(value="/queryLoginUser",method=RequestMethod.GET)
+	@RequestMapping(value="/loginuser",method=RequestMethod.GET)
 	public Result queryLoginUser(HttpServletRequest request, HttpSession session){
-		return Result.ok(RequestUtil.getLoginUser(request));
+		String id = RequestUtil.getLoginId(request);
+		if(!StringUtils.isEmpty(id)){
+			Optional<Users> users = userService.getByUid(id);
+			if(users.isPresent()){
+				return Result.ok(getUserVoFromBo(users.get()));
+			}
+		}
+		return Result.fail("未登录");
 	}
 	
 	/**
