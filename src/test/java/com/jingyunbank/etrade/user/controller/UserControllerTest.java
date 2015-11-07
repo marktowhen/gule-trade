@@ -42,7 +42,7 @@ public class UserControllerTest extends TestCaseBase {
 	@Test
 	public void test1() throws Exception{
 		getMockMvc().perform(
-				 put("/user/register")
+				 put("/api/user/register")
 				.param("username", "xiaoyux")
 				.param("mobile", "15788877899")
 				.param("email", "555901@qq.com")
