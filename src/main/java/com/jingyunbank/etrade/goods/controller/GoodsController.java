@@ -18,6 +18,7 @@ import com.jingyunbank.core.util.CollectionUtils;
 import com.jingyunbank.etrade.api.goods.bo.Goods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.GoodsVO;
+import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 
 /**
  * Title: 商品controller
@@ -85,5 +86,39 @@ public class GoodsController {
 			System.out.println(v.getGoodname() +"销量:"+v.getVolume()+"新品:"+v.getGoodaddtime()+"价格:"+v.getPrice());
 		}
 		return Result.ok(goods);
+	}
+	/**
+	 * 首页热门推荐产品功能  待确定业务修改
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/listHotGoods", method = RequestMethod.POST)
+	public Result listHotGoods() throws Exception {
+		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
+		try {
+			
+			List<Goods> goodslist = goodsService.listHotGoods();
+			List<Goods> tmplist = new ArrayList<Goods>();
+			if (goodslist != null && goodslist.size() >0) {//将业务对象转换为页面VO对象
+				for(int i = 0;i<goodslist.size();i++){
+					tmplist.add(goodslist.get(i));
+					if(i!=(goodslist.size()-1) && !goodslist.get(i).getMerchant_id().equals(goodslist.get(i+1).getMerchant_id())){
+						HotGoodsVO hotGoodsVO = new HotGoodsVO();
+						hotGoodsVO.init(goodslist);
+						rltlist.add(hotGoodsVO);
+						tmplist = new ArrayList<Goods>();
+					}else{
+						HotGoodsVO hotGoodsVO = new HotGoodsVO();
+						hotGoodsVO.init(goodslist);
+						rltlist.add(hotGoodsVO);
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return Result.ok(rltlist);
 	}
 }

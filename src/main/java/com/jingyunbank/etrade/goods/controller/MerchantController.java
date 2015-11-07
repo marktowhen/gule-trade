@@ -22,7 +22,7 @@ import com.jingyunbank.etrade.goods.service.MerchantService;
  *
  */
 @RestController
-@RequestMapping("/merchant")
+@RequestMapping("/api/merchant")
 public class MerchantController {
 	@Resource
 	private MerchantService merchantService;
@@ -34,7 +34,7 @@ public class MerchantController {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	@RequestMapping("/recommend")
+	@RequestMapping("/recommend/list")
 	public Result recommend(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
 		//转成VO
 		List<Merchant> list = merchantService.listMerchants();

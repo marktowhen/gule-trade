@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.goods.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import com.jingyunbank.etrade.api.goods.bo.Goods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoVO;
+import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
 /**
  * 
@@ -66,5 +66,13 @@ public class GoodsService implements IGoodsService {
 		}
 		return goodswherelist;
 	}
-
+	@Override
+	public List<Goods> listHotGoods() throws Exception{
+		List<Goods> rltlist = new ArrayList<Goods>();
+		List<HotGoodsEntity>  goodslist = goodsDao.selectHotGoods();
+		if(goodslist!=null) {
+			rltlist = CollectionUtils.copyTo(goodslist, Goods.class);
+		}
+		return rltlist;
+	}
 }

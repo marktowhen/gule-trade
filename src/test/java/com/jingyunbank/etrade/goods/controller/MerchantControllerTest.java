@@ -20,7 +20,7 @@ public class MerchantControllerTest extends TestCaseBase {
 	@Test
 	public void test0() throws Exception{
 		getMockMvc().perform(
-				 put("/merchant/recommend")
+				 put("/api/merchant/recommend/list")
 				.sessionAttr("LOGIN_ID", "USER-ID")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
