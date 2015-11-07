@@ -1,4 +1,5 @@
 package com.jingyunbank.etrade.user.controller;
+import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -16,17 +17,20 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
+import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.base.constant.Constant;
 import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.base.util.RequestUtil;
+import com.jingyunbank.etrade.user.bean.UserInfoVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/user")
 public class UserController {
   	@Autowired
 	private IUserService userService;
-
+  	@Autowired 
+  	private IUserService userInfoService;
 	
 	@RequestMapping("/user")
 	public String invest(HttpServletRequest request, HttpSession session){
@@ -54,7 +58,7 @@ public class UserController {
 		if(userVO.getUsername()==null){
 			return Result.fail("用户名不能为空");
 		}
-		if(userVO.getUsername()!=null){
+		/*if(userVO.getUsername()!=null){
 			Pattern pm=Pattern.compile("^(a-zA-Z)(a-zA-Z0-9)$");
 			if(pm.matcher(userVO.getUsername()).matches()==false){
 				return Result.fail("用户名只能是字母开头，并且只能是字母和数字");
@@ -62,7 +66,7 @@ public class UserController {
 			if(userVO.getUsername().length()>20||userVO.getUsername().length()<4){
 				return Result.fail("用户名的长度在5-20之间！");
 			}
-		}
+		}*/
 		if(userService.unameExists(userVO.getUsername())){
 			return Result.fail("该用户名已存在。");
 		}
@@ -91,7 +95,13 @@ public class UserController {
 		if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>21){
 			return Result.fail("交易密码也应该是8-20位的");
 		}
-		userService.save(user);
+		UserInfo userInfo=new UserInfo();
+		userInfo.setRegip(request.getRemoteAddr());
+		
+		
+		if(userService.save(user, userInfo)){
+			return Result.ok("保存成功");
+		}
 		return Result.ok(userVO);
 	}
 	

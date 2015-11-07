@@ -10,19 +10,23 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
+import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.user.dao.UserDao;
+import com.jingyunbank.etrade.user.dao.UserInfoDao;
 import com.jingyunbank.etrade.user.entity.UserEntity;
+import com.jingyunbank.etrade.user.entity.UserInfoEntity;
 
 @Service("userService")
 public class UserService implements IUserService{
 	@Autowired
 	private UserDao userDao;
-	
+	@Autowired
+	private UserInfoDao userInfoDao;
 	@Override
 	public Optional<Users> getByUid(String id) {
 		UserEntity userEntity = new UserEntity();
@@ -68,9 +72,11 @@ public class UserService implements IUserService{
 
 	//保存用户的信息
 	@Override
-	public boolean save(Users user) throws DataSavingException {
+	public boolean save(Users user,UserInfo userInfo) throws DataSavingException {
 		UserEntity userEntity=new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
+		
+		/*info.getRegip();*/
 			int result=0;
 			boolean flag=false;
 			//密码加密
@@ -78,11 +84,21 @@ public class UserService implements IUserService{
 			userEntity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
 			userEntity.setID(KeyGen.uuid());
 			result=userDao.insert(userEntity);
-			if(result>0){
+			
+			UserInfoEntity userInfoEntity=new UserInfoEntity();
+			userInfoEntity.setUid(userEntity.getID());
+			userInfoEntity.setRegip(userInfo.getRegip());
+			Date date=new Date();
+			userInfoEntity.setRegtime(date);
+			
+			if(result>0 && userInfoDao.insert(userInfoEntity)){
+				
 				flag=true;
+				
 			}else{
 				flag=false;
 			}
+			
 			return flag;
 			
 	}
@@ -163,5 +179,11 @@ public class UserService implements IUserService{
 		}
 		return Optional.empty();
 	}
+
+	/* (non-Javadoc)
+	 * @see com.jingyunbank.etrade.api.user.IUserService#queryMaxId()
+	 */
+
+	
 
 }
