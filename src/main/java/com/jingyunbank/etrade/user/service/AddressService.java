@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -23,24 +24,42 @@ public class AddressService implements IAddressService{
 
 	@Override
 	public boolean save(Address address) throws DataSavingException {
+		boolean result = false;
 		AddressEntity addressEntity=new AddressEntity();
 		BeanUtils.copyProperties(address, addressEntity);
 		addressEntity.setID(KeyGen.uuid());
-		return addressDao.insert(addressEntity);
+		try {
+			result = addressDao.insert(addressEntity);
+		} catch (DataSavingException e) {
+			throw new DataSavingException();
+		}
+		return result;
 	}
 
 	@Override
 	public boolean refresh(Address address) throws DataRefreshingException {
-		return addressDao.update(getEntityFromBo(address));
+		boolean result = false;
+		try {
+			result = addressDao.update(getEntityFromBo(address));
+		} catch (DataRefreshingException e) {
+			throw new DataRefreshingException();
+		}
+		return result;
 	}
 
 	@Override
 	public boolean delete(Address address) throws DataRefreshingException {
+		boolean result = false;
 		AddressEntity entity = new AddressEntity();
 		entity.setIDArray(address.getIDArray());
 		entity.setValid(false);
 		entity.setUID(address.getUID());
-		return addressDao.updateStatus(entity);
+		try {
+			result = addressDao.updateStatus(entity);
+		} catch (DataRefreshingException e) {
+			throw new DataRefreshingException();
+		}
+		return result;
 	}
 
 	@Override

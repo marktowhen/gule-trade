@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -33,7 +34,7 @@ public class AddressControllerTest extends TestCaseBase {
 	@Test
 	public void test0() throws Exception{
 		getMockMvc().perform(
-				 put("/address/add")
+				 put("/address/new")
 				.param("UID", "1")
 				.param("name", "q")
 				.param("country", "1")
@@ -100,7 +101,7 @@ public class AddressControllerTest extends TestCaseBase {
 			UserVO uservo = new UserVO();
 			BeanUtils.copyProperties(uOptional.get(), uservo);
 			getMockMvc().perform(
-					post("/address/delete")
+					delete("/address/delete")
 					.param("IDs", "b,t")
 					.sessionAttr(Constant.SESSION_USER, uservo)
 					.contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +130,7 @@ public class AddressControllerTest extends TestCaseBase {
 			UserVO uservo = new UserVO();
 			BeanUtils.copyProperties(uOptional.get(), uservo);
 			getMockMvc().perform(
-					get("/address/queryPage")
+					get("/address/page")
 					.param("offset", "2")
 					.param("size", "2")
 					.sessionAttr(Constant.SESSION_USER, uservo)
