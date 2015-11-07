@@ -45,7 +45,7 @@ public class OrderController {
 				}).collect(Collectors.toList()));
 	}
 	
-	@RequestMapping(value="/orders/list/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/list/{uid}", method=RequestMethod.GET)
 	@RequireLogin
 	public Result listUID(@PathVariable String uid, HttpSession session){
 		return Result.ok(orderService.list((String)session.getAttribute("LOGIN_ID"))
