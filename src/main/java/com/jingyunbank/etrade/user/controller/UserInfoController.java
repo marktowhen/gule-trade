@@ -5,15 +5,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.druid.util.StringUtils;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
 import com.jingyunbank.etrade.user.service.UserInfoService;
@@ -43,7 +41,7 @@ public class UserInfoController {
 		
 	}
 	@RequestMapping(value="/update",method=RequestMethod.POST)
-	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws DataUpdatingException{
+	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws DataRefreshingException{
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
 		if(userInfoVO.getUid().isEmpty()){

@@ -7,8 +7,8 @@
  */
 package com.jingyunbank.etrade.user.dao;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.user.entity.UserInfoEntity;
 
 /**
@@ -30,5 +30,5 @@ public interface UserInfoDao {
 	 * @return
 	 * @throws DataUpdatingException
 	 */
-	public int update(UserInfoEntity userInfoEntity) throws DataUpdatingException;
+	public int update(UserInfoEntity userInfoEntity) throws DataRefreshingException;
 }

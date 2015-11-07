@@ -6,13 +6,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.IUserInfoService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
-import com.jingyunbank.etrade.user.dao.UserDao;
 import com.jingyunbank.etrade.user.dao.UserInfoDao;
-import com.jingyunbank.etrade.user.entity.UserEntity;
 import com.jingyunbank.etrade.user.entity.UserInfoEntity;
 
 /**
@@ -44,7 +42,7 @@ public class UserInfoService implements IUserInfoService{
 
 	
 	@Override
-	public boolean update(UserInfo uinfo) throws DataUpdatingException {
+	public boolean update(UserInfo uinfo) throws DataRefreshingException{
 		boolean flag=false;
 		int result=0;
 		UserInfoEntity userInfoEntity=new UserInfoEntity();

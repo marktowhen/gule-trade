@@ -1,6 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -11,15 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Optional;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.user.IUserService;
@@ -28,25 +24,17 @@ import com.jingyunbank.etrade.base.constant.Constant;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 public class AddressControllerTest extends TestCaseBase {
+	
 	@Autowired
 	private IUserService userService;
-	//private RestTemplate restTemplate = new TestRestTemplate();
-	@Autowired
-	private WebApplicationContext wac;
-	private MockMvc mockMvc;
-	
-	@Before
-	public void init(){
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
 	/**
 	 * 测试新增
 	 * @throws Exception
 	 */
 	@Test
 	public void test0() throws Exception{
-		mockMvc.perform(
-				 put("/address/add")
+		getMockMvc().perform(
+				 put("/address/new")
 				.param("UID", "1")
 				.param("name", "q")
 				.param("country", "1")
@@ -77,9 +65,7 @@ public class AddressControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testUpdate() throws Exception{
-		assertNotNull(userService);
-		assertNotNull(mockMvc);
-		mockMvc.perform(
+		getMockMvc().perform(
 				 post("/address/refresh")
 				 .param("ID", "67b_hKjITVyO93Kb9lTyXw")
 				.param("UID", "1")
@@ -110,14 +96,12 @@ public class AddressControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testDelete() throws Exception{
-		assertNotNull(userService);
-		assertNotNull(mockMvc);
 		Optional<Users> uOptional = userService.getByUid("1");
 		if(uOptional.isPresent()){
 			UserVO uservo = new UserVO();
 			BeanUtils.copyProperties(uOptional.get(), uservo);
-			mockMvc.perform(
-					post("/address/delete")
+			getMockMvc().perform(
+					delete("/address/delete")
 					.param("IDs", "b,t")
 					.sessionAttr(Constant.SESSION_USER, uservo)
 					.contentType(MediaType.APPLICATION_JSON)
@@ -141,14 +125,12 @@ public class AddressControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testListPage() throws Exception{
-		assertNotNull(userService);
-		assertNotNull(mockMvc);
 		Optional<Users> uOptional = userService.getByUid("1");
 		if(uOptional.isPresent()){
 			UserVO uservo = new UserVO();
 			BeanUtils.copyProperties(uOptional.get(), uservo);
-			mockMvc.perform(
-					get("/address/queryPage")
+			getMockMvc().perform(
+					get("/address/page")
 					.param("offset", "2")
 					.param("size", "2")
 					.sessionAttr(Constant.SESSION_USER, uservo)

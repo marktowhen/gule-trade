@@ -34,8 +34,4 @@ public class RequestUtil {
 		return (UserVO) request.getSession().getAttribute(Constant.SESSION_USER);
 	}
 	
-	
-	public static void main(String[] args) {
-		
-	}
 }

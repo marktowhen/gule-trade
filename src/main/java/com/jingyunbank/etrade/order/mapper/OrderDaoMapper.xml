@@ -31,11 +31,14 @@
 	<select id="select" resultMap="OrderEntityResultMap">
 		select <include refid="orders_columns"/> from orders
 	</select>
-	<insert id="insertOrder" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
+	<insert id="insert" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders
 			(<include refid="orders_columns"/>)
 		values
 			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{addtime}, #{paytypeID},
 			#{paytypeName}, #{statusID}, #{statusName}, #{price}, #{postage}, #{addressID})
 	</insert>
+	<delete id="delete" parameterType="String">
+		delete from orders where id = #{id}
+	</delete>
 </mapper>

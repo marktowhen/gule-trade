@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.OrderDeliveringException;
 import com.jingyunbank.etrade.api.exception.OrderGenerateException;
 import com.jingyunbank.etrade.api.exception.OrderPaidException;
@@ -73,8 +74,8 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
-	public void remove(String orderno) {
-
+	public void remove(String id) throws DataRemovingException {
+		orderService.remove(id);
 	}
 
 	@Override

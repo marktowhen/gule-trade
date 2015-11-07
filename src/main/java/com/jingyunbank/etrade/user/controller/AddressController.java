@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataUpdatingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.base.Page;
@@ -39,7 +39,7 @@ public class AddressController {
 	 * @param addressVO
 	 * @return 2015年11月5日 qxs
 	 */
-	@RequestMapping(value = "/add", method = RequestMethod.PUT)
+	@RequestMapping(value = "/new", method = RequestMethod.PUT)
 	public Result add(HttpServletRequest request, HttpSession session, AddressVO addressVO) throws DataSavingException {
 		/*
 		 * if(addressVO==null){ return Result.fail("参数传入错误"); }
@@ -66,9 +66,10 @@ public class AddressController {
 	 * @param addressVO
 	 * @return
 	 * 2015年11月5日 qxs
+	 * @throws DataRefreshingException 
 	 */
 	@RequestMapping(value="/refresh",method=RequestMethod.POST)
-	public Result refresh(HttpServletRequest request, HttpSession session,AddressVO addressVO ){
+	public Result refresh(HttpServletRequest request, HttpSession session,AddressVO addressVO ) throws DataRefreshingException{
 		//校验
 		if(addressVO==null){
 			return Result.fail("参数为空");
@@ -101,13 +102,8 @@ public class AddressController {
 		Address address = getBoFromVo(addressVO);
 
 		//修改
-		try {
-			if(addressService.refresh(address)){
-				return Result.ok("成功");
-			}
-		} catch (DataUpdatingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(addressService.refresh(address)){
+			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
 	}
@@ -121,9 +117,10 @@ public class AddressController {
 	 * @param IDs 多个id逗号分隔
 	 * @return
 	 * 2015年11月5日 qxs
+	 * @throws DataRefreshingException 
 	 */
-	@RequestMapping(value="/delete",method=RequestMethod.POST)
-	public Result delete(HttpServletRequest request, HttpSession session,AddressVO addressVO, String IDs){
+	@RequestMapping(value="/delete",method=RequestMethod.DELETE)
+	public Result delete(HttpServletRequest request, HttpSession session,AddressVO addressVO, String IDs) throws DataRefreshingException{
 		UserVO userVO = RequestUtil.getLoginUser(request);
 		if(userVO!=null){
 			addressVO.setUID(userVO.getID());
@@ -132,12 +129,8 @@ public class AddressController {
 				IDArray = IDs.split(",");
 			}
 			addressVO.setIDArray(IDArray);
-			try {
-				if(addressService.delete(getBoFromVo(addressVO))){
-					return Result.ok("成功");
-				}
-			} catch (DataUpdatingException e) {
-				e.printStackTrace();
+			if(addressService.delete(getBoFromVo(addressVO))){
+				return Result.ok("成功");
 			}
 			return Result.fail("服务器繁忙,请稍后再试");
 		}
@@ -152,7 +145,7 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@RequestMapping(value="/queryDetail",method=RequestMethod.GET)
+	@RequestMapping(value="/detail",method=RequestMethod.GET)
 	public Result queryDetail(HttpServletRequest request, HttpSession session,AddressVO addressVO ){
 		if(addressVO.getID()==null || "".equals(addressVO.getID())){
 			return Result.ok("缺少必要参数");
@@ -172,7 +165,7 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@RequestMapping(value="/queryAll",method=RequestMethod.GET)
+	@RequestMapping(value="/all",method=RequestMethod.GET)
 	public Result queryAll(HttpServletRequest request, HttpSession session,AddressVO addressVO ){
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		if(addressVO==null){
@@ -201,7 +194,7 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@RequestMapping(value="/queryPage",method=RequestMethod.GET)
+	@RequestMapping(value="/page",method=RequestMethod.GET)
 	public Result queryPage(HttpServletRequest request, HttpSession session,AddressVO addressVO,Page page ){
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		if(addressVO==null){
