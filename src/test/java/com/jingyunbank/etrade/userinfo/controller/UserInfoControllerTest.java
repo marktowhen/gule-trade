@@ -2,21 +2,18 @@ package com.jingyunbank.etrade.userinfo.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.text.SimpleDateFormat;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.jingyunbank.etrade.TestCaseBase;
 
@@ -27,21 +24,21 @@ import com.jingyunbank.etrade.TestCaseBase;
  */
 
 public class UserInfoControllerTest extends TestCaseBase{
-	@Autowired
+	/*@Autowired
 	private WebApplicationContext wac;
-	private MockMvc mockMvc;
+	private MockMvc mockMvc;*/
 	
-	@Before
+	/*@Before
 	public void init(){
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
-	
+	*/
 	@Test
 	 public void Test0() throws Exception{
 		/*SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy.mm.dd");*/
-		 mockMvc.perform(
-				 put("/userInfo/add")
-				.param("uid", "34")
+		getMockMvc().perform(
+				 put("/api/userInfo/")
+				.param("uid", "394")
 				.param("country", "1")
 				.param("province", "1")
 				.param("city", "1")
@@ -54,7 +51,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			.andExpect(jsonPath("$.code").value("500"))
+			.andExpect(jsonPath("$.code").value("200"))
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	 }
@@ -62,12 +59,12 @@ public class UserInfoControllerTest extends TestCaseBase{
 	
 		@Test
 		public void Test1() throws Exception{
-			mockMvc.perform(
-				 post("/userInfo/update")
-				.param("uid", "1")
-				.param("country", "2")
-				.param("province", "2")
-				.param("city", "2")
+			getMockMvc().perform(
+				 post("/api/userInfo/update")
+				.param("uid", "IoBST6elTCarSyzl6Z277g")
+				.param("country", "3")
+				.param("province", "3")
+				.param("city", "3")
 				.param("address", "山东济南")
 				.param("education", "2")
 				.param("job", "2")
@@ -81,5 +78,22 @@ public class UserInfoControllerTest extends TestCaseBase{
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	}
+		
+		
+		
+		
+		@Test
+		public void Test2() throws Exception{
+			getMockMvc().perform(
+					 get("/api/userInfo/selectById/IoBST6elTCarSyzl6Z277g")
+					 
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200"))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
 	
 }

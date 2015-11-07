@@ -31,10 +31,14 @@ public class UserInfoService implements IUserInfoService{
 		UserInfoEntity userInfoEntity=new UserInfoEntity();
 		BeanUtils.copyProperties(uinfo, userInfoEntity);
 		
-		if(userInfoDao.insert(userInfoEntity)){
-			flag=true;
-		}else{
-			flag=false;
+		try {
+			if(userInfoDao.insert(userInfoEntity)){
+				flag=true;
+			}else{
+				flag=false;
+			}
+		} catch (Exception e) {
+			throw new DataSavingException();
 		}
 		return flag;
 		
@@ -44,14 +48,18 @@ public class UserInfoService implements IUserInfoService{
 	@Override
 	public boolean update(UserInfo uinfo) throws DataRefreshingException{
 		boolean flag=false;
-		int result=0;
+		
 		UserInfoEntity userInfoEntity=new UserInfoEntity();
 		BeanUtils.copyProperties(uinfo, userInfoEntity);
-		result=userInfoDao.update(userInfoEntity);
-		if(result>0){
-			flag=true;
-		}else{
-			flag=false;
+		
+		try {
+			if(userInfoDao.update(userInfoEntity)){
+				flag=true;
+			}else{
+				flag=false;
+			}
+		} catch (Exception e) {
+			throw new DataRefreshingException();
 		}
 		
 		return flag;
@@ -61,7 +69,11 @@ public class UserInfoService implements IUserInfoService{
 	@Override
 	public Optional<UserInfo> getByUid(String id) {
 		// TODO Auto-generated method stub
-		return null;
+		UserInfoEntity userInfoEntity=new UserInfoEntity();
+		userInfoEntity=userInfoDao.selectByUid(id);
+		UserInfo userInfo=new UserInfo();
+		BeanUtils.copyProperties(userInfoEntity, userInfo);
+		return Optional.of(userInfo);
 	}
 
 	

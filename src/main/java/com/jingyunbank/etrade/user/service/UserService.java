@@ -83,22 +83,27 @@ public class UserService implements IUserService{
 			userEntity.setPassword(Md5Util.getMD5(user.getPassword()));
 			userEntity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
 			userEntity.setID(KeyGen.uuid());
-			result=userDao.insert(userEntity);
+			try {
+				result=userDao.insert(userEntity);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				throw new DataSavingException();
+			}
 			
 			UserInfoEntity userInfoEntity=new UserInfoEntity();
 			userInfoEntity.setUid(userEntity.getID());
 			userInfoEntity.setRegip(userInfo.getRegip());
 			Date date=new Date();
 			userInfoEntity.setRegtime(date);
-			
-			if(result>0 && userInfoDao.insert(userInfoEntity)){
-				
+			try {
+				if(result>0 && userInfoDao.insert(userInfoEntity)){
 				flag=true;
-				
-			}else{
+				}else{
 				flag=false;
-			}
-			
+				}
+			} catch (Exception e) {
+				throw new DataSavingException();
+				}
 			return flag;
 			
 	}

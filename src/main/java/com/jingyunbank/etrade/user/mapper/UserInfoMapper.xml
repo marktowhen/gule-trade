@@ -31,14 +31,14 @@
 			#{avatar},#{regtime},#{regip},#{regdevice})
 		</insert>
 		<!-- 通过uid查询个人的信息（也可通过uid查询用户注册时信息） -->
-	 	<select id="getByUid" resultType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
+	 	<select id="selectByUid" resultType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 			select 
 	 			<include refid="column_list"/>
 	 			from users_info where uid=#{uid}
 	 	</select>
 	 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 		update users_info u set
-	 		u.birthday=#{birhday},
+	 		u.birthday=#{birthday},
 	 		u.marriage=#{marriage},
 	 		u.gender=#{gender},
 	 		u.country=#{country},

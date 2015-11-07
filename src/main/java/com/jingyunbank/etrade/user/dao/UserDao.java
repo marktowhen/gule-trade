@@ -9,9 +9,9 @@ public interface UserDao {
 	 * 注册页面的保存
 	 * @param userEntity
 	 * @return
-	 * @throws DataSavingException
+	 * @throws Exception
 	 */
-	public int insert(UserEntity userEntity) throws DataSavingException ;
+	public int insert(UserEntity userEntity) throws Exception;
 	/**
 	 * 验证手机号是否存在
 	 * @param moblie

@@ -23,12 +23,19 @@ public interface UserInfoDao {
 	 * @return
 	 * @throws DataSavingException
 	 */
-	public boolean insert(UserInfoEntity userInfoEntity) throws DataSavingException;
+	public boolean insert(UserInfoEntity userInfoEntity) throws Exception;
+	/**
+	 * 通过uid查询个人资料信息
+	 * @param uid
+	 * @return
+	 */
+	public UserInfoEntity selectByUid(String uid);
 	/**
 	 * 修改个人信息
 	 * @param userInfoEntity
 	 * @return
 	 * @throws DataUpdatingException
 	 */
-	public int update(UserInfoEntity userInfoEntity) throws DataRefreshingException;
+	public boolean update(UserInfoEntity userInfoEntity) throws Exception;
+	
 }

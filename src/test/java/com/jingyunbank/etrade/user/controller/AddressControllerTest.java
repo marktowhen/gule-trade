@@ -70,7 +70,7 @@ public class AddressControllerTest extends TestCaseBase {
 				 .param("ID", "67b_hKjITVyO93Kb9lTyXw")
 				.param("UID", "1")
 				.param("name", "q23")
-				.param("country", "1")
+				.param("country", "2")
 				.param("province", "3")
 				.param("city", "3")
 				.param("address", "山东济南3")
