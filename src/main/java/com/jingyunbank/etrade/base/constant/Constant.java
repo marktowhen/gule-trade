@@ -3,8 +3,12 @@ package com.jingyunbank.etrade.base.constant;
 public class Constant {
 	
 	/**
-	 * 将Users对象(bo)放入session中的键名
+	 * 登录用户id
 	 */
-	public static final String SESSION_USER = "SESSION_USER";
+	public static final String LOGIN_ID = "LOGIN_ID";
+	/**
+	 * 登录用户名
+	 */
+	public static final String LOGIN_USERNAME = "LOGIN_USERNAME";
 	
 }

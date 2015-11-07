@@ -34,7 +34,7 @@ public class AddressControllerTest extends TestCaseBase {
 	@Test
 	public void test0() throws Exception{
 		getMockMvc().perform(
-				 put("/address/new")
+				 put("/api/address/")
 				.param("UID", "1")
 				.param("name", "q")
 				.param("country", "1")
@@ -66,8 +66,8 @@ public class AddressControllerTest extends TestCaseBase {
 	@Test
 	public void testUpdate() throws Exception{
 		getMockMvc().perform(
-				 post("/address/refresh")
-				 .param("ID", "67b_hKjITVyO93Kb9lTyXw")
+				 post("/api/address/67b_hKjITVyO93Kb9lTyXw")
+				 //.param("ID", "67b_hKjITVyO93Kb9lTyXw")
 				.param("UID", "1")
 				.param("name", "q23")
 				.param("country", "2")
@@ -96,25 +96,17 @@ public class AddressControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testDelete() throws Exception{
-		Optional<Users> uOptional = userService.getByUid("1");
-		if(uOptional.isPresent()){
-			UserVO uservo = new UserVO();
-			BeanUtils.copyProperties(uOptional.get(), uservo);
-			getMockMvc().perform(
-					delete("/address/delete")
-					.param("IDs", "b,t")
-					.sessionAttr(Constant.SESSION_USER, uservo)
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON))
-					.andExpect(status().isOk())
-					.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-					.andDo(MockMvcResultHandlers.print())  
-					.andReturn();
+		getMockMvc().perform(
+				delete("/api/address/b,t")
+				//.param("ID", "b,t")
+				.sessionAttr(Constant.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
 			
-		}else{
-			
-			System.err.println("用户不存在");
-		}
 	}
 	
 	/**
@@ -125,26 +117,18 @@ public class AddressControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testListPage() throws Exception{
-		Optional<Users> uOptional = userService.getByUid("1");
-		if(uOptional.isPresent()){
-			UserVO uservo = new UserVO();
-			BeanUtils.copyProperties(uOptional.get(), uservo);
-			getMockMvc().perform(
-					get("/address/page")
-					.param("offset", "2")
-					.param("size", "2")
-					.sessionAttr(Constant.SESSION_USER, uservo)
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON))
-					.andExpect(status().isOk())
-					.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-					.andDo(MockMvcResultHandlers.print())  
-					.andReturn();
+		getMockMvc().perform(
+				get("/api/address/list")
+				.param("offset", "1")
+				.param("size", "2")
+				.sessionAttr(Constant.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
 			
-		}else{
-			
-			System.err.println("用户不存在");
-		}
 	}
 	
 }
