@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.user.dao.UserInfoDao">
+		<resultMap type="com.jingyunbank.etrade.user.entity.UserInfoEntity" id="resultMap">
+			<result column="uid" property="uid"/>
+			<result column="birthday" property="birthday"/>
+			<result column="marriage" property="marriage"/>
+			<result column="gender" property="gender"/>
+			<result column="country" property="country"/>
+			<result column="province" property="province"/>
+			<result column="city" property="city"/>
+			<result column="address" property="address"/>
+			<result column="education" property="education"/>
+			<result column="job" property="job"/>
+			<result column="income" property="income"/>
+			<result column="avatar" property="avatar"/>
+			<result column="regtime" property="regtime"/>
+			<result column="regip" property="regip"/>
+			<result column="regdevice" property="regdevice"/>
+		</resultMap>
+		<sql id="column_list">
+		uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice
+	</sql>
+		<!--添加用户资料信息 -->
+		<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
+			insert into users_info(uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice)
+			values
+			(#{uid},#{birthday},#{marriage},#{gender},#{country},#{province},#{city},#{address},#{education},#{job},#{income},
+			#{avatar},#{regtime},#{regip},#{regdevice})
+		</insert>
+		<!-- 通过uid查询个人的信息（也可通过uid查询用户注册时信息） -->
+	 	<select id="getByUid" resultType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
+	 			select 
+	 			<include refid="column_list"/>
+	 			from users_info where uid=#{uid}
+	 	</select>
+	 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
+	 		update users_info u set
+	 		u.birthday=#{birhday},
+	 		u.marriage=#{marriage},
+	 		u.gender=#{gender},
+	 		u.country=#{country},
+	 		u.province=#{province},
+	 		u.city=#{city},
+	 		u.address=#{address},
+	 		u.education=#{education},
+	 		u.job=#{job},
+	 		u.income=#{income},
+	 		u.avatar=#{avatar}
+	 		where u.uid=#{uid}
+	 		
+	 	</update>
+	</mapper>

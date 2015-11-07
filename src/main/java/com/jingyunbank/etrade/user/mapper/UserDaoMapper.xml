@@ -81,4 +81,13 @@
 				or t.email = #{key}
 	
 	</select> 
+	<select id="selectUserByid" resultType="com.jingyunbank.etrade.user.entity.UserEntity">
+			select  
+			  <include refid="column_list" />
+			from users where id=#{ID}
+	
+	</select>
+	<select id="queryMaxId">
+		select max(id) from users
+	</select>
 </mapper>

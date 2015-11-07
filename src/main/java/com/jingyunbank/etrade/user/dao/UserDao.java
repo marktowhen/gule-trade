@@ -1,10 +1,3 @@
-/**
- * @Title:UserDao.java
-@Description:TODO
-@author:Administrator
-@date:上午9:35:08
-
- */
 package com.jingyunbank.etrade.user.dao;
 
 import java.util.Optional;
@@ -52,4 +45,15 @@ public interface UserDao {
 	 * @return
 	 */
 	public UserEntity selectUserByLoginKey(String key);
+	/**
+	 *	通过id查询用户（user）的信息
+	 * @param id
+	 * @return
+	 */
+	public UserEntity selectUserByid(String id);
+	/**
+	 * 即使得到当前的id
+	 * @return
+	 */
+	public String queryMaxId();
 }
