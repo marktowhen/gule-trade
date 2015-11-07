@@ -52,7 +52,7 @@ public class UserController {
 	 * @throws DataSavingException
 	 */
 	@RequestMapping(value="/register",method=RequestMethod.PUT)
-	public Result register(HttpServletRequest request,HttpSession session,UserVO userVO) throws DataSavingException{
+	public Result register(HttpServletRequest request,HttpSession session,UserVO userVO) throws Exception{
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
 		if(userVO.getUsername()==null){
@@ -97,7 +97,6 @@ public class UserController {
 		}
 		UserInfo userInfo=new UserInfo();
 		userInfo.setRegip(request.getRemoteAddr());
-		
 		
 		if(userService.save(user, userInfo)){
 			return Result.ok("保存成功");
