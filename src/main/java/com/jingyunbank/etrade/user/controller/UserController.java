@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.user.controller;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
@@ -23,14 +25,18 @@ import com.jingyunbank.etrade.base.constant.Constant;
 import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.base.util.RequestUtil;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
+import com.jingyunbank.etrade.infrastructure.SmsMessager;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
   	@Autowired
 	private IUserService userService;
   	@Autowired 
   	private IUserService userInfoService;
+  	
+  	@Autowired
+	private SmsMessager smsMessager;
 	
 	@RequestMapping("/user")
 	public String invest(HttpServletRequest request, HttpSession session){
@@ -211,6 +217,78 @@ public class UserController {
 	}
 	
 	/**
+	 * 发送手机验证码
+	 * @param request
+	 * @param session
+	 * @param mobile 
+	 * @return
+	 * 2015年11月6日 qxs
+	 * @throws Exception 
+	 */
+	@RequestMapping(value="/message",method=RequestMethod.GET)
+	public Result getMessage(HttpServletRequest request, HttpSession session,String mobile) throws Exception{
+		if(StringUtils.isEmpty(mobile)){
+			return Result.fail("请输入手机号");
+		}
+		Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+		if(!p.matcher(mobile).matches()){
+			return Result.fail("手机号格式错误");
+		}
+		String id = RequestUtil.getLoginId(request);
+		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
+			return Result.fail("您已经绑定过手机了");
+		}
+		String code  = getCheckCode();
+		System.out.println("验证码是-------"+code);
+		if(!StringUtils.isEmpty(id)){
+			//如何设置验证码的有效期限--待解决
+			smsMessager.sendMessageToMobile(mobile, "您的验证码是:", code);
+			session.setAttribute(Constant.SMS_MESSAGE, code);
+			session.setAttribute("UNCHECK_MOBILE", mobile);
+			return Result.ok("成功");
+		}
+		return Result.fail("未登录");
+	}
+	
+	/**
+	 * 验证手机号
+	 * @param request
+	 * @param session
+	 * @param mobile 
+	 * @return
+	 * 2015年11月6日 qxs
+	 * @throws DataRefreshingException 
+	 * @throws Exception 
+	 */
+	@RequestMapping(value="/message",method=RequestMethod.POST)
+	public Result checkMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws DataRefreshingException {
+		String uid = RequestUtil.getLoginId(request);
+		String sessionCode  = (String)session.getAttribute(Constant.SMS_MESSAGE);
+		if(StringUtils.isEmpty(sessionCode)){
+			return Result.fail("未发送短信或短信已失效");
+		}
+		if(!StringUtils.isEmpty(uid)){
+			//验证发送短信的手机号与最后提交的手机号是否一致
+			if(session.getAttribute("UNCHECK_MOBILE").equals(mobile)){
+				//判断是否成功
+				if(sessionCode.equals(code)){
+					//成功后修改用户手机号
+					Users users = new Users();
+					users.setID(uid);
+					users.setMobile(mobile);
+					userService.update(users);
+					return Result.ok("验证成功");
+				}else{
+					return Result.fail("验证码错误");
+				}
+			}else{
+				return Result.fail("请确认手机号是否正确");
+			}
+		}
+		return Result.fail("未登录");
+	}
+	
+	/**
 	 * user bo转vo
 	 * @param users
 	 * @return
@@ -234,5 +312,15 @@ public class UserController {
 	 */
 	private boolean checkCaptcha(HttpSession session, String captcha) {
 		return true;
+	}
+	
+	/**
+	 * 获取4位随机数
+	 * @return
+	 * 2015年11月7日 qxs
+	 */
+	private String getCheckCode(){
+		
+		return String.valueOf(new Random().nextInt()%10000);
 	}
 }

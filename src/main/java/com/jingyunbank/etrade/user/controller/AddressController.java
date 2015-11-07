@@ -23,12 +23,16 @@ import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.base.Page;
 import com.jingyunbank.etrade.base.util.RequestUtil;
+import com.jingyunbank.etrade.infrastructure.SmsMessager;
 import com.jingyunbank.etrade.user.bean.AddressVO;
 @RestController
 @RequestMapping("/api/address")
 public class AddressController {
 	@Autowired
 	private IAddressService addressService;
+	
+	@Autowired
+	private SmsMessager smsMessager;
 
 	/**
 	 * 新增
@@ -244,4 +248,5 @@ public class AddressController {
 		}
 		return vo;
 	}
+	
 }

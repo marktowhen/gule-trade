@@ -43,7 +43,7 @@ public class AddressControllerTest extends TestCaseBase {
 				.param("address", "山东济南")
 				.param("zipcode", "25600")
 				.param("receiver", "aaa")
-				.param("mobile", "1876616980")
+				.param("mobile", "18766169801")
 				.param("telephone", "84936795")
 				.param("defaulted", "true")
 				.param("valid", "true")
@@ -51,7 +51,7 @@ public class AddressControllerTest extends TestCaseBase {
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			.andExpect(jsonPath("$.code").value("500"))
+			.andExpect(jsonPath("$.code").value("200"))
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
@@ -70,7 +70,7 @@ public class AddressControllerTest extends TestCaseBase {
 				 //.param("ID", "67b_hKjITVyO93Kb9lTyXw")
 				.param("UID", "1")
 				.param("name", "q23")
-				.param("country", "2")
+				.param("country", "1")
 				.param("province", "3")
 				.param("city", "3")
 				.param("address", "山东济南3")

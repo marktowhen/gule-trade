@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.base.constant.Constant;
 
 public class UserControllerTest extends TestCaseBase {
 	/**
@@ -59,5 +61,46 @@ public class UserControllerTest extends TestCaseBase {
 		
 	}
 	
+	/**
+	 * 测试发短信
+	 * @throws Exception
+	 */
+	@Test
+	public void testMessage() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/message")
+				.param("mobile", "15853166853")
+				.sessionAttr(Constant.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	
+	/**
+	 * 测试验证短信
+	 * @throws Exception
+	 */
+	@Test
+	public void testCheckMobile() throws Exception{
+		getMockMvc().perform(
+				post("/api/user/message")
+				.param("mobile", "15853166853")
+				.param("code", "894")
+				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr("UNCHECK_MOBILE", "15853166853")
+				.sessionAttr(Constant.SMS_MESSAGE, "894")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
 	
 }

@@ -134,8 +134,9 @@
 				a.mobile=#{mobile},
 			</if>
 			<if test="telephone!=null and telephone!=''">
-				a.telephone=#{telephone}
+				a.telephone=#{telephone},
 			</if>
+			a.id=#{ID}
 		where a.id=#{ID}	
 	</update>
 	

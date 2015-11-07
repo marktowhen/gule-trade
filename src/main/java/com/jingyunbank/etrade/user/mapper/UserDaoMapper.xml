@@ -90,4 +90,32 @@
 	<select id="queryMaxId">
 		select max(id) from users
 	</select>
+	
+	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserEntity">
+		update users t 
+		set 
+		<if test="username!=null and username!=''">
+				 t.username=#{username},
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				 t.mobile =#{mobile},
+			</if>
+			<if test="email!=null and email!=''">
+				 t.email = #{email},
+			</if>
+			<if test="nickname!=null and nickname!=''">
+				 t.nickname=#{nickname},
+			</if>
+			<if test="password!=null and password!=''">
+				 t.`password`=#{password},
+			</if>
+			<if test="tradepwd!=null and tradepwd!=''">
+				 t.tradepwd=#{tradepwd},
+			</if>
+			<if test="locked!=null and locked!=''">
+				 t.locked=#{locked},
+			</if>
+			t.id=#{ID}
+		where t.id=#{ID}
+	</update>
 </mapper>

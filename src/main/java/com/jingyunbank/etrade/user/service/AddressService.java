@@ -30,7 +30,7 @@ public class AddressService implements IAddressService{
 		addressEntity.setID(KeyGen.uuid());
 		try {
 			result = addressDao.insert(addressEntity);
-		} catch (DataSavingException e) {
+		} catch (Exception e) {
 			throw new DataSavingException();
 		}
 		return result;
@@ -41,7 +41,7 @@ public class AddressService implements IAddressService{
 		boolean result = false;
 		try {
 			result = addressDao.update(getEntityFromBo(address));
-		} catch (DataRefreshingException e) {
+		} catch (Exception e) {
 			throw new DataRefreshingException();
 		}
 		return result;
@@ -56,7 +56,7 @@ public class AddressService implements IAddressService{
 		entity.setUID(address.getUID());
 		try {
 			result = addressDao.updateStatus(entity);
-		} catch (DataRefreshingException e) {
+		} catch (Exception e) {
 			throw new DataRefreshingException();
 		}
 		return result;

@@ -1,7 +1,5 @@
 package com.jingyunbank.etrade.user.dao;
 
-import java.util.Optional;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
 public interface UserDao {
@@ -56,4 +54,12 @@ public interface UserDao {
 	 * @return
 	 */
 	public String queryMaxId();
+	
+	/**
+	 * 修改用户信息
+	 * @param userEntity
+	 * @return
+	 * 2015年11月7日 qxs
+	 */
+	public boolean update(UserEntity userEntity) throws Exception;
 }

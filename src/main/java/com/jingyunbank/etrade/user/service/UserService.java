@@ -111,7 +111,13 @@ public class UserService implements IUserService{
 
 	@Override
 	public boolean update(Users user) throws DataRefreshingException {
-		return false;
+		UserEntity entity  =  new UserEntity();
+		BeanUtils.copyProperties(user, entity);
+		try {
+			return userDao.update(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException();
+		}
 	}
 
 	@Override

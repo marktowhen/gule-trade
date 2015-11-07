@@ -2,8 +2,6 @@ package com.jingyunbank.etrade.user.dao;
 
 import java.util.List;
 
-import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.AddressEntity;
 
 public interface AddressDao {
@@ -12,28 +10,28 @@ public interface AddressDao {
 	 * 新增
 	 * @param addressEntity
 	 * @return
-	 * @throws DataSavingException
+	 * @throws Exception
 	 * 2015年11月5日 qxs
 	 */
-	public boolean insert(AddressEntity addressEntity) throws DataSavingException ;
+	public boolean insert(AddressEntity addressEntity) throws Exception ;
 	
 	/**
 	 * 修改基本信息
 	 * @param addressEntity
 	 * @return
-	 * @throws DataRefreshingException
+	 * @throws Exception
 	 * 2015年11月5日 qxs
 	 */
-	public boolean update(AddressEntity addressEntity) throws DataRefreshingException;
+	public boolean update(AddressEntity addressEntity) throws Exception;
 	
 	/**
 	 * 修改地址的状态
 	 * @param addressEntity
 	 * @return
-	 * @throws DataRefreshingException
+	 * @throws Exception
 	 * 2015年11月5日 qxs
 	 */
-	public boolean updateStatus(AddressEntity addressEntity) throws DataRefreshingException;
+	public boolean updateStatus(AddressEntity addressEntity) throws Exception;
 	
 	/**
 	 * 列表查询
