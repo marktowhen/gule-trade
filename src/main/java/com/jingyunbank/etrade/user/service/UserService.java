@@ -110,7 +110,7 @@ public class UserService implements IUserService{
 	
 
 	@Override
-	public boolean update(Users user) throws DataRefreshingException {
+	public boolean refresh(Users user) throws DataRefreshingException {
 		UserEntity entity  =  new UserEntity();
 		BeanUtils.copyProperties(user, entity);
 		try {

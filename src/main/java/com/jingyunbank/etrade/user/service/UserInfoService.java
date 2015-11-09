@@ -46,7 +46,7 @@ public class UserInfoService implements IUserInfoService{
 
 	
 	@Override
-	public boolean update(UserInfo uinfo) throws DataRefreshingException{
+	public boolean refresh(UserInfo uinfo) throws DataRefreshingException{
 		boolean flag=false;
 		
 		UserInfoEntity userInfoEntity=new UserInfoEntity();
@@ -95,6 +95,17 @@ public class UserInfoService implements IUserInfoService{
 	public Optional<UserInfo> getByEmail(String email) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.jingyunbank.etrade.api.user.IUserInfoService#userInfoVO(java.lang.String)
+	 */
+
+	public int UidExists(String uid) {
+		
+
+		return userInfoDao.UidExists(uid);
 	}
 
 }

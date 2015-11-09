@@ -36,6 +36,7 @@
 	 			<include refid="column_list"/>
 	 			from users_info where uid=#{uid}
 	 	</select>
+	 	<!-- 通过uid修改个人资料信息 -->
 	 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 		update users_info u set
 	 		u.birthday=#{birthday},
@@ -52,4 +53,8 @@
 	 		where u.uid=#{uid}
 	 		
 	 	</update>
+	 	<!-- 测试该uid是否存在 -->
+	 	<select id="UidExists" parameterType="String" resultType="int">
+	 		select count(uid) from users_info where uid=#{uid}
+	 	</select>
 	</mapper>

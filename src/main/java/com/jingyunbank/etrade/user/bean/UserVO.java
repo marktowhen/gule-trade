@@ -1,11 +1,12 @@
-/**
- * @Title:UserVO.java
-@Description:TODO
-@author:Administrator
-@date:下午12:03:04
-
- */
 package com.jingyunbank.etrade.user.bean;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+
+import com.jingyunbank.core.lang.Patterns;
 
 /**
  * @author Administrator
@@ -13,10 +14,18 @@ package com.jingyunbank.etrade.user.bean;
  */
 public class UserVO {
 	private String ID;
+	@Pattern(regexp="^([a-zA-Z]+[a-zA-Z0-9]){3,19}$",message="用户名必须以字母开头，并且只能是字母或数字")
+	@NotNull
 	private String username;//global unique, ([a-zA-Z]+[a-zA-Z0-9]){4, 20}必须英文字母开头
+	@Pattern(regexp=Patterns.INTERNAL_MOBILE_PATTERN,message="手机格式不正确")
 	private String mobile;//11位数字的有效手机号
+	@Email(regexp=Patterns.INTERNAL_EMAIL_PATTERN,message="邮箱格式不正确")
 	private String email;//有效的邮箱
+	@Size(max=20,min=8,message="密码必须是8-20位")
+	@NotNull
 	private String password;
+	@Size(max=20,min=8,message="密码必须是8-20位")
+	@NotNull
 	private String tradepwd;
 	private String nickname;
 	//private UserInfo uinfo;

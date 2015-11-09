@@ -45,11 +45,13 @@ public class UserInfoController {
 	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO) throws Exception{
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-	
+		if(userInfoService.UidExists(userInfoVO.getUid())>0){
+			return Result.fail("该uid已经存在！");
+		}
 		if(userInfoService.save(userInfo)){
 			return Result.ok("保存成功");
 		}
-		return Result.fail("uid重复");
+		return Result.ok(userInfoVO);
 	}
 	
 	
@@ -87,7 +89,7 @@ public class UserInfoController {
 	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws Exception {
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-		if(userInfoService.update(userInfo)){
+		if(userInfoService.refresh(userInfo)){
 			
 			return Result.ok(userInfoVO);
 		}

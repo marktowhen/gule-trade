@@ -43,11 +43,11 @@ public class UserControllerTest extends TestCaseBase {
 	public void test1() throws Exception{
 		getMockMvc().perform(
 				 put("/api/user/register")
-				.param("username", "xiaoyux")
-				.param("mobile", "15788877899")
-				.param("email", "555901@qq.com")
-				.param("password", "123456789")
-				.param("tradepwd", "12345678")
+				.param("username", "1xiaoyui")
+				.param("mobile", "12788888890")
+				.param("email", "55590188@qq.com")
+				.param("password", "123490090")
+				.param("tradepwd", "1234787887")
 				.param("nickname", "xiaoxue")
 				.param("locked", "true")
 					.contentType(MediaType.APPLICATION_JSON)

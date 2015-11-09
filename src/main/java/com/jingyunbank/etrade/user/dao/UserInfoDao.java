@@ -38,4 +38,11 @@ public interface UserInfoDao {
 	 */
 	public boolean update(UserInfoEntity userInfoEntity) throws Exception;
 	
+	/**
+	 * 保存时检验该uid是否已存在
+	 * @param uid
+	 * @return
+	 */
+	public int UidExists(String uid);
+	
 }

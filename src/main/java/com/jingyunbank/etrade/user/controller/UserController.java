@@ -1,15 +1,21 @@
 package com.jingyunbank.etrade.user.controller;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,63 +53,44 @@ public class UserController {
 		return "{username:mike, password:black mamba}";
 	}
 	
-	/**
-	 * 
-	 * @todo  用户注册信息
-	 * @author guoyuxue
-	 * @param request
-	 * @param session
-	 * @param userVO
-	 * @return
-	 * @throws DataSavingException
-	 */
+/**
+ * 用户注册信息的保存
+ * @param userVO
+ * @param valid
+ * @param request
+ * @param session
+ * @return
+ * @throws Exception
+ */
 	@RequestMapping(value="/register",method=RequestMethod.PUT)
-	public Result register(HttpServletRequest request,HttpSession session,UserVO userVO) throws Exception{
-		Users user=new Users();
-		BeanUtils.copyProperties(userVO, user);
-		if(userVO.getUsername()==null){
-			return Result.fail("用户名不能为空");
+	public Result register(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request,HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getCodes()).toString())
+						.collect(Collectors.joining(" ; ")));
 		}
-		/*if(userVO.getUsername()!=null){
-			Pattern pm=Pattern.compile("^(a-zA-Z)(a-zA-Z0-9)$");
-			if(pm.matcher(userVO.getUsername()).matches()==false){
-				return Result.fail("用户名只能是字母开头，并且只能是字母和数字");
-			}
-			if(userVO.getUsername().length()>20||userVO.getUsername().length()<4){
-				return Result.fail("用户名的长度在5-20之间！");
-			}
-		}*/
+		//验证用户名是否已存在
 		if(userService.unameExists(userVO.getUsername())){
 			return Result.fail("该用户名已存在。");
 		}
+		//验证手机号是否存在
 		if(userVO.getMobile()!=null){
-			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-			if(p.matcher(userVO.getMobile()).matches()==false){
-				return Result.fail("手机号的格式不正确");
-			}
 			if(userService.phoneExists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
 		}
-		
+		//验证邮箱是否存在
 		if(userVO.getEmail()!=null){
-			Pattern pattern =Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
-			if(pattern.matcher(userVO.getEmail()).matches()==false){
-				return Result.fail("邮箱格式不正确！");
-			}
 			if(userService.emailExists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
 			}
 		}
-		if(userVO.getPassword().length()<7||userVO.getPassword().length()>21){
-			return Result.fail("密码必须是8-20位的");
-		}
-		if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>21){
-			return Result.fail("交易密码也应该是8-20位的");
-		}
+		Users user=new Users();
+		BeanUtils.copyProperties(userVO, user);
 		UserInfo userInfo=new UserInfo();
 		userInfo.setRegip(request.getRemoteAddr());
-		
+		//保存用户信息和个人资料信息
 		if(userService.save(user, userInfo)){
 			return Result.ok("保存成功");
 		}
@@ -126,9 +113,9 @@ public class UserController {
 		if(StringUtils.isEmpty(loginfo)){
 			return Result.fail("请输入用户名/手机/邮箱");
 		}
-		if(StringUtils.isEmpty(password)){
+		/*if(StringUtils.isEmpty(password)){
 			return Result.fail("请输入密码");
-		}
+		}*/
 		//密码不正确3次后需要验证码
 		int loginWrongTimes = 0;
 		//session中存放的错误次数
@@ -230,10 +217,10 @@ public class UserController {
 		if(StringUtils.isEmpty(mobile)){
 			return Result.fail("请输入手机号");
 		}
-		Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+		/*Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 		if(!p.matcher(mobile).matches()){
 			return Result.fail("手机号格式错误");
-		}
+		}*/
 		String id = RequestUtil.getLoginId(request);
 		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
 			return Result.fail("您已经绑定过手机了");
@@ -276,7 +263,7 @@ public class UserController {
 					Users users = new Users();
 					users.setID(uid);
 					users.setMobile(mobile);
-					userService.update(users);
+					userService.refresh(users);
 					return Result.ok("验证成功");
 				}else{
 					return Result.fail("验证码错误");
