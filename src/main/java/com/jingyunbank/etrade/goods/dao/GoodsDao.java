@@ -3,7 +3,7 @@ package com.jingyunbank.etrade.goods.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.jingyunbank.etrade.goods.entity.GoodsDaoVO;
+import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
 /**
@@ -15,13 +15,13 @@ import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
  */
 
 public interface GoodsDao {
-	public List<GoodsDaoVO> selectGoodsByLikeName(String goodsname) throws Exception;
+	public List<GoodsDaoEntity> selectGoodsByLikeName(Map<String, Object> map) throws Exception;
 
-	public List<GoodsDaoVO> selectBrands() throws Exception;
+	public List<GoodsDaoEntity> selectBrands() throws Exception;
 
-	public List<GoodsDaoVO> selectTypes() throws Exception;
+	public List<GoodsDaoEntity> selectTypes() throws Exception;
 
-	public List<GoodsDaoVO> selectGoodsByWhere(Map<String, Object> map) throws Exception;
+	public List<GoodsDaoEntity> selectGoodsByWhere(Map<String, Object> map) throws Exception;
 	
 	/**
 	 * 查询热门推荐商品列表

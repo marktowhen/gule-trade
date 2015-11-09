@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.goods.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,11 +9,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.util.CollectionUtils;
 import com.jingyunbank.etrade.api.goods.bo.Goods;
+import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
-import com.jingyunbank.etrade.goods.entity.GoodsDaoVO;
+import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
 /**
@@ -28,11 +31,15 @@ public class GoodsService implements IGoodsService {
 	private GoodsDao goodsDao;
 
 	@Override
-	public List<Goods> listGoodsByLikeName(String goodsname) throws Exception {
-		List<GoodsDaoVO> daolist = goodsDao.selectGoodsByLikeName(goodsname);
+	public List<Goods> listGoodsByLikeName(String goodsname, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		map.put("goodsname", goodsname);
+		map.put("from", range.getFrom());
+		map.put("to", range.getTo());
+		List<GoodsDaoEntity> daolist = goodsDao.selectGoodsByLikeName(map);
 		List<Goods> bolist = new ArrayList<Goods>();
 		if (daolist != null) {
-				bolist = CollectionUtils.copyTo(daolist, Goods.class);
+			bolist = CollectionUtils.copyTo(daolist, Goods.class);
 		}
 		return bolist;
 	}
@@ -40,8 +47,8 @@ public class GoodsService implements IGoodsService {
 	@Override
 	public List<Goods> listBrands() throws Exception {
 		List<Goods> brandslist = new ArrayList<Goods>();
-		List<GoodsDaoVO>  Brands = goodsDao.selectBrands();
-		if(Brands!=null) {
+		List<GoodsDaoEntity> Brands = goodsDao.selectBrands();
+		if (Brands != null) {
 			brandslist = CollectionUtils.copyTo(Brands, Goods.class);
 		}
 		return brandslist;
@@ -50,29 +57,49 @@ public class GoodsService implements IGoodsService {
 	@Override
 	public List<Goods> listTypes() throws Exception {
 		List<Goods> typeslist = new ArrayList<Goods>();
-		List<GoodsDaoVO>  types = goodsDao.selectTypes();
-		if(types!=null) {
+		List<GoodsDaoEntity> types = goodsDao.selectTypes();
+		if (types != null) {
 			typeslist = CollectionUtils.copyTo(types, Goods.class);
 		}
 		return typeslist;
 	}
 
 	@Override
-	public List<Goods> listGoodsByWhere(Map<String, Object> map) throws Exception{
-		List<Goods> goodswherelist = new ArrayList<Goods>();
-		List<GoodsDaoVO>  goodslist = goodsDao.selectGoodsByWhere(map);
-		if(goodslist!=null) {
-			goodswherelist = CollectionUtils.copyTo(goodslist, Goods.class);
-		}
-		return goodswherelist;
-	}
-	@Override
-	public List<Goods> listHotGoods() throws Exception{
+	public List<Goods> listHotGoods() throws Exception {
 		List<Goods> rltlist = new ArrayList<Goods>();
-		List<HotGoodsEntity>  goodslist = goodsDao.selectHotGoods();
-		if(goodslist!=null) {
+		List<HotGoodsEntity> goodslist = goodsDao.selectHotGoods();
+		if (goodslist != null) {
 			rltlist = CollectionUtils.copyTo(goodslist, Goods.class);
 		}
 		return rltlist;
+	}
+
+	@Override
+	public List<Goods> listGoodsByWhere(GoodsShow goodsshow, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+
+		map.put("from", range.getFrom());
+		map.put("to", range.getTo());
+		map.put("brandArr", goodsshow.getBrands());
+		map.put("typeArr", goodsshow.getTypes());
+		map.put("beginprice", goodsshow.getBeginPrice());
+		map.put("endprice", goodsshow.getEndPrice());
+
+		if (goodsshow.getOrder() == 1) {
+			map.put("order", "1");
+		} else if (goodsshow.getOrder() == 2) {
+			map.put("order", "2");
+		} else if (goodsshow.getOrder() == 3) {
+			map.put("order", "3");
+		} else if (goodsshow.getOrder() == 4) {
+			map.put("order", "4");
+		}
+
+		List<GoodsDaoEntity> goodslist = goodsDao.selectGoodsByWhere(map);
+		List<Goods> showGoodsList = new ArrayList<Goods>();
+		if (goodslist != null) {
+			showGoodsList = CollectionUtils.copyTo(goodslist, Goods.class);
+		}
+		return showGoodsList;
 	}
 }

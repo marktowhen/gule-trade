@@ -3,31 +3,26 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.goods.dao.GoodsDao">
-	<!-- 包装商品 商家 品牌 介绍 等所有属性的包装类 -->
-	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsDaoVO" id="baseGoodsMap">
-		<id column="id" property="id"/>
-		<result column="brand_id" property="brand_id"/>
-		<result column="brand_name" property="brandname"/>
-		<result column="type_id" property="type_id"/>
-		<result column="type_name" property="good_type_name"/>
-		<result column="name" property="goodname"/>
-		<result column="price" property="price"/>
-		<result column="counts" property="count"/>
-		<result column="volume" property="volume"/>
-		<result column="addtime" property="goodaddtime"/>
+	
+	<!-- 封装商品信息Map -->
+	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsDaoEntity" id="baseGoodsMap">
+		<!-- 商品概要信息 -->
+		<result column="gid" property="GID"/>
+		<result column="goodsname" property="goodsName"/>
 		<result column="weight" property="weight"/>
 		<result column="unit" property="unit"/>
-		<result column="parameter1" property="discount"/>
-		<result column="now_price" property="discount_price"/>
-		<!-- 封装图片属性 -->
+		<result column="price" property="price"/>
+		<result column="price" property="price"/>
+		<result column="special_price" property="specialPrice"/>
+		<result column="nowprice" property="nowPrice"/>
 		<result column="thumb_path_1" property="thumb_path_1"/>
-		<result column="thumb_path_2" property="thumb_path_2"/>
-		<result column="thumb_path_3" property="thumb_path_3"/>
-		<result column="thumb_path_4" property="thumb_path_4"/>
-		<result column="show_path_1" property="show_path_1"/>
-		<result column="show_path_2" property="show_path_2"/>
-		<result column="show_path_3" property="show_path_3"/>
-		<result column="show_path_4" property="show_path_4"/>
+		<!-- 品牌信息 -->
+		<result column="bid" property="BID"/>
+		<result column="brandname" property="brandName"/>
+		<result column="branddesc" property="brandDesc"/>
+		<!--类型信息-->
+		<result column="tid" property="TID"/>
+		<result column="typename" property="typeName"/>
 	</resultMap>
 	
 	<!--    查询热门推荐商品的基本信息 -->
@@ -69,32 +64,33 @@
 		i.show_path_4, show_path_4,
 	</sql>
 	
-	<!-- 根据名称like查询商品 -->
-	<select id="selectGoodsByLikeName" parameterType="string" resultMap="baseGoodsMap">
-		SELECT g.id id ,g.name name ,g.price price,g.now_price now_price,
-		<include refid="imgAttr"/>
-		d.weight weight ,d.unit unit ,t.strategy_name strategy_name ,t.parameter1 parameter1 FROM goods g
-		LEFT JOIN goods_detail d ON g.id=d.gid
-		LEFT JOIN goods_strategy s ON g.id=s.gid
-		LEFT JOIN strategy t ON s.sid=t.id
-		LEFT JOIN goods_img i ON g.id=i.gid
-		WHERE g.name LIKE  CONCAT(CONCAT('%', #{goodsname}), '%') and g.state=1
-	</select>
-	<!-- 查询品牌列表 -->
-	<select id="selectBrands" resultMap="baseGoodsMap">
-		SELECT id brand_id ,NAME brand_name FROM goods_brand ORDER BY admin_sort 
-	</select>
-	<!-- 查询类型列表 -->
-	<select id="selectTypes" resultMap="baseGoodsMap">
-		SELECT id type_id ,NAME type_name FROM goods_type
-	</select>
-	<!-- 根据查询条件查询商品 -->
-	<sql id="goodsWhere">
-	g.id, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
-	g.price,g.now_price now_price , g.count counts, g.volume volume ,g.addtime addtime,
-	<include refid="imgAttr"/>
-	d.weight,d.unit ,t.strategy_name,t.parameter1
+	<!-- 商品概要信息查询字段 -->
+	<sql id="commentGoods">
+		g.id gid, g.name goodsname,d.weight weight,d.unit unit,g.price price , 
+        g.special_price special_price,g.now_price nowprice,i.Thumb_path_1 thumb_path_1,
+        g.volume volume,g.addtime addtimes
 	</sql>
+	
+	<!-- 根据名称like查询商品 -->
+	<select id="selectGoodsByLikeName" parameterType="java.util.Map" resultMap="baseGoodsMap">
+		SELECT <include refid="commentGoods"/> FROM GOODS g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_img i ON g.id = i.gid
+		WHERE 1 = 1 AND g.state=1 AND g.name LIKE  CONCAT(CONCAT('%', #{goodsname}), '%')
+		LIMIT #{from} , #{to}
+	</select>
+	
+	<!-- 查询品牌 -->
+	<select id="selectBrands" resultMap="baseGoodsMap">
+		SELECT b.id bid, b.name brandname, b.desc branddesc  FROM goods_brand b  ORDER BY b.admin_sort
+	</select>
+	<!-- 查询类型 -->
+	<select id="selectTypes" resultMap="baseGoodsMap">
+		SELECT t.id tid,t.name typename FROM goods_type t 
+	</select>
+	
+
+
 	<!-- 查询热门推荐商品 -->
 	<sql id="hotGoodsWhere">
 	g.id,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
@@ -102,55 +98,53 @@
 	<include refid="imgAttr"/>
 	d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
+	
+	
+<!-- 根据查询条件查询商品 -->
 	<select id="selectGoodsByWhere"  parameterType="java.util.Map" resultMap="baseGoodsMap">
-		SELECT <include refid="goodsWhere"/>  FROM goods g
-		LEFT JOIN goods_detail d ON g.id=d.gid
-		LEFT JOIN goods_strategy s ON g.id=s.gid
-		LEFT JOIN strategy t ON s.sid=t.id
-		LEFT JOIN goods_brand b ON b.id=g.bid
-		LEFT JOIN goods_img i ON g.id=i.gid
-		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
-		
+		SELECT <include refid="commentGoods"/> FROM goods g 
+		 LEFT JOIN goods_detail d ON d.gid = g.id
+		 LEFT JOIN goods_img i    ON i.gid=g.id
+		 WHERE 1=1 AND g.state=1   
 		<if test="brandArr !='' and brandArr !=null ">
-		  	AND b.id IN 
+		  	AND g.bid IN 
 			<foreach collection="brandArr" index="index" item="item" open="(" separator="," close=")">  
 	            #{item}   
 	   		 </foreach>  
 		</if>
 		<if test="typeArr !='' and typeArr !=null ">
-			AND p.id IN
+			AND g.tid IN
 			<foreach collection="typeArr" index="index" item="item" open="(" separator="," close=")">  
 	            #{item}   
 	   		 </foreach>  
 		</if>
 		  
 		<if test="beginprice !=''">
-			<![CDATA[ AND g.price >= #{beginprice} ]]>
+			<![CDATA[ AND g.now_price >= #{beginprice} ]]>
 		</if>
-		<!-- -->
 		<if test="endprice !=''">
-			<![CDATA[ AND g.price <= #{endprice} ]]>
+			<![CDATA[ AND g.now_price <= #{endprice} ]]>
 		</if>
-	
-		
 		<!-- 销量排序 -->
 		<if test="order ==1 ">
 			ORDER BY g.volume DESC
 		</if>
 		<!-- 价格排序 -->
 		<if test="order ==2 ">
-			ORDER BY g.price DESC
+			ORDER BY g.now_price DESC
 		</if>
 		<!-- 评论数排序 -->
 		<if test="order ==3 ">
 			<!--  目前还没有评论功能
-			ORDER BY g.volume DESC -->
+			ORDER BY g.volume DESC 
+			-->
 		</if>
 		<!-- 新品排序 -->
 		<if test="order ==4 ">
 			ORDER BY g.addtime DESC
 		</if>
 	</select>
+	
 	<!-- 查询首页热门推荐商品列表（准备添加热门推荐排序，以后所有排序均由管理员统一配置维护） 该语句需要修改 -->
 	<select id="selectHotGoods"  resultMap="hotGoodsEntity">
 	SELECT <include refid="hotGoodsWhere"/> FROM goods g
