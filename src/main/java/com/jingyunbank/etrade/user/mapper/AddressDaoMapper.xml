@@ -140,7 +140,7 @@
 		where a.id=#{ID}	
 	</update>
 	
-	<!-- 修改状态 -->
+	<!-- 修改是否有效 -->
 	<update id="updateStatus" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
 		update address a set 
 			valid = #{valid}
@@ -149,5 +149,16 @@
 		<foreach collection="IDArray" item="item" open="(" separator="," close=")">
 			#{item}
 		</foreach>
+	</update>
+	
+	<!-- 修改是否有效 -->
+	<update id="updateDefault" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity">
+		update address a set 
+			defaulted = #{defaulted}
+		where   a.uid=#{UID}
+		<if test="ID!=null and ID!=''">
+			and a.ID=#{ID}
+		</if>
+		
 	</update>
 </mapper>

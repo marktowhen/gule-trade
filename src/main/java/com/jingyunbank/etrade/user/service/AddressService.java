@@ -48,7 +48,7 @@ public class AddressService implements IAddressService{
 	}
 
 	@Override
-	public boolean delete(Address address) throws DataRefreshingException {
+	public boolean remove(Address address) throws DataRefreshingException {
 		boolean result = false;
 		AddressEntity entity = new AddressEntity();
 		entity.setIDArray(address.getIDArray());
@@ -135,6 +135,32 @@ public class AddressService implements IAddressService{
 			}
 		}
 		return boList;
+	}
+	
+	/**
+	 * 设置默认收货地址
+	 * @param id
+	 * @param uid
+	 * 2015年11月9日 qxs
+	 * @throws DataRefreshingException 
+	 */
+	public void refreshDefualt(String id, String uid) throws DataRefreshingException{
+		AddressEntity entity = new AddressEntity();
+		entity.setUID(uid);
+		try {
+			//将用户所有的地址改为非默认
+			entity.setDefaulted(false);
+			addressDao.updateDefault(entity);
+			//将指定地址设为默认
+			entity.setDefaulted(true);
+			entity.setID(id);
+			addressDao.updateDefault(entity);
+			
+		} catch (Exception e) {
+			
+			throw new DataRefreshingException();
+		}
+		
 	}
 
 }

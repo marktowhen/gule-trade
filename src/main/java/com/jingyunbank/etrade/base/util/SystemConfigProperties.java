@@ -1,21 +1,29 @@
-package com.jingyunbank.etrade.infrastructure;
+package com.jingyunbank.etrade.base.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("systemConfigProperties")
+@Scope("singleton")
 public final class SystemConfigProperties {
 
+	private Logger logger = Logger.getLogger(SystemConfigProperties.class);
 	private SystemConfigProperties() {
+		try {
+			//加载短信服务类
+			Class.forName(getString(MOBILE_PROVIDER));
+			//加载邮箱服务类
+			Class.forName(getString(EMAIL_PROVIDER));
+		} catch (ClassNotFoundException e) {
+			logger.error(e);
+		}
 	}
 
 	private final static String PROPERTIES_FILE_LOCATION = "system.properties";
@@ -104,50 +112,5 @@ public final class SystemConfigProperties {
 	
 	
 	
-	//private final static String ABSOLUTE_PROP_FILE_PATH = "absolute.prop.file.path";
-	
-	//unkown problem. does not work
-	@SuppressWarnings("unused")
-	private static class WatchDog implements Runnable{
-
-		private Properties props;
-		private Path path;
-		
-		public WatchDog(Properties prop, Path path) {
-			this.props = prop;
-			this.path = path;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				WatchService watcher = FileSystems.getDefault().newWatchService();
-				Path path = this.path;//Paths.get(this.props.getProperty(ABSOLUTE_PROP_FILE_PATH));
-				path.register(watcher,  StandardWatchEventKinds.ENTRY_MODIFY);
-				while (true) {
-					WatchKey key = watcher.take();
-					for (WatchEvent<?> event: key.pollEvents()) {
-				        WatchEvent.Kind<?> kind = event.kind();
-				        if (kind != StandardWatchEventKinds.ENTRY_MODIFY){
-				            continue;
-				        }
-				        @SuppressWarnings("unchecked")
-						WatchEvent<Path> ev = (WatchEvent<Path>)event;
-				        Path filename = ev.context();
-				        if(PROPERTIES_FILE_LOCATION.trim().contains(filename.toString().trim())){
-				        	InputStream is = WatchDog.class.getResourceAsStream(PROPERTIES_FILE_LOCATION);
-				        	this.props = new Properties();
-				        	this.props.load(is);
-				        	System.out.println(this.props.hashCode());
-				        	System.out.println(this.props.getProperty(ADMIN_EMAIL));
-				        	is.close();
-				        }
-				    }
-				}
-			} catch (IOException | InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
 	
 }
