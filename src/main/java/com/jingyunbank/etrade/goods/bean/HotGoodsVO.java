@@ -34,8 +34,20 @@ public class HotGoodsVO {
 	public void setMerchantVO(MerchantVO merchantVO) {
 		this.merchantVO = merchantVO;
 	}
+	/**
+	 * 获取4个商品
+	 * @return
+	 */
 	public List<CommonGoodsVO> getGoodsList() {
-		return goodsList;
+		if(this.goodsList != null && this.goodsList.size()>4){
+			List<CommonGoodsVO> rltList = new ArrayList<CommonGoodsVO>();
+			for(int i = 0;i<4;i++){
+				rltList.add(this.goodsList.get(i));
+			}
+			return rltList;
+		}else{
+			return goodsList;
+		}
 	}
 	public void setGoodsList(List<CommonGoodsVO> goodsList) {
 		this.goodsList = goodsList;
@@ -54,7 +66,7 @@ public class HotGoodsVO {
 		this.merchantVO = new MerchantVO();
 		this.goodsList = new ArrayList<CommonGoodsVO>();
 		Goods goods = goodslist.get(0);
-		this.MID = goods.getMerchant_id();
+		this.MID = goods.getMID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
 		this.goodsList = CollectionUtils.copyTo(goodslist, CommonGoodsVO.class);
 	}

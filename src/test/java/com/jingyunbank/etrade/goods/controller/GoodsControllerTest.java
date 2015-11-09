@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class GoodsControllerTest extends TestCaseBase{
-
+/*
 //	 * 测试商品 名称模糊查询
 //	 * @throws Exception
 	@Test
@@ -32,10 +32,10 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
-	/**
+	*//**
 	 * 查询商品类别
 	 * @throws Exception
-	 */
+	 *//*
 	@Test
 	public void test2() throws Exception {
 		getMockMvc().perform(post("/api/goods/listTypes").characterEncoding("utf-8"))
@@ -44,10 +44,10 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
 //	
-	/**
+	*//**
 	 * 根据属性查询商品
 	 * @throws Exception
-	 */
+	 *//*
 	@Test
 	public void test3() throws Exception {
 		getMockMvc().perform(get("/api/goods/listByWhere").characterEncoding("utf-8"))
@@ -55,16 +55,17 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
-	
+	*/
 	/**
 	 * 查询首页热门推荐商品 liug  待修改
 	 * @throws Exception
-	 
+	*/
 	@Test
 	public void test4() throws Exception {
-		getMockMvc().perform(post("/goods/listHotGoods").characterEncoding("utf-8"))
+		getMockMvc().perform(post("/api/goods/hotgoods/list").characterEncoding("utf-8"))
 					.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
-	}*/
+	}
+	 
 }

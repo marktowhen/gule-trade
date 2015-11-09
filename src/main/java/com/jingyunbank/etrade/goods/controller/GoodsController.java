@@ -1,11 +1,8 @@
 package com.jingyunbank.etrade.goods.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.CollectionUtils;
@@ -111,39 +107,52 @@ public class GoodsController {
 	}
 
 	/**
-	 * 首页热门推荐产品功能 待确定业务修改
-	 * 
+	 * 首页热门推荐产品功能  待确定业务修改
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listHotGoods", method = RequestMethod.POST)
+	@RequestMapping(value = "/hotgoods/list", method = RequestMethod.POST)
 	public Result listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		try {
-
 			List<Goods> goodslist = goodsService.listHotGoods();
-			List<Goods> tmplist = new ArrayList<Goods>();
-			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
-				for (int i = 0; i < goodslist.size(); i++) {
-					tmplist.add(goodslist.get(i));
-					if (i != (goodslist.size() - 1)
-							&& !goodslist.get(i).getMerchant_id().equals(goodslist.get(i + 1).getMerchant_id())) {
-						HotGoodsVO hotGoodsVO = new HotGoodsVO();
-						hotGoodsVO.init(goodslist);
+			List<Goods> tmplist = new ArrayList<Goods>();//存放商家分组LIST
+			if (goodslist != null && goodslist.size() >0) {//将业务对象转换为页面VO对象
+				HotGoodsVO hotGoodsVO = new HotGoodsVO();
+				for(int i = 0;i<goodslist.size();i++){
+					 //第一条处理
+					if(i == 0){
+						tmplist.add(goodslist.get(i));
+					}else if(!goodslist.get(i-1).getMID().equals(goodslist.get(i).getMID())){//与上一家不是一家
+						System.out.println("不是一个商家****************");
+						hotGoodsVO.init(tmplist);
 						rltlist.add(hotGoodsVO);
 						tmplist = new ArrayList<Goods>();
-					} else {
-						HotGoodsVO hotGoodsVO = new HotGoodsVO();
-						hotGoodsVO.init(goodslist);
-						rltlist.add(hotGoodsVO);
+						tmplist.add(goodslist.get(i));
+						if(i == (goodslist.size()-1)){//最后一条
+							hotGoodsVO = new HotGoodsVO();
+							hotGoodsVO.init(tmplist);
+							rltlist.add(hotGoodsVO);
+						}else{
+							hotGoodsVO = new HotGoodsVO();
+						}
+					}else if(goodslist.get(i-1).getMID().equals(goodslist.get(i).getMID())){//与上一家是一家
+						System.out.println("是一个商家");
+						tmplist.add(goodslist.get(i));
+						if(i == (goodslist.size()-1)){//最后一条
+							hotGoodsVO = new HotGoodsVO();
+							hotGoodsVO.init(tmplist);
+							rltlist.add(hotGoodsVO);
+						}
 					}
+					
 				}
 			}
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		return Result.ok(rltlist);
 	}
 
