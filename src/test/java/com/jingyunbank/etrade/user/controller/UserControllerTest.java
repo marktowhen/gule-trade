@@ -60,6 +60,47 @@ public class UserControllerTest extends TestCaseBase {
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
 	}
+	/**
+	 * 测试修改手机号
+	 * @throws Exception
+	 */
+	@Test
+	public void testUpdatePhone() throws Exception{
+		getMockMvc().perform(
+				post("/api/user/update/phone")
+				.sessionAttr(Constant.LOGIN_ID, "1")
+				.param("mobile", "18766169803")
+				
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("500"))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+	}
+	
+	/**
+	 * 测试修改密码
+	 * @throws Exception
+	 */
+	@Test
+	public void testUpdatePassword() throws Exception{
+		getMockMvc().perform(
+				post("/api/user/update/password")
+				.sessionAttr(Constant.LOGIN_ID, "1")
+				.param("password", "77777777777")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200"))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+	}
+		
+	
+	
 	
 	/**
 	 * 测试发短信

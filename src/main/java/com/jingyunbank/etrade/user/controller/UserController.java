@@ -3,11 +3,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.msg.MessagerManager;
 import com.jingyunbank.core.msg.sms.SmsMessage;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
@@ -61,7 +64,7 @@ public class UserController {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getCodes()).toString())
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
 		//验证用户名是否已存在
@@ -90,7 +93,60 @@ public class UserController {
 		}
 		return Result.ok(userVO);
 	}
+	/**
+	 * 更换手机操作
+	 * @param userVO
+	 * @param valid
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/update/phone",method=RequestMethod.POST)
+	public Result updatePhone(UserVO userVO,HttpSession session) throws Exception{
 	
+		//验证手机号是否存在
+		if(userVO.getMobile()!=null){
+			if(userService.phoneExists(userVO.getMobile())){
+				return Result.fail("该手机号已存在。");
+			}
+			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+			if(!p.matcher(userVO.getMobile()).matches()){
+				return Result.fail("手机格式不正确");
+			}
+		}
+		userVO.setID(session.getAttribute("LOGIN_ID").toString());
+		Users users=new Users();
+		BeanUtils.copyProperties(userVO, users);
+		if(userService.refresh(users)){
+			return Result.ok(userVO);
+		}
+		return Result.ok("修改成功");
+		
+	}
+	/**
+	 * 修改密码
+	 * @param userVO
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/update/password",method=RequestMethod.POST)
+	public Result updatePassword(UserVO userVO,HttpSession session) throws Exception{
+	
+		//验证手机号是否存在
+		if(userVO.getPassword()!=null){
+			if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
+				return Result.fail("密码必须是8-20位");
+			}
+		}
+		userVO.setID(session.getAttribute("LOGIN_ID").toString());
+		Users users=new Users();
+		BeanUtils.copyProperties(userVO, users);
+		if(userService.refresh(users)){
+			return Result.ok(userVO);
+		}
+		return Result.ok("修改成功");
+	}
 	/**
 	 * 登录
 	 * @param request

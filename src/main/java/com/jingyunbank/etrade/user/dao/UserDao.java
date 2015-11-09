@@ -62,4 +62,5 @@ public interface UserDao {
 	 * 2015年11月7日 qxs
 	 */
 	public boolean update(UserEntity userEntity) throws Exception;
+	
 }

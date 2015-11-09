@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.base.constant.Constant;
 
 /**
  * @author Administrator 
@@ -35,7 +36,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		/*SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy.mm.dd");*/
 		getMockMvc().perform(
 				 put("/api/userInfo/")
-				.param("uid", "396")
+				 .sessionAttr(Constant.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 				.param("country", "1")
 				.param("province", "1")
 				.param("city", "1")
@@ -61,7 +62,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test1() throws Exception{
 			getMockMvc().perform(
 				 post("/api/userInfo/update")
-				.param("uid", "IoBST6elTCarSyzl6Z277g")
+				.sessionAttr(Constant.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 				.param("country", "4")
 				.param("province", "4")
 				.param("city", "4")
@@ -89,7 +90,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test2() throws Exception{
 			getMockMvc().perform(
 					 get("/api/userInfo/selectById/IoBST6elTCarSyzl6Z277g")
-					 
+					 	
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

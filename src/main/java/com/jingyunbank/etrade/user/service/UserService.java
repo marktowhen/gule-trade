@@ -113,6 +113,8 @@ public class UserService implements IUserService{
 	public boolean refresh(Users user) throws DataRefreshingException {
 		UserEntity entity  =  new UserEntity();
 		BeanUtils.copyProperties(user, entity);
+		entity.setPassword(Md5Util.getMD5(user.getPassword()));
+		entity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
 		try {
 			return userDao.update(entity);
 		} catch (Exception e) {
@@ -191,10 +193,20 @@ public class UserService implements IUserService{
 		return Optional.empty();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jingyunbank.etrade.api.user.IUserService#queryMaxId()
-	 */
-
-	
+	/*@Override
+	public boolean updatePhone(Users user) throws DataRefreshingException {
+		boolean flag=false;
+		UserEntity userEntity=new UserEntity();
+		BeanUtils.copyProperties(userEntity, user);
+		try {
+			if(userDao.updatePhone(userEntity)>0){
+				flag=true;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new DataRefreshingException();
+		}
+		return flag;
+	}*/
 
 }

@@ -15,17 +15,17 @@ import com.jingyunbank.core.lang.Patterns;
 public class UserVO {
 	private String ID;
 	@Pattern(regexp="^([a-zA-Z]+[a-zA-Z0-9]){3,19}$",message="用户名必须以字母开头，并且只能是字母或数字")
-	@NotNull
+	@NotNull(message="用户名不能为空")
 	private String username;//global unique, ([a-zA-Z]+[a-zA-Z0-9]){4, 20}必须英文字母开头
 	@Pattern(regexp=Patterns.INTERNAL_MOBILE_PATTERN,message="手机格式不正确")
 	private String mobile;//11位数字的有效手机号
 	@Email(regexp=Patterns.INTERNAL_EMAIL_PATTERN,message="邮箱格式不正确")
 	private String email;//有效的邮箱
 	@Size(max=20,min=8,message="密码必须是8-20位")
-	@NotNull
+	@NotNull(message="密码不能为空")
 	private String password;
 	@Size(max=20,min=8,message="密码必须是8-20位")
-	@NotNull
+	@NotNull(message="交易密码不能为空")
 	private String tradepwd;
 	private String nickname;
 	//private UserInfo uinfo;
