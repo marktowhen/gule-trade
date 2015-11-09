@@ -27,30 +27,23 @@
 	
 	<!--    查询热门推荐商品的基本信息 -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.HotGoodsEntity" id="hotGoodsEntity">
-		<id column="id" property="id"/>
-		<result column="mid" property="merchant_id"/>
-		<result column="brand_id" property="brand_id"/>
-		<result column="brand_name" property="brandname"/>
-		<result column="type_id" property="type_id"/>
-		<result column="type_name" property="good_type_name"/>
-		<result column="name" property="goodname"/>
-		<result column="price" property="price"/>
-		<result column="counts" property="count"/>
-		<result column="volume" property="volume"/>
-		<result column="addtime" property="goodaddtime"/>
+		<!-- 商品概要信息 -->
+		<result column="gid" property="GID"/>
+		<result column="goodsname" property="goodsName"/>
 		<result column="weight" property="weight"/>
 		<result column="unit" property="unit"/>
-		<result column="parameter1" property="discount"/>
-		<result column="now_price" property="discount_price"/>
-		<!-- 封装图片属性 -->
+		<result column="price" property="price"/>
+		<result column="price" property="price"/>
+		<result column="special_price" property="specialPrice"/>
+		<result column="nowprice" property="nowPrice"/>
 		<result column="thumb_path_1" property="thumb_path_1"/>
-		<result column="thumb_path_2" property="thumb_path_2"/>
-		<result column="thumb_path_3" property="thumb_path_3"/>
-		<result column="thumb_path_4" property="thumb_path_4"/>
-		<result column="show_path_1" property="show_path_1"/>
-		<result column="show_path_2" property="show_path_2"/>
-		<result column="show_path_3" property="show_path_3"/>
-		<result column="show_path_4" property="show_path_4"/>
+		<!-- 品牌信息 -->
+		<result column="bid" property="BID"/>
+		<result column="brandname" property="brandName"/>
+		<result column="branddesc" property="brandDesc"/>
+		<!--类型信息-->
+		<result column="tid" property="TID"/>
+		<result column="typename" property="typeName"/>
 	</resultMap>
 	<!-- 商品图片属性 goods_img i -->
 	<sql id="imgAttr">
@@ -94,7 +87,7 @@
 	<!-- 查询热门推荐商品 -->
 	<sql id="hotGoodsWhere">
 	g.id,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
-	g.price,g.now_price now_price , g.count counts, g.volume volume ,g.addtime addtime,
+	g.price,g.now_price now_price , g.count count, g.volume volume ,g.addtime addtime,
 	<include refid="imgAttr"/>
 	d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
@@ -147,7 +140,17 @@
 	
 	<!-- 查询首页热门推荐商品列表（准备添加热门推荐排序，以后所有排序均由管理员统一配置维护） 该语句需要修改 -->
 	<select id="selectHotGoods"  resultMap="hotGoodsEntity">
-	SELECT <include refid="hotGoodsWhere"/> FROM goods g
+	SELECT <include refid="hotGoodsWhere"/>
+	<![CDATA[
+	FROM (
+		select x.*
+		FROM goods x
+		 where 1=1 AND x.state=1
+		 and x.mid in (select id from merchant m where m.admin_sort_num <=5) 
+		 and (select count(*) 
+		     from goods t
+		     where x.mid = t.mid and t.volume > x.volume and x.state=1 ) <= 4
+		) g
 		LEFT JOIN goods_detail d ON g.id=d.gid
 		LEFT JOIN goods_strategy s ON g.id=s.gid
 		LEFT JOIN strategy t ON s.sid=t.id
@@ -155,5 +158,6 @@
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
 		ORDER BY g.volume DESC
+		 ]]>
 	</select>
 </mapper>

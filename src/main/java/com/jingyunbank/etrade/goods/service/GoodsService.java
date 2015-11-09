@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.util.CollectionUtils;
-import com.jingyunbank.etrade.api.goods.bo.Goods;
+import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
@@ -31,51 +31,51 @@ public class GoodsService implements IGoodsService {
 	private GoodsDao goodsDao;
 
 	@Override
-	public List<Goods> listGoodsByLikeName(String goodsname, Range range) throws Exception {
+	public List<HotGoods> listGoodsByLikeName(String goodsname, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		map.put("goodsname", goodsname);
 		map.put("from", range.getFrom());
 		map.put("to", range.getTo());
 		List<GoodsDaoEntity> daolist = goodsDao.selectGoodsByLikeName(map);
-		List<Goods> bolist = new ArrayList<Goods>();
+		List<HotGoods> bolist = new ArrayList<HotGoods>();
 		if (daolist != null) {
-			bolist = CollectionUtils.copyTo(daolist, Goods.class);
+			bolist = CollectionUtils.copyTo(daolist, HotGoods.class);
 		}
 		return bolist;
 	}
 
 	@Override
-	public List<Goods> listBrands() throws Exception {
-		List<Goods> brandslist = new ArrayList<Goods>();
+	public List<HotGoods> listBrands() throws Exception {
+		List<HotGoods> brandslist = new ArrayList<HotGoods>();
 		List<GoodsDaoEntity> Brands = goodsDao.selectBrands();
 		if (Brands != null) {
-			brandslist = CollectionUtils.copyTo(Brands, Goods.class);
+			brandslist = CollectionUtils.copyTo(Brands, HotGoods.class);
 		}
 		return brandslist;
 	}
 
 	@Override
-	public List<Goods> listTypes() throws Exception {
-		List<Goods> typeslist = new ArrayList<Goods>();
+	public List<HotGoods> listTypes() throws Exception {
+		List<HotGoods> typeslist = new ArrayList<HotGoods>();
 		List<GoodsDaoEntity> types = goodsDao.selectTypes();
 		if (types != null) {
-			typeslist = CollectionUtils.copyTo(types, Goods.class);
+			typeslist = CollectionUtils.copyTo(types, HotGoods.class);
 		}
 		return typeslist;
 	}
 
 	@Override
-	public List<Goods> listHotGoods() throws Exception {
-		List<Goods> rltlist = new ArrayList<Goods>();
+	public List<HotGoods> listHotGoods() throws Exception {
+		List<HotGoods> rltlist = new ArrayList<HotGoods>();
 		List<HotGoodsEntity> goodslist = goodsDao.selectHotGoods();
 		if (goodslist != null) {
-			rltlist = CollectionUtils.copyTo(goodslist, Goods.class);
+			rltlist = CollectionUtils.copyTo(goodslist, HotGoods.class);
 		}
 		return rltlist;
 	}
 
 	@Override
-	public List<Goods> listGoodsByWhere(GoodsShow goodsshow, Range range) throws Exception {
+	public List<HotGoods> listGoodsByWhere(GoodsShow goodsshow, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 
 		map.put("from", range.getFrom());
@@ -96,9 +96,9 @@ public class GoodsService implements IGoodsService {
 		}
 
 		List<GoodsDaoEntity> goodslist = goodsDao.selectGoodsByWhere(map);
-		List<Goods> showGoodsList = new ArrayList<Goods>();
+		List<HotGoods> showGoodsList = new ArrayList<HotGoods>();
 		if (goodslist != null) {
-			showGoodsList = CollectionUtils.copyTo(goodslist, Goods.class);
+			showGoodsList = CollectionUtils.copyTo(goodslist, HotGoods.class);
 		}
 		return showGoodsList;
 	}
