@@ -50,4 +50,12 @@ public interface AddressDao {
 	 */
 	public List<AddressEntity> selectListRang(AddressEntity addressEntity);
 	
+	/**
+	 * 修改是否为默认地址
+	 * @param addressEntity
+	 * @return
+	 * 2015年11月9日 qxs
+	 */
+	public boolean updateDefault(AddressEntity addressEntity);
+	
 }

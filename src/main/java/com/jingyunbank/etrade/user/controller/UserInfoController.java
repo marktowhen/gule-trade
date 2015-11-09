@@ -45,6 +45,7 @@ public class UserInfoController {
 	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO) throws Exception{
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
+		userInfoVO.setUid(session.getAttribute("LOGIN_ID").toString());
 		if(userInfoService.UidExists(userInfoVO.getUid())>0){
 			return Result.fail("该uid已经存在！");
 		}
@@ -64,16 +65,17 @@ public class UserInfoController {
 	 */
 	@RequestMapping(value="/selectById/{uid}",method=RequestMethod.GET)
 	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid){
-	Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
-	if(userinfo.isPresent()){
+		uid=session.getAttribute("LOGIN_ID").toString();
+		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
+		if(userinfo.isPresent()){
 		UserInfo userInfo=userinfo.get();
 		UserInfoVO userInfoVO=new UserInfoVO();
 		BeanUtils.copyProperties(userInfo, userInfoVO);
 		return Result.ok("查找成功");
-	}
-		if(uid==null){
-		return Result.fail("该uid不存在，没有数据");
-	}
+		}
+			if(uid==null){
+				return Result.fail("该uid不存在，没有数据");
+			}
 		return Result.fail("没有数据");
 	}
 	
@@ -89,6 +91,7 @@ public class UserInfoController {
 	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws Exception {
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
+		userInfoVO.setUid(session.getAttribute("LOGIN_ID").toString());
 		if(userInfoService.refresh(userInfo)){
 			
 			return Result.ok(userInfoVO);

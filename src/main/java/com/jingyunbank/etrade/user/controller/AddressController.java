@@ -1,29 +1,31 @@
 package com.jingyunbank.etrade.user.controller;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.base.Page;
 import com.jingyunbank.etrade.base.util.RequestUtil;
-import com.jingyunbank.etrade.infrastructure.SmsMessager;
 import com.jingyunbank.etrade.user.bean.AddressVO;
 @RestController
 @RequestMapping("/api/address")
@@ -31,105 +33,83 @@ public class AddressController {
 	@Autowired
 	private IAddressService addressService;
 	
-	@Autowired
-	private SmsMessager smsMessager;
 
 	/**
 	 * 新增
-	 * 
 	 * @param request
-	 * @param session
 	 * @param addressVO
 	 * @return 2015年11月5日 qxs
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.PUT)
-	public Result add(HttpServletRequest request, HttpSession session, AddressVO addressVO) throws DataSavingException {
-		/*
-		 * if(addressVO==null){ return Result.fail("参数传入错误"); }
-		 */
-		if(addressVO.getMobile()==null){
-			return Result.fail("手机号码不能为空");
-		}
-		if(addressVO.getMobile()!=null){
-			Pattern pr=Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-			if(!pr.matcher(addressVO.getMobile()).matches()){
-				return Result.fail("手机号码不符合规格");
-			}
+	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws DataSavingException {
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
 		}
 		Address address = new Address();
 		BeanUtils.copyProperties(addressVO, address);
+		address.setUID(RequestUtil.getLoginId(request));
 		addressService.save(address);
-		return Result.ok(addressVO);
+		return Result.ok("保存成功");
 	}
 
 	/**
 	 * 修改
-	 * @param request
-	 * @param session
 	 * @param addressVO
 	 * @return
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
-	@RequestMapping(value="/{ID}",method=RequestMethod.POST)
-	public Result refresh(HttpServletRequest request, HttpSession session,AddressVO addressVO ) throws DataRefreshingException{
-		//校验
-		if(addressVO==null){
-			return Result.fail("参数为空");
+	@RequestMapping(value="/{id}",method=RequestMethod.POST)
+	public Result refresh(@PathVariable String id ,@Valid AddressVO addressVO , BindingResult valid) throws DataRefreshingException{
+		
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
 		}
-		if(StringUtils.isEmpty(addressVO.getID())){
-			return Result.fail("缺少必要参数");
-		}
-		if(!StringUtils.isEmpty(addressVO.getName())&&addressVO.getName().getBytes().length>20){
-			return Result.fail("标题超长");
-		}
-		if(StringUtils.isEmpty(addressVO.getAddress())){
-			return Result.fail("收货地址不能为空");
-		}
-		if(addressVO.getName().getBytes().length>80){
-			return Result.fail("收货地址超长");
-		}
-		if(StringUtils.isEmpty(addressVO.getReceiver())){
-			return Result.fail("收货人不能为空");
-		}
-		if(addressVO.getReceiver().getBytes().length>30){
-			return Result.fail("收货人超长");
-		}
-		Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-		if(!p.matcher(addressVO.getMobile()).matches()){
-			return Result.fail("手机号格式错误");
-		}
-		if(!StringUtils.isEmpty(addressVO.getTelephone())&&addressVO.getTelephone().getBytes().length>20){
-			return Result.fail("座机号码超长");
-		}
+		addressVO.setID(id);
 		Address address = getBoFromVo(addressVO);
-
 		//修改
 		if(addressService.refresh(address)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
 	}
+	/**
+	 * 设定默认接收地址
+	 * @param addressVO
+	 * @return
+	 * 2015年11月5日 qxs
+	 * @throws DataRefreshingException 
+	 */
+	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
+	public Result setDefualt(@PathVariable String id, HttpServletRequest request ) throws DataRefreshingException{
+		addressService.refreshDefualt(id, RequestUtil.getLoginId(request));
+		return Result.ok("成功");
+	}
 
 	/**
 	 * 删除
 	 * 
 	 * @param request
-	 * @param session
-	 * @param addressVO
-	 * @param ID 多个id逗号分隔
+	 * @param id 多个id逗号分隔
 	 * @return
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
-	@RequestMapping(value="/{ID}",method=RequestMethod.DELETE)
-	public Result delete(HttpServletRequest request, HttpSession session,AddressVO addressVO) throws DataRefreshingException{
+	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
+	public Result remove(HttpServletRequest request,@PathVariable String id) throws DataRefreshingException{
 		String uid = RequestUtil.getLoginId(request);
 		if(!StringUtils.isEmpty(uid)){
+			AddressVO addressVO = new AddressVO();
 			addressVO.setUID(uid);
-			String [] IDArray = addressVO.getID().split(",");
+			String [] IDArray = id.split(",");
 			addressVO.setIDArray(IDArray);
-			if(addressService.delete(getBoFromVo(addressVO))){
+			if(addressService.remove(getBoFromVo(addressVO))){
 				return Result.ok("成功");
 			}
 			return Result.fail("服务器繁忙,请稍后再试");
@@ -145,12 +125,9 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@RequestMapping(value="/{ID}",method=RequestMethod.GET)
-	public Result queryDetail(HttpServletRequest request, HttpSession session,AddressVO addressVO ){
-		if(addressVO.getID()==null || "".equals(addressVO.getID())){
-			return Result.ok("缺少必要参数");
-		}
-		Optional<Address> optional = addressService.singleById(addressVO.getID());
+	@RequestMapping(value="/{id}",method=RequestMethod.GET)
+	public Result queryDetail(@PathVariable String id){
+		Optional<Address> optional = addressService.singleById(id);
 		if(optional.isPresent()){
 			return Result.ok(optional.get());
 		}
@@ -166,11 +143,8 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/all",method=RequestMethod.GET)
-	public Result queryAll(HttpServletRequest request, HttpSession session,AddressVO addressVO ){
+	public Result queryAll(HttpServletRequest request){
 		List<AddressVO> result = new ArrayList<AddressVO>();
-		if(addressVO==null){
-			addressVO = new AddressVO();
-		}
 		String uid = RequestUtil.getLoginId(request);
 		if(!StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
@@ -189,13 +163,12 @@ public class AddressController {
 	 * 分页查询
 	 * 
 	 * @param request
-	 * @param session
 	 * @param addressVO
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result queryPage(HttpServletRequest request, HttpSession session,AddressVO addressVO,Page page ){
+	public Result queryPage(HttpServletRequest request,AddressVO addressVO,Page page ){
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		if(addressVO==null){
 			addressVO = new AddressVO();

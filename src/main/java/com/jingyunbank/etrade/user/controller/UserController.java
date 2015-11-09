@@ -1,10 +1,8 @@
 package com.jingyunbank.etrade.user.controller;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,17 +19,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.lang.Patterns;
+import com.jingyunbank.core.msg.MessagerManager;
+import com.jingyunbank.core.msg.sms.SmsMessage;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.base.constant.Constant;
 import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.base.util.RequestUtil;
-import com.jingyunbank.etrade.user.bean.UserInfoVO;
-import com.jingyunbank.etrade.infrastructure.SmsMessager;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
@@ -41,8 +37,6 @@ public class UserController {
   	@Autowired 
   	private IUserService userInfoService;
   	
-  	@Autowired
-	private SmsMessager smsMessager;
 	
 	@RequestMapping("/user")
 	public String invest(HttpServletRequest request, HttpSession session){
@@ -113,9 +107,7 @@ public class UserController {
 		if(StringUtils.isEmpty(loginfo)){
 			return Result.fail("请输入用户名/手机/邮箱");
 		}
-		/*if(StringUtils.isEmpty(password)){
-			return Result.fail("请输入密码");
-		}*/
+		
 		//密码不正确3次后需要验证码
 		int loginWrongTimes = 0;
 		//session中存放的错误次数
@@ -217,19 +209,22 @@ public class UserController {
 		if(StringUtils.isEmpty(mobile)){
 			return Result.fail("请输入手机号");
 		}
-		/*Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-		if(!p.matcher(mobile).matches()){
-			return Result.fail("手机号格式错误");
-		}*/
+		
 		String id = RequestUtil.getLoginId(request);
 		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
 			return Result.fail("您已经绑定过手机了");
 		}
 		String code  = getCheckCode();
-		System.out.println("验证码是-------"+code);
 		if(!StringUtils.isEmpty(id)){
 			//如何设置验证码的有效期限--待解决
-			smsMessager.sendMessageToMobile(mobile, "您的验证码是:", code);
+			SmsMessage message = new SmsMessage();
+			message.setMobile(mobile);
+			message.setBody("您的验证码是:"+code);
+			Result result = null;
+			result = MessagerManager.getSmsSender().send(message);
+			if(result.isBad()){
+				return result;
+			}
 			session.setAttribute(Constant.SMS_MESSAGE, code);
 			session.setAttribute("UNCHECK_MOBILE", mobile);
 			return Result.ok("成功");
@@ -264,6 +259,9 @@ public class UserController {
 					users.setID(uid);
 					users.setMobile(mobile);
 					userService.refresh(users);
+					//清除session
+					session.setAttribute(Constant.SMS_MESSAGE, null);
+					session.setAttribute("UNCHECK_MOBILE", null);
 					return Result.ok("验证成功");
 				}else{
 					return Result.fail("验证码错误");
@@ -307,7 +305,6 @@ public class UserController {
 	 * 2015年11月7日 qxs
 	 */
 	private String getCheckCode(){
-		
-		return String.valueOf(new Random().nextInt()%10000);
+		return String.valueOf(Math.abs(new Random().nextInt()%10000));
 	}
 }
