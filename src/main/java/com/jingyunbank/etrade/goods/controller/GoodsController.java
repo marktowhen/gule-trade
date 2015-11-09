@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.CollectionUtils;
-import com.jingyunbank.etrade.api.goods.bo.Goods;
+import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.base.Page;
@@ -45,7 +45,7 @@ public class GoodsController {
 		Range range = new Range();
 		range.setFrom(0);
 		range.setTo(20);
-		List<Goods> bolist = goodsService.listGoodsByLikeName(goodsname, range);
+		List<HotGoods> bolist = goodsService.listGoodsByLikeName(goodsname, range);
 		List<CommonGoodsVO> goods = new ArrayList<CommonGoodsVO>();
 		if (bolist != null) {
 			goods = CollectionUtils.copyTo(bolist, CommonGoodsVO.class);
@@ -56,7 +56,7 @@ public class GoodsController {
 	@RequestMapping(value = "/listBrands", method = RequestMethod.POST)
 	public Result queryBrands() throws Exception {
 		List<GoodsBrandVO> brands = new ArrayList<GoodsBrandVO>();
-		List<Goods> brandslist = goodsService.listBrands();
+		List<HotGoods> brandslist = goodsService.listBrands();
 		if (brandslist != null) {
 			brands = CollectionUtils.copyTo(brandslist, GoodsBrandVO.class);
 		}
@@ -66,7 +66,7 @@ public class GoodsController {
 	@RequestMapping(value = "/listTypes", method = RequestMethod.POST)
 	public Result queryTypes() throws Exception {
 		List<GoodsTypesVO> types = new ArrayList<GoodsTypesVO>();
-		List<Goods> typeslist = goodsService.listTypes();
+		List<HotGoods> typeslist = goodsService.listTypes();
 		if (typeslist != null) {
 			types = CollectionUtils.copyTo(typeslist, GoodsTypesVO.class);
 		}
@@ -98,7 +98,7 @@ public class GoodsController {
 		goodshowBO.setEndPrice(new BigDecimal(300));
 		goodshowBO.setOrder(2);
 		
-		List<Goods> list = goodsService.listGoodsByWhere(goodshowBO, range);
+		List<HotGoods> list = goodsService.listGoodsByWhere(goodshowBO, range);
 		List<CommonGoodsVO> goodslist = new ArrayList<CommonGoodsVO>();
 		if (list != null) {
 			goodslist = CollectionUtils.copyTo(list, CommonGoodsVO.class);
@@ -115,8 +115,8 @@ public class GoodsController {
 	public Result listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		try {
-			List<Goods> goodslist = goodsService.listHotGoods();
-			List<Goods> tmplist = new ArrayList<Goods>();//存放商家分组LIST
+			List<HotGoods> goodslist = goodsService.listHotGoods();
+			List<HotGoods> tmplist = new ArrayList<HotGoods>();//存放商家分组LIST
 			if (goodslist != null && goodslist.size() >0) {//将业务对象转换为页面VO对象
 				HotGoodsVO hotGoodsVO = new HotGoodsVO();
 				for(int i = 0;i<goodslist.size();i++){
@@ -124,10 +124,9 @@ public class GoodsController {
 					if(i == 0){
 						tmplist.add(goodslist.get(i));
 					}else if(!goodslist.get(i-1).getMID().equals(goodslist.get(i).getMID())){//与上一家不是一家
-						System.out.println("不是一个商家****************");
 						hotGoodsVO.init(tmplist);
 						rltlist.add(hotGoodsVO);
-						tmplist = new ArrayList<Goods>();
+						tmplist = new ArrayList<HotGoods>();
 						tmplist.add(goodslist.get(i));
 						if(i == (goodslist.size()-1)){//最后一条
 							hotGoodsVO = new HotGoodsVO();
@@ -137,7 +136,6 @@ public class GoodsController {
 							hotGoodsVO = new HotGoodsVO();
 						}
 					}else if(goodslist.get(i-1).getMID().equals(goodslist.get(i).getMID())){//与上一家是一家
-						System.out.println("是一个商家");
 						tmplist.add(goodslist.get(i));
 						if(i == (goodslist.size()-1)){//最后一条
 							hotGoodsVO = new HotGoodsVO();

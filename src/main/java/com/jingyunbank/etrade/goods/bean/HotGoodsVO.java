@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 
 import com.jingyunbank.core.util.CollectionUtils;
-import com.jingyunbank.etrade.api.goods.bo.Goods;
+import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 
 /**
  * 首页热门推荐
@@ -59,13 +59,13 @@ public class HotGoodsVO {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	public void init(List<Goods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
+	public void init(List<HotGoods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
 		if(goodslist == null || goodslist.size() <= 0){
 			return;
 		}
 		this.merchantVO = new MerchantVO();
 		this.goodsList = new ArrayList<CommonGoodsVO>();
-		Goods goods = goodslist.get(0);
+		HotGoods goods = goodslist.get(0);
 		this.MID = goods.getMID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
 		this.goodsList = CollectionUtils.copyTo(goodslist, CommonGoodsVO.class);
