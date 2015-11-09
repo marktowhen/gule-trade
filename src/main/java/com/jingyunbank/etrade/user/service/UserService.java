@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
+import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
-import com.jingyunbank.etrade.base.util.Md5Util;
 import com.jingyunbank.etrade.user.dao.UserDao;
 import com.jingyunbank.etrade.user.dao.UserInfoDao;
 import com.jingyunbank.etrade.user.entity.UserEntity;
@@ -80,14 +80,13 @@ public class UserService implements IUserService{
 			int result=0;
 			boolean flag=false;
 			//密码加密
-			userEntity.setPassword(Md5Util.getMD5(user.getPassword()));
-			userEntity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
+			userEntity.setPassword(MD5.digest(user.getPassword()));
+			userEntity.setTradepwd(MD5.digest(user.getTradepwd()));
 			userEntity.setID(KeyGen.uuid());
 			try {
 				result=userDao.insert(userEntity);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				throw new DataSavingException();
+				throw new DataSavingException(e);
 			}
 			
 			UserInfoEntity userInfoEntity=new UserInfoEntity();
@@ -102,7 +101,7 @@ public class UserService implements IUserService{
 				flag=false;
 				}
 			} catch (Exception e) {
-				throw new DataSavingException();
+				throw new DataSavingException(e);
 				}
 			return flag;
 			
@@ -113,12 +112,12 @@ public class UserService implements IUserService{
 	public boolean refresh(Users user) throws DataRefreshingException {
 		UserEntity entity  =  new UserEntity();
 		BeanUtils.copyProperties(user, entity);
-		entity.setPassword(Md5Util.getMD5(user.getPassword()));
-		entity.setTradepwd(Md5Util.getMD5(user.getTradepwd()));
+		entity.setPassword(MD5.digest(user.getPassword()));
+		entity.setTradepwd(MD5.digest(user.getTradepwd()));
 		try {
 			return userDao.update(entity);
 		} catch (Exception e) {
-			throw new DataRefreshingException();
+			throw new DataRefreshingException(e);
 		}
 	}
 

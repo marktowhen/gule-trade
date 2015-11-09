@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
-import com.jingyunbank.etrade.base.Page;
-import com.jingyunbank.etrade.base.util.RequestUtil;
 import com.jingyunbank.etrade.user.bean.AddressVO;
 @RestController
 @RequestMapping("/api/address")
@@ -50,7 +50,7 @@ public class AddressController {
 		}
 		Address address = new Address();
 		BeanUtils.copyProperties(addressVO, address);
-		address.setUID(RequestUtil.getLoginId(request));
+		address.setUID(ServletBox.getLoginUID(request));
 		addressService.save(address);
 		return Result.ok("保存成功");
 	}
@@ -88,7 +88,7 @@ public class AddressController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
 	public Result setDefualt(@PathVariable String id, HttpServletRequest request ) throws DataRefreshingException{
-		addressService.refreshDefualt(id, RequestUtil.getLoginId(request));
+		addressService.refreshDefualt(id, ServletBox.getLoginUID(request));
 		return Result.ok("成功");
 	}
 
@@ -103,7 +103,7 @@ public class AddressController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result remove(HttpServletRequest request,@PathVariable String id) throws DataRefreshingException{
-		String uid = RequestUtil.getLoginId(request);
+		String uid = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(uid)){
 			AddressVO addressVO = new AddressVO();
 			addressVO.setUID(uid);
@@ -145,7 +145,7 @@ public class AddressController {
 	@RequestMapping(value="/all",method=RequestMethod.GET)
 	public Result queryAll(HttpServletRequest request){
 		List<AddressVO> result = new ArrayList<AddressVO>();
-		String uid = RequestUtil.getLoginId(request);
+		String uid = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
 		}
@@ -173,7 +173,7 @@ public class AddressController {
 		if(addressVO==null){
 			addressVO = new AddressVO();
 		}
-		String uid = RequestUtil.getLoginId(request);
+		String uid = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
 		}

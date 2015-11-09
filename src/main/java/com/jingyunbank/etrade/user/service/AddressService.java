@@ -31,7 +31,7 @@ public class AddressService implements IAddressService{
 		try {
 			result = addressDao.insert(addressEntity);
 		} catch (Exception e) {
-			throw new DataSavingException();
+			throw new DataSavingException(e);
 		}
 		return result;
 	}
@@ -42,7 +42,7 @@ public class AddressService implements IAddressService{
 		try {
 			result = addressDao.update(getEntityFromBo(address));
 		} catch (Exception e) {
-			throw new DataRefreshingException();
+			throw new DataRefreshingException(e);
 		}
 		return result;
 	}
@@ -57,7 +57,7 @@ public class AddressService implements IAddressService{
 		try {
 			result = addressDao.updateStatus(entity);
 		} catch (Exception e) {
-			throw new DataRefreshingException();
+			throw new DataRefreshingException(e);
 		}
 		return result;
 	}
@@ -157,8 +157,7 @@ public class AddressService implements IAddressService{
 			addressDao.updateDefault(entity);
 			
 		} catch (Exception e) {
-			
-			throw new DataRefreshingException();
+			throw new DataRefreshingException(e);
 		}
 		
 	}

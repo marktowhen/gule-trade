@@ -7,6 +7,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
+
 public class OrderVO {
 
 	private String ID;
@@ -24,6 +26,7 @@ public class OrderVO {
 	@NotNull
 	private String paytypeID;//支付方式 id
 	@NotNull
+	@Email(regexp="[0-9]")
 	private String paytypeName;
 	@NotNull
 	@DecimalMin(value="0", inclusive=true, message="订单总价不能小于0元。")

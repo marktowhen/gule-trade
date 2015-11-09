@@ -1,20 +1,24 @@
 package com.jingyunbank.etrade.order.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.Cart;
+import com.jingyunbank.etrade.api.order.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.order.service.ICartService;
 import com.jingyunbank.etrade.order.dao.CartDao;
 import com.jingyunbank.etrade.order.entity.CartEntity;
+import com.jingyunbank.etrade.order.entity.GoodsInCartEntity;
 
 @Service("cartService")
 public class CartService implements ICartService {
@@ -27,50 +31,98 @@ public class CartService implements ICartService {
 		CartEntity entity = new CartEntity();
 		BeanUtils.copyProperties(cart, entity);
 		try {
-			cartDao.insert(entity);
+			cartDao.insertCart(entity);
 		} catch (Exception e) {
-			throw new DataSavingException();
+			throw new DataSavingException(e);
 		}
 	}
 
 	@Override
-	public void refresh(Cart cart) throws DataRefreshingException{
-		CartEntity entity = new CartEntity();
-		BeanUtils.copyProperties(cart, entity);
+	public void refresh(GoodsInCart goods) throws DataRefreshingException{
+		GoodsInCartEntity entity = new GoodsInCartEntity();
+		BeanUtils.copyProperties(goods, entity);
 		try {
 			cartDao.update(entity);
 		} catch (Exception e) {
-			throw new DataRefreshingException();
+			throw new DataRefreshingException(e);
 		}
 	}
 
 	@Override
 	public void remove(String id) throws DataRemovingException{
 		try {
-			cartDao.delete(id);
+			cartDao.deleteOne(id);
 		} catch (Exception e) {
-			throw new DataRemovingException();
+			throw new DataRemovingException(e);
 		}
 	}
 
 	@Override
-	public List<Cart> list(String uid) {
-		return cartDao.selectByUID(uid)
-				.stream().map(ec -> {
-					Cart cart = new Cart();
-					BeanUtils.copyProperties(ec, cart);
-					return cart;
-				}).collect(Collectors.toList());
+	public void save(GoodsInCart goods) throws DataSavingException {
+		GoodsInCartEntity entity = new GoodsInCartEntity();
+		BeanUtils.copyProperties(goods, entity);
+		try {
+			cartDao.insertOneGoods(entity);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		};
 	}
 
 	@Override
-	public List<Cart> list(String uid, Range range) {
-		return cartDao.selectRange(uid, range.getFrom(), range.getTo() - range.getFrom())
-				.stream().map(ec -> {
-					Cart cart = new Cart();
-					BeanUtils.copyProperties(ec, cart);
-					return cart;
-				}).collect(Collectors.toList());
+	public void save(List<GoodsInCart> goods) throws DataSavingException {
+		List<GoodsInCartEntity> entities = new ArrayList<GoodsInCartEntity>();
+		for (GoodsInCart gs : goods) {
+			GoodsInCartEntity gice = new GoodsInCartEntity();
+			BeanUtils.copyProperties(gs, gice);
+			entities.add(gice);
+		}
+		try {
+			cartDao.insertManyGoods(entities);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		};
+	}
+
+	@Override
+	public void remove(List<String> gidsInCart) throws DataRemovingException {
+		try {
+			cartDao.deleteMany(gidsInCart);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+	}
+
+	@Override
+	public List<GoodsInCart> listGoods(String uid) {
+		List<GoodsInCartEntity> entities = cartDao.selectAllByUID(uid);
+		
+		return entities.stream().map(entity -> {
+			GoodsInCart goodsInCart = new GoodsInCart();
+			BeanUtils.copyProperties(entity, goodsInCart);
+			return goodsInCart;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<GoodsInCart> listGoodsIntCart(String cartID) {
+		List<GoodsInCartEntity> entities = cartDao.selectAllByCartID(cartID);
+		
+		return entities.stream().map(entity -> {
+			GoodsInCart goodsInCart = new GoodsInCart();
+			BeanUtils.copyProperties(entity, goodsInCart);
+			return goodsInCart;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<Cart> singleCart(String uid) {
+		CartEntity cart = cartDao.selectOne(uid);
+		Cart cbo = null;
+		if(Objects.nonNull(cart)){
+			cbo = new Cart();
+			BeanUtils.copyProperties(cart, cbo);
+		}
+		return Optional.ofNullable(cbo);
 	}
 
 }

@@ -42,7 +42,7 @@ public class OrderService implements IOrderService{
 		try {
 			orderDao.insert(entity);
 		} catch (Exception e) {
-			throw new DataSavingException();
+			throw new DataSavingException(e);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class OrderService implements IOrderService{
 		try {
 			orderDao.delete(id);
 		} catch (Exception e) {
-			throw new DataRemovingException();
+			throw new DataRemovingException(e);
 		}
 	}
 

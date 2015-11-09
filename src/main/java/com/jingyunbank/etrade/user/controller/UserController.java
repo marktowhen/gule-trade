@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -24,13 +23,12 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.msg.MessagerManager;
 import com.jingyunbank.core.msg.sms.SmsMessage;
+import com.jingyunbank.core.util.MD5;
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
-import com.jingyunbank.etrade.base.constant.Constant;
-import com.jingyunbank.etrade.base.util.Md5Util;
-import com.jingyunbank.etrade.base.util.RequestUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
@@ -184,7 +182,7 @@ public class UserController {
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
 			//密码是否正确
-			if(!users.getPassword().equals(Md5Util.getMD5(password))){
+			if(!users.getPassword().equals(MD5.digest(password))){
 				//记录错误次数
 				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
 				return Result.fail("密码错误");
@@ -200,8 +198,8 @@ public class UserController {
 		//3、成功之后
 		//用户信息放入session
 		Users users = usersOptional.get();
-		session.setAttribute(Constant.LOGIN_ID, users.getID());
-		session.setAttribute(Constant.LOGIN_USERNAME, users.getUsername());
+		ServletBox.setLoginUID(session, users.getID());
+		ServletBox.setLoginUname(session, users.getUsername());
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
@@ -244,7 +242,7 @@ public class UserController {
 	 */
 	@RequestMapping(value="/loginuser",method=RequestMethod.GET)
 	public Result queryLoginUser(HttpServletRequest request, HttpSession session){
-		String id = RequestUtil.getLoginId(request);
+		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
 			Optional<Users> users = userService.getByUid(id);
 			if(users.isPresent()){
@@ -269,7 +267,7 @@ public class UserController {
 			return Result.fail("请输入手机号");
 		}
 		
-		String id = RequestUtil.getLoginId(request);
+		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
 			return Result.fail("您已经绑定过手机了");
 		}
@@ -284,7 +282,7 @@ public class UserController {
 			if(result.isBad()){
 				return result;
 			}
-			session.setAttribute(Constant.SMS_MESSAGE, code);
+			session.setAttribute(ServletBox.SMS_MESSAGE, code);
 			session.setAttribute("UNCHECK_MOBILE", mobile);
 			return Result.ok("成功");
 		}
@@ -303,8 +301,8 @@ public class UserController {
 	 */
 	@RequestMapping(value="/message",method=RequestMethod.POST)
 	public Result checkMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws DataRefreshingException {
-		String uid = RequestUtil.getLoginId(request);
-		String sessionCode  = (String)session.getAttribute(Constant.SMS_MESSAGE);
+		String uid = ServletBox.getLoginUID(request);
+		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
 		if(StringUtils.isEmpty(sessionCode)){
 			return Result.fail("未发送短信或短信已失效");
 		}
@@ -319,7 +317,7 @@ public class UserController {
 					users.setMobile(mobile);
 					userService.refresh(users);
 					//清除session
-					session.setAttribute(Constant.SMS_MESSAGE, null);
+					session.setAttribute(ServletBox.SMS_MESSAGE, null);
 					session.setAttribute("UNCHECK_MOBILE", null);
 					return Result.ok("验证成功");
 				}else{

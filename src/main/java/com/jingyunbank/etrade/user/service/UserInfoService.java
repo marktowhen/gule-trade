@@ -38,7 +38,7 @@ public class UserInfoService implements IUserInfoService{
 				flag=false;
 			}
 		} catch (Exception e) {
-			throw new DataSavingException();
+			throw new DataSavingException(e);
 		}
 		return flag;
 		
@@ -59,7 +59,7 @@ public class UserInfoService implements IUserInfoService{
 				flag=false;
 			}
 		} catch (Exception e) {
-			throw new DataRefreshingException();
+			throw new DataRefreshingException(e);
 		}
 		
 		return flag;

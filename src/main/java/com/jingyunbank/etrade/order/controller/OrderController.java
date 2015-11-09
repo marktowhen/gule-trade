@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,10 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.RndBuilder;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
-import com.jingyunbank.etrade.base.intercepter.RequireLogin;
+import com.jingyunbank.etrade.order.bean.OrderSubmitVO;
 import com.jingyunbank.etrade.order.bean.OrderVO;
 
 @RestController
@@ -46,7 +48,7 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value="/api/orders/list/{uid}", method=RequestMethod.GET)
-	@RequireLogin
+	@AuthBeforeOperation
 	public Result listUID(@PathVariable String uid, HttpSession session){
 		return Result.ok(orderService.list((String)session.getAttribute("LOGIN_ID"))
 				.stream().map(bo-> {
@@ -58,7 +60,7 @@ public class OrderController {
 	
 	
 	
-	@RequireLogin
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders", method=RequestMethod.PUT)
 	public Result submit(@Valid OrderVO order, BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
@@ -77,7 +79,35 @@ public class OrderController {
 		return Result.ok(order);
 	}
 	
-	@RequireLogin
+	@AuthBeforeOperation
+	@RequestMapping(
+			value="/api/order",
+			method=RequestMethod.PUT,
+			consumes="application/json;charset=UTF-8",
+			produces="application/json;charset=UTF-8")
+	public Result submit(@Valid @RequestBody OrderSubmitVO orders,
+			BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getCodes()).toString())
+						.collect(Collectors.joining(" ; ")));
+		}
+		
+		orders.getGoods().forEach(order->{
+			order.getMID();
+			order.setID(KeyGen.uuid());
+			Orders orderbo = new Orders();
+			BeanUtils.copyProperties(order, orderbo);
+			try {
+				orderContextService.generate(orderbo);
+			} catch (Exception e) {}
+		});
+		
+		return Result.ok();
+	}
+	
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
 	public Result remove(@PathVariable String id) throws Exception{
 		

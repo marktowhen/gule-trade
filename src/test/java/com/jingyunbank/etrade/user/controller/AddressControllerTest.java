@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.user.IUserService;
-import com.jingyunbank.etrade.base.constant.Constant;
 
 public class AddressControllerTest extends TestCaseBase {
 	
@@ -30,7 +30,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		getMockMvc().perform(
 				 put("/api/address/")
-				 .sessionAttr(Constant.LOGIN_ID, "1")
+				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				//.param("name", "q")
 //				.param("country", "1")
 //				.param("province", "2")
@@ -61,7 +61,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void testAdd() throws Exception{
 		getMockMvc().perform(
 				 put("/api/address/")
-				 .sessionAttr(Constant.LOGIN_ID, "1")
+				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("name", "q")
 				.param("country", "1")
 				.param("province", "2")
@@ -124,7 +124,7 @@ public class AddressControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				delete("/api/address/b,t")
 				//.param("ID", "b,t")
-				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -146,7 +146,7 @@ public class AddressControllerTest extends TestCaseBase {
 				get("/api/address/list")
 				.param("offset", "1")
 				.param("size", "2")
-				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

@@ -1,22 +1,19 @@
 package com.jingyunbank.etrade.userinfo.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import org.junit.Test;
-
 import org.springframework.http.MediaType;
-
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.base.constant.Constant;
 
 /**
  * @author Administrator 
@@ -36,7 +33,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		/*SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy.mm.dd");*/
 		getMockMvc().perform(
 				 put("/api/userInfo/")
-				 .sessionAttr(Constant.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+				 .sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 				.param("country", "1")
 				.param("province", "1")
 				.param("city", "1")
@@ -62,7 +59,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test1() throws Exception{
 			getMockMvc().perform(
 				 post("/api/userInfo/update")
-				.sessionAttr(Constant.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+				.sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 				.param("country", "4")
 				.param("province", "4")
 				.param("city", "4")

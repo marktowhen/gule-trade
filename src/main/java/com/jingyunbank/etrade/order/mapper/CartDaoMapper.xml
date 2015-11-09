@@ -6,38 +6,75 @@
 	<resultMap type="com.jingyunbank.etrade.order.entity.CartEntity" id="CartEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
-		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+	</resultMap>
+	<resultMap type="com.jingyunbank.etrade.order.entity.GoodsInCartEntity" id="GoodsInCartEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="cart_id" property="cartID" javaType="String"/>
+		<result column="uid" property="UID" javaType="String"/>
 		<result column="gid" property="GID" javaType="String"/>
+		<result column="gname" property="gname" javaType="String"/>
+		<result column="mid" property="MID" javaType="String"/>
+		<result column="mname" property="mname" javaType="String"/>
 		<result column="price" property="price" jdbcType="DECIMAL"/>
 		<result column="count" property="count" jdbcType="INTEGER"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 	</resultMap>
 	<sql id="cart_columns">
-		id, uid, gid, addtime, price, count
+		id, uid
 	</sql>
-	<select id="selectByUID" parameterType="String" resultMap="CartEntityResultMap">
-		select <include refid="cart_columns"/> from cart where uid = #{uid}
+	<sql id="goods_in_cart_columns">
+		id, cart_id, uid, gid, gname, mid, mname, addtime, price, count
+	</sql>
+	<select id="selectOne" parameterType="String" resultMap="CartEntityResultMap">
+		select <include refid="cart_columns"/> from cart where uid = #{uid} limit 1;
 	</select>
-	<select id="selectRange" resultMap="CartEntityResultMap">
-		select <include refid="cart_columns"/>
-		from cart
+	<select id="selectAllByUID" parameterType="String" resultMap="GoodsInCartEntityResultMap">
+		select <include refid="goods_in_cart_columns"/> from goods_in_cart where uid = #{uid}
+	</select>
+	<select id="selectAllByCartID" parameterType="String" resultMap="GoodsInCartEntityResultMap">
+		select <include refid="goods_in_cart_columns"/> from goods_in_cart where cart_id = #{cartID}
+	</select>
+	<select id="selectRangeByUID" resultMap="GoodsInCartEntityResultMap">
+		select <include refid="goods_in_cart_columns"/>
+		from goods_in_cart
 		where
 			uid = #{uid}
 		limit #{offset}, #{size}
 	</select>
-	<insert id="insert" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
+	<insert id="insertCart" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
 		insert into cart
 			(<include refid="cart_columns"/>)
 		values
-			(#{ID}, #{UID}, #{GID}, #{addtime}, #{price}, #{count})
+			(#{ID}, #{UID})
 	</insert>
-	<update id="update" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
-		update cart
+	<insert id="insertOneGoods" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
+		insert into goods_in_cart
+			(<include refid="goods_in_cart_columns"/>)
+		values
+			(#{ID}, #{cartID}, #{UID}, #{GID}, #{gname}, #{MID}, #{mname}, #{addtime}, #{price}, #{count})
+	</insert>
+	<insert id="insertManyGoods" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
+		insert into goods_in_cart
+			(<include refid="goods_in_cart_columns"/>)
+		values
+			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
+				(#{g.ID}, #{g.cartID}, #{g.UID}, #{g.GID}, #{g.gname}, #{g.MID}, #{g.mname}, #{g.addtime}, #{g.price}, #{g.count})
+			</foreach>
+	</insert>
+	<update id="update" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
+		update goods_in_cart
 		<set>
-			count = #{count}, price = #{price}
+			count = #{count}
 		</set>
 		where id = #{ID}
 	</update>
-	<delete id="delete" parameterType="String">
-		delete from cart where id = #{id}
+	<delete id="deleteOne" parameterType="String">
+		delete from goods_in_cart where id = #{id}
+	</delete>
+	<delete id="deleteMany">
+		delete from goods_in_cart where id in 
+		<foreach collection="gidsInCart" item="id" index="i" open="(" separator="," close=")">
+			 #{id}
+		</foreach>
 	</delete>
 </mapper>

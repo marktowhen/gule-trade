@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.CollectionUtils;
-import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
+import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
-import com.jingyunbank.etrade.base.Page;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;

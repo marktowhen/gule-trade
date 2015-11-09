@@ -10,7 +10,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.base.util.JsonResponse;
+import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.JsonResponse;
+import com.jingyunbank.core.web.ServletBox;
 
 public class AuthIntercepter implements HandlerInterceptor{
 
@@ -31,9 +33,9 @@ public class AuthIntercepter implements HandlerInterceptor{
 			return false;
 		}
 		
-		RequireLogin requiredLogin = method.getMethodAnnotation(RequireLogin.class);
+		AuthBeforeOperation requiredLogin = method.getMethodAnnotation(AuthBeforeOperation.class);
 		if(requiredLogin != null){
-			Object obj = request.getSession().getAttribute("LOGIN_ID");
+			Object obj = ServletBox.getLoginUID(request);
 			if(obj == null){
 				try {
 		           JsonResponse.write(response, 

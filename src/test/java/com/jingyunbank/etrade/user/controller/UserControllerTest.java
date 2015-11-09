@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.base.constant.Constant;
 
 public class UserControllerTest extends TestCaseBase {
 	/**
@@ -68,7 +68,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testUpdatePhone() throws Exception{
 		getMockMvc().perform(
 				post("/api/user/update/phone")
-				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("mobile", "18766169803")
 				
 				.contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testUpdatePassword() throws Exception{
 		getMockMvc().perform(
 				post("/api/user/update/password")
-				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("password", "77777777777")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -111,7 +111,7 @@ public class UserControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				get("/api/user/message")
 				.param("mobile", "15853166853")
-				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -132,9 +132,9 @@ public class UserControllerTest extends TestCaseBase {
 				post("/api/user/message")
 				.param("mobile", "15853166853")
 				.param("code", "894")
-				.sessionAttr(Constant.LOGIN_ID, "1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.sessionAttr("UNCHECK_MOBILE", "15853166853")
-				.sessionAttr(Constant.SMS_MESSAGE, "894")
+				.sessionAttr(ServletBox.SMS_MESSAGE, "894")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
