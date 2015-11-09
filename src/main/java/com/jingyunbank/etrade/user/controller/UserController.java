@@ -107,6 +107,9 @@ public class UserController {
 		if(StringUtils.isEmpty(loginfo)){
 			return Result.fail("请输入用户名/手机/邮箱");
 		}
+		if(StringUtils.isEmpty(password)){
+			return Result.fail("请输入密码");
+		}
 		
 		//密码不正确3次后需要验证码
 		int loginWrongTimes = 0;
