@@ -267,4 +267,30 @@
 			<![CDATA[ AND g.now_price <= #{endprice} ]]>
 		</if>
 	</select>
+	<!--    查询热门推荐商品的基本信息 -->
+	<resultMap type="com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity" id="hot24GoodsEntity">
+		<!-- 商品概要信息 -->
+		<result column="id" property="GID"/>
+		<result column="name" property="goodsName"/>
+		<result column="price" property="price"/>
+		<result column="now_price" property="nowPrice"/>
+		<result column="thumb_path_1" property="thumb_path_1"/>
+	</resultMap>
+	<!-- 查询24小时热卖推荐商品列表 　 -->
+	<select id="selectHot24Goods"  resultMap="hot24GoodsEntity">
+	SELECT 
+	x.id,x.mid,x.name,x.price,x.now_price now_price,i.thumb_path_1 as thumb_path_1
+	<![CDATA[
+	 from (
+		select gid,sum(count) as count from tran_records where 
+		turnover_date  >= 
+		DATE_SUB(NOW(),INTERVAL 24 HOUR)
+		group by gid order by sum(count) desc limit 0,3
+		) r left join goods x
+		 on 1=1 AND x.state=1
+		and r.gid = x.id
+		left join goods_img i
+	    on r.gid = i.gid 
+		 ]]>
+	</select>
 </mapper>

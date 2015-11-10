@@ -2,7 +2,6 @@ package com.jingyunbank.etrade.goods.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,17 +18,17 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
+import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
-import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
+import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
-import com.jingyunbank.etrade.order.bean.OrderVO;
 
 /**
  * Title: 商品controller
@@ -269,5 +267,18 @@ public class GoodsController {
 			BeanUtils.copyProperties(vo, bo);
 		}
 		return bo;
+	}
+	/**
+	 * 阿胶后台24小时热卖 待确定业务修改
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/hot24goods/list", method = RequestMethod.POST)
+	public Result listHot24Goods() throws Exception {
+		List<Hot24Goods> goodslist = goodsService.listHot24Goods();
+		Hot24GoodsVO hot24GoodsVO = new Hot24GoodsVO();
+		hot24GoodsVO.init(goodslist);
+		return Result.ok(hot24GoodsVO);
 	}
 }
