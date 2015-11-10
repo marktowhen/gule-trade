@@ -57,12 +57,23 @@ public class GoodsControllerTest extends TestCaseBase{
 	}
 	*/
 	/**
-	 * 查询首页热门推荐商品 liug  待修改
+	 * 查询首页热门推荐商品 liug  
+	 * @throws Exception
+	*/
+//	@Test
+//	public void test4() throws Exception {
+//		getMockMvc().perform(post("/api/goods/hotgoods/list").characterEncoding("utf-8"))
+//					.andExpect(status().isOk())
+//				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+//				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+//	}
+	/**
+	 * 查询24小时热卖推荐商品 liug  
 	 * @throws Exception
 	*/
 	@Test
-	public void test4() throws Exception {
-		getMockMvc().perform(post("/api/goods/hotgoods/list").characterEncoding("utf-8"))
+	public void test5() throws Exception {
+		getMockMvc().perform(post("/api/goods/hot24goods/list").characterEncoding("utf-8"))
 					.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
