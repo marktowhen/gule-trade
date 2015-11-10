@@ -35,8 +35,8 @@ import com.jingyunbank.etrade.user.bean.UserVO;
 public class UserController {
   	@Autowired
 	private IUserService userService;
-  	@Autowired 
-  	private IUserService userInfoService;
+/*  	@Autowired 
+  	private IUserService userInfoService;*/
   	
 	
 	@RequestMapping("/user")
@@ -92,7 +92,79 @@ public class UserController {
 		return Result.ok(userVO);
 	}
 	/**
-	 * 更换手机操作
+	 * 当前手机号发送验证
+	 * @param request
+	 * @param session
+	 * @param userVO
+	 * @return
+	 */
+	@RequestMapping(value="/send/message",method=RequestMethod.GET)
+	public Result currentPhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
+		String id = ServletBox.getLoginUID(request);
+		if(!StringUtils.isEmpty(id)){
+		Users users=userService.getByUid(id).get();
+		if(sendCodeCommon(users.getMobile(),session,request)){
+			
+			return Result.ok("已经收到当前手机号的验证码了！");
+		}
+		return Result.fail("请重新登录");
+		}
+		return Result.fail("重试");
+	}
+	/**
+	 * 当前手机号检验手机号或验证码是否输入正确
+	 * @param mobile
+	 * @param code
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/send/message",method=RequestMethod.POST)
+	public Result chenckPhoneCode(String mobile,String code,HttpServletRequest request, HttpSession session){
+		String uid = ServletBox.getLoginUID(request);
+		if(!StringUtils.isEmpty(uid)){
+			if(checkCodeCommon(mobile,code,request,session)){
+				return Result.ok("手机验证成功");
+				//只有当前手机号验证成功了，才会进入到修改手机号阶段！
+				//只有当前手机号验证成功了，才会进行修改登录密码！
+				//只有当前手机号验证成功了，才可以进行修改支付密码！
+				//只有当前手机号验证成功了，才可以进行设置支付密码！
+			}
+		}
+		return Result.fail("手机或验证码不一致,没有登录");
+	}
+	
+	/**
+	 * 1更换手机发送验证码的过程操作
+	 * @param userVO
+	 * @param valid
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/update/phone",method=RequestMethod.GET)
+	public Result sendUpdatePhone(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+		String uid = ServletBox.getLoginUID(request);
+		if(!StringUtils.isEmpty(uid)){
+			
+			if(userVO.getMobile()!=null){
+				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+				if(!p.matcher(userVO.getMobile()).matches()){
+					return Result.fail("手机格式不正确");
+				}
+				if(userService.phoneExists(userVO.getMobile())){
+					return Result.fail("该手机号已存在。");
+				}
+			
+			}
+			if(sendCodeCommon(userVO.getMobile(),session,request)){
+				return Result.ok("已经修改的手机号发送了验证码");
+		}
+		}
+		return Result.fail("手机修改失败或是没能发送验证码");
+	}
+	/**
+	 * 1更换手机之后的验证码是否输入正确呢
 	 * @param userVO
 	 * @param valid
 	 * @param session
@@ -100,51 +172,70 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/update/phone",method=RequestMethod.POST)
-	public Result updatePhone(UserVO userVO,HttpSession session) throws Exception{
-	
-		//验证手机号是否存在
-		if(userVO.getMobile()!=null){
-			if(userService.phoneExists(userVO.getMobile())){
-				return Result.fail("该手机号已存在。");
-			}
-			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-			if(!p.matcher(userVO.getMobile()).matches()){
-				return Result.fail("手机格式不正确");
+	public Result checkCodeUpdatePhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
+		String uid = ServletBox.getLoginUID(request);
+		if(!StringUtils.isEmpty(uid)){
+			Users users=new Users();
+			userVO.setID(uid);
+			BeanUtils.copyProperties(userVO, users);
+			if(checkCodeCommon(userVO.getMobile(),code,request,session) && userService.refresh(users)){
+				return Result.ok("手机验证成功");
 			}
 		}
-		userVO.setID(session.getAttribute("LOGIN_ID").toString());
-		Users users=new Users();
-		BeanUtils.copyProperties(userVO, users);
-		if(userService.refresh(users)){
-			return Result.ok(userVO);
-		}
-		return Result.ok("修改成功");
-		
+		return Result.fail("手机或验证码不一致,没有登录");
 	}
 	/**
-	 * 修改密码
+	 * 2修改登录密码
 	 * @param userVO
 	 * @param session
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/update/password",method=RequestMethod.POST)
-	public Result updatePassword(UserVO userVO,HttpSession session) throws Exception{
+	public Result updatePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 	
-		//验证手机号是否存在
+		//验证登录密码有效性
 		if(userVO.getPassword()!=null){
 			if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
 				return Result.fail("密码必须是8-20位");
 			}
 		}
-		userVO.setID(session.getAttribute("LOGIN_ID").toString());
+		String uid = ServletBox.getLoginUID(request);
+		userVO.setID(uid);
 		Users users=new Users();
 		BeanUtils.copyProperties(userVO, users);
 		if(userService.refresh(users)){
-			return Result.ok(userVO);
+			return Result.ok("修改登录密码成功");
 		}
-		return Result.ok("修改成功");
+		return Result.ok(userVO);
 	}
+	/**
+	 * 3修改交易密码
+	 * @param userVO
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/update/tradepwd",method=RequestMethod.POST)
+	public Result updateTradePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+		//验证交易密码的有效性
+		if(userVO.getTradepwd()!=null){
+			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
+				return Result.fail("交易密码必须是8-20位");
+			}
+		}
+		String uid = ServletBox.getLoginUID(request);
+		userVO.setID(uid);
+		Users users=new Users();
+		BeanUtils.copyProperties(userVO, users);
+		if(userService.refresh(users)){
+			return Result.ok("修改交易密码成功");
+		}
+		return Result.ok(userVO);
+		
+	}
+	/*public Result installTradepwd(){
+		
+	}*/
 	/**
 	 * 登录
 	 * @param request
@@ -363,5 +454,61 @@ public class UserController {
 	 */
 	private String getCheckCode(){
 		return String.valueOf(Math.abs(new Random().nextInt()%10000));
+	}
+	/**
+	 * 发送验证码的公共方法
+	 * @param mobile
+	 * @param session
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean sendCodeCommon(String mobile,HttpSession session,HttpServletRequest request) throws Exception{
+		boolean flag=false;
+		String code  = getCheckCode();
+		SmsMessage message = new SmsMessage();
+		message.setMobile(mobile);
+		message.setBody("您的验证码是:"+code);
+		Result result = null;
+		result = MessagerManager.getSmsSender().send(message);
+		if(result.isBad()){
+			return flag;
+		}
+		session.setAttribute(ServletBox.SMS_MESSAGE, code);
+		session.setAttribute("UNCHECK_MOBILE", mobile);
+		return flag=true;
+		
+	}
+	/**
+	 * 验证手机号和验证码是否输入正确！
+	 * @param request
+	 * @param session
+	 * @param mobile
+	 * @param code
+	 * @return
+	 */
+	private boolean checkCodeCommon(String mobile,String code,HttpServletRequest request, HttpSession session){
+		boolean flag=false;
+		
+		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
+		if(StringUtils.isEmpty(sessionCode)){
+			return flag=false;
+		}
+			//验证发送短信的手机号与最后提交的手机号是否一致
+			if(session.getAttribute("UNCHECK_MOBILE").equals(mobile)){
+				//判断是否成功
+				if(sessionCode.equals(code)){
+					//成功后修改用户手机号
+				/*	Users users = new Users();
+					users.setID(uid);
+					users.setMobile(mobile);
+					userService.refresh(users);*/
+					//清除session
+					session.setAttribute(ServletBox.SMS_MESSAGE, null);
+					session.setAttribute("UNCHECK_MOBILE", null);
+					return flag=true;
+				}
+			}
+			return flag;
 	}
 }

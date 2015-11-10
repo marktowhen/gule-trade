@@ -13,12 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
-import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
-import com.jingyunbank.etrade.user.bean.UserVO;
 import com.jingyunbank.etrade.user.service.UserInfoService;
 
 /**

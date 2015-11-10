@@ -192,20 +192,4 @@ public class UserService implements IUserService{
 		return Optional.empty();
 	}
 
-	/*@Override
-	public boolean updatePhone(Users user) throws DataRefreshingException {
-		boolean flag=false;
-		UserEntity userEntity=new UserEntity();
-		BeanUtils.copyProperties(userEntity, user);
-		try {
-			if(userDao.updatePhone(userEntity)>0){
-				flag=true;
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			throw new DataRefreshingException();
-		}
-		return flag;
-	}*/
-
 }

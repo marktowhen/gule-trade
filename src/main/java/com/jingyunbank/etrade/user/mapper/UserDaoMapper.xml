@@ -118,5 +118,6 @@
 			t.id=#{ID}
 		where t.id=#{ID}
 	</update>
-
+	<!-- 设置修改密码 -->
+	
 </mapper>

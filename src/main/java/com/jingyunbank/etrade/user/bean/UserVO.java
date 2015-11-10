@@ -25,7 +25,6 @@ public class UserVO {
 	@NotNull(message="密码不能为空")
 	private String password;
 	@Size(max=20,min=8,message="密码必须是8-20位")
-	@NotNull(message="交易密码不能为空")
 	private String tradepwd;
 	private String nickname;
 	//private UserInfo uinfo;
