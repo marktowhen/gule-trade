@@ -17,8 +17,8 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.order.bean.OrderGoodsVO;
-import com.jingyunbank.etrade.order.bean.OrderSubmitVO;
+import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
+import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
 
 public class OrderControllerTest extends TestCaseBase {
 
@@ -145,21 +145,20 @@ public class OrderControllerTest extends TestCaseBase {
 	}
 	@Test
 	public void testSuccess1() throws Exception{
-		OrderSubmitVO vo = new OrderSubmitVO();
-		List<OrderGoodsVO> goods = new ArrayList<OrderGoodsVO>();
+		PurchaseRequestVO vo = new PurchaseRequestVO();
+		List<PurchaseGoodsVO> goods = new ArrayList<PurchaseGoodsVO>();
 		vo.setAddressID("1111111111111111111111");
 		vo.setPaytypeID("1111111111111111111111");
 		vo.setPaytypeName("1111");
 		vo.setReceiver("XXXX");
 		for (int i = 0; i < 3; i++) {
-			OrderGoodsVO g = new OrderGoodsVO();
+			PurchaseGoodsVO g = new PurchaseGoodsVO();
 			g.setCount(2);
-			g.setID("1111111111111111111111");
 			g.setMID("1111111111111111111111");
 			g.setPrice(new BigDecimal(123.3d));
 			goods.add(g);
 		}
-		vo.setGoods(goods);
+		vo.setOrders(null);
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		System.out.println(json);

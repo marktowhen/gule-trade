@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -23,10 +24,13 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
-import com.jingyunbank.etrade.order.bean.OrderSubmitVO;
+import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
+import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
 import com.jingyunbank.etrade.order.bean.OrderVO;
 
 @RestController
@@ -75,7 +79,7 @@ public class OrderController {
 		order.setAddtime(new Date());
 		Orders orderbo = new Orders();
 		BeanUtils.copyProperties(order, orderbo);
-		orderContextService.generate(orderbo);
+		orderContextService.save(orderbo);
 		return Result.ok(order);
 	}
 	
@@ -85,7 +89,7 @@ public class OrderController {
 			method=RequestMethod.PUT,
 			consumes="application/json;charset=UTF-8",
 			produces="application/json;charset=UTF-8")
-	public Result submit(@Valid @RequestBody OrderSubmitVO orders,
+	public Result submit(@Valid @RequestBody PurchaseRequestVO purchase,
 			BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -93,18 +97,29 @@ public class OrderController {
 						.map(oe -> Arrays.asList(oe.getCodes()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
+		String UID = ServletBox.getLoginUID(session);
+		purchase.setUID(UID);
 		
-		orders.getGoods().forEach(order->{
-			order.getMID();
-			order.setID(KeyGen.uuid());
-			Orders orderbo = new Orders();
-			BeanUtils.copyProperties(order, orderbo);
-			try {
-				orderContextService.generate(orderbo);
-			} catch (Exception e) {}
-		});
+		List<PurchaseOrderVO> ordervos = purchase.getOrders();
+		List<Orders> orders = new ArrayList<Orders>();
 		
-		return Result.ok();
+		for (PurchaseOrderVO ordervo : ordervos) {
+			ordervo.setID(KeyGen.uuid());
+			ordervo.setOrderno("");
+			ordervo.setAddtime(new Date());
+			
+			Orders order = new Orders();
+			BeanUtils.copyProperties(ordervo, order);
+			BeanUtils.copyProperties(purchase, order);
+			
+			order.setStatusCode(OrderStatusDesc.NEW.getCode());
+			order.setStatusName(OrderStatusDesc.NEW.getName());
+			
+			orders.add(order);
+		}
+		orderContextService.save(orders);
+		
+		return Result.ok(purchase);
 	}
 	
 	@AuthBeforeOperation

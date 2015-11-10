@@ -1,13 +1,15 @@
 package com.jingyunbank.etrade.order.service.context;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.OrderDeliveringException;
-import com.jingyunbank.etrade.api.exception.OrderGenerateException;
 import com.jingyunbank.etrade.api.exception.OrderPaidException;
 import com.jingyunbank.etrade.api.exception.OrderPayException;
 import com.jingyunbank.etrade.api.exception.OrderPayFailException;
@@ -25,11 +27,23 @@ public class OrderContextService implements IOrderContextService {
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public void generate(Orders order) throws OrderGenerateException {
+	public void save(Orders order) throws DataSavingException {
 		try{
 			orderService.save(order);
 		}catch(Exception e){
-			throw new OrderGenerateException();
+			throw new DataSavingException(e);
+		}
+	}
+	
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
+	public void save(List<Orders> orders) throws DataSavingException {
+		try{
+			for (Orders order : orders) {
+				orderService.save(order);
+			}
+		}catch(Exception e){
+			throw new DataSavingException(e);
 		}
 	}
 
