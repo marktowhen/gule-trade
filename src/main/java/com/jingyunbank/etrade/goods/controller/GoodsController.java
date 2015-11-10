@@ -2,7 +2,9 @@ package com.jingyunbank.etrade.goods.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,15 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.util.CollectionUtils;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
+import com.jingyunbank.etrade.goods.bean.RecommendGoods;
+import com.jingyunbank.etrade.order.bean.OrderVO;
 
 /**
  * Title: 商品controller
@@ -45,33 +49,45 @@ public class GoodsController {
 		Range range = new Range();
 		range.setFrom(0);
 		range.setTo(20);
-		List<HotGoods> bolist = goodsService.listGoodsByLikeName(goodsname, range);
-		List<CommonGoodsVO> goods = new ArrayList<CommonGoodsVO>();
-		if (bolist != null) {
-			goods = CollectionUtils.copyTo(bolist, CommonGoodsVO.class);
-		}
-		return Result.ok(goods);
+		List<ShowGoods> bolist = goodsService.listGoodsByLikeName(goodsname, range);
+		List<CommonGoodsVO> list = goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
+			CommonGoodsVO vo = new CommonGoodsVO();
+			try {
+				BeanUtils.copyProperties(bo, vo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 
 	@RequestMapping(value = "/listBrands", method = RequestMethod.POST)
-	public Result queryBrands() throws Exception {
-		List<GoodsBrandVO> brands = new ArrayList<GoodsBrandVO>();
-		List<HotGoods> brandslist = goodsService.listBrands();
-		if (brandslist != null) {
-			brands = CollectionUtils.copyTo(brandslist, GoodsBrandVO.class);
-		}
-		return Result.ok(brands);
+	public Result queryBrands(HttpServletRequest request) throws Exception {
+		List<GoodsBrandVO> list = goodsService.listBrands().stream().map(bo -> {
+			GoodsBrandVO vo = new GoodsBrandVO();
+			try {
+				BeanUtils.copyProperties(bo, vo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 
 	@RequestMapping(value = "/listTypes", method = RequestMethod.POST)
-	public Result queryTypes() throws Exception {
-		List<GoodsTypesVO> types = new ArrayList<GoodsTypesVO>();
-		List<HotGoods> typeslist = goodsService.listTypes();
-		if (typeslist != null) {
-			types = CollectionUtils.copyTo(typeslist, GoodsTypesVO.class);
-		}
-
-		return Result.ok(types);
+	public Result queryTypes(HttpServletRequest request) throws Exception {
+		List<GoodsTypesVO> list = goodsService.listTypes().stream().map(bo -> {
+			GoodsTypesVO vo = new GoodsTypesVO();
+			try {
+				BeanUtils.copyProperties(bo, vo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 
 	/**
@@ -84,30 +100,53 @@ public class GoodsController {
 	 */
 	@RequestMapping(value = "/listByWhere", method = RequestMethod.GET)
 	public Result queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
-		//GoodsShow goodshowBO = getVo2Bo(goodshowvo);
+		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		Range range = new Range();
 		range.setFrom(0);
 		range.setTo(20);
-		
+
 		GoodsShow goodshowBO = new GoodsShow();
-		String brands[] ={"1"};
-		String types[] ={"1"};
+		String brands[] = { "1" };
+		String types[] = { "1" };
 		goodshowBO.setBrands(null);
 		goodshowBO.setTypes(null);
 		goodshowBO.setBeginPrice(new BigDecimal(300));
 		goodshowBO.setEndPrice(new BigDecimal(300));
 		goodshowBO.setOrder(2);
-		
-		List<HotGoods> list = goodsService.listGoodsByWhere(goodshowBO, range);
-		List<CommonGoodsVO> goodslist = new ArrayList<CommonGoodsVO>();
-		if (list != null) {
-			goodslist = CollectionUtils.copyTo(list, CommonGoodsVO.class);
-		}
+		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(goodshowBO, range).stream().map(bo -> {
+			CommonGoodsVO vo = new CommonGoodsVO();
+			try {
+				BeanUtils.copyProperties(bo, vo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return vo;
+		}).collect(Collectors.toList());
 		return Result.ok(goodslist);
 	}
+		/**
+		 * 宝贝推荐
+		 * @param request
+		 * @return
+		 * @throws Exception 
+		 */
+		@RequestMapping(value = "/listRecommendGoods", method = RequestMethod.GET)
+		public Result queryGoodsByWhere(HttpServletRequest request) throws Exception{
+			List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
+				RecommendGoods vo = new RecommendGoods();
+				try {
+					BeanUtils.copyProperties(bo, vo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return vo;
+			}).collect(Collectors.toList());
+			return Result.ok(list);
+		}
 
 	/**
-	 * 首页热门推荐产品功能  待确定业务修改
+	 * 首页热门推荐产品功能 待确定业务修改
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -116,41 +155,41 @@ public class GoodsController {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		try {
 			List<HotGoods> goodslist = goodsService.listHotGoods();
-			List<HotGoods> tmplist = new ArrayList<HotGoods>();//存放商家分组LIST
-			if (goodslist != null && goodslist.size() >0) {//将业务对象转换为页面VO对象
+			List<HotGoods> tmplist = new ArrayList<HotGoods>();// 存放商家分组LIST
+			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 				HotGoodsVO hotGoodsVO = new HotGoodsVO();
-				for(int i = 0;i<goodslist.size();i++){
-					 //第一条处理
-					if(i == 0){
+				for (int i = 0; i < goodslist.size(); i++) {
+					// 第一条处理
+					if (i == 0) {
 						tmplist.add(goodslist.get(i));
-					}else if(!goodslist.get(i-1).getMID().equals(goodslist.get(i).getMID())){//与上一家不是一家
+					} else if (!goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家不是一家
 						hotGoodsVO.init(tmplist);
 						rltlist.add(hotGoodsVO);
 						tmplist = new ArrayList<HotGoods>();
 						tmplist.add(goodslist.get(i));
-						if(i == (goodslist.size()-1)){//最后一条
+						if (i == (goodslist.size() - 1)) {// 最后一条
 							hotGoodsVO = new HotGoodsVO();
 							hotGoodsVO.init(tmplist);
 							rltlist.add(hotGoodsVO);
-						}else{
+						} else {
 							hotGoodsVO = new HotGoodsVO();
 						}
-					}else if(goodslist.get(i-1).getMID().equals(goodslist.get(i).getMID())){//与上一家是一家
+					} else if (goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家是一家
 						tmplist.add(goodslist.get(i));
-						if(i == (goodslist.size()-1)){//最后一条
+						if (i == (goodslist.size() - 1)) {// 最后一条
 							hotGoodsVO = new HotGoodsVO();
 							hotGoodsVO.init(tmplist);
 							rltlist.add(hotGoodsVO);
 						}
 					}
-					
+
 				}
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return Result.ok(rltlist);
 	}
 

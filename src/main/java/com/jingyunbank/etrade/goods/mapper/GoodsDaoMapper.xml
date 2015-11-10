@@ -3,7 +3,6 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.goods.dao.GoodsDao">
-	
 	<!-- 封装商品信息Map -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsDaoEntity" id="baseGoodsMap">
 		<!-- 商品概要信息 -->
@@ -15,7 +14,13 @@
 		<result column="price" property="price"/>
 		<result column="special_price" property="specialPrice"/>
 		<result column="nowprice" property="nowPrice"/>
+		<!-- 商品图片信息 -->
 		<result column="thumb_path_1" property="thumb_path_1"/>
+		<!-- 店铺信息 -->
+		<result column="mid" property="MID"/>
+		<result column="merchantname" property="merchantName"/>
+		<result column="merchantdesc" property="merchantDesc"/>
+		<result column="merchantimg" property="merchantImg"/>
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID"/>
 		<result column="brandname" property="brandName"/>
@@ -45,6 +50,7 @@
 		<result column="tid" property="TID"/>
 		<result column="typename" property="typeName"/>
 	</resultMap>
+	
 	<!-- 商品图片属性 goods_img i -->
 	<sql id="imgAttr">
 		i.Thumb_path_1 thumb_path_1,
@@ -70,7 +76,7 @@
 		LEFT JOIN goods_detail d ON g.id=d.gid
 		LEFT JOIN goods_img i ON g.id = i.gid
 		WHERE 1 = 1 AND g.state=1 AND g.name LIKE  CONCAT(CONCAT('%', #{goodsname}), '%')
-		LIMIT #{from} , #{to}
+		LIMIT #{from} , #{size}
 	</select>
 	
 	<!-- 查询品牌 -->
@@ -159,5 +165,15 @@
 		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
 		ORDER BY g.volume DESC
 		 ]]>
+	</select>
+	<!-- 根据商品 推荐序号 查询 宝贝推荐的商品 -->
+	<select id="selectRecommend" resultMap="baseGoodsMap">
+		SELECT g.id gid,g.name goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1 
+		FROM goods g 
+		LEFT JOIN merchant  m ON g.mid=m.id
+		LEFT JOIN goods_img i ON i.gid = g.id
+		WHERE g.record_sort IS NOT NULL
+		ORDER BY g.record_sort
+
 	</select>
 </mapper>
