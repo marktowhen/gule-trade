@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +25,7 @@ import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
+import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
@@ -42,14 +44,20 @@ public class GoodsController {
 
 	@Resource
 	private IGoodsService goodsService;
-
+	/**
+	 * 根据名称模糊查询商品
+	 * @param request
+	 * @param goodsname
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
 	public Result queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname, Page page)
 			throws Exception {
 		Range range = new Range();
 		range.setFrom(0);
 		range.setTo(20);
-		List<ShowGoods> bolist = goodsService.listGoodsByLikeName(goodsname, range);
 		List<CommonGoodsVO> list = goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -58,6 +66,12 @@ public class GoodsController {
 		return Result.ok(list);
 	}
 
+		/**
+		 * 查询品牌列表
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
 	@RequestMapping(value = "/listBrands", method = RequestMethod.POST)
 	public Result queryBrands(HttpServletRequest request) throws Exception {
 		List<GoodsBrandVO> list = goodsService.listBrands().stream().map(bo -> {
@@ -67,7 +81,12 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
-
+	/**
+	 * 查询类型类别
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/listTypes", method = RequestMethod.POST)
 	public Result queryTypes(HttpServletRequest request) throws Exception {
 		List<GoodsTypesVO> list = goodsService.listTypes().stream().map(bo -> {
@@ -79,7 +98,7 @@ public class GoodsController {
 	}
 
 	/**
-	 * 根据条件查询商品信息
+	 * 根据条件查询商品信息 (商品查询)
 	 * 
 	 * @param request
 	 * @param goodvo
@@ -123,6 +142,67 @@ public class GoodsController {
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+
+	/**
+	 * 根据搜索条件查询店铺 (店铺查询)
+	 * 
+	 * @param request
+	 * @param goodshowvo
+	 * @param page
+	 * @return
+	 * @throws Exception 
+	 * @throws  
+	 */
+	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.GET)
+	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
+		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
+
+		Range range = new Range();
+		range.setFrom(0);
+		range.setTo(20);
+		GoodsShow goodshowBO = new GoodsShow();
+		String brands[] = { "1","2" };
+		String types[] = { "4" };
+		goodshowBO.setBrands(brands);
+		goodshowBO.setTypes(types);
+		goodshowBO.setBeginPrice(new BigDecimal(100));
+		goodshowBO.setEndPrice(new BigDecimal(300));
+
+		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo ->{
+			GoodsMerchantVO vo = new GoodsMerchantVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+
+		return Result.ok(list);
+	}
+	
+	/**
+	 * 	店铺相关商品 (点击X件相关产品 MID )
+	 * @param request
+	 * @param goodshowvo
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/listMerchantByWhereGoods", method = RequestMethod.GET)
+	public Result queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
+		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
+		GoodsShow goodshowBO = new GoodsShow();
+		String brands[] = { "1","2" };
+		String types[] = { "4" };
+		goodshowBO.setBrands(brands);
+		goodshowBO.setTypes(types);
+		goodshowBO.setBeginPrice(new BigDecimal(100));
+		goodshowBO.setEndPrice(new BigDecimal(300));
+		goodshowBO.setMID("4");
+		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods(goodshowBO).stream().map(bo ->{
+			CommonGoodsVO vo = new CommonGoodsVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+
 		return Result.ok(list);
 	}
 

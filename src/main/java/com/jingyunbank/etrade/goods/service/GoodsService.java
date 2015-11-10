@@ -16,10 +16,12 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.util.CollectionUtils;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
+import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
+import com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
 /**
@@ -36,7 +38,7 @@ public class GoodsService implements IGoodsService {
 
 	@Override
 	public List<ShowGoods> listGoodsByLikeName(String goodsname, Range range) throws Exception {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("goodsname", goodsname);
 		map.put("from", range.getFrom());
 		map.put("size", range.getTo());
@@ -81,10 +83,10 @@ public class GoodsService implements IGoodsService {
 
 	@Override
 	public List<ShowGoods> listGoodsByWhere(GoodsShow goodsshow, Range range) throws Exception {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("from", range.getFrom());
-		map.put("to", range.getTo());
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
 		map.put("brandArr", goodsshow.getBrands());
 		map.put("typeArr", goodsshow.getTypes());
 		map.put("beginprice", goodsshow.getBeginPrice());
@@ -116,5 +118,39 @@ public class GoodsService implements IGoodsService {
 			return bo;
 		}).collect(Collectors.toList());
 		return recommendlist;
+	}
+
+	@Override
+	public List<GoodsMerchant> listMerchantByWhere(GoodsShow show, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		map.put("brandArr", show.getBrands());
+		map.put("typeArr", show.getTypes());
+		map.put("beginprice", show.getBeginPrice());
+		map.put("endprice", show.getEndPrice());
+
+		List<GoodsMerchant> list = goodsDao.selectMerchantByWhere(map).stream().map(dao -> {
+			GoodsMerchant bo = new GoodsMerchant();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return list;
+	}
+
+	@Override
+	public List<ShowGoods> listMerchantByWhereGoods(GoodsShow show) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("brandArr", show.getBrands());
+		map.put("typeArr", show.getTypes());
+		map.put("beginprice", show.getBeginPrice());
+		map.put("endprice", show.getEndPrice());
+		map.put("mid", show.getMID());
+		List<ShowGoods> list = goodsDao.selectMerchantByWhereGoods(map).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return list;
 	}
 }
