@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -38,31 +40,32 @@ public class GoodsService implements IGoodsService {
 		map.put("goodsname", goodsname);
 		map.put("from", range.getFrom());
 		map.put("size", range.getTo());
-		List<GoodsDaoEntity> daolist = goodsDao.selectGoodsByLikeName(map);
-		List<ShowGoods> bolist = new ArrayList<ShowGoods>();
-		if (daolist != null) {
-			bolist = CollectionUtils.copyTo(daolist, ShowGoods.class);
-		}
+		List<ShowGoods> bolist = goodsDao.selectGoodsByLikeName(map).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+
 		return bolist;
 	}
 
 	@Override
 	public List<ShowGoods> listBrands() throws Exception {
-		List<ShowGoods> brandslist = new ArrayList<ShowGoods>();
-		List<GoodsDaoEntity> Brands = goodsDao.selectBrands();
-		if (Brands != null) {
-			brandslist = CollectionUtils.copyTo(Brands, ShowGoods.class);
-		}
+		List<ShowGoods> brandslist = goodsDao.selectBrands().stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
 		return brandslist;
 	}
 
 	@Override
 	public List<ShowGoods> listTypes() throws Exception {
-		List<ShowGoods> typeslist = new ArrayList<ShowGoods>();
-		List<GoodsDaoEntity> types = goodsDao.selectTypes();
-		if (types != null) {
-			typeslist = CollectionUtils.copyTo(types, ShowGoods.class);
-		}
+		List<ShowGoods> typeslist = goodsDao.selectTypes().stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
 		return typeslist;
 	}
 
@@ -97,21 +100,21 @@ public class GoodsService implements IGoodsService {
 			map.put("order", "4");
 		}
 
-		List<GoodsDaoEntity> goodslist = goodsDao.selectGoodsByWhere(map);
-		List<ShowGoods> showGoodsList = new ArrayList<ShowGoods>();
-		if (goodslist != null) {
-			showGoodsList = CollectionUtils.copyTo(goodslist, ShowGoods.class);
-		}
+		List<ShowGoods> showGoodsList = goodsDao.selectGoodsByWhere(map).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
 		return showGoodsList;
 	}
 
 	@Override
-	public List<ShowGoods> listRecommend() throws Exception{
-		List<ShowGoods> recommendlist = new ArrayList<ShowGoods>();
-		List<GoodsDaoEntity> recommend = goodsDao.selectRecommend();
-		if (recommend != null) {
-			recommendlist = CollectionUtils.copyTo(recommend, ShowGoods.class);
-		}
+	public List<ShowGoods> listRecommend() throws Exception {
+		List<ShowGoods> recommendlist = goodsDao.selectRecommend().stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
 		return recommendlist;
 	}
 }

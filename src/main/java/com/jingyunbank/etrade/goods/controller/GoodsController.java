@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,11 +52,7 @@ public class GoodsController {
 		List<ShowGoods> bolist = goodsService.listGoodsByLikeName(goodsname, range);
 		List<CommonGoodsVO> list = goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
-			try {
-				BeanUtils.copyProperties(bo, vo);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
@@ -66,11 +62,7 @@ public class GoodsController {
 	public Result queryBrands(HttpServletRequest request) throws Exception {
 		List<GoodsBrandVO> list = goodsService.listBrands().stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
-			try {
-				BeanUtils.copyProperties(bo, vo);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
@@ -80,11 +72,7 @@ public class GoodsController {
 	public Result queryTypes(HttpServletRequest request) throws Exception {
 		List<GoodsTypesVO> list = goodsService.listTypes().stream().map(bo -> {
 			GoodsTypesVO vo = new GoodsTypesVO();
-			try {
-				BeanUtils.copyProperties(bo, vo);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
@@ -115,34 +103,28 @@ public class GoodsController {
 		goodshowBO.setOrder(2);
 		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
-			try {
-				BeanUtils.copyProperties(bo, vo);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(goodslist);
 	}
-		/**
-		 * 宝贝推荐
-		 * @param request
-		 * @return
-		 * @throws Exception 
-		 */
-		@RequestMapping(value = "/listRecommendGoods", method = RequestMethod.GET)
-		public Result queryGoodsByWhere(HttpServletRequest request) throws Exception{
-			List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
-				RecommendGoods vo = new RecommendGoods();
-				try {
-					BeanUtils.copyProperties(bo, vo);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return vo;
-			}).collect(Collectors.toList());
-			return Result.ok(list);
-		}
+
+	/**
+	 * 宝贝推荐
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/listRecommendGoods", method = RequestMethod.GET)
+	public Result queryGoodsByWhere(HttpServletRequest request) throws Exception {
+		List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
+			RecommendGoods vo = new RecommendGoods();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
 
 	/**
 	 * 首页热门推荐产品功能 待确定业务修改
