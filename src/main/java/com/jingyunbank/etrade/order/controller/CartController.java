@@ -1,8 +1,10 @@
 package com.jingyunbank.etrade.order.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -31,6 +33,8 @@ import com.jingyunbank.etrade.order.bean.GoodsInCartVO;
 @RestController
 public class CartController {
 
+	public static final String GOODS_IN_CART_TO_CLEARING = "GOODS_IN_CART_TO_CLEARING";
+	
 	@Autowired
 	private ICartService cartService;
 	
@@ -115,5 +119,40 @@ public class CartController {
 		gic.setCount(count);
 		cartService.refresh(gic);
 		return Result.ok();
+	}
+	
+	/**
+	 * 购物车去结算<br>
+	 * 将购物车中选中的商品进行结算<br>
+	 * 
+	 * uri: post /api/cart/clearing [{'':''}, {'':''}, {'':''}]
+	 * @return
+	 * @throws Exception
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
+	public Result clearing(@Valid @RequestBody List<GoodsInCartVO> goods,
+					BindingResult valid, HttpSession session) throws Exception{
+		session.setAttribute(GOODS_IN_CART_TO_CLEARING, goods);
+		return Result.ok();
+	}
+	
+	/**
+	 * 列出所有购物车页面选中的将要被结算的商品列表<br>
+	 * url: get /api/cart/clearing/list
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/cart/clearing/list", method=RequestMethod.GET)
+	public Result listClearing(HttpSession session) throws Exception{
+		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);
+		List<GoodsInCartVO> list = new ArrayList<GoodsInCartVO>();
+		if(Objects.nonNull(obj)){
+			list = (List<GoodsInCartVO>)obj;
+		}
+		return Result.ok(list);
 	}
 }
