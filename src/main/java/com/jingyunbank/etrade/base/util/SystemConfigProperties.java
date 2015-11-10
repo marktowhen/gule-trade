@@ -9,7 +9,11 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
+/**
+ * 加载短信邮箱服务类 
+ * @author qxs
+ *
+ */
 @Component("systemConfigProperties")
 @Scope("singleton")
 public final class SystemConfigProperties {

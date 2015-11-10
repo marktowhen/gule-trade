@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.user.controller;
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -7,9 +9,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -37,16 +41,8 @@ public class UserController {
 	private IUserService userService;
   	@Autowired 
   	private IUserService userInfoService;
-  	
 	
-	@RequestMapping("/user")
-	public String invest(HttpServletRequest request, HttpSession session){
-		HttpSession session0 = request.getSession();
-		session0.setAttribute("abcdef", "abcdef");
-		session.setAttribute("ghijk", "ghijk");
-		System.out.println(session0.getAttribute("ghijk"));
-		return "{username:mike, password:black mamba}";
-	}
+	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
 	
 /**
  * 用户注册信息的保存
@@ -271,6 +267,10 @@ public class UserController {
 		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
 			return Result.fail("您已经绑定过手机了");
 		}
+		if(userService.getByPhone(mobile).isPresent()){
+			return Result.fail("该手机号已被使用");
+		}
+		
 		String code  = getCheckCode();
 		if(!StringUtils.isEmpty(id)){
 			//如何设置验证码的有效期限--待解决
@@ -364,4 +364,131 @@ public class UserController {
 	private String getCheckCode(){
 		return String.valueOf(Math.abs(new Random().nextInt()%10000));
 	}
+	
+	
+	/**
+	 * 发送邮件（绑定邮箱时使用）
+	 * 链接地址 http://ip(:port)?d=1&u=2&m=3
+	 * d: uid
+	 * u: email+"~"+邮件发送时间 base64编码后字符
+	 * m: uid+"_"+username MD5加密后字符串
+	 * @param request
+	 * @param email
+	 * @return
+	 */
+	@RequestMapping(value="/email",method=RequestMethod.GET)
+	public Result sendEmailContentForBindEmail(HttpServletRequest request,
+			HttpServletResponse resp, String email) {
+		if(userService.getByEmail(email).isPresent()){
+			return Result.fail("该邮箱已被使用");
+		}
+		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		if(!userOption.isPresent()){
+			return Result.fail("请登录");
+		}
+		if(!StringUtils.isEmpty(userOption.get().getEmail())){
+			return Result.fail("您已绑定邮箱");
+		}
+		
+		return sendEmail(request
+				,userService.getByUid(ServletBox.getLoginUID(request)).get()
+				,email);
+	}
+	
+	/**
+	 * 发送绑定邮件
+	 * 
+	 * @param request
+	 * @param user
+	 * @param email
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	private  Result sendEmail(HttpServletRequest request,Users user, String email){
+		if(StringUtils.isEmpty(email)){
+			return Result.fail("邮箱地址不能为空");
+		}
+		String basePath = getBasePath(request);
+		String msg1 = user.getID() + "_"
+				+ user.getUsername();
+		// MD5加密（用户id和用户名）
+		String msg1Md5 = MD5.digest(msg1);
+		// 密钥
+		String message = email + "~"
+				+ System.currentTimeMillis();
+		// 邮箱和当前时间戳进行base64编码
+		String verifyCode = new Base64().encodeAsString(message.getBytes());
+
+		String url = basePath
+				+ "api/user/ckemail.htm?d="+ user.getID()
+				+ "&u=" + verifyCode + "&m=" + msg1Md5;
+		StringBuffer content = new StringBuffer();
+		
+		content.append("验证链接:"+url+"\r\n");
+		
+		content.append("有效期:"+(EMAIL_VILAD_TIME/1000/60/60)+"小时");
+		return MessagerManager.getEmailSender().send(email, "用户验证", content.toString());
+	}
+	
+	private  String getBasePath(HttpServletRequest request){
+		String basePath;
+		if (request.getServerPort() == 80) {
+			basePath = request.getScheme() + "://" + request.getServerName()
+					+ "/";
+		} else {
+			basePath = request.getScheme() + "://" + request.getServerName()
+					+ ":" + request.getServerPort() + "/";
+		}
+		
+		return basePath;
+	}
+	/**
+	 * 验证绑定邮箱
+	 * @param request
+	 * @param m uid+"_"+username MD5加密后字符串
+	 * @param u email+"~"+邮件发送时间 base64编码后字符
+	 * @param d uid
+	 * @return
+	 * 2015年11月10日 qxs
+	 * @throws DataRefreshingException 
+	 */
+	@RequestMapping(value="/ckemail",method=RequestMethod.GET)
+	public Result checkEmail(HttpServletRequest request,
+			String m, String u, String d) throws DataRefreshingException{
+		Optional<Users> userOption = userService.getByUid(d);
+		if(!userOption.isPresent()){
+			return Result.fail("用户不存在");
+		}
+		
+		Users users = userOption.get();
+		if(!StringUtils.isEmpty(users.getEmail())){
+			return Result.fail("您已绑定邮箱");
+		}
+		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
+			return Result.fail("链接格式错误");
+		}
+		//emial~time(long)
+		String[] emailTime = new String(Base64.decodeBase64(u)).split("~");
+		if(emailTime.length!=2){
+			return Result.fail("链接格式错误");
+		}
+		String email = emailTime[0];
+		long sendtime = Long.valueOf(emailTime[1]);
+		if(new Date(sendtime+EMAIL_VILAD_TIME).before(new Date())){
+			return Result.fail("链接已失效");
+		}
+		if(userService.getByEmail(email).isPresent()){
+			return Result.fail("该邮箱已被使用");
+		}
+		
+		//修改用户邮箱
+		Users userUpdate = new Users();
+		userUpdate.setID(users.getID());
+		userUpdate.setEmail(email);
+		userService.refresh(userUpdate);
+		return Result.ok();
+	}
+	
+	
+	
 }
