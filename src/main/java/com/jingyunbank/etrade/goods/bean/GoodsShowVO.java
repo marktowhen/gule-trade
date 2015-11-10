@@ -28,8 +28,27 @@ public class GoodsShowVO implements Serializable  {
 	评论排序  3
 	新品排序  4
 	*/
-	 
-	public String[] getBrands() {
+	private String goodsName; //结果查询使用
+	private String MID; //  相关产品 -->店铺ID
+	
+	
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getMID() {
+		return MID;
+	}
+
+	public void setMID(String mID) {
+		MID = mID;
+	}
+
+	public String[] getBrands() { 
 		return brands;
 	}
 

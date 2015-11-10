@@ -7,7 +7,7 @@ import com.jingyunbank.etrade.api.goods.bo.BaseGoods;
 * @author    liug
 * @date      2015年11月7日
  */
-public class HotGoodsEntity  extends BaseGoods{
+public class Hot24GoodsEntity  extends BaseGoods{
 
 	/**
 	 * 

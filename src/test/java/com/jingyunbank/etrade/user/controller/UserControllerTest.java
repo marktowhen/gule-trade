@@ -193,7 +193,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andReturn();
 	}
 	
-	/**
+		/**
 	 * 测试验证短信
 	 * @throws Exception
 	 */
@@ -211,6 +211,47 @@ public class UserControllerTest extends TestCaseBase {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
+	 * 测试发邮件
+	 * @throws Exception
+	 */
+	@Test
+	public void testSendEmail() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/email")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.param("email", "627956245@qq.com")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
+	 * 测试验证邮件
+	 * @throws Exception
+	 */
+	@Test
+	public void testCheckEmail() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/ckemail")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.param("d", "1")
+				.param("u", "NjI3OTU2MjQ1QHFxLmNvbX4xNDQ3MTMzNDUwOTkz")
+				.param("m", "EAC57D28C8D9C3D52C0EF1E66727AE8B")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andExpect(jsonPath("$.code").value("500"))
 				.andReturn();
 			
 	}
