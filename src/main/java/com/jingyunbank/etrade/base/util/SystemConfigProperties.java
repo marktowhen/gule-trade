@@ -34,6 +34,8 @@ public final class SystemConfigProperties {
 	 */
 	public final static String ROOT_FILE_PATH = "root.file.path";
 	
+	public final static String HEAD_PICTURE_SIZE = "head.picture.size";
+	
 	private final static String PROPERTIES_FILE_LOCATION = "system.properties";
 	
 	public final static String GOBAL_SEPARATOR = "global.separator";
@@ -82,6 +84,12 @@ public final class SystemConfigProperties {
 		Properties p = refresh();
 		String r = p.getProperty(key, "0");
 		return Integer.parseInt(r.trim());
+	}
+	
+	public static long getLong(String key){
+		Properties p = refresh();
+		String r = p.getProperty(key, "0");
+		return Long.parseLong(r.trim());
 	}
 	
 	public static double getDouble(String key){
