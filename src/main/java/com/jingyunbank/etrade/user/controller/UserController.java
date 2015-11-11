@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -43,6 +42,7 @@ public class UserController {
   	
 	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
 	
+	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 /**
  * 用户注册信息的保存
@@ -365,87 +365,6 @@ public class UserController {
 		return Result.fail("未登录");
 	}
 	
-	/**
-	 * 发送手机验证码
-	 * @param request
-	 * @param session
-	 * @param mobile 
-	 * @return
-	 * 2015年11月6日 qxs
-	 * @throws Exception 
-	 */
-	@RequestMapping(value="/message",method=RequestMethod.GET)
-	public Result getMessage(HttpServletRequest request, HttpSession session,String mobile) throws Exception{
-		if(StringUtils.isEmpty(mobile)){
-			return Result.fail("请输入手机号");
-		}
-		
-		String id = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
-			return Result.fail("您已经绑定过手机了");
-		}
-		if(userService.getByPhone(mobile).isPresent()){
-			return Result.fail("该手机号已被使用");
-		}
-		
-		String code  = getCheckCode();
-		if(!StringUtils.isEmpty(id)){
-			//如何设置验证码的有效期限--待解决
-			SmsMessage message = new SmsMessage();
-			message.setMobile(mobile);
-			message.setBody("您的验证码是:"+code);
-			Result result = null;
-			result = MessagerManager.getSmsSender().send(message);
-			if(result.isBad()){
-				return result;
-			}
-			session.setAttribute(ServletBox.SMS_MESSAGE, code);
-			session.setAttribute("UNCHECK_MOBILE", mobile);
-			return Result.ok("成功");
-		}
-		return Result.fail("未登录");
-	}
-	
-	/**
-	 * 验证手机号
-	 * @param request
-	 * @param session
-	 * @param mobile 
-	 * @return
-	 * 2015年11月6日 qxs
-	 * @throws DataRefreshingException 
-	 * @throws Exception 
-	 */
-	@RequestMapping(value="/message",method=RequestMethod.POST)
-	public Result checkMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws DataRefreshingException {
-		String uid = ServletBox.getLoginUID(request);
-		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
-		if(StringUtils.isEmpty(sessionCode)){
-			return Result.fail("未发送短信或短信已失效");
-		}
-		if(!StringUtils.isEmpty(uid)){
-			//验证发送短信的手机号与最后提交的手机号是否一致
-			if(session.getAttribute("UNCHECK_MOBILE").equals(mobile)){
-				//判断是否成功
-				if(sessionCode.equals(code)){
-					//成功后修改用户手机号
-					Users users = new Users();
-					users.setID(uid);
-					users.setMobile(mobile);
-					userService.refresh(users);
-					//清除session
-					session.setAttribute(ServletBox.SMS_MESSAGE, null);
-					session.setAttribute("UNCHECK_MOBILE", null);
-					return Result.ok("验证成功");
-				}else{
-					return Result.fail("验证码错误");
-				}
-			}else{
-				return Result.fail("请确认手机号是否正确");
-			}
-		}
-		return Result.fail("未登录");
-	}
 	
 	/**
 	 * user bo转vo
@@ -464,7 +383,7 @@ public class UserController {
 	}
 	
 	/**
-	 * 校验验证码
+	 * 校验图形验证码
 	 * @param session
 	 * @param captcha
 	 * @return
@@ -485,7 +404,119 @@ public class UserController {
 	
 	
 	/**
-	 * 发送邮件（绑定邮箱时使用）
+	 * 发送邮箱验证码,将code放入session  EMAIL_MESSAGE
+	 * @param email
+	 * @param subTitle
+	 * @param code
+	 * @param request
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	private Result sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request){
+		request.getSession().setAttribute(EMAIL_MESSAGE, code);
+		return MessagerManager.getEmailSender().send(email, subTitle, code);
+	}
+	/**
+	 * 发送手机验证码 将code放入session  SMS_MESSAGE
+	 * @param mobile
+	 * @param code
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * 2015年11月10日 qxs
+	 */
+	private Result sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
+		request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
+		SmsMessage message = new SmsMessage();
+		message.setMobile(mobile);
+		message.setBody("您的验证码是:"+code);
+		return MessagerManager.getSmsSender().send(message);
+	}
+	/**
+	 * 验证验证码,成功后清除session
+	 * @param code
+	 * @param request
+	 * @param sessionKey 验证码在session中的name
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+		if(StringUtils.isEmpty(code)){
+			return Result.fail("验证码不能为空");
+		}
+		String sessionCode = (String)request.getSession().getAttribute(sessionName);
+		if(StringUtils.isEmpty(sessionCode)){
+			return Result.fail("验证码未发送或已失效");
+		}
+		if(code.equals(sessionCode)){
+			request.getSession().setAttribute(sessionName, null);
+			return Result.ok();
+		}
+		return Result.fail("验证码错误");
+	}
+	
+	
+	//------------------------------qxs 验证/修改邮箱  start-----------------------------------------------
+	
+	//1、
+	/**
+	 * 发送到注册手机 验证码
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * 2015年11月11日 qxs
+	 */
+	@RequestMapping(value="/smsMessage",method=RequestMethod.GET)
+	public Result sendCodeToRegistMobile(HttpServletRequest request) throws Exception{
+		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		 return sendCodeToMobile(userOption.get().getMobile(), getCheckCode(), request);
+	}
+	
+	//2、
+	/**
+	 * 校验短信验证码
+	 * @param request
+	 * @param code
+	 * @return
+	 * 2015年11月11日 qxs
+	 */
+	@RequestMapping(value="/cksmsMessage",method=RequestMethod.GET)
+	public Result checkSmsMassage(HttpServletRequest request, String code){
+		return checkCode(code, request, ServletBox.SMS_MESSAGE);
+	}
+	//3、
+	/**
+	 * 校验图形验证码，校验邮箱格式,通过后发送到用户输入的邮箱
+	 * @param request
+	 * @param code
+	 * @param email
+	 * @return
+	 * 2015年11月11日 qxs
+	 */
+	@RequestMapping(value="/email-link",method=RequestMethod.GET)
+	public Result checkCodeAndSendEamil(HttpServletRequest request, String code, String email){
+		if(!checkCaptcha(request.getSession(), code)){
+			return Result.fail("验证码错误");
+		}
+		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		if(!userOption.isPresent()){
+			return Result.fail("请登录");
+		}
+		if(userService.getByEmail(email).isPresent()){
+			return Result.fail("该邮箱已被使用");
+		}
+		if(StringUtils.isEmpty(email)){
+			return Result.fail("邮箱地址不能为空");
+		}
+		Pattern p = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
+		if(!p.matcher(email).matches()){
+			return Result.fail("邮箱格式错误");
+		}
+		return sendLinkToEmail(request,userOption.get(), email);
+	}
+	
+	/**
+	 * 发送绑定邮箱的链接 点击链接验证后绑定
 	 * 链接地址 http://ip(:port)?d=1&u=2&m=3
 	 * d: uid
 	 * u: email+"~"+邮件发送时间 base64编码后字符
@@ -494,38 +525,8 @@ public class UserController {
 	 * @param email
 	 * @return
 	 */
-	@RequestMapping(value="/email",method=RequestMethod.GET)
-	public Result sendEmailContentForBindEmail(HttpServletRequest request,
-			HttpServletResponse resp, String email) {
-		if(userService.getByEmail(email).isPresent()){
-			return Result.fail("该邮箱已被使用");
-		}
-		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
-		if(!userOption.isPresent()){
-			return Result.fail("请登录");
-		}
-		if(!StringUtils.isEmpty(userOption.get().getEmail())){
-			return Result.fail("您已绑定邮箱");
-		}
+	private  Result sendLinkToEmail(HttpServletRequest request,Users user, String email){
 		
-		return sendEmail(request
-				,userService.getByUid(ServletBox.getLoginUID(request)).get()
-				,email);
-	}
-	
-	/**
-	 * 发送绑定邮件
-	 * 
-	 * @param request
-	 * @param user
-	 * @param email
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	private  Result sendEmail(HttpServletRequest request,Users user, String email){
-		if(StringUtils.isEmpty(email)){
-			return Result.fail("邮箱地址不能为空");
-		}
 		String basePath = getBasePath(request);
 		String msg1 = user.getID() + "_"
 				+ user.getUsername();
@@ -536,18 +537,22 @@ public class UserController {
 				+ System.currentTimeMillis();
 		// 邮箱和当前时间戳进行base64编码
 		String verifyCode = new Base64().encodeAsString(message.getBytes());
-
+		//验证链接的地址
 		String url = basePath
 				+ "api/user/ckemail.htm?d="+ user.getID()
 				+ "&u=" + verifyCode + "&m=" + msg1Md5;
+		//编辑邮箱内容
 		StringBuffer content = new StringBuffer();
-		
 		content.append("验证链接:"+url+"\r\n");
-		
 		content.append("有效期:"+(EMAIL_VILAD_TIME/1000/60/60)+"小时");
 		return MessagerManager.getEmailSender().send(email, "用户验证", content.toString());
 	}
-	
+	/**
+	 * 获取项目根目录
+	 * @param request
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
 	private  String getBasePath(HttpServletRequest request){
 		String basePath;
 		if (request.getServerPort() == 80) {
@@ -560,8 +565,9 @@ public class UserController {
 		
 		return basePath;
 	}
+	//4、验证邮箱链接，通过后绑定邮箱
 	/**
-	 * 验证绑定邮箱
+	 * 验证绑定邮箱的链接
 	 * @param request
 	 * @param m uid+"_"+username MD5加密后字符串
 	 * @param u email+"~"+邮件发送时间 base64编码后字符
@@ -570,18 +576,14 @@ public class UserController {
 	 * 2015年11月10日 qxs
 	 * @throws DataRefreshingException 
 	 */
-	@RequestMapping(value="/ckemail",method=RequestMethod.GET)
-	public Result checkEmail(HttpServletRequest request,
+	@RequestMapping(value="/ckemail-link",method=RequestMethod.GET)
+	public Result checkEmailLink(HttpServletRequest request,
 			String m, String u, String d) throws DataRefreshingException{
 		Optional<Users> userOption = userService.getByUid(d);
 		if(!userOption.isPresent()){
 			return Result.fail("用户不存在");
 		}
-		
 		Users users = userOption.get();
-		if(!StringUtils.isEmpty(users.getEmail())){
-			return Result.fail("您已绑定邮箱");
-		}
 		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
 			return Result.fail("链接格式错误");
 		}
@@ -606,6 +608,119 @@ public class UserController {
 		userService.refresh(userUpdate);
 		return Result.ok();
 	}
+	
+	
+	
+	//------------------------------验证邮箱end-----------------------------------------------
+	
+	
+	//------------------------------qxs 验证手机  start-----------------------------------------------
+		//1、发送邮箱验证码
+	/**
+	 * 发送验证码到注册邮箱
+	 * @param request
+	 * @param resp
+	 * @param email
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	@RequestMapping(value="/email-message",method=RequestMethod.GET)
+	public Result sendCodeToEmail(HttpServletRequest request) {
+		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", getCheckCode(), request);
+	}
+	//2、验证邮箱验证码
+	/**
+	 * 验证邮箱验证码
+	 * @param request
+	 * @param resp
+	 * @param email
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	@RequestMapping(value="/email-message",method=RequestMethod.POST)
+	public Result checkEmailCode(HttpServletRequest request, String code) {
+		return  checkCode(code, request, EMAIL_MESSAGE);
+	}
+	//3、
+	/**
+	 * 发送手机验证码 
+	 * @param request
+	 * @param session
+	 * @param mobile 
+	 * @return
+	 * 2015年11月6日 qxs
+	 * @throws Exception 
+	 */
+	@RequestMapping(value="/message",method=RequestMethod.GET)
+	public Result getMessage(HttpServletRequest request, HttpSession session,String mobile) throws Exception{
+		if(StringUtils.isEmpty(mobile)){
+			return Result.fail("请输入手机号");
+		}
+		String id = ServletBox.getLoginUID(request);
+		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
+			return Result.fail("您已经绑定过手机了");
+		}
+		if(userService.getByPhone(mobile).isPresent()){
+			return Result.fail("该手机号已被使用");
+		}
+		//获取验证码
+		String code  = getCheckCode();
+		if(!StringUtils.isEmpty(id)){
+			//如何设置验证码的有效期限--待解决
+			Result result = sendCodeToMobile(mobile, code, request);
+			if(result.isBad()){
+				return result;
+			}
+			session.setAttribute("UNCHECK_MOBILE", mobile);
+			return Result.ok("成功");
+		}
+		return Result.fail("未登录");
+	}
+	
+	//4、
+	/**
+	 * 验证手机验证码并绑定手机
+	 * @param request
+	 * @param session
+	 * @param mobile 
+	 * @return
+	 * 2015年11月6日 qxs
+	 * @throws DataRefreshingException 
+	 * @throws Exception 
+	 */
+	@RequestMapping(value="/message",method=RequestMethod.POST)
+	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws DataRefreshingException {
+		String uid = ServletBox.getLoginUID(request);
+		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
+		if(StringUtils.isEmpty(sessionCode)){
+			return Result.fail("未发送短信或短信已失效");
+		}
+		if(!StringUtils.isEmpty(uid)){
+			//验证发送短信的手机号与最后提交的手机号是否一致
+			if(session.getAttribute("UNCHECK_MOBILE").equals(mobile)){
+				//判断是否成功
+				Result checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+				if(checkResult.isOk()){
+					//成功后修改用户手机号
+					Users users = new Users();
+					users.setID(uid);
+					users.setMobile(mobile);
+					userService.refresh(users);
+					//清除session
+					session.setAttribute("UNCHECK_MOBILE", null);
+					return Result.ok("验证成功");
+				}else{
+					return Result.fail("验证码错误");
+				}
+			}else{
+				return Result.fail("请确认手机号是否正确");
+			}
+		}
+		return Result.fail("未登录");
+	}
+	
+	//------------------------------qxs 验证手机  end-----------------------------------------------
 	
 	/**
 	 * 发送验证码的公共方法
