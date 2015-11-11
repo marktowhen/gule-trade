@@ -372,6 +372,18 @@ public class UserController {
 		return Result.ok("成功");
 	}
 	/**
+	 * 用户注销登录
+	 * @param session
+	 * @return
+	 * 2015年11月11日 qxs
+	 */
+	@RequestMapping(value="/logout",method=RequestMethod.GET)
+	public Result logout(HttpSession session){
+		session.invalidate();
+		return Result.ok();
+	}
+	
+	/**
 	 * 根据用户名/手机/邮箱查询用户信息
 	 * @param request
 	 * @param session
@@ -781,6 +793,9 @@ public class UserController {
 		File dir = new File(path);
 		if(!dir.exists()){
 			dir.mkdirs();
+		}
+		if(file.getSize()>SystemConfigProperties.getLong(SystemConfigProperties.HEAD_PICTURE_SIZE)){
+			return Result.fail("文件太大");
 		}
 		String fileName = new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date())+getCheckCode()+"."+file.getContentType();
 		File target = new File(path+fileName);

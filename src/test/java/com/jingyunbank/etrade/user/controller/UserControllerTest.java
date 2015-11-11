@@ -28,13 +28,29 @@ public class UserControllerTest extends TestCaseBase {
 	 * @throws Exception
 	 */
 	@Test
-	public void test0() throws Exception{
-		JSONObject json = new JSONObject();
-		json.put("loginfo", "loginfo");
-		json.put("password", "password");
+	public void testLogin() throws Exception{
 		getMockMvc()
-			.perform(post("/api/user/login").param("loginfo", "qxstest").param("password", "123456")
-					.content(json.toJSONString())
+			.perform(post("/api/user/login")
+					.param("loginfo", "qxstest")
+					.param("password", "123456")
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andDo(MockMvcResultHandlers.print())  
+		            .andReturn();
+		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
+		
+	}
+	/**
+	 * 测试登出
+	 * @throws Exception
+	 */
+	@Test
+	public void testLogout() throws Exception{
+		getMockMvc()
+			.perform(get("/api/user/logout")
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
