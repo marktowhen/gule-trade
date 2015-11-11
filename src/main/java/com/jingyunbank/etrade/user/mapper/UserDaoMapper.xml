@@ -87,9 +87,6 @@
 			from users where id=#{ID}
 	
 	</select>
-	<select id="queryMaxId">
-		select max(id) from users
-	</select>
 	
 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserEntity">
 		update users t 
