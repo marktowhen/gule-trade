@@ -42,12 +42,29 @@ public class UserControllerTest extends TestCaseBase {
 	@Test
 	public void test1() throws Exception{
 		getMockMvc().perform(
-				 put("/api/user/register")
-				.param("username", "xiaoyuIii")
-				.param("mobile", "18788888898")
-				.param("email", "5559018888@qq.com")
+				 put("/api/user/register/send")
+				.param("mobile", "18766169803")
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andDo(MockMvcResultHandlers.print())
+			.andDo(print());
+	}
+	/**
+	 * 测试验证校验是否成功和保存信息是否成功
+	 * @throws Exception
+	 */
+	@Test
+	public void test2() throws Exception{
+		getMockMvc().perform(
+				 post("/api/user/register/checkCode")
+				.param("username", "xiaoyuIiii")
+				.param("mobile", "18766169803")
+				.param("code", "4278")
+			/*	.param("email", "555901118888@qq.com")*/
 				.param("password", "123490090")
-				/*.param("tradepwd", "1234787887")*/
+				.sessionAttr(ServletBox.SMS_MESSAGE, "427")
 				.param("nickname", "xiaoxue")
 				.param("locked", "true")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +75,6 @@ public class UserControllerTest extends TestCaseBase {
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	}
-	
 	/**
 	 * 测试修改登录密码
 	 * @throws Exception
@@ -123,7 +139,6 @@ public class UserControllerTest extends TestCaseBase {
 	public void testCurrentSendPhone() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/send/message")
-				/*.param("mobile", "15853166853")*/
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -145,7 +160,7 @@ public class UserControllerTest extends TestCaseBase {
 				.param("mobile", "18766169803")
 				.param("code", "9650")
 				.sessionAttr(ServletBox.LOGIN_ID, "123")
-				.sessionAttr("UNCHECK_MOBILE", "18766169803")
+			/*	.sessionAttr("UNCHECK_MOBILE", "18766169803")*/
 				.sessionAttr(ServletBox.SMS_MESSAGE, "9650")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -175,7 +190,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andReturn();
 	}
 	/**
-	 * 检验手机号的手机号和验证码是否输入正确
+	 * 检验修改后的手机号和验证码是否输入正确
 	 * @throws Exception
 	 */
 	@Test
@@ -185,7 +200,7 @@ public class UserControllerTest extends TestCaseBase {
 				.param("mobile", "18766169803")
 				.param("code", "9650")
 				.sessionAttr(ServletBox.LOGIN_ID, "123")
-				.sessionAttr("UNCHECK_MOBILE", "18766169803")
+				/*.sessionAttr("UNCHECK_MOBILE", "18766169803")*/
 				.sessionAttr(ServletBox.SMS_MESSAGE, "9650")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
