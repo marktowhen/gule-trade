@@ -78,8 +78,10 @@
 	<sql id="commentGoods">
 		g.id gid, g.name goodsname,d.weight weight,d.unit
 		unit,g.price price ,
-		g.special_price special_price,g.now_price nowprice,i.Thumb_path_1 thumb_path_1,
-		g.volume volume,g.addtime addtimes
+		g.special_price special_price,g.now_price
+		nowprice,i.Thumb_path_1 thumb_path_1,
+		g.volume volume,g.addtime
+		addtimes
 	</sql>
 
 	<!-- 根据名称like查询商品 -->
@@ -126,7 +128,8 @@
 		<include refid="commentGoods" />
 		FROM goods g
 		LEFT JOIN goods_detail d ON d.gid = g.id
-		LEFT JOIN goods_img i ON i.gid=g.id
+		LEFT JOIN
+		goods_img i ON i.gid=g.id
 		WHERE 1=1 AND g.state=1
 		<if test="brandArr !='' and brandArr !=null ">
 			AND g.bid IN
@@ -197,7 +200,8 @@
 		goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
-		LEFT JOIN goods_img i ON i.gid = g.id
+		LEFT JOIN goods_img i ON
+		i.gid = g.id
 		WHERE g.record_sort IS NOT NULL
 		ORDER BY g.record_sort
 	</select>
@@ -206,12 +210,15 @@
 		resultMap="GoodsMerchantMap">
 		SELECT m.`id` mid ,m.`merchant_name` merchantname,m.img_path m_img,
 		m.merchant_desc m_desc, COUNT(g.id) counts FROM goods g
-		LEFT JOIN goods_detail d ON d.gid = g.id
+		LEFT JOIN
+		goods_detail d ON d.gid = g.id
 		LEFT JOIN goods_img i ON i.gid = g.id
 		LEFT JOIN merchant m ON m.id=g.mid
-		LEFT JOIN goods_brand b ON b.id=g.`bid`
+		LEFT JOIN goods_brand b ON
+		b.id=g.`bid`
 		LEFT JOIN goods_type t ON t.id=g.tid
-		WHERE 1=1 AND g.state=1
+		WHERE 1=1 AND
+		g.state=1
 		<if test="brandArr !='' and brandArr !=null ">
 			AND g.bid IN
 			<foreach collection="brandArr" index="index" item="item"
@@ -237,14 +244,19 @@
 	</select>
 	<!-- 查询店铺相关产品 -->
 	<select id="selectMerchantByWhereGoods" parameterType="java.util.Map"
-		resultMap="baseGoodsMap" >
-		SELECT <include refid="commentGoods" /> FROM goods g 
+		resultMap="baseGoodsMap">
+		SELECT
+		<include refid="commentGoods" />
+		FROM goods g
 		LEFT JOIN goods_detail d ON d.gid = g.id
-		LEFT JOIN goods_img i ON i.gid = g.id
+		LEFT JOIN goods_img i ON i.gid =
+		g.id
 		LEFT JOIN merchant m ON m.id=g.mid
-		LEFT JOIN goods_brand b ON b.id=g.`bid`
+		LEFT JOIN goods_brand b ON
+		b.id=g.`bid`
 		LEFT JOIN goods_type t ON t.id=g.tid
-		WHERE 1=1 AND g.state=1 AND  m.id = #{mid}
+		WHERE 1=1 AND
+		g.state=1 AND m.id = #{mid}
 		<if test="brandArr !='' and brandArr !=null ">
 			AND g.bid IN
 			<foreach collection="brandArr" index="index" item="item"
@@ -267,19 +279,20 @@
 			<![CDATA[ AND g.now_price <= #{endprice} ]]>
 		</if>
 	</select>
-	<!--    查询热门推荐商品的基本信息 -->
-	<resultMap type="com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity" id="hot24GoodsEntity">
+	<!-- 查询热门推荐商品的基本信息 -->
+	<resultMap type="com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity"
+		id="hot24GoodsEntity">
 		<!-- 商品概要信息 -->
-		<result column="id" property="GID"/>
-		<result column="name" property="goodsName"/>
-		<result column="price" property="price"/>
-		<result column="now_price" property="nowPrice"/>
-		<result column="thumb_path_1" property="thumb_path_1"/>
+		<result column="id" property="GID" />
+		<result column="name" property="goodsName" />
+		<result column="price" property="price" />
+		<result column="now_price" property="nowPrice" />
+		<result column="thumb_path_1" property="thumb_path_1" />
 	</resultMap>
-	<!-- 查询24小时热卖推荐商品列表 　 -->
-	<select id="selectHot24Goods"  resultMap="hot24GoodsEntity">
-	SELECT 
-	x.id,x.mid,x.name,x.price,x.now_price now_price,i.thumb_path_1 as thumb_path_1
+	<!-- 查询24小时热卖推荐商品列表 -->
+	<select id="selectHot24Goods" resultMap="hot24GoodsEntity">
+		SELECT
+		x.id,x.mid,x.name,x.price,x.now_price now_price,i.thumb_path_1 as thumb_path_1
 	<![CDATA[
 	 from (
 		select gid,sum(count) as count from tran_records where 
@@ -292,5 +305,14 @@
 		left join goods_img i
 	    on r.gid = i.gid 
 		 ]]>
+	</select>
+	<!-- 查询推广商品 -->
+	<select id="selectGoodsExpand" resultMap="baseGoodsMap">
+		SELECT
+		<include refid="commentGoods" />
+		FROM goods g
+		LEFT JOIN goods_img i ON g.id=i.gid
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		WHERE expand_sort IS NOT NULL ORDER BY expand_sort
 	</select>
 </mapper>

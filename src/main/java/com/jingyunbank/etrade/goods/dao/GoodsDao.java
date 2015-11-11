@@ -75,20 +75,28 @@ public interface GoodsDao {
 	 * @throws Exception
 	 */
 	public List<GoodsMerchantEntity> selectMerchantByWhere(Map<String, Object> map) throws Exception;
-	
+
 	/**
 	 * 查询店铺的关联产品
+	 * 
 	 * @param map
 	 * @return
 	 * @throws Exception
 	 */
 	public List<GoodsDaoEntity> selectMerchantByWhereGoods(Map<String, Object> map) throws Exception;
-	
+
 	/**
 	 * 24小时热卖推荐商品列表
+	 * 
 	 * @param map
 	 * @return
 	 * @throws Exception
 	 */
 	public List<Hot24GoodsEntity> selectHot24Goods() throws Exception;
+	/**
+	 * 查询推广商品
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsDaoEntity> selectGoodsExpand() throws Exception;
 }

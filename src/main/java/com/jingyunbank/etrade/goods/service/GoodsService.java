@@ -19,6 +19,7 @@ import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
+import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
@@ -176,5 +177,15 @@ public class GoodsService implements IGoodsService {
 			}).collect(Collectors.toList());
 		}
 		return rltlist;
+	}
+
+	@Override
+	public List<ShowGoods> listGoodsExpand() throws Exception {
+		List<ShowGoods> list = goodsDao.selectGoodsExpand().stream().map(dao ->{
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return list;
 	}
 }
