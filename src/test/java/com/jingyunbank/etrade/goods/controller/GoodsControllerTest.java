@@ -84,7 +84,7 @@ public class GoodsControllerTest extends TestCaseBase{
 	*/
 	@Test
 	public void test6() throws Exception {
-		getMockMvc().perform(post("/api/goods2/footprint/list").characterEncoding("utf-8"))
+		getMockMvc().perform(post("/api/goods/footprint/list").characterEncoding("utf-8"))
 					.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
