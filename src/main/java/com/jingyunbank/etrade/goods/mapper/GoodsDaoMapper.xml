@@ -12,7 +12,7 @@
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="price" property="price" />
-		<result column="promotion_price" property="promotion_price" />
+		<result column="promotion_price" property="promotionPrice" />
 		<result column="nowprice" property="nowPrice" />
 		<result column="pro_flag" property="pro_flag" />
 		<result column="pro_start" property="pro_start" />
