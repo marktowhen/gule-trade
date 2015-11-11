@@ -12,8 +12,11 @@
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="price" property="price" />
-		<result column="special_price" property="specialPrice" />
+		<result column="promotion_price" property="promotion_price" />
 		<result column="nowprice" property="nowPrice" />
+		<result column="pro_flag" property="pro_flag" />
+		<result column="pro_start" property="pro_start" />
+		<result column="pro_end" property="pro_end" />
 		<!-- 商品图片信息 -->
 		<result column="thumb_path_1" property="thumb_path_1" />
 		<!-- 店铺信息 -->
@@ -73,15 +76,18 @@
 		show_path_3,
 		i.show_path_4, show_path_4,
 	</sql>
-
+	
+	<!-- 根据促销标志算出当然价格 -->
+	<sql id="nowprice">
+		CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END AS nowprice,
+	</sql>
 	<!-- 商品概要信息查询字段 -->
 	<sql id="commentGoods">
 		g.id gid, g.name goodsname,d.weight weight,d.unit
-		unit,g.price price ,
-		g.special_price special_price,g.now_price
-		nowprice,i.Thumb_path_1 thumb_path_1,
-		g.volume volume,g.addtime
-		addtimes
+		unit,g.price price ,g.promotion_price promotion_price,
+		<include refid="nowprice"/>
+		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
+		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end
 	</sql>
 
 	<!-- 根据名称like查询商品 -->
@@ -147,10 +153,10 @@
 		</if>
 
 		<if test="beginprice !=''">
-			<![CDATA[ AND g.now_price >= #{beginprice} ]]>
+			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
 		</if>
 		<if test="endprice !=''">
-			<![CDATA[ AND g.now_price <= #{endprice} ]]>
+			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
 		</if>
 		<!-- 销量排序 -->
 		<if test="order ==1 ">
@@ -158,7 +164,7 @@
 		</if>
 		<!-- 价格排序 -->
 		<if test="order ==2 ">
-			ORDER BY g.now_price DESC
+			ORDER BY nowprice 
 		</if>
 		<!-- 评论数排序 -->
 		<if test="order ==3 ">
@@ -208,7 +214,7 @@
 	<!-- 根据商品条件搜索关联店铺 -->
 	<select id="selectMerchantByWhere" parameterType="java.util.Map"
 		resultMap="GoodsMerchantMap">
-		SELECT m.`id` mid ,m.`merchant_name` merchantname,m.img_path m_img,
+		SELECT m.`id` mid ,m.`merchant_name` merchantname,m.img_path m_img, <include refid="nowprice"/>
 		m.merchant_desc m_desc, COUNT(g.id) counts FROM goods g
 		LEFT JOIN
 		goods_detail d ON d.gid = g.id
@@ -235,10 +241,10 @@
 		</if>
 
 		<if test="beginprice !=''">
-			<![CDATA[ AND g.now_price >= #{beginprice} ]]>
+			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
 		</if>
 		<if test="endprice !=''">
-			<![CDATA[ AND g.now_price <= #{endprice} ]]>
+			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
 		</if>
 		GROUP BY merchantname LIMIT #{from} , #{size}
 	</select>
@@ -273,10 +279,10 @@
 		</if>
 
 		<if test="beginprice !=''">
-			<![CDATA[ AND g.now_price >= #{beginprice} ]]>
+			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
 		</if>
 		<if test="endprice !=''">
-			<![CDATA[ AND g.now_price <= #{endprice} ]]>
+			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
 		</if>
 	</select>
 	<!-- 查询热门推荐商品的基本信息 -->
