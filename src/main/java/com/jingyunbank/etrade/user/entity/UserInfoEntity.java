@@ -25,7 +25,14 @@ public class UserInfoEntity {
 	private Date regtime;//注册时间
 	private String regip;//注册ip
 	private Device regdevice;//注册设备
+	private String picture;//头像文件名
 	
+	public String getPicture() {
+		return picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
 	public String getUid() {
 		return uid;
 	}

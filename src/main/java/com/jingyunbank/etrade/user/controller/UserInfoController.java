@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
+import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
-import com.jingyunbank.etrade.user.service.UserInfoService;
 
 /**
  * @author Administrator 
@@ -26,7 +26,7 @@ import com.jingyunbank.etrade.user.service.UserInfoService;
 @RequestMapping("/api/userInfo")
 public class UserInfoController {
 	@Autowired
-	private UserInfoService userInfoService;
+	private IUserInfoService userInfoService;
 	
 	
 	/**

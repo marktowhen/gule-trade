@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.api.user.IUserService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 
 public class AddressControllerTest extends TestCaseBase {
 	

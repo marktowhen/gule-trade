@@ -323,8 +323,8 @@ public class UserControllerTest extends TestCaseBase {
 	}
 	//----------------------------手机认证end---------------------------------
 	
-/**
-	 * 上传文件
+	/**
+	 * 上传头像
 	 * @throws Exception
 	 */
 	@Test

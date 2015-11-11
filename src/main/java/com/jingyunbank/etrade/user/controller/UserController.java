@@ -32,9 +32,11 @@ import com.jingyunbank.core.msg.sms.SmsMessage;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IUserInfoService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
@@ -42,13 +44,12 @@ public class UserController {
   	@Autowired
 	private IUserService userService;
 	@Autowired 
-  	private IUserService userInfoService;
+  	private IUserInfoService userInfoService;
   	
 	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
 	
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
-	public static final String FILE_PATH = "D:/log/";
 	
 /**
  * 用户注册信息及其发送手机或邮箱验证码
@@ -776,13 +777,19 @@ public class UserController {
 	//-------------------------------头像上传 start-----------------------------------
 	@RequestMapping(value="/picture",method=RequestMethod.POST)
 	public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws  Exception{
-		File dir = new File(FILE_PATH);
+		String path = SystemConfigProperties.getString(SystemConfigProperties.ROOT_FILE_PATH);
+		File dir = new File(path);
 		if(!dir.exists()){
 			dir.mkdirs();
 		}
 		String fileName = new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date())+getCheckCode()+"."+file.getContentType();
-		File target = new File(FILE_PATH+fileName);
+		File target = new File(path+fileName);
 		file.transferTo(target);
+		//修改用户信息
+		UserInfo userInfo = new UserInfo();
+		userInfo.setUid(ServletBox.getLoginUID(request));
+		userInfo.setPicture(fileName);
+		userInfoService.refreshPicture(userInfo);
 		return Result.ok();
 	}
 	
