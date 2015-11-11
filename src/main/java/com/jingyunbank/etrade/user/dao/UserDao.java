@@ -49,11 +49,6 @@ public interface UserDao {
 	 * @return
 	 */
 	public UserEntity selectUserByid(String id);
-	/**
-	 * 即使得到当前的id
-	 * @return
-	 */
-	public String queryMaxId();
 	
 	/**
 	 * 修改用户信息

@@ -229,9 +229,35 @@ public class UserController {
 		return Result.ok(userVO);
 		
 	}
-	/*public Result installTradepwd(){
+	/**
+	 * 4设置交易密码(通过id查询出这个对象看看那有没有交易密码，没有的情况下进行添加)
+	 * @param userVO
+	 * @param session
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/install/tradepwd",method=RequestMethod.POST)
+	public Result installTradepwd(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		
-	}*/
+		if(userVO.getTradepwd()!=null){
+			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
+				return Result.fail("交易密码必须是8-20位");
+			}
+		}
+		String uid = ServletBox.getLoginUID(request);
+		Optional<Users> optional=userService.getByUid(uid);
+		Users users=optional.get();
+		if(users.getTradepwd()==null||users.getTradepwd()==""){
+				userVO.setID(uid);
+				BeanUtils.copyProperties(userVO, users);
+				if(userService.refresh(users)){
+					return Result.ok("设置交易密码成功");
+				}
+		}
+		return Result.fail("设置交易密码失败");
+	}
+	
 	/**
 	 * 登录
 	 * @param request

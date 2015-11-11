@@ -43,9 +43,9 @@ public class UserControllerTest extends TestCaseBase {
 	public void test1() throws Exception{
 		getMockMvc().perform(
 				 put("/api/user/register")
-				.param("username", "xiaoyuIi")
-				.param("mobile", "12788888897")
-				.param("email", "555901888@qq.com")
+				.param("username", "xiaoyuIii")
+				.param("mobile", "18788888898")
+				.param("email", "5559018888@qq.com")
 				.param("password", "123490090")
 				/*.param("tradepwd", "1234787887")*/
 				.param("nickname", "xiaoxue")
@@ -94,6 +94,25 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
+	/**
+	 * 测试设置交易密码
+	 * @throws Exception
+	 */
+	@Test
+	public void testInstallTradepwd() throws Exception{
+		getMockMvc().perform(
+				post("/api/user/install/tradepwd")
+				.sessionAttr(ServletBox.LOGIN_ID, "vcAxfKg-TlOB4Ql5AB3k-w")
+				.param("tradepwd", "77777777788")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+	}
+
+	
 	/**
 	 * 测试发送当前手机号的验证码
 	 * 
