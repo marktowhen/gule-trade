@@ -321,4 +321,31 @@
 		LEFT JOIN goods_detail d ON g.id=d.gid
 		WHERE expand_sort IS NOT NULL ORDER BY expand_sort
 	</select>
+	<!-- 我的足迹商品信息 -->
+	<resultMap type="com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity" id="selectFootprintGoods">
+		<result column="visit_time" property="visitTime" javaType="java.util.Date"/>
+		<result column="gid" property="GID"/>
+		<result column="name" property="goodsName"/>
+		<result column="price" property="price"/>
+		<result column="now_price" property="nowPrice"/>
+		<result column="thumb_path_1" property="thumb_path_1"/>
+	</resultMap>
+	<!-- 查询我的足迹商品列表 　 -->
+	<select id="selectFootprintGoods"  resultMap="selectFootprintGoods">
+	SELECT 
+	*
+	<![CDATA[
+			 from (
+		select uid,gid,MAX(visit_time) as visit_time 
+		from footprint
+		where uid = '1'
+		group by uid,gid
+		ORDER BY visit_time desc
+		) v inner join goods x
+		 on 1=1 AND x.state=1
+		and v.gid = x.id
+		left join goods_img i
+	    on v.gid = i.gid 
+		 ]]>
+	</select>
 </mapper>

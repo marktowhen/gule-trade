@@ -1,4 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
@@ -28,9 +32,11 @@ import com.jingyunbank.core.msg.sms.SmsMessage;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.user.IUserService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IUserInfoService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
@@ -38,14 +44,15 @@ public class UserController {
   	@Autowired
 	private IUserService userService;
 	@Autowired 
-  	private IUserService userInfoService;
+  	private IUserInfoService userInfoService;
   	
 	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
 	
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
+	
 /**
- * 用户注册信息的保存
+ * 用户注册信息及其发送手机或邮箱验证码
  * @param userVO
  * @param valid
  * @param request
@@ -53,19 +60,9 @@ public class UserController {
  * @return
  * @throws Exception
  */
-	@RequestMapping(value="/register",method=RequestMethod.PUT)
+	@RequestMapping(value="/register/send",method=RequestMethod.PUT)
 	public Result register(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request,HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
-						.collect(Collectors.joining(" ; ")));
-		}
-		//验证用户名是否已存在
-		if(userService.unameExists(userVO.getUsername())){
-			return Result.fail("该用户名已存在。");
-		}
-		//验证手机号是否存在
+		//验证邮箱是否存在
 		if(userVO.getMobile()!=null){
 			if(userService.phoneExists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
@@ -77,15 +74,65 @@ public class UserController {
 			return Result.fail("该邮箱已存在");
 			}
 		}
+		if(userVO.getMobile()!=null){
+			return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
+		}
+		if(userVO.getEmail()!=null){
+			return sendCodeToEmail(userVO.getEmail(), "验证码", getCheckCode(), request);
+		}
+		return Result.fail("发送验证码失败");
+	}
+	/**
+	 * 判断验证码是否输入正确
+	 * @param userVO
+	 * @param request
+	 * @param session
+	 * @param mobile
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/register/checkCode",method=RequestMethod.POST)
+	public Result registerCheckCode(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
+		}
+		//验证用户名是否已存在
+		if(userService.unameExists(userVO.getUsername())){
+			return Result.fail("该用户名已存在。");
+		}
+		Result checkResult = null;
+		if(userVO.getMobile()==null&&userVO.getEmail()==null){
+			return Result.fail("邮箱和手机号至少有一个不为空");
+		}
+		//验证手机号是否存在
+		if(userVO.getMobile()!=null){
+			if(userService.phoneExists(userVO.getMobile())){
+				return Result.fail("该手机号已存在。");
+			}
+			checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+		}
+		//验证邮箱是否存在
+		if(userVO.getEmail()!=null){
+			if(userService.emailExists(userVO.getEmail())){
+			return Result.fail("该邮箱已存在");
+			}
+			checkResult = checkCode(code, request, EMAIL_MESSAGE);
+		}
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
 		UserInfo userInfo=new UserInfo();
 		userInfo.setRegip(request.getRemoteAddr());
 		//保存用户信息和个人资料信息
-		if(userService.save(user, userInfo)){
-			return Result.ok("保存成功");
+		if(checkResult.isOk()){
+			if(userService.save(user, userInfo)){
+			return	Result.ok("注册信息成功");
+			}
 		}
-		return Result.ok(userVO);
+		return Result.fail("验证失败或是保存失败");
 	}
 	/**
 	 * 当前手机号发送验证
@@ -99,9 +146,8 @@ public class UserController {
 		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
 		Users users=userService.getByUid(id).get();
-		if(sendCodeCommon(users.getMobile(),session,request)){
-			
-			return Result.ok("已经收到当前手机号的验证码了！");
+		if(users.getMobile()!=null){
+			return sendCodeToMobile(users.getMobile(), getCheckCode(), request);
 		}
 		return Result.fail("请重新登录");
 		}
@@ -118,14 +164,19 @@ public class UserController {
 	@RequestMapping(value="/send/message",method=RequestMethod.POST)
 	public Result chenckPhoneCode(String mobile,String code,HttpServletRequest request, HttpSession session){
 		String uid = ServletBox.getLoginUID(request);
+		
 		if(!StringUtils.isEmpty(uid)){
-			if(checkCodeCommon(mobile,code,request,session)){
+		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			if(checkResult.isOk()){
+				return Result.ok("手机验证成功");
+			}
+			/*if(checkCodeCommon(mobile,code,request,session)){
 				return Result.ok("手机验证成功");
 				//只有当前手机号验证成功了，才会进入到修改手机号阶段！
 				//只有当前手机号验证成功了，才会进行修改登录密码！
 				//只有当前手机号验证成功了，才可以进行修改支付密码！
 				//只有当前手机号验证成功了，才可以进行设置支付密码！
-			}
+			}*/
 		}
 		return Result.fail("手机或验证码不一致,没有登录");
 	}
@@ -151,11 +202,11 @@ public class UserController {
 				if(userService.phoneExists(userVO.getMobile())){
 					return Result.fail("该手机号已存在。");
 				}
-			
+				
 			}
-			if(sendCodeCommon(userVO.getMobile(),session,request)){
-				return Result.ok("已经修改的手机号发送了验证码");
-		}
+			
+			 return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
+		
 		}
 		return Result.fail("手机修改失败或是没能发送验证码");
 	}
@@ -174,8 +225,9 @@ public class UserController {
 			Users users=new Users();
 			userVO.setID(uid);
 			BeanUtils.copyProperties(userVO, users);
-			if(checkCodeCommon(userVO.getMobile(),code,request,session) && userService.refresh(users)){
-				return Result.ok("手机验证成功");
+		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			if(checkResult.isOk() && userService.refresh(users)){
+				return Result.ok("手机验证成功,保存成功");
 			}
 		}
 		return Result.fail("手机或验证码不一致,没有登录");
@@ -460,7 +512,7 @@ public class UserController {
 	
 	//1、
 	/**
-	 * 发送到注册手机 验证码
+	 * 发送验证码到注册手机 
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -486,7 +538,7 @@ public class UserController {
 	}
 	//3、
 	/**
-	 * 校验图形验证码，校验邮箱格式,通过后发送到用户输入的邮箱
+	 * 校验图形验证码，校验邮箱格式,通过后发送验证链接到用户输入的邮箱
 	 * @param request
 	 * @param code
 	 * @param email
@@ -721,61 +773,26 @@ public class UserController {
 	}
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
+
+	//-------------------------------头像上传 start-----------------------------------
+	@RequestMapping(value="/picture",method=RequestMethod.POST)
+	public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws  Exception{
+		String path = SystemConfigProperties.getString(SystemConfigProperties.ROOT_FILE_PATH);
+		File dir = new File(path);
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
+		String fileName = new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date())+getCheckCode()+"."+file.getContentType();
+		File target = new File(path+fileName);
+		file.transferTo(target);
+		//修改用户信息
+		UserInfo userInfo = new UserInfo();
+		userInfo.setUid(ServletBox.getLoginUID(request));
+		userInfo.setPicture(fileName);
+		userInfoService.refreshPicture(userInfo);
+		return Result.ok();
+	}
 	
-	/**
-	 * 发送验证码的公共方法
-	 * @param mobile
-	 * @param session
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	private boolean sendCodeCommon(String mobile,HttpSession session,HttpServletRequest request) throws Exception{
-		boolean flag=false;
-		String code  = getCheckCode();
-		SmsMessage message = new SmsMessage();
-		message.setMobile(mobile);
-		message.setBody("您的验证码是:"+code);
-		Result result = null;
-		result = MessagerManager.getSmsSender().send(message);
-		if(result.isBad()){
-			return flag;
-		}
-		session.setAttribute(ServletBox.SMS_MESSAGE, code);
-		session.setAttribute("UNCHECK_MOBILE", mobile);
-		return flag=true;
-		
-	}
-	/**
-	 * 验证手机号和验证码是否输入正确！
-	 * @param request
-	 * @param session
-	 * @param mobile
-	 * @param code
-	 * @return
-	 */
-	private boolean checkCodeCommon(String mobile,String code,HttpServletRequest request, HttpSession session){
-		boolean flag=false;
-		
-		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
-		if(StringUtils.isEmpty(sessionCode)){
-			return flag=false;
-		}
-			//验证发送短信的手机号与最后提交的手机号是否一致
-			if(session.getAttribute("UNCHECK_MOBILE").equals(mobile)){
-				//判断是否成功
-				if(sessionCode.equals(code)){
-					//成功后修改用户手机号
-				/*	Users users = new Users();
-					users.setID(uid);
-					users.setMobile(mobile);
-					userService.refresh(users);*/
-					//清除session
-					session.setAttribute(ServletBox.SMS_MESSAGE, null);
-					session.setAttribute("UNCHECK_MOBILE", null);
-					return flag=true;
-				}
-			}
-			return flag;
-	}
+	//-------------------------------头像上传 end-------------------------------------
+	
 }

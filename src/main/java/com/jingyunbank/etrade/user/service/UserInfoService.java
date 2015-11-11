@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.user.IUserInfoService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
+import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.user.dao.UserInfoDao;
 import com.jingyunbank.etrade.user.entity.UserInfoEntity;
 
@@ -77,35 +77,24 @@ public class UserInfoService implements IUserInfoService{
 	}
 
 	
-	@Override
-	public Optional<UserInfo> getByPhone(String phone) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	@Override
-	public Optional<UserInfo> getByUname(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	@Override
-	public Optional<UserInfo> getByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see com.jingyunbank.etrade.api.user.IUserInfoService#userInfoVO(java.lang.String)
-	 */
 
 	public int UidExists(String uid) {
 		
 
 		return userInfoDao.UidExists(uid);
+	}
+
+
+	@Override
+	public boolean refreshPicture(UserInfo uinfo)	throws DataRefreshingException {
+		 UserInfoEntity userInfoEntity = new UserInfoEntity();
+		 userInfoEntity.setUid(uinfo.getUid());
+		 userInfoEntity.setPicture(uinfo.getPicture());
+		try {
+			return userInfoDao.updatePicture(userInfoEntity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
 	}
 
 }

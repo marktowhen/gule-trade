@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
+import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
@@ -19,7 +20,7 @@ import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
-import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
+import com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
@@ -187,5 +188,23 @@ public class GoodsService implements IGoodsService {
 			return bo;
 		}).collect(Collectors.toList());
 		return list;
+	}
+	
+	@Override
+	public List<FootprintGoods> listFootprintGoods() throws Exception {
+		List<FootprintGoods> rltlist = new ArrayList<FootprintGoods>();
+		List<FootprintGoodsEntity> goodslist = goodsDao.selectFootprintGoods();
+		if (goodslist != null) {
+			rltlist = goodslist.stream().map(eo -> {
+				FootprintGoods bo = new FootprintGoods();
+				try {
+					BeanUtils.copyProperties(eo, bo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return rltlist;
 	}
 }

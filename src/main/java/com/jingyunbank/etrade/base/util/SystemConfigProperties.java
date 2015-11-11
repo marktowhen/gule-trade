@@ -29,7 +29,11 @@ public final class SystemConfigProperties {
 			logger.error(e);
 		}
 	}
-
+	/**
+	 * 图片等文件的存放目录
+	 */
+	public final static String ROOT_FILE_PATH = "root.file.path";
+	
 	private final static String PROPERTIES_FILE_LOCATION = "system.properties";
 	
 	public final static String GOBAL_SEPARATOR = "global.separator";
