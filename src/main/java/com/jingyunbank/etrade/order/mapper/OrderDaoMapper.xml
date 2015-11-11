@@ -5,23 +5,46 @@
 <mapper namespace="com.jingyunbank.etrade.order.dao.OrderDao">
 	<resultMap type="com.jingyunbank.etrade.order.entity.OrderEntity" id="OrderEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
-		<result column="orderno" property="orderno" javaType="String"/>
+		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
 		<result column="receiver" property="receiver" javaType="String"/>
 		<result column="mid" property="MID" javaType="String"/>
+		<result column="mname" property="mname" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="address_id" property="addressID" javaType="String"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="paytype_id" property="paytypeID" javaType="String"/>
 		<result column="paytype_name" property="paytypeName" javaType="String"/>
-		<result column="status_id" property="statusID" javaType="String"/>
+		<result column="deliverytype_id" property="deliveryTypeID" javaType="String"/>
+		<result column="deliverytype_name" property="deliveryTypeName" javaType="String"/>
+		<result column="status_code" property="statusCode" javaType="String"/>
 		<result column="status_name" property="statusName" javaType="String"/>
 		<result column="price" property="price" jdbcType="DECIMAL"/>
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
+		<result column="note" property="note" javaType="String"/>
 	</resultMap>
 	<sql id="orders_columns">
-		id, orderno, receiver, uid, mid, addtime, paytype_id, paytype_name, status_id, status_name,
-		price, postage, address_id
+		id, orderno, receiver, uid, mid, mname, address_id, addtime, 
+		paytype_id, paytype_name, deliverytype_id, deliverytype_name, 
+		status_code, status_name, price, postage, note
 	</sql>
+	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
+		insert into orders
+			(<include refid="orders_columns"/>)
+		values
+			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{mname}, #{addressID}, #{addtime},
+			 #{paytypeID}, #{paytypeName}, #{deliveryTypeID}, #{deliveryTypeName},
+			 #{statusCode}, #{statusName}, #{price}, #{postage}, #{note})
+	</insert>
+	<insert id="insertMany">
+		insert into orders
+			(<include refid="orders_columns"/>)
+		values
+		<foreach collection="orders" item="o" index="i" open="" separator="," close="">
+			(#{o.ID}, #{o.orderno}, #{o.receiver}, #{o.UID}, #{o.MID}, #{o.mname}, #{o.addressID}, #{o.addtime},
+			 #{o.paytypeID}, #{o.paytypeName}, #{o.deliveryTypeID}, #{o.deliveryTypeName},
+			 #{o.statusCode}, #{o.statusName}, #{o.price}, #{o.postage}, #{o.note})
+		</foreach>
+	</insert>
 	<select id="selectByUID" parameterType="String" resultMap="OrderEntityResultMap">
 		select <include refid="orders_columns"/> from orders where uid = #{uid}
 	</select>
@@ -31,13 +54,6 @@
 	<select id="select" resultMap="OrderEntityResultMap">
 		select <include refid="orders_columns"/> from orders
 	</select>
-	<insert id="insert" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
-		insert into orders
-			(<include refid="orders_columns"/>)
-		values
-			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{addtime}, #{paytypeID},
-			#{paytypeName}, #{statusID}, #{statusName}, #{price}, #{postage}, #{addressID})
-	</insert>
 	<delete id="delete" parameterType="String">
 		delete from orders where id = #{id}
 	</delete>

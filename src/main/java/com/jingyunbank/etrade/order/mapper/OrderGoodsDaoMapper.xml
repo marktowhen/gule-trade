@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.dao.OrderGoodsDao">
+	<resultMap type="com.jingyunbank.etrade.order.entity.OrderGoodsEntity" id="OrderGoodsEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="oid" property="OID" javaType="String"/>
+		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
+		<result column="gid" property="GID" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="gname" property="gname" javaType="String"/>
+		<result column="status_code" property="statusCode" javaType="String"/>
+		<result column="price" property="price" jdbcType="DECIMAL"/>
+		<result column="count" property="count" jdbcType="INTEGER"/>
+	</resultMap>
+	<sql id="order_goods_column">
+		id, oid, orderno, gid, gname, addtime, status_code, price, count
+	</sql>
+	<insert id="insertMany">
+		insert into order_goods
+			(<include refid="order_goods_column"/>)
+		values
+			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
+				(#{g.ID}, #{g.OID}, #{g.orderno}, #{g.GID}, #{g.gname}, #{g.addtime}, #{g.statusCode}, #{g.price}, #{g.count})
+			</foreach>
+	</insert>
+</mapper>

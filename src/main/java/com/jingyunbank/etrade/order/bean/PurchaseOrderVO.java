@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 public class PurchaseOrderVO {
 
 	private String ID;
-	private String orderno;
+	private long orderno;
 	@NotNull
 	@Size(min=22, max=22)
 	private String MID;
@@ -110,11 +110,11 @@ public class PurchaseOrderVO {
 		this.price = price;
 	}
 
-	public String getOrderno() {
+	public long getOrderno() {
 		return orderno;
 	}
 
-	public void setOrderno(String orderno) {
+	public void setOrderno(long orderno) {
 		this.orderno = orderno;
 	}
 

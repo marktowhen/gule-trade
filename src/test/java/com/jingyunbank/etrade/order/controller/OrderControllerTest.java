@@ -10,14 +10,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
+import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
 
 public class OrderControllerTest extends TestCaseBase {
@@ -146,19 +150,45 @@ public class OrderControllerTest extends TestCaseBase {
 	@Test
 	public void testSuccess1() throws Exception{
 		PurchaseRequestVO vo = new PurchaseRequestVO();
-		List<PurchaseGoodsVO> goods = new ArrayList<PurchaseGoodsVO>();
+		
 		vo.setAddressID("1111111111111111111111");
 		vo.setPaytypeID("1111111111111111111111");
 		vo.setPaytypeName("1111");
 		vo.setReceiver("XXXX");
+		vo.setBusinessReceipt(true);
+		vo.setInvoiceTitle("XSADFSADFAS");
+		vo.setRequireInvoice(true);
+		vo.setUID("XYZXYZ");
+		
+		List<PurchaseOrderVO> ovos = new ArrayList<PurchaseOrderVO>();
 		for (int i = 0; i < 3; i++) {
-			PurchaseGoodsVO g = new PurchaseGoodsVO();
-			g.setCount(2);
-			g.setMID("1111111111111111111111");
-			g.setPrice(new BigDecimal(123.3d));
-			goods.add(g);
+			PurchaseOrderVO povo = new PurchaseOrderVO();
+			povo.setAddtime(new Date());
+			povo.setDeliveryTypeID("XCSDFAXCFS");
+			povo.setDeliveryTypeName("普通快递");
+			povo.setID(KeyGen.uuid());
+			povo.setMID("XXXXX"+i);
+			povo.setMname("YYYYY"+i);
+			povo.setNote("NOTE"+i);
+			povo.setPostage(new BigDecimal("12.00"));
+			povo.setPrice(new BigDecimal("20000.00"));
+			List<PurchaseGoodsVO> goods = new ArrayList<PurchaseGoodsVO>();
+			for (int j = 0; j < 3; j++) {
+				PurchaseGoodsVO g = new PurchaseGoodsVO();
+				g.setGID("@@@@#$@#@@SDFASDXCV");
+				g.setGname("GXNAME");
+				g.setTotal(new BigDecimal("123.3"));
+				g.setCount(2);
+				g.setMID("1111111111111111111111");
+				g.setPrice(new BigDecimal("123.3"));
+				goods.add(g);
+			}
+			povo.setGoods(goods);
+			ovos.add(povo);
 		}
-		vo.setOrders(null);
+
+		vo.setOrders(ovos);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		System.out.println(json);
@@ -166,7 +196,7 @@ public class OrderControllerTest extends TestCaseBase {
 					 put("/api/order")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
-					.sessionAttr("LOGIN_ID", "USER-ID")
+					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

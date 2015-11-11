@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.dao.OrderTraceDao">
+	<resultMap type="com.jingyunbank.etrade.order.entity.OrderTraceEntity" id="OrderTraceEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="oid" property="OID" javaType="String"/>
+		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
+		<result column="operator" property="operator" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="status_code" property="statusCode" javaType="String"/>
+		<result column="status_name" property="statusName" javaType="String"/>
+		<result column="note" property="note" javaType="String"/>
+	</resultMap>
+	<sql id="order_trace_column">
+		id, oid, orderno, operator, addtime, status_code, status_name, note
+	</sql>
+	<insert id="insertMany">
+		insert into order_trace
+			(<include refid="order_trace_column"/>)
+		values
+			<foreach collection="traces" item="t" index="i" open="" separator="," close="">
+				(#{t.ID}, #{t.OID}, #{t.orderno}, #{t.operator}, #{t.addtime}, #{t.statusCode}, #{t.statusName}, #{t.note})
+			</foreach>
+	</insert>
+</mapper>

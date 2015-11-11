@@ -1,9 +1,11 @@
 package com.jingyunbank.etrade.order.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 
 
@@ -40,7 +42,23 @@ public class OrderService implements IOrderService{
 		OrderEntity entity = new OrderEntity();
 		BeanUtils.copyProperties(order, entity);
 		try {
-			orderDao.insert(entity);
+			orderDao.insertOne(entity);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public void save(List<Orders> orders) throws DataSavingException {
+		List<OrderEntity> entities = new ArrayList<OrderEntity>();
+		orders.forEach(order->{
+			OrderEntity entity = new OrderEntity();
+			BeanUtils.copyProperties(order, entity);
+			entities.add(entity);
+		});
+		try {
+			orderDao.insertMany(entities);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}

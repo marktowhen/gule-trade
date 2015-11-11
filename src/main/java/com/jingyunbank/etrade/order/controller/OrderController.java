@@ -25,10 +25,13 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
+import com.jingyunbank.etrade.api.order.service.IOrderNoGenService;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
 import com.jingyunbank.etrade.order.bean.OrderVO;
@@ -38,6 +41,8 @@ public class OrderController {
 
 	@Autowired
 	private IOrderContextService orderContextService;
+	@Autowired
+	private IOrderNoGenService orderNoGenService;
 	@Autowired
 	private IOrderService orderService;
 	
@@ -83,6 +88,15 @@ public class OrderController {
 		return Result.ok(order);
 	}
 	
+	/**
+	 * 订单确认并提交<br>
+	 * uri: put /api/order {"":"", "":"", "orders":[{}, {}, {}]}
+	 * @param purchase
+	 * @param valid
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
 	@AuthBeforeOperation
 	@RequestMapping(
 			value="/api/order",
@@ -105,7 +119,7 @@ public class OrderController {
 		
 		for (PurchaseOrderVO ordervo : ordervos) {
 			ordervo.setID(KeyGen.uuid());
-			ordervo.setOrderno("");
+			ordervo.setOrderno(orderNoGenService.setMID(ordervo.getMID()).setUID(UID).next());
 			ordervo.setAddtime(new Date());
 			
 			Orders order = new Orders();
@@ -115,6 +129,19 @@ public class OrderController {
 			order.setStatusCode(OrderStatusDesc.NEW.getCode());
 			order.setStatusName(OrderStatusDesc.NEW.getName());
 			
+			List<PurchaseGoodsVO> goodses = ordervo.getGoods();
+			List<OrderGoods> orderGoodses = new ArrayList<OrderGoods>();
+			for (PurchaseGoodsVO goods : goodses) {
+				OrderGoods orderGoods = new OrderGoods();
+				BeanUtils.copyProperties(goods, orderGoods);
+				orderGoods.setID(KeyGen.uuid());
+				orderGoods.setOID(order.getID());
+				orderGoods.setOrderno(order.getOrderno());
+				orderGoods.setStatusCode(OrderStatusDesc.NEW_CODE);
+				orderGoods.setAddtime(new Date());
+				orderGoodses.add(orderGoods);
+			}
+			order.setGoods(orderGoodses);
 			orders.add(order);
 		}
 		orderContextService.save(orders);

@@ -6,18 +6,22 @@ import java.util.Date;
 public class OrderEntity {
 
 	private String ID;
-	private String orderno;
-	private String receiver;//收货人
-	private String MID;
-	private String addressID;//收货地址->address id
+	private long orderno;
 	private String UID;//下单人
+	private String MID;
+	private String mname;
+	private String receiver;//收货人
+	private String addressID;//收货地址->address id
 	private Date addtime;//下单时间
 	private String paytypeID;//支付方式 id
 	private String paytypeName;
+	private String deliveryTypeID;
+	private String deliveryTypeName;
 	private BigDecimal price;//订单总价
-	private String statusID;//订单状态id
+	private String statusCode;//订单状态id
 	private String statusName;
 	private BigDecimal postage;
+	private String note;
 	
 	public String getID() {
 		return ID;
@@ -25,10 +29,10 @@ public class OrderEntity {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getOrderno() {
+	public long getOrderno() {
 		return orderno;
 	}
-	public void setOrderno(String orderno) {
+	public void setOrderno(long orderno) {
 		this.orderno = orderno;
 	}
 	public String getReceiver() {
@@ -45,6 +49,12 @@ public class OrderEntity {
 	}
 	public String getAddressID() {
 		return addressID;
+	}
+	public String getMname() {
+		return mname;
+	}
+	public void setMname(String mname) {
+		this.mname = mname;
 	}
 	public void setAddressID(String addressID) {
 		this.addressID = addressID;
@@ -73,12 +83,6 @@ public class OrderEntity {
 	public void setPaytypeName(String paytypeName) {
 		this.paytypeName = paytypeName;
 	}
-	public String getStatusID() {
-		return statusID;
-	}
-	public void setStatusID(String statusID) {
-		this.statusID = statusID;
-	}
 	public String getStatusName() {
 		return statusName;
 	}
@@ -96,6 +100,30 @@ public class OrderEntity {
 	}
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
+	}
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	public String getDeliveryTypeID() {
+		return deliveryTypeID;
+	}
+	public void setDeliveryTypeID(String deliveryTypeID) {
+		this.deliveryTypeID = deliveryTypeID;
+	}
+	public String getDeliveryTypeName() {
+		return deliveryTypeName;
+	}
+	public void setDeliveryTypeName(String deliveryTypeName) {
+		this.deliveryTypeName = deliveryTypeName;
 	}
 	
 }
