@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
+import com.jingyunbank.etrade.goods.bean.FootprintGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
@@ -41,7 +43,7 @@ import com.jingyunbank.etrade.goods.bean.RecommendGoods;
 public class GoodsController {
 
 	@Resource
-	private IGoodsService goodsService;
+	protected IGoodsService goodsService;
 
 	/**
 	 * 根据名称模糊查询商品
@@ -299,5 +301,18 @@ public class GoodsController {
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
+	}
+	/**
+	 * 我的足迹商品查询
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/footprint/list", method = RequestMethod.POST)
+	public Result listFootprintGoods() throws Exception {
+		List<FootprintGoods> goodslist = goodsService.listFootprintGoods();
+		FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
+		footprintGoodsVO.init(goodslist);
+		return Result.ok(footprintGoodsVO);
 	}
 }

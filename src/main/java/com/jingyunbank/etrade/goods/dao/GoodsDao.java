@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.goods.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
@@ -99,4 +100,11 @@ public interface GoodsDao {
 	 * @throws Exception
 	 */
 	public List<GoodsDaoEntity> selectGoodsExpand() throws Exception;
+	/**
+	 * 查询我的足迹列表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public List<FootprintGoodsEntity> selectFootprintGoods() throws Exception;
 }
