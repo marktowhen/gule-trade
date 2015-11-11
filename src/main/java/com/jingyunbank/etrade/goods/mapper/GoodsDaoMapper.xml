@@ -51,9 +51,8 @@
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="price" property="price" />
-		<result column="price" property="price" />
-		<result column="special_price" property="specialPrice" />
-		<result column="nowprice" property="nowPrice" />
+		<result column="promotion_price" property="promotionPrice" />
+		<result column="now_price" property="nowPrice" />
 		<result column="thumb_path_1" property="thumb_path_1" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />

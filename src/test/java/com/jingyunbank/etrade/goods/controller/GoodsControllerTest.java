@@ -89,5 +89,5 @@ public class GoodsControllerTest extends TestCaseBase{
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
-	 
+	
 }

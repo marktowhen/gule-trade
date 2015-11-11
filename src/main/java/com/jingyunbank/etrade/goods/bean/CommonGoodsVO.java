@@ -16,7 +16,7 @@ public class CommonGoodsVO implements Serializable{
 	private String GID;
 	private String goodsName; // 商品名
 	private BigDecimal price; // 原价
-	private BigDecimal promotion_price; // 特价
+	private BigDecimal promotionPrice; // 促销价格
 	private BigDecimal nowPrice; // 现价
 	private String weight;// 重量
 	private String unit;// 单位
@@ -49,12 +49,13 @@ public class CommonGoodsVO implements Serializable{
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-
-	public BigDecimal getPromotion_price() {
-		return promotion_price;
+	
+	 
+	public BigDecimal getPromotionPrice() {
+		return promotionPrice;
 	}
-	public void setPromotion_price(BigDecimal promotion_price) {
-		this.promotion_price = promotion_price;
+	public void setPromotionPrice(BigDecimal promotionPrice) {
+		this.promotionPrice = promotionPrice;
 	}
 	public BigDecimal getNowPrice() {
 		return nowPrice;
