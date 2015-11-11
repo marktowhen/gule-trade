@@ -19,9 +19,10 @@
 			<result column="regtime" property="regtime"/>
 			<result column="regip" property="regip"/>
 			<result column="regdevice" property="regdevice"/>
+			<result column="picture" property="picture"/>
 		</resultMap>
 		<sql id="column_list">
-		uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice
+		uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice,picture
 	</sql>
 		<!--添加用户资料信息 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
@@ -57,4 +58,10 @@
 	 	<select id="UidExists" parameterType="String" resultType="int">
 	 		select count(uid) from users_info where uid=#{uid}
 	 	</select>
+	 	<!-- 修改头像 -->
+	 	<update id="updatePicture" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
+	 		update users_info u set
+	 		 picture=#{picture}
+	 		where u.uid=#{uid}
+	 	</update>
 	</mapper>

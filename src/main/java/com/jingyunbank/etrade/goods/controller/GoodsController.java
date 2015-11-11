@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
+import com.jingyunbank.etrade.goods.bean.FootprintGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
@@ -41,9 +43,11 @@ import com.jingyunbank.etrade.goods.bean.RecommendGoods;
 public class GoodsController {
 
 	@Resource
-	private IGoodsService goodsService;
+	protected IGoodsService goodsService;
+
 	/**
 	 * 根据名称模糊查询商品
+	 * 
 	 * @param request
 	 * @param goodsname
 	 * @param page
@@ -64,12 +68,13 @@ public class GoodsController {
 		return Result.ok(list);
 	}
 
-		/**
-		 * 查询品牌列表
-		 * @param request
-		 * @return
-		 * @throws Exception
-		 */
+	/**
+	 * 查询品牌列表
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/listBrands", method = RequestMethod.POST)
 	public Result queryBrands(HttpServletRequest request) throws Exception {
 		List<GoodsBrandVO> list = goodsService.listBrands().stream().map(bo -> {
@@ -79,8 +84,10 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+
 	/**
 	 * 查询类型类别
+	 * 
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -115,7 +122,7 @@ public class GoodsController {
 		String types[] = { "1" };
 		goodshowBO.setBrands(null);
 		goodshowBO.setTypes(null);
-		goodshowBO.setBeginPrice(new BigDecimal(300));
+		goodshowBO.setBeginPrice(new BigDecimal(100));
 		goodshowBO.setEndPrice(new BigDecimal(300));
 		goodshowBO.setOrder(2);
 		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(goodshowBO, range).stream().map(bo -> {
@@ -147,11 +154,8 @@ public class GoodsController {
 	 * 根据搜索条件查询店铺 (店铺查询)
 	 * 
 	 * @param request
-	 * @param goodshowvo
-	 * @param page
-	 * @return
-	 * @throws Exception 
-	 * @throws  
+	 * 			@param goodshowvo @param page @return @throws
+	 *            Exception @throws
 	 */
 	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.GET)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
@@ -161,14 +165,14 @@ public class GoodsController {
 		range.setFrom(0);
 		range.setTo(20);
 		GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1","2" };
+		String brands[] = { "1", "2" };
 		String types[] = { "4" };
 		goodshowBO.setBrands(brands);
 		goodshowBO.setTypes(types);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
-		goodshowBO.setEndPrice(new BigDecimal(300));
+		goodshowBO.setEndPrice(new BigDecimal(350));
 
-		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo ->{
+		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo -> {
 			GoodsMerchantVO vo = new GoodsMerchantVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -176,9 +180,10 @@ public class GoodsController {
 
 		return Result.ok(list);
 	}
-	
+
 	/**
-	 * 	店铺相关商品 (点击X件相关产品 MID )
+	 * 店铺相关商品 (点击X件相关产品 MID )
+	 * 
 	 * @param request
 	 * @param goodshowvo
 	 * @return
@@ -188,14 +193,14 @@ public class GoodsController {
 	public Result queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
 		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1","2" };
+		String brands[] = { "1", "2" };
 		String types[] = { "4" };
 		goodshowBO.setBrands(brands);
 		goodshowBO.setTypes(types);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
-		goodshowBO.setEndPrice(new BigDecimal(300));
+		goodshowBO.setEndPrice(new BigDecimal(350));
 		goodshowBO.setMID("4");
-		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods(goodshowBO).stream().map(bo ->{
+		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods(goodshowBO).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -268,6 +273,7 @@ public class GoodsController {
 		}
 		return bo;
 	}
+
 	/**
 	 * 阿胶后台24小时热卖 待确定业务修改
 	 * 
@@ -280,5 +286,33 @@ public class GoodsController {
 		Hot24GoodsVO hot24GoodsVO = new Hot24GoodsVO();
 		hot24GoodsVO.init(goodslist);
 		return Result.ok(hot24GoodsVO);
+	}
+
+	/**
+	 * 推广商品
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/GoodsExpand/list", method = RequestMethod.GET)
+	public Result listGoodsExpand() throws Exception {
+		List<CommonGoodsVO> list = goodsService.listGoodsExpand().stream().map(bo -> {
+			CommonGoodsVO vo = new CommonGoodsVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+	/**
+	 * 我的足迹商品查询
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/footprint/list", method = RequestMethod.POST)
+	public Result listFootprintGoods() throws Exception {
+		List<FootprintGoods> goodslist = goodsService.listFootprintGoods();
+		FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
+		footprintGoodsVO.init(goodslist);
+		return Result.ok(footprintGoodsVO);
 	}
 }

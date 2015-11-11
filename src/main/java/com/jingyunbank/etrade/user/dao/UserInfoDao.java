@@ -44,5 +44,12 @@ public interface UserInfoDao {
 	 * @return
 	 */
 	public int UidExists(String uid);
-	
+	/**
+	 * 修改头像
+	 * @param userInfoEntity
+	 * @return
+	 * @throws Exception
+	 * 2015年11月11日 qxs
+	 */
+	public boolean updatePicture(UserInfoEntity userInfoEntity) throws Exception;
 }

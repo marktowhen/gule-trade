@@ -7,28 +7,19 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
-import com.jingyunbank.core.util.CollectionUtils;
-import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
+import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 
 /**
- * 阿胶后台 24小时热卖推荐
+ * 我的足迹
  * @author liug
  *
  */
-public class Hot24GoodsVO {
-	/** 商家id */
-	private String MID;
+public class FootprintGoodsVO {
 	/** 商品信息 */
 	private List<CommonGoodsVO> goodsList;
 	
-	public String getMID() {
-		return MID;
-	}
-	public void setMID(String mID) {
-		MID = mID;
-	}
 	/**
-	 * 获取4个商品
+	 * 
 	 * @return
 	 */
 	public List<CommonGoodsVO> getGoodsList() {
@@ -44,13 +35,11 @@ public class Hot24GoodsVO {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	public void init(List<Hot24Goods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
+	public void init(List<FootprintGoods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
 		if(goodslist == null || goodslist.size() <= 0){
 			return;
 		}
 		this.goodsList = new ArrayList<CommonGoodsVO>();
-		Hot24Goods goods = goodslist.get(0);
-		this.MID = goods.getMID();
 		this.goodsList = goodslist.stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			try {

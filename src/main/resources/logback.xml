@@ -7,6 +7,7 @@
             <pattern>%-5level %logger{50} %n ---> %msg%n</pattern>
         </layout>
     </appender>
+    <!--  
     <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <Encoding>UTF-8</Encoding>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -20,6 +21,7 @@
          <MaxFileSize>10MB</MaxFileSize>
        </triggeringPolicy>
     </appender>
+-->
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
