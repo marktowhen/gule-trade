@@ -1,4 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
@@ -43,6 +47,8 @@ public class UserController {
 	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
 	
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
+	
+	public static final String FILE_PATH = "D:/log/";
 	
 /**
  * 用户注册信息及其发送手机或邮箱验证码
@@ -505,7 +511,7 @@ public class UserController {
 	
 	//1、
 	/**
-	 * 发送到注册手机 验证码
+	 * 发送验证码到注册手机 
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -531,7 +537,7 @@ public class UserController {
 	}
 	//3、
 	/**
-	 * 校验图形验证码，校验邮箱格式,通过后发送到用户输入的邮箱
+	 * 校验图形验证码，校验邮箱格式,通过后发送验证链接到用户输入的邮箱
 	 * @param request
 	 * @param code
 	 * @param email
@@ -767,4 +773,19 @@ public class UserController {
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
 
+	//-------------------------------头像上传 start-----------------------------------
+	@RequestMapping(value="/picture",method=RequestMethod.POST)
+	public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws  Exception{
+		File dir = new File(FILE_PATH);
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
+		String fileName = new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date())+getCheckCode()+"."+file.getContentType();
+		File target = new File(FILE_PATH+fileName);
+		file.transferTo(target);
+		return Result.ok();
+	}
+	
+	//-------------------------------头像上传 end-------------------------------------
+	
 }

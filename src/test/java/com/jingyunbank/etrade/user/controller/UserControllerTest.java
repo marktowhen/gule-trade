@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -7,10 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.File;
+import java.io.FileInputStream;
+
 import net.minidev.json.JSONObject;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
@@ -209,14 +215,15 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
+	//----------------------------邮箱验证 start---------------------------------
 	/**
-	 * 测试发短信
+	 * 测试发短信到绑定手机
 	 * @throws Exception
 	 */
 	@Test
 	public void testMessage() throws Exception{
 		getMockMvc().perform(
-				get("/api/user/message")
+				get("/api/user/smsMessage")
 				/*.param("mobile", "15853166853")*/
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -226,9 +233,74 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
+	/**
+	 * 测试发邮箱验证链接
+	 * @throws Exception
+	 */
+	@Test
+	public void testSendEmail() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/email-link")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.param("email", "627956245@qq.com")
+				.param("code", "1234")
+				.sessionAttr("session_code", "1234")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
 	
-		/**
-	 * 测试验证短信
+	/**
+	 * 测试验证邮件
+	 * @throws Exception
+	 */
+	@Test
+	public void testCheckEmail() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/ckemail-link")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.param("d", "1")
+				.param("u", "NjI3OTU2MjQ1QHFxLmNvbX4xNDQ3MjExODI0NjQ4")
+				.param("m", "EAC57D28C8D9C3D52C0EF1E66727AE8B")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andExpect(jsonPath("$.code").value("500"))
+				.andReturn();
+			
+	}
+	//----------------------------邮箱验证 end---------------------------------
+	
+	
+	//----------------------------手机认证start---------------------------------
+	/**
+	 * 发送验证码到注册邮箱
+	 * @throws Exception
+	 */
+	@Test
+	public void testSendEmailCode() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/email-message")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
+	 * 测试绑定手机
 	 * @throws Exception
 	 */
 	@Test
@@ -243,51 +315,40 @@ public class UserControllerTest extends TestCaseBase {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	//----------------------------手机认证end---------------------------------
+	
+/**
+	 * 上传文件
+	 * @throws Exception
+	 */
+	@Test
+	public void testUploadFile() throws Exception{
+		String fileName = new File("").getAbsolutePath()+"/pom.xml";
+		MockMultipartFile file = new MockMultipartFile(
+				"file"//接收时的参数名
+				,"pom"//原文件名
+				,"xml"//扩展名
+				, new FileInputStream(new File(fileName)));
+		getMockMvc().perform(fileUpload("/api/user/picture")
+				.file(file)
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 			
 	}
 	
-	/**
-	 * 测试发邮件
-	 * @throws Exception
-	 */
-	@Test
-	public void testSendEmail() throws Exception{
-		getMockMvc().perform(
-				get("/api/user/email")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
-				.param("email", "627956245@qq.com")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andDo(MockMvcResultHandlers.print())  
-				.andReturn();
-			
-	}
 	
-	/**
-	 * 测试验证邮件
-	 * @throws Exception
-	 */
-	@Test
-	public void testCheckEmail() throws Exception{
-		getMockMvc().perform(
-				get("/api/user/ckemail")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
-				.param("d", "1")
-				.param("u", "NjI3OTU2MjQ1QHFxLmNvbX4xNDQ3MTMzNDUwOTkz")
-				.param("m", "EAC57D28C8D9C3D52C0EF1E66727AE8B")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andDo(MockMvcResultHandlers.print())  
-				.andExpect(jsonPath("$.code").value("500"))
-				.andReturn();
-			
-	}
+
 	
 }
