@@ -123,7 +123,7 @@ public class GoodsController {
 		goodshowBO.setBrands(null);
 		goodshowBO.setTypes(null);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
-		goodshowBO.setEndPrice(new BigDecimal(300));
+		goodshowBO.setEndPrice(new BigDecimal(400));
 		goodshowBO.setOrder(2);
 		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
@@ -315,5 +315,4 @@ public class GoodsController {
 		footprintGoodsVO.init(goodslist);
 		return Result.ok(footprintGoodsVO);
 	}
-	private void a(){}
 }
