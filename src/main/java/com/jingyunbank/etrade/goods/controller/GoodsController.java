@@ -315,4 +315,5 @@ public class GoodsController {
 		footprintGoodsVO.init(goodslist);
 		return Result.ok(footprintGoodsVO);
 	}
+	private void a(){}
 }
