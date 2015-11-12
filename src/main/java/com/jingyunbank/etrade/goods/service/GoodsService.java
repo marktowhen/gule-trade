@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.goods.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,9 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
@@ -20,6 +23,7 @@ import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
+import com.jingyunbank.etrade.goods.entity.FootprintEntity;
 import com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
@@ -206,5 +210,24 @@ public class GoodsService implements IGoodsService {
 			}).collect(Collectors.toList());
 		}
 		return rltlist;
+	}
+
+	@Override
+	public boolean saveFootprint(String uid,String gid) throws DataSavingException {
+		FootprintEntity fe = new FootprintEntity();
+		fe.setID(KeyGen.uuid());
+		fe.setUID(uid);
+		fe.setGID(gid);
+		fe.setVisitTime(new Date());
+		int result = 0;
+		try {
+			result = goodsDao.insertFootprint(fe);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+		if(result > 0){
+			return true;
+		}
+		return false;
 	}
 }

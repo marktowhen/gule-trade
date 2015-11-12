@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
@@ -310,9 +312,30 @@ public class GoodsController {
 	 */
 	@RequestMapping(value = "/footprint/list", method = RequestMethod.POST)
 	public Result listFootprintGoods() throws Exception {
-		List<FootprintGoods> goodslist = goodsService.listFootprintGoods();
-		FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
-		footprintGoodsVO.init(goodslist);
-		return Result.ok(footprintGoodsVO);
+		try {
+			List<FootprintGoods> goodslist = goodsService.listFootprintGoods();
+			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
+			footprintGoodsVO.init(goodslist);
+			return Result.ok(footprintGoodsVO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	/**
+	 * 我的足迹商品保存
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/footprint/save", method = RequestMethod.POST)
+	public Result listFootprintGoods(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+		String uid = ServletBox.getLoginUID(request);
+		boolean flag = goodsService.saveFootprint(uid,gid);
+		if(flag){
+			return Result.ok("足迹保存成功！");
+		}else{
+			return Result.fail("足迹保存失败！");
+		}
 	}
 }

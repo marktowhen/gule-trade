@@ -347,4 +347,11 @@
 	    on v.gid = i.gid 
 		 ]]>
 	</select>
+	<!-- 插入一条我的足迹 　 -->
+	<insert id="insertFootprint" parameterType="com.jingyunbank.etrade.goods.entity.FootprintEntity">
+	insert into footprint
+	(id,uid,gid,visit_time)
+	values
+	(#{ID},#{GID},#{UID},#{visitTime})
+	</insert>
 </mapper>
