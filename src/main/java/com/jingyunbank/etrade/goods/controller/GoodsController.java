@@ -120,8 +120,8 @@ public class GoodsController {
 		range.setTo(20);
 
 		GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1" };
-		String types[] = { "1" };
+		String brands[] = { "1","2" };
+		String types[] = { "4" };
 		goodshowBO.setBrands(brands);
 		goodshowBO.setTypes(types);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
@@ -329,7 +329,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/footprint/save", method = RequestMethod.POST)
-	public Result listFootprintGoods(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session,String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		boolean flag = goodsService.saveFootprint(uid,gid);
 		if(flag){
