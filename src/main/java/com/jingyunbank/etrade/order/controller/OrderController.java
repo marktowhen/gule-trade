@@ -23,26 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.RndBuilder;
+import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
-import com.jingyunbank.etrade.api.order.service.IOrderNoGenService;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.order.bean.OrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
-import com.jingyunbank.etrade.order.bean.OrderVO;
 
 @RestController
 public class OrderController {
 
 	@Autowired
 	private IOrderContextService orderContextService;
-	@Autowired
-	private IOrderNoGenService orderNoGenService;
 	@Autowired
 	private IOrderService orderService;
 	
@@ -119,7 +117,7 @@ public class OrderController {
 		
 		for (PurchaseOrderVO ordervo : ordervos) {
 			ordervo.setID(KeyGen.uuid());
-			ordervo.setOrderno(orderNoGenService.setMID(ordervo.getMID()).setUID(UID).next());
+			ordervo.setOrderno(UniqueSequence.next18());
 			ordervo.setAddtime(new Date());
 			
 			Orders order = new Orders();
