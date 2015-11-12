@@ -408,7 +408,63 @@ public class UserController {
 			return Result.fail("未找到该用户");
 		}
 	}
-	
+	//忘记密码
+	/**
+	 * 1为输入的邮箱或手机号发送验证码
+	 * @param request
+	 * @param session
+	 * @param loginfo
+	 * @return
+	 */
+	@RequestMapping(value="/forgetpwd/send",method=RequestMethod.GET)
+	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String loginfo) throws Exception{
+		if(StringUtils.isEmpty(loginfo)){
+			return Result.fail("手机/邮箱");
+		}
+		Optional<Users> usersOptional = userService.getByKey(loginfo);
+		Users users=usersOptional.get();
+		if(users.getEmail()!=null){
+			return sendCodeToEmail(loginfo, "验证码", getCheckCode(), request);
+		}
+		if(users.getMobile()!=null){
+			return sendCodeToMobile(users.getMobile(), getCheckCode(), request);
+		}
+		return Result.fail("发送验证码失败");
+	}
+	//忘记密码
+	/**
+	 * 2.验证输入的验证码是否正确并且保存修改后的密码进行保存
+	 * @param userVO
+	 * @param request
+	 * @param session
+	 * @param loginfo
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/forgetpwd/check",method=RequestMethod.POST)
+	public Result forgetpwdCheck(UserVO userVO,HttpServletRequest request, HttpSession session,String loginfo,String code) throws Exception{
+		if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
+			return Result.fail("登录密码必须是8-20位");
+		}
+		Result result=null;
+		Optional<Users> usersOptionals = userService.getByKey(loginfo);
+		Users users=usersOptionals.get();
+		if(users.getMobile()!=null){
+			result=checkCode(code, request, ServletBox.SMS_MESSAGE);
+		}
+		if(users.getEmail()!=null){
+			result=checkCode(code, request, EMAIL_MESSAGE);
+		}
+		userVO.setID(users.getID());
+		BeanUtils.copyProperties(userVO, users);
+		if(userService.refresh(users)&&result.isOk()){
+			return Result.ok("修改登录密码成功");
+		}
+		
+		return Result.fail("验证码出现错误或是修改未成功");
+		
+	}
 	
 	/**
 	 * 获取已登录的用户

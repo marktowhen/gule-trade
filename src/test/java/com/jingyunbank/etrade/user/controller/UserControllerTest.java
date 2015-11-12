@@ -81,12 +81,12 @@ public class UserControllerTest extends TestCaseBase {
 	public void test2() throws Exception{
 		getMockMvc().perform(
 				 post("/api/user/register/checkCode")
-				.param("username", "xiaoyuIiii")
+				.param("username", "xiaoyuIii")
 				.param("mobile", "18766169803")
 				.param("code", "4278")
-			/*	.param("email", "555901118888@qq.com")*/
+				/*.param("email", "5559018888@qq.com")*/
 				.param("password", "123490090")
-				.sessionAttr(ServletBox.SMS_MESSAGE, "427")
+				.sessionAttr(ServletBox.SMS_MESSAGE, "4278")
 				.param("nickname", "xiaoxue")
 				.param("locked", "true")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -115,6 +115,47 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
+	
+	//测试忘记密码
+	/**
+	 * 给手机或邮箱发送验证码的过程
+	 * @throws Exception
+	 */
+	
+	@Test
+	public void testForgetpwdSend() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/forgetpwd/send")
+				.param("loginfo", "18766169803")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+	}
+	//测试忘记密码
+	/**
+	 * 测试忘记密码页面是修改密码用户信息和验证验证码是否正确
+	 * @throws Exception
+	 */
+	@Test
+	public void testForgetpwdCheck() throws Exception{
+		getMockMvc().perform(
+				post("/api/user/forgetpwd/check")
+				.param("loginfo", "18766169803")
+				.param("password", "1234455555")
+				.param("code", "4278")
+				.sessionAttr(ServletBox.SMS_MESSAGE, "4278")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+	}
+	
+	
 	/**
 	 * 测试修改交易密码
 	 * @throws Exception
@@ -182,7 +223,6 @@ public class UserControllerTest extends TestCaseBase {
 				.param("mobile", "18766169803")
 				.param("code", "9650")
 				.sessionAttr(ServletBox.LOGIN_ID, "123")
-			/*	.sessionAttr("UNCHECK_MOBILE", "18766169803")*/
 				.sessionAttr(ServletBox.SMS_MESSAGE, "9650")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -207,7 +247,6 @@ public class UserControllerTest extends TestCaseBase {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				/*.andExpect(jsonPath("$.code").value("200"))*/
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
@@ -222,7 +261,6 @@ public class UserControllerTest extends TestCaseBase {
 				.param("mobile", "18766169803")
 				.param("code", "9650")
 				.sessionAttr(ServletBox.LOGIN_ID, "123")
-				/*.sessionAttr("UNCHECK_MOBILE", "18766169803")*/
 				.sessionAttr(ServletBox.SMS_MESSAGE, "9650")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -231,9 +269,8 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
-	//----------------------------邮箱验证 start---------------------------------
 	/**
-	 * 测试发短信到绑定手机
+	 * 测试发短信
 	 * @throws Exception
 	 */
 	@Test
