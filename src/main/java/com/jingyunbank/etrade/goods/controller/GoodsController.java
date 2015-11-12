@@ -120,10 +120,10 @@ public class GoodsController {
 		GoodsShow goodshowBO = new GoodsShow();
 		String brands[] = { "1" };
 		String types[] = { "1" };
-		goodshowBO.setBrands(null);
-		goodshowBO.setTypes(null);
+		goodshowBO.setBrands(brands);
+		goodshowBO.setTypes(types);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
-		goodshowBO.setEndPrice(new BigDecimal(300));
+		goodshowBO.setEndPrice(new BigDecimal(350));
 		goodshowBO.setOrder(2);
 		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
@@ -199,7 +199,7 @@ public class GoodsController {
 		goodshowBO.setTypes(types);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
 		goodshowBO.setEndPrice(new BigDecimal(350));
-		goodshowBO.setMID("4");
+		goodshowBO.setMID("1");
 		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods(goodshowBO).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vo);
