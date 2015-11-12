@@ -56,7 +56,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{goodsname}", method = RequestMethod.POST)
 	public Result queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname, Page page)
 			throws Exception {
 		Range range = new Range();
@@ -112,7 +112,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listByWhere", method = RequestMethod.GET)
+	@RequestMapping(value = "/listByWhere", method = RequestMethod.POST)
 	public Result queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		Range range = new Range();
@@ -142,7 +142,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listRecommendGoods", method = RequestMethod.GET)
+	@RequestMapping(value = "/listRecommendGoods", method = RequestMethod.POST)
 	public Result queryGoodsByWhere(HttpServletRequest request) throws Exception {
 		List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
 			RecommendGoods vo = new RecommendGoods();
@@ -159,7 +159,7 @@ public class GoodsController {
 	 * 			@param goodshowvo @param page @return @throws
 	 *            Exception @throws
 	 */
-	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.GET)
+	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.POST)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 
@@ -191,7 +191,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listMerchantByWhereGoods", method = RequestMethod.GET)
+	@RequestMapping(value = "/listMerchantByWhereGoods", method = RequestMethod.POST)
 	public Result queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
 		// GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		GoodsShow goodshowBO = new GoodsShow();
@@ -295,7 +295,7 @@ public class GoodsController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/GoodsExpand/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/GoodsExpand/list", method = RequestMethod.POST)
 	public Result listGoodsExpand() throws Exception {
 		List<CommonGoodsVO> list = goodsService.listGoodsExpand().stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
@@ -337,5 +337,34 @@ public class GoodsController {
 		}else{
 			return Result.fail("足迹保存失败！");
 		}
+	}
+	/**
+	 * 多条件查询-->在结果中搜索
+	 * @param vo
+	 * @return
+	 */
+	@RequestMapping(value = "/GoodsByGoodsResult/list", method = RequestMethod.POST)
+	public Result listGoodsByGoodsResult(GoodsShowVO vo , Page page) throws Exception {
+		//----分页条件 [待修改]
+		Range range = new Range();
+		range.setFrom(0);
+		range.setTo(20);
+		
+		GoodsShow goodshowBO  = getVo2Bo(vo);
+		/*GoodsShow goodshowBO = new GoodsShow();
+		String brands[] = { "1", "2" };
+		String types[] = { "4" };
+		goodshowBO.setBrands(brands);
+		goodshowBO.setTypes(types);
+		goodshowBO.setBeginPrice(new BigDecimal(100));
+		goodshowBO.setEndPrice(new BigDecimal(350));
+		goodshowBO.setGoodsName("阿胶");
+		goodshowBO.setOrder(2);*/
+		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO,range).stream().map(bo -> {
+			CommonGoodsVO vos = new CommonGoodsVO();
+			BeanUtils.copyProperties(bo, vos);
+			return vos;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 }
