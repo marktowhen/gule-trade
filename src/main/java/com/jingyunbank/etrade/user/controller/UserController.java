@@ -785,7 +785,7 @@ public class UserController {
 	}
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
-
+  
 	//-------------------------------头像上传 start-----------------------------------
 	@RequestMapping(value="/picture",method=RequestMethod.POST)
 	public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws  Exception{
