@@ -300,8 +300,8 @@
 		x.id,x.mid,x.name,x.price,x.now_price now_price,i.thumb_path_1 as thumb_path_1
 	<![CDATA[
 	 from (
-		select gid,sum(count) as count from tran_records where 
-		turnover_date  >= 
+		select gid,sum(count) as count from sales_records where 
+		sales_date  >= 
 		DATE_SUB(NOW(),INTERVAL 24 HOUR)
 		group by gid order by sum(count) desc limit 0,3
 		) r left join goods x
