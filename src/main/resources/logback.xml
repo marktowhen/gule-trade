@@ -23,7 +23,7 @@
     </appender>
 -->
 
-    <root level="DEBUG">
+    <root level="info">
         <appender-ref ref="STDOUT" />
         <!-- <appender-ref ref="FILE" /> -->
     </root> 

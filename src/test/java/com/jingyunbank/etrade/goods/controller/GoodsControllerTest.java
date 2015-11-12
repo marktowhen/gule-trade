@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.goods.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -9,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class GoodsControllerTest extends TestCaseBase{
@@ -82,12 +85,29 @@ public class GoodsControllerTest extends TestCaseBase{
 	 * 我的足迹列表查询 liug  
 	 * @throws Exception
 	*/
+//	@Test
+//	public void test6() throws Exception {
+//		getMockMvc().perform(post("/api/goods/footprint/list").characterEncoding("utf-8"))
+//					.andExpect(status().isOk())
+//				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+//				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+//	}
+	/**
+	 * 测试添加我的足迹
+	 * @throws Exception
+	 */
 	@Test
-	public void test6() throws Exception {
-		getMockMvc().perform(post("/api/goods/footprint/list").characterEncoding("utf-8"))
-					.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	public void test7() throws Exception{
+		getMockMvc().perform(
+				 post("/api/goods/footprint/save")
+				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				.param("gid", "3")
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andDo(MockMvcResultHandlers.print())
+			.andDo(print());
 	}
 	
 }
