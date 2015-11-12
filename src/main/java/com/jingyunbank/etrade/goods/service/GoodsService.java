@@ -230,4 +230,22 @@ public class GoodsService implements IGoodsService {
 		}
 		return false;
 	}
+	@Override
+	public List<ShowGoods> listGoodsByGoodsResult(GoodsShow bo, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("brandArr", bo.getBrands());
+		map.put("typeArr", bo.getTypes());
+		map.put("beginprice", bo.getBeginPrice());
+		map.put("endprice", bo.getEndPrice());
+		map.put("goodsname", bo.getGoodsName());
+		map.put("order", bo.getOrder());
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		List<ShowGoods> list = goodsDao.selectGoodsByGoodsResult(map).stream().map(dao -> {
+			ShowGoods goods = new ShowGoods();
+			BeanUtils.copyProperties(dao, goods);
+			return goods;
+		}).collect(Collectors.toList());
+		return list;
+	}
 }
