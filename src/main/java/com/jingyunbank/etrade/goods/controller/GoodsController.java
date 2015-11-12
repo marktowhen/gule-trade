@@ -154,8 +154,8 @@ public class GoodsController {
 	 * 根据搜索条件查询店铺 (店铺查询)
 	 * 
 	 * @param request
-	 * 			@param goodshowvo @param page @return @throws
-	 *            Exception @throws
+	 * @param goodshowvo
+	 * 			@param page @return @throws Exception @throws
 	 */
 	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.GET)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
@@ -302,6 +302,7 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+
 	/**
 	 * 我的足迹商品查询
 	 * 
@@ -314,5 +315,37 @@ public class GoodsController {
 		FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
 		footprintGoodsVO.init(goodslist);
 		return Result.ok(footprintGoodsVO);
+	}
+	
+	/**
+	 * 多条件查询-->在结果中搜索
+	 * @param vo
+	 * @return
+	 */
+	@RequestMapping(value = "/GoodsByGoodsResult/list", method = RequestMethod.POST)
+	public Result listGoodsByGoodsResult(GoodsShowVO vo , Page page) throws Exception {
+		//----分页条件 [待修改]
+		Range range = new Range();
+		range.setFrom(0);
+		range.setTo(20);
+		
+		GoodsShow goodshowBO  = getVo2Bo(vo);
+		/*
+		 * 页面封装的查询条件
+	    GoodsShow goodshowBO = new GoodsShow();
+		String brands[] = { "1", "2" };
+		String types[] = { "4" };
+		goodshowBO.setBrands(brands);
+		goodshowBO.setTypes(types);
+		goodshowBO.setBeginPrice(new BigDecimal(100));
+		goodshowBO.setEndPrice(new BigDecimal(350));
+		goodshowBO.setGoodsName("阿胶");
+		goodshowBO.setOrder(2);*/
+		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO,range).stream().map(bo -> {
+			CommonGoodsVO vos = new CommonGoodsVO();
+			BeanUtils.copyProperties(bo, vos);
+			return vos;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 }

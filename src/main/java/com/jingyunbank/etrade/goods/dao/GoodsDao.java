@@ -107,4 +107,11 @@ public interface GoodsDao {
 	 * @throws Exception
 	 */
 	public List<FootprintGoodsEntity> selectFootprintGoods() throws Exception;
+	
+	/**
+	 * 根据商品名在结果中查询
+	 * @param map
+	 * @return
+	 */
+	public List<GoodsDaoEntity> selectGoodsByGoodsResult(Map<String, Object> map);
 }

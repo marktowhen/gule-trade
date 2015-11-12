@@ -77,7 +77,7 @@ public class GoodsService implements IGoodsService {
 		List<HotGoodsEntity> goodslist = goodsDao.selectHotGoods();
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
-		    	HotGoods bo = new HotGoods();
+				HotGoods bo = new HotGoods();
 				try {
 					BeanUtils.copyProperties(eo, bo);
 				} catch (Exception e) {
@@ -161,7 +161,7 @@ public class GoodsService implements IGoodsService {
 		}).collect(Collectors.toList());
 		return list;
 	}
-	
+
 	@Override
 	public List<Hot24Goods> listHot24Goods() throws Exception {
 		List<Hot24Goods> rltlist = new ArrayList<Hot24Goods>();
@@ -182,14 +182,14 @@ public class GoodsService implements IGoodsService {
 
 	@Override
 	public List<ShowGoods> listGoodsExpand() throws Exception {
-		List<ShowGoods> list = goodsDao.selectGoodsExpand().stream().map(dao ->{
+		List<ShowGoods> list = goodsDao.selectGoodsExpand().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
 		return list;
 	}
-	
+
 	@Override
 	public List<FootprintGoods> listFootprintGoods() throws Exception {
 		List<FootprintGoods> rltlist = new ArrayList<FootprintGoods>();
@@ -206,5 +206,33 @@ public class GoodsService implements IGoodsService {
 			}).collect(Collectors.toList());
 		}
 		return rltlist;
+	}
+
+	@Override
+	public List<ShowGoods> listGoodsByGoodsResult(GoodsShow bo, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		map.put("brandArr", bo.getBrands());
+		map.put("typeArr", bo.getTypes());
+		map.put("beginprice", bo.getBeginPrice());
+		map.put("endprice", bo.getEndPrice());
+		map.put("goodsname", bo.getGoodsName());
+		if (bo.getOrder() == 1) {
+			map.put("order", "1");
+		} else if (bo.getOrder() == 2) {
+			map.put("order", "2");
+		} else if (bo.getOrder() == 3) {
+			map.put("order", "3");
+		} else if (bo.getOrder() == 4) {
+			map.put("order", "4");
+		}
+		
+		List<ShowGoods> list = goodsDao.selectGoodsByGoodsResult(map).stream().map(dao -> {
+			ShowGoods goods = new ShowGoods();
+			BeanUtils.copyProperties(dao, goods);
+			return goods;
+		}).collect(Collectors.toList());
+		return list;
 	}
 }
