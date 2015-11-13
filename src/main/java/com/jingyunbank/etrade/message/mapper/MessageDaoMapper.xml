@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.message.dao.MessageDao">
+	<resultMap type="com.jingyunbank.etrade.message.entity.MessageEntity" id="ResultMap">
+		<result column="id" property="ID" jdbcType="VARCHAR"/>
+		<result column="sent_uid" property="sentUID" jdbcType="VARCHAR"/>
+		<result column="receive_uid" property="receiveUID" jdbcType="VARCHAR"/>
+		<result column="title" property="title" jdbcType="VARCHAR"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="INTEGER"/>
+		<result column="addip" property="addip" jdbcType="VARCHAR"/>
+		<result column="has_read" property="hasRead"/>
+		 <result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<association  column="sent_uid" property="sendUser" select="selectUser"/>
+		<association  column="receive_uid" property="receiveUser" select="selectUser"/>
+	</resultMap>
+	<sql id="column_list">
+		id,sent_uid,receive_uid,title,content,type,status,addtime,addip,has_read
+	</sql>
+	
+	<insert id="insert" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
+		insert into message(<include refid="column_list"/>)
+		values(#{ID},#{sentUID},#{receiveUID},#{title},#{content},#{type},#{status},now(),#{addip},#{hasRead})
+	</insert>
+	
+	<insert id="insertMulti">
+		insert into message(<include refid="column_list"/>)
+		values
+		<foreach collection="messages" item="item"   open="(" close=")" separator=",">
+			#{item.ID},#{item.sentUID},#{item.receiveUID},#{item.title},#{item.content},#{item.type},#{item.status},now(),#{item.addip},#{item.hasRead}
+		</foreach>
+	</insert>
+	<update id="updateStatus" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
+		update message m set m.`status`=#{status} 
+		where id=#{ID} 
+		<if test="IDs!=null ">
+			or id in  
+				<foreach collection="IDs" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+		</if>
+	</update>
+	
+	<update id="updateReadStatus" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
+		update message m set m.`has_read`=#{hasRead}
+		where id=#{ID} 
+		<if test="IDs!=null ">
+			or id in  
+				<foreach collection="IDs" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+		</if>
+	</update>
+	
+	<!-- 查询 -->
+	<select id="selectList" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity"
+		resultMap="ResultMap">
+		select 
+			<include refid="column_list"/>
+			from message m 
+		where 1=1
+		<if test="ID!=null and ID!='' ">
+			and m.id=#{ID}
+		</if>	
+		<if test="sentUID!=null and sentUID!='' ">
+			and m.sent_uid=#{sentUID}
+		</if>	
+		<if test="receiveUID!=null and receiveUID!='' ">
+			and m.receive_uid=#{receiveUID}
+		</if>	
+		<if test="title!=null and title!='' ">
+			and m.title=#{title}
+		</if>	
+		<if test="content!=null and content!='' ">
+			and m.content like '%' || #{content} ||'%'
+		</if>	
+		<if test="type!=null and type!='' ">
+			and m.type=#{type}
+		</if>	
+		<if test="status!=null and status!='' ">
+			and m.status=#{status}
+		</if>	
+		<if test="addtime!=null and addtime!='' ">
+			and m.addtime=#{addtime}
+		</if>	
+		<if test="addip!=null and addip!='' ">
+			and m.addip=#{addip}
+		</if>	
+		order by addtime desc
+		<if test="offset!=null and offset!=0 and start!=null and start!=0">
+			limit start,offset
+		</if>
+	</select>
+	
+	<!-- 关联查询用户 -->
+	<select id="selectUser" parameterType="java.lang.String" resultType="com.jingyunbank.etrade.user.entity.UserEntity">
+		select * from users where id=#{id}
+	</select>
+</mapper>
