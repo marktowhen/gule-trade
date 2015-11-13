@@ -3,13 +3,14 @@ package com.jingyunbank.etrade.goods.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.jingyunbank.etrade.goods.entity.CollectEntity;
+import com.jingyunbank.etrade.goods.entity.CollectGoodsVEntity;
 import com.jingyunbank.etrade.goods.entity.FootprintEntity;
 import com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
-import com.jingyunbank.etrade.user.entity.UserEntity;
 
 /**
  * 
@@ -128,4 +129,17 @@ public interface GoodsDao {
 	 * @return
 	 */
 	public GoodsDaoEntity selectOne(String gid);
+	/**
+	 * 保存我的收藏信息
+	 * @param fe
+	 * @return
+	 * @throws Exception
+	 */
+	public int insertCollect(CollectEntity ce) throws Exception;
+	/**
+	 * 查询我的收藏信息
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CollectGoodsVEntity> selectMerchantCollect(Map<String,String> map) throws Exception;
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.goods.bo.CollectGoods;
 import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
@@ -24,14 +25,14 @@ import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
-import com.jingyunbank.etrade.api.order.bo.Cart;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
+import com.jingyunbank.etrade.goods.entity.CollectEntity;
+import com.jingyunbank.etrade.goods.entity.CollectGoodsVEntity;
 import com.jingyunbank.etrade.goods.entity.FootprintEntity;
 import com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
-import com.jingyunbank.etrade.order.entity.CartEntity;
 
 /**
  * 
@@ -265,5 +266,46 @@ public class GoodsService implements IGoodsService {
 		}
 		System.out.println(showGoods);
 		return Optional.ofNullable(showGoods);
+	}
+	
+	@Override
+	public boolean saveCollect(String uid,String fid,String type) throws DataSavingException {
+		CollectEntity ce = new CollectEntity();
+		ce.setID(KeyGen.uuid());
+		ce.setUID(uid);
+		ce.setFid(fid);
+		ce.setType(type);//1商家2商品
+		ce.setCollectTime(new Date());
+		int result = 0;
+		try {
+			result = goodsDao.insertCollect(ce);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+		if(result > 0){
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public List<CollectGoods> listMerchantCollect(String uid,String type) throws Exception {
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("uid", uid);
+		map.put("type", type);
+		List<CollectGoods> rltlist = new ArrayList<CollectGoods>();
+		List<CollectGoodsVEntity> goodslist = goodsDao.selectMerchantCollect(map);
+		if (goodslist != null) {
+			rltlist = goodslist.stream().map(eo -> {
+				CollectGoods bo = new CollectGoods();
+				try {
+					BeanUtils.copyProperties(eo, bo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return rltlist;
 	}
 }

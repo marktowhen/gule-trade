@@ -21,12 +21,14 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.goods.bo.CollectGoods;
 import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
+import com.jingyunbank.etrade.goods.bean.CollectMerchantVO;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.FootprintGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
@@ -388,5 +390,114 @@ public class GoodsController {
 			BeanUtils.copyProperties(showbo.get(), vo);
 		}
 		return Result.ok(vo);
+	}
+	
+	/**
+	 * 我的收藏商家保存
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/savemerchant", method = RequestMethod.POST)
+	public Result saveMerchantCollect(HttpServletRequest request, HttpSession session,String mid) throws Exception {
+		String uid = ServletBox.getLoginUID(request);
+		boolean flag = goodsService.saveCollect(uid,mid,"1");
+		if(flag){
+			return Result.ok("收藏成功！");
+		}else{
+			return Result.fail("收藏失败！");
+		}
+	}
+	/**
+	 * 我的收藏商品保存
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/savegoods", method = RequestMethod.POST)
+	public Result saveGoodsCollect(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+		String uid = ServletBox.getLoginUID(request);
+		boolean flag = goodsService.saveCollect(uid,gid,"2");
+		if(flag){
+			return Result.ok("收藏成功！");
+		}else{
+			return Result.fail("收藏失败！");
+		}
+	}
+	/**
+	 * 查询我的收藏（商家）
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/listmerchantcollect", method = RequestMethod.POST)
+	public Result listMerchantCollect(HttpServletRequest request) throws Exception {
+		String uid = ServletBox.getLoginUID(request);
+		List<CollectMerchantVO> rltlist = new ArrayList<CollectMerchantVO>();
+			List<CollectGoods> goodslist = goodsService.listMerchantCollect(uid,"1");
+			List<CollectGoods> tmplist = new ArrayList<CollectGoods>();// 存放商家分组LIST
+			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
+				CollectMerchantVO cmvo = new CollectMerchantVO();
+				for (int i = 0; i < goodslist.size(); i++) {
+					// 第一条处理
+					if (i == 0) {
+						tmplist.add(goodslist.get(i));
+					} else if (!goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家不是一家
+						cmvo.init(tmplist);
+						rltlist.add(cmvo);
+						tmplist = new ArrayList<CollectGoods>();
+						tmplist.add(goodslist.get(i));
+						if (i == (goodslist.size() - 1)) {// 最后一条
+							cmvo = new CollectMerchantVO();
+							cmvo.init(tmplist);
+							rltlist.add(cmvo);
+						} else {
+							cmvo = new CollectMerchantVO();
+						}
+					} else if (goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家是一家
+						tmplist.add(goodslist.get(i));
+						if (i == (goodslist.size() - 1)) {// 最后一条
+							cmvo = new CollectMerchantVO();
+							cmvo.init(tmplist);
+							rltlist.add(cmvo);
+						}
+					}
+
+				}
+			}
+		return Result.ok(rltlist);
+	}
+	
+	/**
+	 * 查询我的收藏（商品）
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/listgoodscollect", method = RequestMethod.POST)
+	public Result listGoodsCollect(HttpServletRequest request) throws Exception {
+		try {
+			
+		
+		String uid = ServletBox.getLoginUID(request);
+		List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
+			List<CollectGoods> goodslist = goodsService.listMerchantCollect(uid,"2");
+			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
+				rltlist = goodslist.stream().map(bo -> {
+					CommonGoodsVO vo = new CommonGoodsVO();
+					try {
+						BeanUtils.copyProperties(bo, vo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return vo;
+				}).collect(Collectors.toList());
+			}
+		return Result.ok(rltlist);
+		
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		return null;
 	}
 }
