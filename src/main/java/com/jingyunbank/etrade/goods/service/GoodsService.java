@@ -289,6 +289,17 @@ public class GoodsService implements IGoodsService {
 	}
 	
 	@Override
+	public boolean isCollectExists(String uid,String fid,String type)throws Exception{
+		int rlt = 0;
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("uid", uid);
+		map.put("fid", fid);
+		map.put("type", type);
+		rlt = this.goodsDao.isCollectExists(map);
+		return rlt > 0 ? true : false;
+	}
+	
+	@Override
 	public List<CollectGoods> listMerchantCollect(String uid,String type) throws Exception {
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("uid", uid);

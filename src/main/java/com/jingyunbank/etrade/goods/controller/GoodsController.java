@@ -400,8 +400,13 @@ public class GoodsController {
 	 */
 	@RequestMapping(value = "/collect/savemerchant", method = RequestMethod.POST)
 	public Result saveMerchantCollect(HttpServletRequest request, HttpSession session,String mid) throws Exception {
+		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
-		boolean flag = goodsService.saveCollect(uid,mid,"1");
+		flag = goodsService.isCollectExists(uid,mid,"1");
+		if(flag){
+			return Result.fail("您已经收藏过该商家！");
+		}
+		flag = goodsService.saveCollect(uid,mid,"1");
 		if(flag){
 			return Result.ok("收藏成功！");
 		}else{
@@ -416,8 +421,13 @@ public class GoodsController {
 	 */
 	@RequestMapping(value = "/collect/savegoods", method = RequestMethod.POST)
 	public Result saveGoodsCollect(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
-		boolean flag = goodsService.saveCollect(uid,gid,"2");
+		flag = goodsService.isCollectExists(uid,gid,"2");
+		if(flag){
+			return Result.fail("您已经收藏过该商品！");
+		}
+		flag = goodsService.saveCollect(uid,gid,"2");
 		if(flag){
 			return Result.ok("收藏成功！");
 		}else{
