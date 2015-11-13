@@ -31,16 +31,6 @@ public class AddressControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 put("/api/address/")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
-				//.param("name", "q")
-//				.param("country", "1")
-//				.param("province", "2")
-//				.param("city", "1")
-//				.param("address", "山东济南")
-//				.param("zipcode", "25600")
-//				.param("receiver", "aaa")
-//				.param("mobile", "15853166853")
-//				.param("telephone", "84936795")
-//				.param("defaulted", "true")
 				.param("valid", "true")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -137,15 +127,69 @@ public class AddressControllerTest extends TestCaseBase {
 	/**
 	 * 测试分页
 	 * size 每页条数
-	 * offset = 当前页码 从1开始
+	 * offset = 偏移量 从0开始
 	 * @throws Exception
 	 */
 	@Test
 	public void testListPage() throws Exception{
 		getMockMvc().perform(
 				get("/api/address/list")
-				.param("offset", "1")
+				.param("offset", "0")
 				.param("size", "2")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
+	 * 测试查数量
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetAmout() throws Exception{
+		getMockMvc().perform(
+				get("/api/address/amount")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
+	 * 测试查单个
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetSingle() throws Exception{
+		getMockMvc().perform(
+				get("/api/address/-D2c0YzaQFGDMqvpiFo3dw")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
+	 * 测试查单个
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetDefault() throws Exception{
+		getMockMvc().perform(
+				get("/api/address/default")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))

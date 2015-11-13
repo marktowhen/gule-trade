@@ -129,6 +129,12 @@ public interface GoodsDao {
 	 * @return
 	 */
 	public GoodsDaoEntity selectOne(String gid);
+	/***
+	 * 检查店铺和商家是否已经收藏
+	 * @param map   --uid fid type
+	 * @return
+	 */
+	public int isCollectExists(Map<String,String> map);
 	/**
 	 * 保存我的收藏信息
 	 * @param fe

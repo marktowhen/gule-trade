@@ -13,46 +13,54 @@
 		<result column="status" property="status" jdbcType="INTEGER"/>
 		<result column="addip" property="addip" jdbcType="VARCHAR"/>
 		<result column="has_read" property="hasRead"/>
-		 <result column="addtime" property="addtime" javaType="java.util.Date"/>
-		<association  column="sent_uid" property="sendUser" select="selectUser"/>
-		<association  column="receive_uid" property="receiveUser" select="selectUser"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<association  property="sendUser" javaType="com.jingyunbank.etrade.user.entity.UserEntity">
+			<result column="su_username" property="username"/>
+		</association>
+		<association  property="receiveUser" javaType="com.jingyunbank.etrade.user.entity.UserEntity">
+			<result column="ru_username" property="username"/>
+		</association>
+		<!-- <association  column="sent_uid" property="sendUser" select="selectUser"/>
+		<association  column="receive_uid" property="receiveUser" select="selectUser"/> -->
 	</resultMap>
 	<sql id="column_list">
-		id,sent_uid,receive_uid,title,content,type,status,addtime,addip,has_read
+		m.id,m.sent_uid,m.receive_uid,m.title,m.content,m.type,m.status,m.addtime,m.addip,m.has_read
 	</sql>
 	
 	<insert id="insert" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
-		insert into message(<include refid="column_list"/>)
+		insert into message m (<include refid="column_list"/>)
 		values(#{ID},#{sentUID},#{receiveUID},#{title},#{content},#{type},#{status},now(),#{addip},#{hasRead})
 	</insert>
 	
 	<insert id="insertMulti">
-		insert into message(<include refid="column_list"/>)
+		insert into message m(<include refid="column_list"/>)
 		values
-		<foreach collection="messages" item="item"   open="(" close=")" separator=",">
-			#{item.ID},#{item.sentUID},#{item.receiveUID},#{item.title},#{item.content},#{item.type},#{item.status},now(),#{item.addip},#{item.hasRead}
+		<foreach collection="messages" item="item"   open="" close="" separator=",">
+			(#{item.ID},#{item.sentUID},#{item.receiveUID},#{item.title},#{item.content},#{item.type},#{item.status},now(),#{item.addip},#{item.hasRead})
 		</foreach>
 	</insert>
 	<update id="updateStatus" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
 		update message m set m.`status`=#{status} 
-		where id=#{ID} 
+		where receive_uid=#{receiveUID} and( id=#{ID} 
 		<if test="IDs!=null ">
 			or id in  
 				<foreach collection="IDs" item="item" open="(" separator="," close=")">
 					#{item}
 				</foreach>
 		</if>
+		)
 	</update>
 	
 	<update id="updateReadStatus" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
 		update message m set m.`has_read`=#{hasRead}
-		where id=#{ID} 
+		where receive_uid=#{receiveUID} and(id=#{ID} 
 		<if test="IDs!=null ">
 			or id in  
 				<foreach collection="IDs" item="item" open="(" separator="," close=")">
 					#{item}
 				</foreach>
 		</if>
+		)
 	</update>
 	
 	<!-- 查询 -->
@@ -60,8 +68,24 @@
 		resultMap="ResultMap">
 		select 
 			<include refid="column_list"/>
-			from message m 
+			,su.username su_username
+			,ru.username ru_username
+		from message m 
+			LEFT JOIN users su on m.sent_uid=su.id
+			LEFT JOIN users ru on m.receive_uid=ru.id
 		where 1=1
+			<include refid="baseCondition"/>
+		order by addtime desc
+		<if test="offset!=null and size!=null and size!=0">
+			LIMIT #{offset},#{size}
+		</if>
+	</select>
+	
+	<select id="getAmount" resultType="int">
+		select count(1) from message m where 1=1 <include refid="baseCondition"/>
+	</select>
+	
+	<sql id="baseCondition">
 		<if test="ID!=null and ID!='' ">
 			and m.id=#{ID}
 		</if>	
@@ -88,15 +112,18 @@
 		</if>	
 		<if test="addip!=null and addip!='' ">
 			and m.addip=#{addip}
-		</if>	
-		order by addtime desc
-		<if test="offset!=null and offset!=0 and start!=null and start!=0">
-			limit start,offset
 		</if>
-	</select>
+		<if test="valid">
+			and m.status!='3'
+		</if>
+		<if test="needReadStatus">
+			and has_read=#{hasRead}
+		</if>
+	</sql>
 	
-	<!-- 关联查询用户 -->
+	<!-- 关联查询用户
 	<select id="selectUser" parameterType="java.lang.String" resultType="com.jingyunbank.etrade.user.entity.UserEntity">
 		select * from users where id=#{id}
 	</select>
+	 -->
 </mapper>

@@ -72,12 +72,13 @@ public class MessageService implements IMessageService {
 	}
 
 	@Override
-	public boolean remove(String id) throws DataRefreshingException {
+	public boolean remove(String id, String receiveUID) throws DataRefreshingException {
 		MessageEntity e = new MessageEntity();
 		e.setID(id);
+		e.setReceiveUID(receiveUID);
 		e.setStatus(STATUS_DEL);
 		try {
-			messageDao.update(e);
+			messageDao.updateStatus(e);
 		} catch (Exception e1) {
 			throw new DataRefreshingException(e1);
 		}
@@ -85,24 +86,29 @@ public class MessageService implements IMessageService {
 	}
 	
 	@Override
-	public boolean remove(String[] ids) throws DataRefreshingException {
-		for (int i = 0; i < ids.length; i++) {
-			remove(ids[i]);
+	public boolean remove(String[] ids, String receiveUID) throws DataRefreshingException {
+		MessageEntity e = new MessageEntity();
+		e.setIDs(ids);
+		e.setReceiveUID(receiveUID);
+		e.setStatus(STATUS_DEL);
+		try {
+			messageDao.updateStatus(e);
+		} catch (Exception e1) {
+			throw new DataRefreshingException(e1);
 		}
 		return true;
 	}
 
 	@Override
-	public Optional<Message> getSingle(String ID) {
+	public Optional<Message> getSingle(String ID, String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setID(ID);
+		entity.setReceiveUID(receiveUID);
 		List<MessageEntity> list = messageDao.selectList(entity);
 		if(list==null || list.isEmpty()){
 			return Optional.empty();
 		}
-		Message message = new Message();
-		BeanUtils.copyProperties(list.get(0) ,message);
-		return Optional.of(message);
+		return Optional.of(copyEntityToBo(list.get(0), new Message()));
 	}
 
 	@Override
@@ -110,13 +116,11 @@ public class MessageService implements IMessageService {
 		List<Message> listResult = new ArrayList<Message>();
 		MessageEntity entity = new MessageEntity();
 		BeanUtils.copyProperties(message, entity);
-		entity.setStart(range.getFrom());
-		entity.setOffset(range.getTo()-range.getFrom());
+		entity.setOffset(range.getFrom());
+		entity.setSize(range.getTo()-range.getFrom());
 		List<MessageEntity> entityList = messageDao.selectList(entity);
 		entityList.forEach(resultEntity->{
-			Message messageBo = new Message();
-			BeanUtils.copyProperties(resultEntity, messageBo);
-			listResult.add(messageBo);
+			listResult.add(copyEntityToBo(resultEntity, new Message()));
 		});
 		return listResult;
 	}
@@ -128,12 +132,65 @@ public class MessageService implements IMessageService {
 		BeanUtils.copyProperties(message, entity);
 		List<MessageEntity> entityList = messageDao.selectList(entity);
 		entityList.forEach(resultEntity->{
-			Message messageBo = new Message();
-			BeanUtils.copyProperties(resultEntity, messageBo);
-			listResult.add(messageBo);
+			listResult.add(copyEntityToBo(resultEntity, new Message()));
 		});
 		return listResult;
 	}
 
+	@Override
+	public void refreshReadStatus(Message message) throws DataRefreshingException  {
+		MessageEntity entity = new MessageEntity();
+		BeanUtils.copyProperties(message, entity);
+		try {
+			messageDao.updateReadStatus(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
+	@Override
+	public void refreshReadStatus(String[] ids, Message message) throws DataRefreshingException  {
+		MessageEntity entity = new MessageEntity();
+		BeanUtils.copyProperties(message, entity);
+		entity.setIDs(ids);
+		try {
+			messageDao.updateReadStatus(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+	/**
+	 * 查询数量
+	 * @param message
+	 * @return
+	 * 2015年11月13日 qxs
+	 */
+	@Override
+	public int getAmount(Message message) {
+		MessageEntity entity = new MessageEntity();
+		BeanUtils.copyProperties(message, entity);
+		return messageDao.getAmount(entity);
+	}
+
+	/**
+	 * 将entity值copy到vo
+	 * @param entity
+	 * @param message
+	 * @return
+	 * 2015年11月13日 qxs
+	 */
+	private Message copyEntityToBo(MessageEntity entity, Message message){
+		if(entity==null || message==null){
+			return message;
+		}
+		BeanUtils.copyProperties(entity, message);
+		if(entity.getReceiveUser()!=null && message.getReceiveUser()!=null){
+			BeanUtils.copyProperties(entity.getReceiveUser(), message.getReceiveUser());
+		}
+		if(entity.getSendUser()!=null && message.getSendUser()!=null){
+			BeanUtils.copyProperties(entity.getSendUser(), message.getSendUser());
+		}
+		return message;
+	}
 	
 }

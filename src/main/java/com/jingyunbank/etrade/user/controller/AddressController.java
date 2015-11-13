@@ -39,9 +39,10 @@ public class AddressController {
 	 * @param request
 	 * @param addressVO
 	 * @return 2015年11月5日 qxs
+	 * @throws DataRefreshingException 
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.PUT)
-	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws DataSavingException {
+	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws DataSavingException, DataRefreshingException {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -126,7 +127,7 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result queryDetail(@PathVariable String id){
+	public Result getDetail(@PathVariable String id){
 		Optional<Address> optional = addressService.singleById(id);
 		if(optional.isPresent()){
 			return Result.ok(optional.get());
@@ -135,7 +136,25 @@ public class AddressController {
 	}
 	
 	/**
-	 * 登录用户的所有地址
+	 * 查询默认地址
+	 * @param request
+	 * @param session
+	 * @param addressVO
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	@RequestMapping(value="/default",method=RequestMethod.GET)
+	public Result getDefaultAddress(HttpServletRequest request){
+		
+		Optional<Address> optional = addressService.getDefaultAddress(ServletBox.getLoginUID(request));
+		if(optional.isPresent()){
+			return Result.ok(optional.get());
+		}
+		return Result.ok("地址不存在");
+	}
+	
+	/**
+	 * 登录用户的所有有效地址
 	 * @param request
 	 * @param session
 	 * @param addressVO
@@ -146,7 +165,7 @@ public class AddressController {
 	public Result queryAll(HttpServletRequest request){
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		String uid = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(uid)){
+		if(StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
 		}
 		List<Address> list = addressService.list(uid);
@@ -174,13 +193,13 @@ public class AddressController {
 			addressVO = new AddressVO();
 		}
 		String uid = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(uid)){
+		if(StringUtils.isEmpty(uid)){
 			return Result.fail("请先登录");
 		}
 		addressVO.setUID(uid);
 		Range range = new Range();
-		range.setFrom((page.getOffset()-1)*page.getSize());
-		range.setTo(page.getOffset()*page.getSize());
+		range.setFrom((page.getOffset()));
+		range.setTo(page.getOffset()+page.getSize());
 		List<Address> list = addressService.listPage(getBoFromVo(addressVO), range);
 		//格式转换
 		if(list!=null && !list.isEmpty()){
@@ -189,6 +208,27 @@ public class AddressController {
 			}
 		}
 		return Result.ok(result);
+	}
+	
+	/**
+	 * 查询数量
+	 * 
+	 * @param request
+	 * @param addressVO
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	@RequestMapping(value="/amount",method=RequestMethod.GET)
+	public Result getAmount(HttpServletRequest request,AddressVO addressVO  ){
+		if(addressVO==null){
+			addressVO = new AddressVO();
+		}
+		String uid = ServletBox.getLoginUID(request);
+		if(StringUtils.isEmpty(uid)){
+			return Result.fail("请先登录");
+		}
+		addressVO.setUID(uid);
+		return Result.ok(addressService.getAmount(getBoFromVo(addressVO)));
 	}
 	
 	
