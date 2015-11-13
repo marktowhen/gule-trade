@@ -27,8 +27,29 @@ public class MessageEntity implements Serializable{
 	private UserEntity receiveUser;//接收者
 	
 	private long offset ;//偏移量
-	private long start;//开始点
+	private long size;//开始点
 	
+	private boolean valid = true; //查询时的状态true->查询未删除的
+	private boolean needReadStatus = false;//查询时是否需要加上读取状态
+	
+	public boolean isNeedReadStatus() {
+		return needReadStatus;
+	}
+	public void setNeedReadStatus(boolean needReadStatus) {
+		this.needReadStatus = needReadStatus;
+	}
+	public boolean isValid() {
+		return valid;
+	}
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+	public long getSize() {
+		return size;
+	}
+	public void setSize(long size) {
+		this.size = size;
+	}
 	public String getSentUID() {
 		return sentUID;
 	}
@@ -59,12 +80,6 @@ public class MessageEntity implements Serializable{
 	}
 	public void setOffset(long offset) {
 		this.offset = offset;
-	}
-	public long getStart() {
-		return start;
-	}
-	public void setStart(long start) {
-		this.start = start;
 	}
 	public UserEntity getSendUser() {
 		return sendUser;

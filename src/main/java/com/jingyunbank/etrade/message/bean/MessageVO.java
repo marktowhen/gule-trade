@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.jingyunbank.etrade.user.bean.UserVO;
+
 public class MessageVO implements Serializable{
 
 	/**
@@ -24,6 +26,22 @@ public class MessageVO implements Serializable{
 	private Date addtime;//添加时间
 	private String addip;//添加人的ip
 	private boolean hasRead;//是否已读
+	
+	private UserVO sendUser = new UserVO();//发送者
+	private UserVO receiveUser = new UserVO();//接收者
+	
+	public UserVO getSendUser() {
+		return sendUser;
+	}
+	public void setSendUser(UserVO sendUser) {
+		this.sendUser = sendUser;
+	}
+	public UserVO getReceiveUser() {
+		return receiveUser;
+	}
+	public void setReceiveUser(UserVO receiveUser) {
+		this.receiveUser = receiveUser;
+	}
 	public String getID() {
 		return ID;
 	}

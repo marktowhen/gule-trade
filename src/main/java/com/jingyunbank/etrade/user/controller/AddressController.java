@@ -179,8 +179,8 @@ public class AddressController {
 		}
 		addressVO.setUID(uid);
 		Range range = new Range();
-		range.setFrom((page.getOffset()-1)*page.getSize());
-		range.setTo(page.getOffset()*page.getSize());
+		range.setFrom((page.getOffset()));
+		range.setTo(page.getOffset()+page.getSize());
 		List<Address> list = addressService.listPage(getBoFromVo(addressVO), range);
 		//格式转换
 		if(list!=null && !list.isEmpty()){

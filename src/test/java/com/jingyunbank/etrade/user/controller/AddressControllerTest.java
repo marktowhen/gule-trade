@@ -144,7 +144,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void testListPage() throws Exception{
 		getMockMvc().perform(
 				get("/api/address/list")
-				.param("offset", "1")
+				.param("offset", "0")
 				.param("size", "2")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
