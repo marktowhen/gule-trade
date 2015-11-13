@@ -16,7 +16,7 @@ public class GoodsDetailEntity {
 	private String standardNo;
 	/** 保质期*/
 	private String shelfLife;
-	/** 批准文号*/
+	/** 生产许可批准文号*/
 	private String approveNo;
 	/** 食用方法和食用量*/
 	private String usage;
@@ -38,15 +38,23 @@ public class GoodsDetailEntity {
 	private String note;
 	/** 储藏方法*/
 	private String storageMethods;
-	/** 是否礼盒装*/
+	/** 包装方式*/
 	private String isGiftBox;
 	/**生产日期*/
 	private Date ProductionDate;
-	
 	/** 重量*/
 	private String weight;
 	/** 单位*/
 	private String unit;
+	//-----11.13--------------
+	private String factoryName; //厂名
+	private String factoryAddr; //厂址
+	private String factoryTel;  //联系方式
+	
+	
+	
+	
+	
 	public String getID() {
 		return ID;
 	}
@@ -160,6 +168,24 @@ public class GoodsDetailEntity {
 	}
 	public void setProductionDate(Date productionDate) {
 		ProductionDate = productionDate;
+	}
+	public String getFactoryName() {
+		return factoryName;
+	}
+	public void setFactoryName(String factoryName) {
+		this.factoryName = factoryName;
+	}
+	public String getFactoryAddr() {
+		return factoryAddr;
+	}
+	public void setFactoryAddr(String factoryAddr) {
+		this.factoryAddr = factoryAddr;
+	}
+	public String getFactoryTel() {
+		return factoryTel;
+	}
+	public void setFactoryTel(String factoryTel) {
+		this.factoryTel = factoryTel;
 	}
 	
 	

@@ -15,11 +15,17 @@
 		<result column="nowprice" property="nowPrice" />
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
+		<result column="addtime" property="addTime" />
 		<result column="pro_flag" property="pro_flag" />
 		<result column="pro_start" property="pro_start" />
 		<result column="pro_end" property="pro_end" />
 		<result column="up_time" property="upTime" />
 		<result column="down_time" property="downTime" />
+		<result column="postage" property="postage" />
+		<result column="subvolumeType" property="subVolumeType" />
+		<result column="barvode" property="barCode" />
+		<result column="goodsdesc" property="goodsDesc" />
+		<result column="goodstitle" property="goodsTitle" />
 		<!-- 详细信息 -->
 		<result column="standard_no" property="standardNo" />
 		<result column="shelf_life" property="shelfLife" />
@@ -38,15 +44,16 @@
 		<result column="ProductionDate" property="production_date" />
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
+		<result column="factoryname" property="factoryName" />
+		<result column="factoryaddr" property="factoryAddr" />
+		<result column="factorytel" property="factoryTel" />
 		<!-- 商品图片信息 -->
 		<result column="thumb_path_1" property="thumb_path_1" />
 		<result column="thumb_path_2" property="thumb_path_2" />
 		<result column="thumb_path_3" property="thumb_path_3" />
 		<result column="thumb_path_4" property="thumb_path_4" />
-		<result column="show_path_1" property="show_path_1" />
-		<result column="show_path_2" property="show_path_2" />
-		<result column="show_path_3" property="show_path_3" />
-		<result column="show_path_4" property="show_path_4" />
+		<result column="thumb_path_5" property="thumb_path_5" />
+		<result column="content" property="content" />
 		<!-- 店铺信息 -->
 		<result column="mid" property="MID" />
 		<result column="merchantname" property="merchantName" />
@@ -99,10 +106,8 @@
 		i.Thumb_path_2 thumb_path_2,
 		i.Thumb_path_3 thumb_path_3,
 		i.Thumb_path_4 thumb_path_4,
-		i.show_path_1, show_path_1,
-		i.show_path_2, show_path_2,
-		i.show_path_3,show_path_3,
-		i.show_path_4, show_path_4,
+		i.Thumb_path_5 thumb_path_5,
+		i.content content,
 	</sql>
 	<!-- 商品详细信息  (包含商品属性 详细属性 商家 品牌 图片属性)-->
 	<sql id="detailedSql">

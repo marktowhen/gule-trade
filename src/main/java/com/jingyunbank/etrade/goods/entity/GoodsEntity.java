@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.goods.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.BeginState;
+
 import com.jingyunbank.core.Result;
 
 /**
@@ -26,7 +28,7 @@ public class GoodsEntity {
 	/**  商品价格*/
 	private BigDecimal price;
 	/**  商品促销价格*/
-	private BigDecimal promotion_price;
+	private BigDecimal promotionPrice;
 	/**  商品现价*/
 	private BigDecimal now_price;
 	/**  是否上架0否1是*/
@@ -39,14 +41,27 @@ public class GoodsEntity {
 	private int count;
 	/**  销量*/
 	private int volume;
+	//增加时间
+	private Date addTime;
 	
-	private Date addtime;
+	//-----11.13新增--------------
+	private BigDecimal postage; //邮费
+	private int subVolumeType; //减库存方式 (拍下减库存 0 付款减库存1)
+	private String barCode; //条形码
+	private String goodsDesc; //宝贝描述
+	private String goodsTitle; //宝贝标题
 	/**  管理员排序*/
 	private int adminSort;
 	/**  商家排序*/
 	private int merchantSort;
 	/**  推广排序*/
 	private int expandSort;
+	
+	private int recordSort;//推荐排序
+	private Date pro_start;  //促销开始时间
+	private Date pro_end;	//促销结束时间
+	private int pro_flag; //是否促销标志
+	
 	public String getID() {
 		return ID;
 	}
@@ -89,6 +104,18 @@ public class GoodsEntity {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+	public BigDecimal getPromotionPrice() {
+		return promotionPrice;
+	}
+	public void setPromotionPrice(BigDecimal promotionPrice) {
+		this.promotionPrice = promotionPrice;
+	}
+	public BigDecimal getNow_price() {
+		return now_price;
+	}
+	public void setNow_price(BigDecimal now_price) {
+		this.now_price = now_price;
+	}
 	public int getState() {
 		return state;
 	}
@@ -119,6 +146,7 @@ public class GoodsEntity {
 	public void setVolume(int volume) {
 		this.volume = volume;
 	}
+
 	public int getAdminSort() {
 		return adminSort;
 	}
@@ -137,24 +165,67 @@ public class GoodsEntity {
 	public void setExpandSort(int expandSort) {
 		this.expandSort = expandSort;
 	}
-	public BigDecimal getNow_price() {
-		return now_price;
+	public int getRecordSort() {
+		return recordSort;
 	}
-	public void setNow_price(BigDecimal now_price) {
-		this.now_price = now_price;
+	public void setRecordSort(int recordSort) {
+		this.recordSort = recordSort;
 	}
-	public Date getAddtime() {
-		return addtime;
+	public Date getPro_start() {
+		return pro_start;
 	}
-	public void setAddtime(Date addtime) {
-		this.addtime = addtime;
+	public void setPro_start(Date pro_start) {
+		this.pro_start = pro_start;
 	}
-	public BigDecimal getPromotion_price() {
-		return promotion_price;
+	public Date getPro_end() {
+		return pro_end;
 	}
-	public void setPromotion_price(BigDecimal promotion_price) {
-		this.promotion_price = promotion_price;
+	public void setPro_end(Date pro_end) {
+		this.pro_end = pro_end;
 	}
+	public int getPro_flag() {
+		return pro_flag;
+	}
+	public void setPro_flag(int pro_flag) {
+		this.pro_flag = pro_flag;
+	}
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
+	}
+	public int getSubVolumeType() {
+		return subVolumeType;
+	}
+	public void setSubVolumeType(int subVolumeType) {
+		this.subVolumeType = subVolumeType;
+	}
+	public String getBarCode() {
+		return barCode;
+	}
+	public void setBarCode(String barCode) {
+		this.barCode = barCode;
+	}
+	public String getGoodsDesc() {
+		return goodsDesc;
+	}
+	public void setGoodsDesc(String goodsDesc) {
+		this.goodsDesc = goodsDesc;
+	}
+	public String getGoodsTitle() {
+		return goodsTitle;
+	}
+	public void setGoodsTitle(String goodsTitle) {
+		this.goodsTitle = goodsTitle;
+	}
+	public Date getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
+	}
+	
 	
 	
 }
