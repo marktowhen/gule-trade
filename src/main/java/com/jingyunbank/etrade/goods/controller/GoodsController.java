@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.goods.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -23,6 +25,7 @@ import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.FootprintGoodsVO;
@@ -30,6 +33,7 @@ import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
+import com.jingyunbank.etrade.goods.bean.GoodsVO;
 import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
@@ -120,7 +124,7 @@ public class GoodsController {
 		range.setTo(20);
 
 		GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1","2" };
+		String brands[] = { "1", "2" };
 		String types[] = { "4" };
 		goodshowBO.setBrands(brands);
 		goodshowBO.setTypes(types);
@@ -156,8 +160,8 @@ public class GoodsController {
 	 * 根据搜索条件查询店铺 (店铺查询)
 	 * 
 	 * @param request
-	 * 			@param goodshowvo @param page @return @throws
-	 *            Exception @throws
+	 * @param goodshowvo
+	 * 			@param page @return @throws Exception @throws
 	 */
 	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.POST)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
@@ -304,6 +308,7 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+
 	/**
 	 * 我的足迹商品查询
 	 * 
@@ -322,6 +327,7 @@ public class GoodsController {
 			throw e;
 		}
 	}
+
 	/**
 	 * 我的足迹商品保存
 	 * 
@@ -329,42 +335,58 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/footprint/save", method = RequestMethod.POST)
-	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session, String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
-		boolean flag = goodsService.saveFootprint(uid,gid);
-		if(flag){
+		boolean flag = goodsService.saveFootprint(uid, gid);
+		if (flag) {
 			return Result.ok("足迹保存成功！");
-		}else{
+		} else {
 			return Result.fail("足迹保存失败！");
 		}
 	}
+
 	/**
 	 * 多条件查询-->在结果中搜索
+	 * 
 	 * @param vo
 	 * @return
 	 */
 	@RequestMapping(value = "/GoodsByGoodsResult/list", method = RequestMethod.POST)
-	public Result listGoodsByGoodsResult(GoodsShowVO vo , Page page) throws Exception {
-		//----分页条件 [待修改]
+	public Result listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
+		// ----分页条件 [待修改]
 		Range range = new Range();
 		range.setFrom(0);
 		range.setTo(20);
-		
-		GoodsShow goodshowBO  = getVo2Bo(vo);
-		/*GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1", "2" };
-		String types[] = { "4" };
-		goodshowBO.setBrands(brands);
-		goodshowBO.setTypes(types);
-		goodshowBO.setBeginPrice(new BigDecimal(100));
-		goodshowBO.setEndPrice(new BigDecimal(350));
-		goodshowBO.setGoodsName("阿胶");
-		goodshowBO.setOrder(2);*/
-		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO,range).stream().map(bo -> {
+
+		GoodsShow goodshowBO = getVo2Bo(vo);
+		/*
+		 * GoodsShow goodshowBO = new GoodsShow(); String brands[] = { "1", "2"
+		 * }; String types[] = { "4" }; goodshowBO.setBrands(brands);
+		 * goodshowBO.setTypes(types); goodshowBO.setBeginPrice(new
+		 * BigDecimal(100)); goodshowBO.setEndPrice(new BigDecimal(350));
+		 * goodshowBO.setGoodsName("阿胶"); goodshowBO.setOrder(2);
+		 */
+		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vos = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vos);
 			return vos;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
+	}
+	
+	/**
+	 * 根据ID 查询商品属性
+	 * @param gid
+	 * @return
+	 */
+	@RequestMapping(value = "/goods/{gid}", method = RequestMethod.POST)
+	public Result queryGoodsById(@PathVariable String gid) throws Exception {
+		GoodsVO vo = null;
+		Optional<ShowGoods> showbo = goodsService.singleById(gid);
+		if (Objects.nonNull(showbo)) {
+			vo = new GoodsVO();
+			BeanUtils.copyProperties(showbo.get(), vo);
+		}
+		return Result.ok(vo);
 	}
 }

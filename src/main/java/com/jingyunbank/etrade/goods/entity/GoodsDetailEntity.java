@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.goods.entity;
 
+import java.util.Date;
+
 /**
  * 商品详情表
  * @author liug
@@ -38,6 +40,9 @@ public class GoodsDetailEntity {
 	private String storageMethods;
 	/** 是否礼盒装*/
 	private String isGiftBox;
+	/**生产日期*/
+	private Date ProductionDate;
+	
 	/** 重量*/
 	private String weight;
 	/** 单位*/
@@ -149,6 +154,12 @@ public class GoodsDetailEntity {
 	}
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+	public Date getProductionDate() {
+		return ProductionDate;
+	}
+	public void setProductionDate(Date productionDate) {
+		ProductionDate = productionDate;
 	}
 	
 	

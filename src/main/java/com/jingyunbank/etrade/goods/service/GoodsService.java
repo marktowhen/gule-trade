@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -22,11 +24,14 @@ import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
+import com.jingyunbank.etrade.api.order.bo.Cart;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.FootprintEntity;
 import com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity;
+import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
+import com.jingyunbank.etrade.order.entity.CartEntity;
 
 /**
  * 
@@ -81,7 +86,7 @@ public class GoodsService implements IGoodsService {
 		List<HotGoodsEntity> goodslist = goodsDao.selectHotGoods();
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
-		    	HotGoods bo = new HotGoods();
+				HotGoods bo = new HotGoods();
 				try {
 					BeanUtils.copyProperties(eo, bo);
 				} catch (Exception e) {
@@ -165,7 +170,7 @@ public class GoodsService implements IGoodsService {
 		}).collect(Collectors.toList());
 		return list;
 	}
-	
+
 	@Override
 	public List<Hot24Goods> listHot24Goods() throws Exception {
 		List<Hot24Goods> rltlist = new ArrayList<Hot24Goods>();
@@ -186,14 +191,14 @@ public class GoodsService implements IGoodsService {
 
 	@Override
 	public List<ShowGoods> listGoodsExpand() throws Exception {
-		List<ShowGoods> list = goodsDao.selectGoodsExpand().stream().map(dao ->{
+		List<ShowGoods> list = goodsDao.selectGoodsExpand().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
 		return list;
 	}
-	
+
 	@Override
 	public List<FootprintGoods> listFootprintGoods() throws Exception {
 		List<FootprintGoods> rltlist = new ArrayList<FootprintGoods>();
@@ -213,7 +218,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public boolean saveFootprint(String uid,String gid) throws DataSavingException {
+	public boolean saveFootprint(String uid, String gid) throws DataSavingException {
 		FootprintEntity fe = new FootprintEntity();
 		fe.setID(KeyGen.uuid());
 		fe.setUID(uid);
@@ -225,11 +230,12 @@ public class GoodsService implements IGoodsService {
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
-		if(result > 0){
+		if (result > 0) {
 			return true;
 		}
 		return false;
 	}
+
 	@Override
 	public List<ShowGoods> listGoodsByGoodsResult(GoodsShow bo, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -247,5 +253,17 @@ public class GoodsService implements IGoodsService {
 			return goods;
 		}).collect(Collectors.toList());
 		return list;
+	}
+
+	@Override
+	public Optional<ShowGoods> singleById(String gid) throws Exception {
+		GoodsDaoEntity goods = goodsDao.selectOne(gid);
+		ShowGoods showGoods = null;
+		if (Objects.nonNull(goods)) {
+			showGoods = new ShowGoods();
+			BeanUtils.copyProperties(goods, showGoods);
+		}
+		System.out.println(showGoods);
+		return Optional.ofNullable(showGoods);
 	}
 }

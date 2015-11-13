@@ -122,4 +122,10 @@ public interface GoodsDao {
 	 * @return
 	 */
 	public List<GoodsDaoEntity> selectGoodsByGoodsResult(Map<String, Object> map);
+	/**
+	 * 根据gid  查询商品属性
+	 * @param gid
+	 * @return
+	 */
+	public GoodsDaoEntity selectOne(String gid);
 }
