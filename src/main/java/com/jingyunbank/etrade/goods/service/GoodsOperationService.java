@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.goods.service;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.goods.bo.Goods;
@@ -23,12 +24,18 @@ public class GoodsOperationService implements IGoodsOperationService {
 		try {
 			// 保存商品的信息
 			GoodsEntity entity = new GoodsEntity();
+			if (goodsOperation.getGoods() != null)
+				BeanUtils.copyProperties(goodsOperation.getGoods(), entity);
 			r1 = goodsOperationDao.insertGoods(entity);
 			// 保存商品的详细信息
 			GoodsDetailEntity goodsDetailEntity = new GoodsDetailEntity();
+			if (goodsOperation.getGoodsDetail() != null)
+				BeanUtils.copyProperties(goodsOperation.getGoodsDetail(), goodsDetailEntity);
 			r2 = goodsOperationDao.insertGoodsDetail(goodsDetailEntity);
 			// 保存商品的图片信息
 			GoodsImgEntity imgEntity = new GoodsImgEntity();
+			if (goodsOperation.getGoodsImg() != null)
+				BeanUtils.copyProperties(goodsOperation.getGoodsImg(), imgEntity);
 			r3 = goodsOperationDao.insertGoodsImg(imgEntity);
 		} catch (Exception e) {
 			e.printStackTrace();

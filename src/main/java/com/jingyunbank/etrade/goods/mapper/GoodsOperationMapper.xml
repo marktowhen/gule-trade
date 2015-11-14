@@ -4,4 +4,45 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.goods.dao.GoodsOperationDao">
 	
+	<!-- 插入商品 -->
+	<sql id="goodsSql">
+	`id`,`mid`,`bid`,`name`, `code`,`tid`,`price`,`promotion_price`, `now_price`,`state`,`up_time`,
+  	`down_time`, `count`,`volume`,`addtime`,`postage`,`sub_volume_type`,`barCode`,`desc`,`title`,
+  	`admin_sort`,`merchant_sort`,`expand_sort`,`record_sort`,`pro_start`,`pro_end`,`pro_flag`
+	</sql>
+	<insert id="insertGoods" parameterType="com.jingyunbank.etrade.goods.entity.GoodsEntity">
+		INSERT INTO `goods` (<include refid="goodsSql"/>)
+		VALUES(
+			#{ID},#{MID},#{BID},#{name},#{code},#{tid},#{price},#{promotionPrice},#{now_price},#{state},
+			#{upTime},#{downTime},#{count},#{volume},#{addTime},#{postage},#{subVolumeType},#{barCode},
+			#{goodsDesc},#{goodsTitle},#{adminSort},#{merchantSort},#{expandSort},#{recordSort},
+			#{pro_start},#{pro_end},#{pro_flag}
+			)
+	</insert>
+	<!-- 插入商品detail -->
+	<sql id="goodsdetailSql">
+	`id`,`gid`,`standard_no`,`shelf_life`,`approve_no`,`usage`,`commended_user`, `not_commended_user`,`ingredients`,
+  	`food_additives`, `specifications`,`ingredient`,`functions`,`note`,`storage_methods`,`is_gift_box`,`production_date`,
+ 	 `weight`,`unit`,`factory_name`,`factory_addr`,`factory_tel`
+	</sql>
+	<insert id="insertGoodsDetail" parameterType="com.jingyunbank.etrade.goods.entity.GoodsDetailEntity">
+		INSERT INTO `goods_detail` (<include refid="goodsdetailSql"/>)
+		VALUES(#{ID},#{GID},#{standardNo},#{shelfLife},#{approveNo},#{usage},#{commendedUser},
+					#{notCommendedUser},#{ingredients},#{foodAdditives},
+					#{specifications},#{ingredient},#{functions},#{note},#{storageMethods},
+					#{isGiftBox},#{ProductionDate},#{weight},
+					#{unit},#{factoryName},#{factoryAddr},#{factoryTel}
+				)
+	</insert>
+	<!-- 插入商品图片 -->
+	<sql id="goodsImgSql">
+	`id`,`gid`,`Thumb_path_1`,`Thumb_path_2`,`Thumb_path_3`,`Thumb_path_4`,
+  		`Thumb_path_5`,`content`
+	</sql>
+	<insert id="insertGoodsImg" parameterType="com.jingyunbank.etrade.goods.entity.GoodsImgEntity">
+		INSERT INTO `goods_img` (<include refid="goodsImgSql"/>) VALUES
+  			(
+   			#{ID},#{GID},#{thumbpath1},#{thumbpath2},#{thumbpath3},#{thumbpath4},#{thumbpath5},#{content}
+  			)
+	</insert>
 </mapper>

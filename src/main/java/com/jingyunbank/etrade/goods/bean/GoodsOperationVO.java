@@ -38,7 +38,7 @@ public class GoodsOperationVO implements Serializable {
 	private Date downTime;//下架时间
 	private int count;//库存
 	private int volume;//销量
-	private Date addtime;//添加时间
+	private Date addTime;//添加时间
 	private Date pro_start;  //促销开始时间
 	private Date pro_end;	//促销结束时间
 	private int pro_flag; //是否促销标志
@@ -47,6 +47,10 @@ public class GoodsOperationVO implements Serializable {
 	private String barCode; //条形码
 	private String goodsDesc; //宝贝描述
 	private String goodsTitle; //宝贝标题
+	private int adminSort;//管理员排序字段
+	private int merchantSort;//商家排序字段
+	private int expandSort;//推广排序字段
+	private int recordSort;//推荐排序字段
 	
 	//--------图片信息-----------
 	private String thumbpath1;//商品 缩略图1
@@ -76,6 +80,7 @@ public class GoodsOperationVO implements Serializable {
 	private String factoryName; //厂名
 	private String factoryAddr; //厂址
 	private String factoryTel;  //联系方式
+	
 	public String getMID() {
 		return MID;
 	}
@@ -154,11 +159,11 @@ public class GoodsOperationVO implements Serializable {
 	public void setVolume(int volume) {
 		this.volume = volume;
 	}
-	public Date getAddtime() {
-		return addtime;
+	public Date getAddTime() {
+		return addTime;
 	}
-	public void setAddtime(Date addtime) {
-		this.addtime = addtime;
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
 	}
 	public Date getPro_start() {
 		return pro_start;
@@ -357,6 +362,30 @@ public class GoodsOperationVO implements Serializable {
 	}
 	public void setFactoryTel(String factoryTel) {
 		this.factoryTel = factoryTel;
+	}
+	public int getAdminSort() {
+		return adminSort;
+	}
+	public void setAdminSort(int adminSort) {
+		this.adminSort = adminSort;
+	}
+	public int getMerchantSort() {
+		return merchantSort;
+	}
+	public void setMerchantSort(int merchantSort) {
+		this.merchantSort = merchantSort;
+	}
+	public int getExpandSort() {
+		return expandSort;
+	}
+	public void setExpandSort(int expandSort) {
+		this.expandSort = expandSort;
+	}
+	public int getRecordSort() {
+		return recordSort;
+	}
+	public void setRecordSort(int recordSort) {
+		this.recordSort = recordSort;
 	}
 	
 	
