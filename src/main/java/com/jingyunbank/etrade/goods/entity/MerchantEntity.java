@@ -41,6 +41,8 @@ public class MerchantEntity implements Serializable {
 	private String  merchantDesc ;
 	/**商家图片路径*/
 	private String imgPath ;
+	/** 是否开具发票 0否1是  */
+	private String invoiceFlag;
 	
 	public String getID() {
 		return ID;
@@ -134,6 +136,12 @@ public class MerchantEntity implements Serializable {
 	}
 	public static MerchantEntity getInstance(){
 		return new MerchantEntity();
+	}
+	public String getInvoiceFlag() {
+		return invoiceFlag;
+	}
+	public void setInvoiceFlag(String invoiceFlag) {
+		this.invoiceFlag = invoiceFlag;
 	}
 	
 }

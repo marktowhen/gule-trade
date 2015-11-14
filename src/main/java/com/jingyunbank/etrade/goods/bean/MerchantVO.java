@@ -41,6 +41,8 @@ public class MerchantVO implements Serializable {
 	private String  merchantDesc ;
 	/**商家图片路径*/
 	private String imgPath ;
+	/** 是否开具发票 0否1是  */
+	private String invoiceFlag;
 	
 	public String getID() {
 		return ID;
@@ -133,6 +135,12 @@ public class MerchantVO implements Serializable {
 		this.imgPath = imgPath;
 	}
 	
+	public String getInvoiceFlag() {
+		return invoiceFlag;
+	}
+	public void setInvoiceFlag(String invoiceFlag) {
+		this.invoiceFlag = invoiceFlag;
+	}
 	public static MerchantVO getInstance(){
 		return new MerchantVO();
 	}

@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.goods.bo.Merchant;
 import com.jingyunbank.etrade.api.goods.service.IMerchantService;
 import com.jingyunbank.etrade.goods.dao.MerchantDao;
@@ -42,4 +43,21 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		return rlist;
 	}
 
+	@Override
+	public boolean saveMerchant(Merchant merchant) throws DataSavingException {
+		boolean flag=false;
+		MerchantEntity me = MerchantEntity.getInstance();
+		BeanUtils.copyProperties(merchant, me);
+		try {
+			if(merchantDao.insertMerchant(me)){
+				flag=true;
+			}else{
+				flag=false;
+			}
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+		return flag;
+		
+	}
 }
