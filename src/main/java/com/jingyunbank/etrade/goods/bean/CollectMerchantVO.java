@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
-import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.api.goods.bo.CollectGoods;
 
 /**
- * 首页热门推荐
+ * 我的收藏店铺的信息
  * @author liug
  *
  */
-public class HotGoodsVO {
+public class CollectMerchantVO {
 	/** 商家id */
 	private String MID;
 	/** 商家信息 */
@@ -39,7 +39,7 @@ public class HotGoodsVO {
 	 * @return
 	 */
 	public List<CommonGoodsVO> getGoodsList() {
-		if(this.goodsList != null && this.goodsList.size()>4){
+		/*if(this.goodsList != null && this.goodsList.size()>4){
 			List<CommonGoodsVO> rltList = new ArrayList<CommonGoodsVO>();
 			for(int i = 0;i<4;i++){
 				rltList.add(this.goodsList.get(i));
@@ -47,7 +47,8 @@ public class HotGoodsVO {
 			return rltList;
 		}else{
 			return goodsList;
-		}
+		}*/
+		return goodsList;
 	}
 	public void setGoodsList(List<CommonGoodsVO> goodsList) {
 		this.goodsList = goodsList;
@@ -59,13 +60,13 @@ public class HotGoodsVO {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	public void init(List<HotGoods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
+	public void init(List<CollectGoods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
 		if(goodslist == null || goodslist.size() <= 0){
 			return;
 		}
 		this.merchantVO = new MerchantVO();
 		this.goodsList = new ArrayList<CommonGoodsVO>();
-		HotGoods goods = goodslist.get(0);
+		CollectGoods goods = goodslist.get(0);
 		this.MID = goods.getMID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
 		this.goodsList = goodslist.stream().map(bo -> {

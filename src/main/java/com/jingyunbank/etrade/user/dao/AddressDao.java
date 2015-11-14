@@ -57,5 +57,13 @@ public interface AddressDao {
 	 * 2015年11月9日 qxs
 	 */
 	public boolean updateDefault(AddressEntity addressEntity);
+
+	/**
+	 * 查询数量
+	 * @param entity
+	 * @return
+	 * 2015年11月13日 qxs
+	 */
+	public int selectAmount(AddressEntity entity);
 	
 }

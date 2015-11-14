@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.comment.dao.CommentsImgDao">
+	<resultMap type="com.jingyunbank.etrade.comment.entity.CommentsImgEntity" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="imgid" property="imgid"/>
+		<result column="picture" property="picture"/>
+	</resultMap>
+	<insert id="insert" parameterType="com.jingyunbank.etrade.comment.entity.CommentsImgEntity">
+		insert into comment_img(
+		id,imgid,picture
+		)values(
+		#{id},#{imgid},#{picture}
+		)
+	</insert>
+	<select id="selectById" resultMap="ResultMap" parameterType="String">
+		select id,imgid,picture from comment_img where imgid=#{imgid}
+	</select>
+	<delete id="delete" parameterType="String">
+		delete from comment_img where imgid=#{imgid}
+	</delete>
+	</mapper>

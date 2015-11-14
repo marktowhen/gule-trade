@@ -23,7 +23,7 @@ public class AddressService implements IAddressService{
 	private AddressDao addressDao;
 
 	@Override
-	public boolean save(Address address) throws DataSavingException {
+	public boolean save(Address address) throws DataSavingException, DataRefreshingException {
 		boolean result = false;
 		AddressEntity addressEntity=new AddressEntity();
 		BeanUtils.copyProperties(address, addressEntity);
@@ -33,6 +33,10 @@ public class AddressService implements IAddressService{
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
+		//如果新增的为默认 则把其他的设为非默认
+		if(addressEntity.isDefaulted()){
+			refreshDefualt(addressEntity.getID(), addressEntity.getUID());
+		}
 		return result;
 	}
 
@@ -41,6 +45,9 @@ public class AddressService implements IAddressService{
 		boolean result = false;
 		try {
 			result = addressDao.update(getEntityFromBo(address));
+			if(address.isDefaulted()){
+				refreshDefualt(address.getID(), address.getUID());
+			}
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
@@ -160,6 +167,27 @@ public class AddressService implements IAddressService{
 			throw new DataRefreshingException(e);
 		}
 		
+	}
+
+	@Override
+	public int getAmount(Address addressBo) {
+		AddressEntity entity = new AddressEntity();
+		BeanUtils.copyProperties(addressBo, entity);
+		entity.setValid(true);
+		return addressDao.selectAmount(entity);
+	}
+
+	@Override
+	public Optional<Address> getDefaultAddress(String uid) {
+		AddressEntity entity = new AddressEntity();
+		entity.setUID(uid);
+		entity.setDefaulted(true);
+		entity.setValid(true);
+		List<AddressEntity> list = addressDao.selectList(entity);
+		if(list!=null && !list.isEmpty()){
+			return Optional.of(getBoFromEntity(list.get(0)));
+		}
+		return Optional.empty();
 	}
 
 }

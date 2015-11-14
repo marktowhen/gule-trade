@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.goods.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -19,17 +21,21 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.goods.bo.CollectGoods;
 import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
+import com.jingyunbank.etrade.goods.bean.CollectMerchantVO;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.FootprintGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
+import com.jingyunbank.etrade.goods.bean.GoodsVO;
 import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
@@ -120,8 +126,8 @@ public class GoodsController {
 		range.setTo(20);
 
 		GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1" };
-		String types[] = { "1" };
+		String brands[] = { "1", "2" };
+		String types[] = { "4" };
 		goodshowBO.setBrands(brands);
 		goodshowBO.setTypes(types);
 		goodshowBO.setBeginPrice(new BigDecimal(100));
@@ -156,8 +162,8 @@ public class GoodsController {
 	 * 根据搜索条件查询店铺 (店铺查询)
 	 * 
 	 * @param request
-	 * 			@param goodshowvo @param page @return @throws
-	 *            Exception @throws
+	 * @param goodshowvo
+	 * 			@param page @return @throws Exception @throws
 	 */
 	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.POST)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
@@ -304,6 +310,7 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+
 	/**
 	 * 我的足迹商品查询
 	 * 
@@ -322,6 +329,7 @@ public class GoodsController {
 			throw e;
 		}
 	}
+
 	/**
 	 * 我的足迹商品保存
 	 * 
@@ -329,42 +337,177 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/footprint/save", method = RequestMethod.POST)
-	public Result listFootprintGoods(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session, String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
-		boolean flag = goodsService.saveFootprint(uid,gid);
-		if(flag){
+		boolean flag = goodsService.saveFootprint(uid, gid);
+		if (flag) {
 			return Result.ok("足迹保存成功！");
-		}else{
+		} else {
 			return Result.fail("足迹保存失败！");
 		}
 	}
+
 	/**
 	 * 多条件查询-->在结果中搜索
+	 * 
 	 * @param vo
 	 * @return
 	 */
 	@RequestMapping(value = "/GoodsByGoodsResult/list", method = RequestMethod.POST)
-	public Result listGoodsByGoodsResult(GoodsShowVO vo , Page page) throws Exception {
-		//----分页条件 [待修改]
+	public Result listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
+		// ----分页条件 [待修改]
 		Range range = new Range();
 		range.setFrom(0);
 		range.setTo(20);
-		
-		GoodsShow goodshowBO  = getVo2Bo(vo);
-		/*GoodsShow goodshowBO = new GoodsShow();
-		String brands[] = { "1", "2" };
-		String types[] = { "4" };
-		goodshowBO.setBrands(brands);
-		goodshowBO.setTypes(types);
-		goodshowBO.setBeginPrice(new BigDecimal(100));
-		goodshowBO.setEndPrice(new BigDecimal(350));
-		goodshowBO.setGoodsName("阿胶");
-		goodshowBO.setOrder(2);*/
-		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO,range).stream().map(bo -> {
+
+		GoodsShow goodshowBO = getVo2Bo(vo);
+		/*
+		 * GoodsShow goodshowBO = new GoodsShow(); String brands[] = { "1", "2"
+		 * }; String types[] = { "4" }; goodshowBO.setBrands(brands);
+		 * goodshowBO.setTypes(types); goodshowBO.setBeginPrice(new
+		 * BigDecimal(100)); goodshowBO.setEndPrice(new BigDecimal(350));
+		 * goodshowBO.setGoodsName("阿胶"); goodshowBO.setOrder(2);
+		 */
+		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vos = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vos);
 			return vos;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
+	}
+	
+	/**
+	 * 根据ID 查询商品属性
+	 * @param gid
+	 * @return
+	 */
+	@RequestMapping(value = "/goods/{gid}", method = RequestMethod.POST)
+	public Result queryGoodsById(@PathVariable String gid) throws Exception {
+		GoodsVO vo = null;
+		Optional<ShowGoods> showbo = goodsService.singleById(gid);
+		if (Objects.nonNull(showbo)) {
+			vo = new GoodsVO();
+			BeanUtils.copyProperties(showbo.get(), vo);
+		}
+		return Result.ok(vo);
+	}
+	
+	/**
+	 * 我的收藏商家保存
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/savemerchant", method = RequestMethod.POST)
+	public Result saveMerchantCollect(HttpServletRequest request, HttpSession session,String mid) throws Exception {
+		boolean flag = false;
+		String uid = ServletBox.getLoginUID(request);
+		flag = goodsService.isCollectExists(uid,mid,"1");
+		if(flag){
+			return Result.fail("您已经收藏过该商家！");
+		}
+		flag = goodsService.saveCollect(uid,mid,"1");
+		if(flag){
+			return Result.ok("收藏成功！");
+		}else{
+			return Result.fail("收藏失败！");
+		}
+	}
+	/**
+	 * 我的收藏商品保存
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/savegoods", method = RequestMethod.POST)
+	public Result saveGoodsCollect(HttpServletRequest request, HttpSession session,String gid) throws Exception {
+		boolean flag = false;
+		String uid = ServletBox.getLoginUID(request);
+		flag = goodsService.isCollectExists(uid,gid,"2");
+		if(flag){
+			return Result.fail("您已经收藏过该商品！");
+		}
+		flag = goodsService.saveCollect(uid,gid,"2");
+		if(flag){
+			return Result.ok("收藏成功！");
+		}else{
+			return Result.fail("收藏失败！");
+		}
+	}
+	/**
+	 * 查询我的收藏（商家）
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/listmerchantcollect", method = RequestMethod.POST)
+	public Result listMerchantCollect(HttpServletRequest request) throws Exception {
+		String uid = ServletBox.getLoginUID(request);
+		List<CollectMerchantVO> rltlist = new ArrayList<CollectMerchantVO>();
+			List<CollectGoods> goodslist = goodsService.listMerchantCollect(uid,"1");
+			List<CollectGoods> tmplist = new ArrayList<CollectGoods>();// 存放商家分组LIST
+			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
+				CollectMerchantVO cmvo = new CollectMerchantVO();
+				for (int i = 0; i < goodslist.size(); i++) {
+					// 第一条处理
+					if (i == 0) {
+						tmplist.add(goodslist.get(i));
+					} else if (!goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家不是一家
+						cmvo.init(tmplist);
+						rltlist.add(cmvo);
+						tmplist = new ArrayList<CollectGoods>();
+						tmplist.add(goodslist.get(i));
+						if (i == (goodslist.size() - 1)) {// 最后一条
+							cmvo = new CollectMerchantVO();
+							cmvo.init(tmplist);
+							rltlist.add(cmvo);
+						} else {
+							cmvo = new CollectMerchantVO();
+						}
+					} else if (goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家是一家
+						tmplist.add(goodslist.get(i));
+						if (i == (goodslist.size() - 1)) {// 最后一条
+							cmvo = new CollectMerchantVO();
+							cmvo.init(tmplist);
+							rltlist.add(cmvo);
+						}
+					}
+
+				}
+			}
+		return Result.ok(rltlist);
+	}
+	
+	/**
+	 * 查询我的收藏（商品）
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/collect/listgoodscollect", method = RequestMethod.POST)
+	public Result listGoodsCollect(HttpServletRequest request) throws Exception {
+		try {
+			
+		
+		String uid = ServletBox.getLoginUID(request);
+		List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
+			List<CollectGoods> goodslist = goodsService.listMerchantCollect(uid,"2");
+			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
+				rltlist = goodslist.stream().map(bo -> {
+					CommonGoodsVO vo = new CommonGoodsVO();
+					try {
+						BeanUtils.copyProperties(bo, vo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return vo;
+				}).collect(Collectors.toList());
+			}
+		return Result.ok(rltlist);
+		
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		return null;
 	}
 }

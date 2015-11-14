@@ -9,16 +9,51 @@
 		<!-- 商品概要信息 -->
 		<result column="gid" property="GID" />
 		<result column="goodsname" property="goodsName" />
-		<result column="weight" property="weight" />
-		<result column="unit" property="unit" />
+		<result column="CODE" property="goodsCode" />
 		<result column="price" property="price" />
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="nowprice" property="nowPrice" />
+		<result column="counts" property="count" />
+		<result column="volume" property="volume" />
+		<result column="addtime" property="addTime" />
 		<result column="pro_flag" property="pro_flag" />
 		<result column="pro_start" property="pro_start" />
 		<result column="pro_end" property="pro_end" />
+		<result column="up_time" property="upTime" />
+		<result column="down_time" property="downTime" />
+		<result column="postage" property="postage" />
+		<result column="subvolumeType" property="subVolumeType" />
+		<result column="barvode" property="barCode" />
+		<result column="goodsdesc" property="goodsDesc" />
+		<result column="goodstitle" property="goodsTitle" />
+		<!-- 详细信息 -->
+		<result column="standard_no" property="standardNo" />
+		<result column="shelf_life" property="shelfLife" />
+		<result column="approve_no" property="approveNo" />
+		<result column="usages" property="usage" />
+		<result column="commended_user" property="commendedUser" />
+		<result column="not_commended_user" property="notCommendedUser" />
+		<result column="ingredients" property="ingredients" />
+		<result column="food_additives" property="foodAdditives" />
+		<result column="specifications" property="specifications" />
+		<result column="ingredient" property="ingredient" />
+		<result column="functions" property="functions" />
+		<result column="note" property="note" />
+		<result column="storage_methods" property="storageMethods" />
+		<result column="is_gift_box" property="isGiftBox" />
+		<result column="ProductionDate" property="production_date" />
+		<result column="weight" property="weight" />
+		<result column="unit" property="unit" />
+		<result column="factoryname" property="factoryName" />
+		<result column="factoryaddr" property="factoryAddr" />
+		<result column="factorytel" property="factoryTel" />
 		<!-- 商品图片信息 -->
 		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_2" property="thumb_path_2" />
+		<result column="thumb_path_3" property="thumb_path_3" />
+		<result column="thumb_path_4" property="thumb_path_4" />
+		<result column="thumb_path_5" property="thumb_path_5" />
+		<result column="content" property="content" />
 		<!-- 店铺信息 -->
 		<result column="mid" property="MID" />
 		<result column="merchantname" property="merchantName" />
@@ -32,6 +67,8 @@
 		<result column="tid" property="TID" />
 		<result column="typename" property="typeName" />
 	</resultMap>
+	
+	
 	<!-- 商品条件关联的店铺信息 -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity"
 		id="GoodsMerchantMap">
@@ -69,11 +106,23 @@
 		i.Thumb_path_2 thumb_path_2,
 		i.Thumb_path_3 thumb_path_3,
 		i.Thumb_path_4 thumb_path_4,
-		i.show_path_1, show_path_1,
-		i.show_path_2, show_path_2,
-		i.show_path_3,
-		show_path_3,
-		i.show_path_4, show_path_4,
+		i.Thumb_path_5 thumb_path_5,
+		i.content content,
+	</sql>
+	<!-- 商品详细信息  (包含商品属性 详细属性 商家 品牌 图片属性)-->
+	<sql id="detailedSql">
+	g.id gid,g.name goodsname,g.code CODE,g.price price,g.promotion_price promotion_price,
+	<include refid="nowprice"/>
+	g.up_time up_time,g.down_time down_time,g.count counts,g.volume volume,
+	g.pro_start pro_start,g.pro_end pro_end, g.pro_flag proflag,
+	m.id MID,m.merchant_name merchantname,m.img_path merchantimg,
+	b.id bid,b.name brandname,
+	<include refid="imgAttr"/>
+	d.standard_no standard_no,d.shelf_life shelf_life,d.approve_no approve_no,d.usage usages,
+	d.commended_user commended_user,d.not_commended_user not_commended_user,d.ingredients ingredients,
+	d.food_additives food_additives,d.specifications specifications,d.ingredient ingredient,
+	d.functions functions,d.note note,d.storage_methods storage_methods,d.is_gift_box is_gift_box,
+	d.production_date production_date,d.weight weight,d.unit unit,t.id tid,t.name typename
 	</sql>
 	
 	<!-- 根据促销标志算出当然价格 -->
@@ -300,8 +349,8 @@
 		x.id,x.mid,x.name,x.price,x.now_price now_price,i.thumb_path_1 as thumb_path_1
 	<![CDATA[
 	 from (
-		select gid,sum(count) as count from tran_records where 
-		turnover_date  >= 
+		select gid,sum(count) as count from sales_records where 
+		sales_date  >= 
 		DATE_SUB(NOW(),INTERVAL 24 HOUR)
 		group by gid order by sum(count) desc limit 0,3
 		) r left join goods x
@@ -406,5 +455,79 @@
 			ORDER BY g.addtime DESC
 		</if>
 		LIMIT #{from} , #{size}
+	</select>
+	<!-- 根据ID 查询商品属性 -->
+	<select id="selectOne" parameterType="string" resultMap="baseGoodsMap">
+	SELECT
+	<include refid="detailedSql"/>
+	FROM goods g
+	LEFT JOIN goods_img i ON g.id=i.gid
+	LEFT JOIN goods_detail d ON g.id=d.gid
+	LEFT JOIN goods_brand b ON b.id=g.bid 
+	LEFT JOIN merchant m ON g.mid=m.id
+	LEFT JOIN goods_type t ON t.id=g.tid
+	WHERE 1=1 AND g.id= #{gid}
+	</select>
+	<!-- 检验当前商品或者店家是否已收藏 -->
+	<select id="isCollectExists" resultType="int" parameterType="map">
+	select count(*) from collect t where t.uid = #{uid} and type =#{type} and fid = #{fid}
+	</select>
+	<!-- 插入我的收藏 　 -->
+	<insert id="insertCollect" parameterType="com.jingyunbank.etrade.goods.entity.CollectEntity">
+	insert into collect
+	(id,uid,fid,type,collect_time)
+	values
+	(#{ID},#{UID},#{fid},#{type},#{collectTime})
+	</insert>
+	<!--查询我的收藏店铺及包含的商品信息 该语句需要修改 -->
+	<resultMap type="com.jingyunbank.etrade.goods.entity.CollectGoodsVEntity"
+		id="collectGoodsVEntity">
+		<!-- 商品概要信息 -->
+		<result column="gid" property="GID" />
+		<result column="goodsname" property="goodsName" />
+		<result column="weight" property="weight" />
+		<result column="unit" property="unit" />
+		<result column="price" property="price" />
+		<result column="promotion_price" property="promotionPrice" />
+		<result column="now_price" property="nowPrice" />
+		<result column="thumb_path_1" property="thumb_path_1" />
+		<!-- 品牌信息 -->
+		<result column="bid" property="BID" />
+		<result column="brandname" property="brandName" />
+		<result column="branddesc" property="brandDesc" />
+		<!--类型信息 -->
+		<result column="tid" property="TID" />
+		<result column="typename" property="typeName" />
+		<result column="collect_time" property="collectTime" />
+	</resultMap>
+	<sql id="merchantCollectField">
+		g.id,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
+		g.price,g.now_price now_price , g.count count, g.volume volume
+		,g.addtime addtime,g.collect_time,
+		<include refid="imgAttr" />
+		d.weight,d.unit ,t.strategy_name,t.parameter1
+	</sql>
+	<select id="selectMerchantCollect" parameterType="java.util.Map" resultMap="collectGoodsVEntity">
+		SELECT
+		<include refid="merchantCollectField" />
+	FROM (
+		select c.collect_time,x.* from collect c
+		inner join goods x
+		<if test="type =='1'.toString()">
+			<![CDATA[ on c.fid = x.mid  ]]>
+		</if>
+		<if test="type =='2'.toString()">
+			<![CDATA[ on c.fid = x.id  ]]>
+		</if>
+		 and c.type = #{type} 
+		 and uid = #{uid} order by c.fid
+		) g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_strategy s ON g.id=s.gid
+		LEFT JOIN strategy t ON s.sid=t.id
+		LEFT JOIN goods_brand b ON b.id=g.bid
+		LEFT JOIN goods_img i ON g.id=i.gid
+		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
+		ORDER BY g.volume DESC
 	</select>
 </mapper>
