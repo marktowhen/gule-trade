@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.jingyunbank.etrade.base.intercepter.AuthIntercepter;
+import com.jingyunbank.etrade.api.base.intercepter.AuthIntercepter;
 
 @Configuration
 public class MvcConfig {
