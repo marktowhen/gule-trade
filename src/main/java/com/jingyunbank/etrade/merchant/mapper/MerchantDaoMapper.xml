@@ -2,8 +2,8 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.goods.dao.MerchantDao">
-	<resultMap  id="rlt_merchant" type="com.jingyunbank.etrade.goods.entity.MerchantEntity">
+<mapper namespace="com.jingyunbank.etrade.merchant.dao.MerchantDao">
+	<resultMap  id="rlt_merchant" type="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
 	     <id column="id" property="ID"/>
     	 <result column="merchant_name" property="merchantName"/>
     	 <result column="merchant_ename" property="merchantEname"/>
@@ -21,16 +21,32 @@
     	 <result column="img_path" property="imgPath"/>
     	 <result column="invoice_flag" property="invoiceFlag"/>
 	</resultMap>
+	<resultMap  id="rlt_invoicetype" type="com.jingyunbank.etrade.merchant.entity.InvoiceTypeEntity">
+		 <result column="code" property="code"/>
+    	 <result column="name" property="name"/>
+    	 <result column="remark" property="remark"/>
+	</resultMap>
+	
 	<!--查询推荐商家列表 -->
 	<select id = "selectMerchants" resultMap="rlt_merchant" >
 	select * from merchant ORDER BY admin_sort_num limit #{from},#{to};
 	</select>
 	<!--添加商家信息 -->
-	<insert id="insertMerchant" parameterType="com.jingyunbank.etrade.goods.entity.MerchantEntity">
+	<insert id="insertMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
 			INSERT INTO merchant(id,merchant_name,merchant_ename,merchant_code,merchant_address,merchant_scale,employee_num,tel,
 			zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag)
 			VALUES 
 			(#{ID},#{merchantName},#{merchantEname},#{merchantCode},#{merchantAddress},#{merchantScale},#{employeeNum},#{tel},
 			#{zipcode},#{qq},#{twoDimensionCode},#{registerDate},#{adminSortNum},#{merchantDesc},#{imgPath},#{invoiceFlag});
+	</insert>
+	<!--查询所有发票类型列表 -->
+	<select id = "selectInvoiceType" resultMap="rlt_invoicetype" >
+	select * from invoice_type ORDER BY code;
+	</select>
+	<!--添加商家发票类型信息 -->
+	<insert id="insertMerchantInvoiceType" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantInvoiceEntity">
+			INSERT INTO merchant_invoice(id,mid,code)
+			VALUES 
+			(#{ID},#{MID},#{code});
 	</insert>
 </mapper>

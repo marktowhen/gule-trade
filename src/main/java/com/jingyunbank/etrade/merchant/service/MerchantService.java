@@ -11,12 +11,16 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
 import com.jingyunbank.etrade.api.merchant.service.IMerchantService;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
 import com.jingyunbank.etrade.merchant.dao.MerchantDao;
+import com.jingyunbank.etrade.merchant.entity.InvoiceTypeEntity;
 import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
+import com.jingyunbank.etrade.merchant.entity.MerchantInvoiceEntity;
 /**
  * 
  * @author liug
@@ -60,5 +64,37 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		}
 		return flag;
 		
+	}
+	@Override
+	public List<InvoiceType> listInvoiceType() throws IllegalAccessException, InvocationTargetException {
+		List<InvoiceType> rlist = new ArrayList<InvoiceType>();
+		List<InvoiceTypeEntity> list = merchantDao.selectInvoiceType();
+		InvoiceType bo = null;
+		for(InvoiceTypeEntity e : list){
+			bo = new InvoiceType();
+			BeanUtils.copyProperties(e,bo);
+			rlist.add(bo);
+		}
+		return rlist;
+	}
+	@Override
+	public boolean saveMerchantInvoiceType(Merchant merchant) throws Exception {
+		boolean flag = false;
+		try {
+		String mid = merchant.getID();
+		String codes = merchant.getCodes();
+		String[] codeArr = codes.split(",");
+		for(String s : codeArr){
+			MerchantInvoiceEntity me = new MerchantInvoiceEntity();
+			me.setID(KeyGen.uuid());
+			me.setMID(mid);
+			me.setCode(s);
+			merchantDao.insertMerchantInvoiceType(me);
+		}
+		flag = true;
+		}catch(Exception e){
+			throw new DataSavingException(e);
+		}
+		return flag;
 	}
 }

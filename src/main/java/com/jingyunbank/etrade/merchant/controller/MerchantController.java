@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
-import com.jingyunbank.etrade.goods.bean.MerchantVO;
+import com.jingyunbank.etrade.merchant.bean.InvoiceTypeVO;
+import com.jingyunbank.etrade.merchant.bean.MerchantVO;
 import com.jingyunbank.etrade.merchant.service.MerchantService;
 /**
  * 商家管理控制器
@@ -64,20 +66,27 @@ public class MerchantController {
 		merchantVO.setID(KeyGen.uuid());
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);
-		if(merchantService.saveMerchant(merchant)){
+		if(merchantService.saveMerchant(merchant)&&merchantService.saveMerchantInvoiceType(merchant)){
 			return Result.ok("保存成功");
 		}
 		return Result.ok(merchantVO);
 	}
-	@RequestMapping("/recommend/list")
-	
+	/**
+	 * 获取发票类型
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/invoicetype/list")
 	public Result getInvoiceType(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
 		//转成VO
-		List<Merchant> list = merchantService.listMerchants();
-		List<MerchantVO> rlist = new ArrayList<MerchantVO>();
-		MerchantVO vo = null;
-		for(Merchant bo : list){
-			vo = MerchantVO.getInstance();
+		List<InvoiceType> list = merchantService.listInvoiceType();
+		List<InvoiceTypeVO> rlist = new ArrayList<InvoiceTypeVO>();
+		InvoiceTypeVO vo = null;
+		for(InvoiceType bo : list){
+			vo = new InvoiceTypeVO();
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}

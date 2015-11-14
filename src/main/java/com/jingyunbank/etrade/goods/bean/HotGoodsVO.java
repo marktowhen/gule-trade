@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.merchant.bean.MerchantVO;
 
 /**
  * 首页热门推荐

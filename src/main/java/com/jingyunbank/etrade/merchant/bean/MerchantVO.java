@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.bean;
+package com.jingyunbank.etrade.merchant.bean;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -43,6 +43,8 @@ public class MerchantVO implements Serializable {
 	private String imgPath ;
 	/** 是否开具发票 0否1是  */
 	private String invoiceFlag;
+	/**发票的类型*/
+	private String codes;
 	
 	public String getID() {
 		return ID;
@@ -144,4 +146,11 @@ public class MerchantVO implements Serializable {
 	public static MerchantVO getInstance(){
 		return new MerchantVO();
 	}
+	public String getCodes() {
+		return codes;
+	}
+	public void setCodes(String codes) {
+		this.codes = codes;
+	}
+	
 }
