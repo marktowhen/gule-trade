@@ -12,7 +12,7 @@
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="address_id" property="addressID" javaType="String"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
-		<result column="paytype_id" property="paytypeID" javaType="String"/>
+		<result column="paytype_code" property="paytypeCode" javaType="String"/>
 		<result column="paytype_name" property="paytypeName" javaType="String"/>
 		<result column="deliverytype_id" property="deliveryTypeID" javaType="String"/>
 		<result column="deliverytype_name" property="deliveryTypeName" javaType="String"/>
@@ -24,7 +24,7 @@
 	</resultMap>
 	<sql id="orders_columns">
 		id, orderno, receiver, uid, mid, mname, address_id, addtime, 
-		paytype_id, paytype_name, deliverytype_id, deliverytype_name, 
+		paytype_code, paytype_name, deliverytype_id, deliverytype_name, 
 		status_code, status_name, price, postage, note
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
@@ -32,7 +32,7 @@
 			(<include refid="orders_columns"/>)
 		values
 			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{mname}, #{addressID}, #{addtime},
-			 #{paytypeID}, #{paytypeName}, #{deliveryTypeID}, #{deliveryTypeName},
+			 #{paytypeCode}, #{paytypeName}, #{deliveryTypeID}, #{deliveryTypeName},
 			 #{statusCode}, #{statusName}, #{price}, #{postage}, #{note})
 	</insert>
 	<insert id="insertMany">
@@ -41,7 +41,7 @@
 		values
 		<foreach collection="orders" item="o" index="i" open="" separator="," close="">
 			(#{o.ID}, #{o.orderno}, #{o.receiver}, #{o.UID}, #{o.MID}, #{o.mname}, #{o.addressID}, #{o.addtime},
-			 #{o.paytypeID}, #{o.paytypeName}, #{o.deliveryTypeID}, #{o.deliveryTypeName},
+			 #{o.paytypeCode}, #{o.paytypeName}, #{o.deliveryTypeID}, #{o.deliveryTypeName},
 			 #{o.statusCode}, #{o.statusName}, #{o.price}, #{o.postage}, #{o.note})
 		</foreach>
 	</insert>

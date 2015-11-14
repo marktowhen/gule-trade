@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
@@ -65,30 +64,9 @@ public class OrderController {
 				}).collect(Collectors.toList()));
 	}
 	
-	
-	
-	@AuthBeforeOperation
-	@RequestMapping(value="/api/orders", method=RequestMethod.PUT)
-	public Result submit(@Valid OrderVO order, BindingResult valid, HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getCodes()).toString())
-						.collect(Collectors.joining(" ; ")));
-		}
-		order.setID(KeyGen.uuid());
-		order.setOrderno(new String(new RndBuilder().hasletter(false).length(6).next()));
-		order.setUID(session.getAttribute("LOGIN_ID").toString());
-		order.setAddtime(new Date());
-		Orders orderbo = new Orders();
-		BeanUtils.copyProperties(order, orderbo);
-		orderContextService.save(orderbo);
-		return Result.ok(order);
-	}
-	
 	/**
 	 * 订单确认并提交<br>
-	 * uri: put /api/order {"":"", "":"", "orders":[{}, {}, {}]}
+	 * uri: put /api/order {"addressID":"XXXXX", "":"", "orders":[{}, {}, {}]}
 	 * @param purchase
 	 * @param valid
 	 * @param session
@@ -143,7 +121,6 @@ public class OrderController {
 			orders.add(order);
 		}
 		orderContextService.save(orders);
-		
 		return Result.ok(purchase);
 	}
 	

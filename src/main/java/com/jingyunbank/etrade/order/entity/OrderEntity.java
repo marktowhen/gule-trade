@@ -13,7 +13,7 @@ public class OrderEntity {
 	private String receiver;//收货人
 	private String addressID;//收货地址->address id
 	private Date addtime;//下单时间
-	private String paytypeID;//支付方式 id
+	private String paytypeCode;//支付方式 code
 	private String paytypeName;
 	private String deliveryTypeID;
 	private String deliveryTypeName;
@@ -71,11 +71,11 @@ public class OrderEntity {
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-	public String getPaytypeID() {
-		return paytypeID;
+	public String getPaytypeCode() {
+		return paytypeCode;
 	}
-	public void setPaytypeID(String paytypeID) {
-		this.paytypeID = paytypeID;
+	public void setPaytypeCode(String paytypeCode) {
+		this.paytypeCode = paytypeCode;
 	}
 	public String getPaytypeName() {
 		return paytypeName;

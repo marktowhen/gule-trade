@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.OrderTrace;
 import com.jingyunbank.etrade.api.order.bo.Orders;
@@ -20,6 +21,7 @@ import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.IOrderTraceService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
@@ -30,6 +32,8 @@ public class OrderContextService implements IOrderContextService {
 	private IOrderGoodsService orderGoodsService;
 	@Autowired
 	private IOrderTraceService orderTraceService;
+	@Autowired
+	private IPayContextService payContextService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -37,9 +41,14 @@ public class OrderContextService implements IOrderContextService {
 		try{
 			List<Orders> orders = new ArrayList<Orders>();
 			orders.add(order);
+			//保存订单信息
 			orderService.save(orders);
+			//保存订单支付状态
+			payContextService.save(orders);
+			//保存订单的详情（每笔订单的商品信息）
 			orderGoodsService.save(order.getGoods());
 			initNewOrderTrace(order);
+			//保存订单状态追踪信息
 			orderTraceService.save(order.getTraces());
 		}catch(Exception e){
 			throw new DataSavingException(e);
@@ -50,17 +59,29 @@ public class OrderContextService implements IOrderContextService {
 	@Transactional(propagation=Propagation.REQUIRED)
 	public void save(List<Orders> orders) throws DataSavingException {
 		try{
+			//保存订单信息
 			orderService.save(orders);
+			//保存订单支付状态
+			payContextService.save(orders);
+			//构建详情跟追踪状态
+			List<OrderGoods> goods = new ArrayList<OrderGoods>();
+			List<OrderTrace> traces = new ArrayList<OrderTrace>();
 			for (Orders order : orders) {
-				orderGoodsService.save(order.getGoods());
+				goods.addAll(order.getGoods());
 				initNewOrderTrace(order);
-				orderTraceService.save(order.getTraces());
+				traces.addAll(order.getTraces());
 			}
+			//保存订单的详情（每笔订单的商品信息）
+			orderGoodsService.save(goods);
+			//保存订单状态追踪信息
+			orderTraceService.save(traces);
+			
 		}catch(Exception e){
 			throw new DataSavingException(e);
 		}
 	}
 
+	//创建订单新建追踪状态
 	private void initNewOrderTrace(Orders order) {
 		OrderTrace trace = new OrderTrace();
 		trace.setAddtime(new Date());

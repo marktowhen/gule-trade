@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.controller;
+package com.jingyunbank.etrade.merchant.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.goods.bo.Merchant;
+import com.jingyunbank.etrade.api.merchant.bo.Merchant;
 import com.jingyunbank.etrade.goods.bean.MerchantVO;
-import com.jingyunbank.etrade.goods.service.MerchantService;
+import com.jingyunbank.etrade.merchant.service.MerchantService;
 /**
  * 商家管理控制器
  * @author liug
@@ -68,6 +68,21 @@ public class MerchantController {
 			return Result.ok("保存成功");
 		}
 		return Result.ok(merchantVO);
+	}
+	@RequestMapping("/recommend/list")
+	
+	public Result getInvoiceType(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
+		//转成VO
+		List<Merchant> list = merchantService.listMerchants();
+		List<MerchantVO> rlist = new ArrayList<MerchantVO>();
+		MerchantVO vo = null;
+		for(Merchant bo : list){
+			vo = MerchantVO.getInstance();
+			BeanUtils.copyProperties(bo,vo);
+			rlist.add(vo);
+		}
+		Result r = Result.ok(list);
+		return r;
 	}
 	
 }
