@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.service;
+package com.jingyunbank.etrade.merchant.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -12,10 +12,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.goods.bo.Merchant;
-import com.jingyunbank.etrade.api.goods.service.IMerchantService;
-import com.jingyunbank.etrade.goods.dao.MerchantDao;
-import com.jingyunbank.etrade.goods.entity.MerchantEntity;
+import com.jingyunbank.etrade.api.merchant.bo.Merchant;
+import com.jingyunbank.etrade.api.merchant.service.IMerchantService;
+import com.jingyunbank.etrade.goods.service.ServiceTemplate;
+import com.jingyunbank.etrade.merchant.dao.MerchantDao;
+import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 /**
  * 
  * @author liug

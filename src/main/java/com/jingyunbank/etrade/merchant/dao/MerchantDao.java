@@ -1,9 +1,9 @@
-package com.jingyunbank.etrade.goods.dao;
+package com.jingyunbank.etrade.merchant.dao;
 
 import java.util.List;
 import java.util.Map;
 
-import com.jingyunbank.etrade.goods.entity.MerchantEntity;
+import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
 /**

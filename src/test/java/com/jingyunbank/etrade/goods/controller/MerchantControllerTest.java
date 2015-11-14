@@ -66,5 +66,8 @@ public class MerchantControllerTest extends TestCaseBase {
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	 }
+	 
+	
+	 
 	
 }
