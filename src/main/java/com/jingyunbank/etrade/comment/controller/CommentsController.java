@@ -59,10 +59,20 @@ public class CommentsController {
 		BeanUtils.copyProperties(commentVO, comments);
 
 		if(commentService.save(comments)){
+			
+			/*	String filePath=request.getSession().getServletContext().getRealPath("/") + "upload";
+			File uploadDest=new File(filePath);
+			String[] fileNames=uploadDest.list();
+			for(int i=0;i<fileNames.length;i++){
+				commentsImgVO.setId(KeyGen.uuid());
+				commentsImgVO.setPicture("a.jpg");
+				commentsImgVO.setImgid(commentVO.getImgid());
+				CommentsImg commentsImg=new CommentsImg();
+				BeanUtils.copyProperties(commentsImgVO, commentsImg);
+				commentImgService.save(commentsImg);
+			}*/
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
 			for(int i=0;i<3;i++){
-			/*	String fileName = new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date())+getCheckCode()+"."+file.getContentType();
-				File target = new File(path+fileName);*/
 				commentsImgVO.setId(KeyGen.uuid());
 				commentsImgVO.setPicture("a.jpg");
 				commentsImgVO.setImgid(commentVO.getImgid());
