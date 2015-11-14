@@ -53,107 +53,12 @@ public class OrderControllerTest extends TestCaseBase {
 	}
 	
 	@Test
-	public void testAddressID() throws Exception{
-		getMockMvc().perform(
-					 put("/api/orders")
-					.param("addressID", "123321123321123321123")
-					.param("paytypeID", "1233211233211233211232")
-					.param("price", "123.32")
-					.param("postage", "12.32")
-					.sessionAttr("LOGIN_ID", "XXXX")
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-				)
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("500"))
-				.andDo(print());
-	}
-	
-	@Test
-	public void testPayType() throws Exception{
-		getMockMvc().perform(
-					 put("/api/orders")
-					.param("addressID", "1233211233211233211232")
-					.param("paytypeID", "123321123321123321123")
-					.param("price", "123.32")
-					.param("postage", "12.32")
-					.sessionAttr("LOGIN_ID", "USER-ID")
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-				)
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("500"))
-				.andDo(print());
-		
-	}
-	@Test
-	public void testPrice() throws Exception{
-		getMockMvc().perform(
-					 put("/api/orders")
-					.param("addressID", "1233211233211233211232")
-					.param("paytypeID", "1233211233211233211232")
-					.param("price", "-122")
-					.param("postage", "12.32")
-					.sessionAttr("LOGIN_ID", "USER-ID")
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-				)
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("500"))
-				.andDo(print());
-		
-	}
-	@Test
-	public void testPostage() throws Exception{
-		getMockMvc().perform(
-					 put("/api/orders")
-					.param("addressID", "1233211233211233211232")
-					.param("paytypeID", "1233211233211233211232")
-					.param("price", "122")
-					.param("postage", "-12.32")
-					.sessionAttr("LOGIN_ID", "USER-ID")
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-				)
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("500"))
-				.andDo(print());
-		
-	}
-	
-	@Test
 	public void testSuccess() throws Exception{
-		getMockMvc().perform(
-					 put("/api/orders")
-					.param("addressID", "1233211233211233211232")
-					.param("paytypeID", "1233211233211233211232")
-					.param("paytypeName", "支付宝")
-					.param("receiver", "张三四")
-					.param("MID", "XXXXX")
-					.param("price", "122")
-					.param("postage", "12.32")
-					.sessionAttr("LOGIN_ID", "USER-ID")
-					.contentType(MediaType.APPLICATION_JSON)
-					.characterEncoding("UTF-8")
-					.accept(MediaType.APPLICATION_JSON)
-				)
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("200"))
-				.andDo(print());
-		
-	}
-	@Test
-	public void testSuccess1() throws Exception{
 		PurchaseRequestVO vo = new PurchaseRequestVO();
 		
 		vo.setAddressID("1111111111111111111111");
-		vo.setPaytypeID("1111111111111111111111");
-		vo.setPaytypeName("1111");
+		vo.setPaytypeCode("ONLINE");
+		vo.setPaytypeName("线上支付");
 		vo.setReceiver("XXXX");
 		vo.setBusinessReceipt(true);
 		vo.setInvoiceTitle("XSADFSADFAS");
@@ -203,25 +108,6 @@ public class OrderControllerTest extends TestCaseBase {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200"))
-				.andDo(print());
-		
-	}
-	
-	@Test
-	public void testLoginFirst() throws Exception{
-		getMockMvc().perform(
-					 put("/api/orders")
-					.param("addressID", "1233211233211233211232")
-					.param("paytypeID", "1233211233211233211232")
-					.param("price", "122")
-					.param("postage", "12.32")
-					//.sessionAttr("LOGIN_ID", "USER-ID")
-					.contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-				)
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("500"))
 				.andDo(print());
 		
 	}

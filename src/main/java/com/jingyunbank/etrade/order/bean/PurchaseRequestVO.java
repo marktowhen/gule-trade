@@ -27,9 +27,9 @@ public class PurchaseRequestVO {
 	@NotNull
 	private String addressID;//收货地址->address id
 	private String UID;//下单人
-	@Size(min=22, max=22, message="支付类型错误。")
+	@Size(min=1, max=12, message="支付类型错误。")
 	@NotNull
-	private String paytypeID;//支付方式 id
+	private String paytypeCode;//支付方式 code
 	@NotNull
 	private String paytypeName;
 	
@@ -59,11 +59,11 @@ public class PurchaseRequestVO {
 	public void setUID(String uID) {
 		UID = uID;
 	}
-	public String getPaytypeID() {
-		return paytypeID;
+	public String getPaytypeCode() {
+		return paytypeCode;
 	}
-	public void setPaytypeID(String paytypeID) {
-		this.paytypeID = paytypeID;
+	public void setPaytypeCode(String paytypeCode) {
+		this.paytypeCode = paytypeCode;
 	}
 	public String getPaytypeName() {
 		return paytypeName;

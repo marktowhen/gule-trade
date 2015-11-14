@@ -17,6 +17,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
+import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
@@ -28,10 +29,20 @@ public class PayContextService implements IPayContextService{
 	
 	@Override
 	@Transactional
-	public void save(List<OrderPayment> payments) throws DataSavingException {
-		
-		payments.forEach(pay -> {
-		});
+	public void save(List<Orders> orders) throws DataSavingException {
+		List<OrderPayment> payments = new ArrayList<OrderPayment>();
+		orders.stream().filter(o-> PayType.ONLINE_CODE.equals(o.getPaytypeCode()))
+			.forEach(o -> {
+				OrderPayment op = new OrderPayment();
+				BeanUtils.copyProperties(o, op);
+				op.setAddtime(new Date());
+				op.setDone(false);
+				op.setID(KeyGen.uuid());
+				op.setOID(o.getID());
+				op.setMoney(o.getPrice());
+				op.setTransno(UniqueSequence.next());
+				payments.add(op);
+			});
 		payService.save(payments);
 	}
 
