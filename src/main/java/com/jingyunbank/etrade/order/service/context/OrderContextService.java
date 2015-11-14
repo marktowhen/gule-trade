@@ -12,11 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.OrderDeliveringException;
-import com.jingyunbank.etrade.api.exception.OrderPaidException;
-import com.jingyunbank.etrade.api.exception.OrderPayException;
-import com.jingyunbank.etrade.api.exception.OrderPayFailException;
-import com.jingyunbank.etrade.api.exception.OrderUpdateException;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.OrderTrace;
 import com.jingyunbank.etrade.api.order.bo.Orders;
@@ -80,27 +75,27 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
-	public void update(Orders order) throws OrderUpdateException {
+	public void update(Orders order) throws DataSavingException {
 
 	}
 
 	@Override
-	public void pay(Orders order) throws OrderPayException {
+	public void pay(Orders order) throws DataSavingException {
 
 	}
 
 	@Override
-	public void paid(String orderno) throws OrderPaidException {
+	public void paid(String orderno) throws DataSavingException {
 
 	}
 
 	@Override
-	public void payfail(String orderno) throws OrderPayFailException {
+	public void payfail(String orderno) throws DataSavingException {
 
 	}
 
 	@Override
-	public void delivering(String orderno) throws OrderDeliveringException {
+	public void delivering(String orderno) throws DataSavingException {
 
 	}
 

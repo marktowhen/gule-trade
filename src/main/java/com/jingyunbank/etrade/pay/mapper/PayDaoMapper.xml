@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.pay.dao.PayDao">
+	<resultMap type="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity" id="OrderPaymentEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="transno" property="transno" jdbcType="BIGINT"/>
+		<result column="oid" property="OID" javaType="String"/>
+		<result column="uid" property="UID" javaType="String"/>
+		<result column="mid" property="MID" javaType="String"/>
+		<result column="mname" property="mname" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="paidtime" property="paidtime" javaType="java.util.Date"/>
+		<result column="platform_code" property="platformCode" javaType="String"/>
+		<result column="platform_name" property="platformName" javaType="String"/>
+		<result column="done" property="done" javaType="Boolean"/>
+		<result column="money" property="money" jdbcType="DECIMAL"/>
+		<result column="note" property="note" javaType="String"/>
+	</resultMap>
+	<sql id="order_payment_columns">
+		id, transno, oid, uid, mid, mname, addtime, paidtime,
+		platform_code, platform_name, done,
+		money, note
+	</sql>
+	<insert id="insertOne" parameterType="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity">
+		insert into order_payment
+			(<include refid="order_payment_columns"/>)
+		values
+			(#{ID}, #{transno}, #{OID}, #{UID}, #{MID}, #{mname}, #{addtime}, #{paidtime}, 
+			#{platformCode}, #{platformName}, #{done},
+			#{money}, #{note})
+	</insert>
+	<insert id="insertMany">
+		insert into order_payment
+			(<include refid="order_payment_columns"/>)
+		values
+		<foreach collection="payments" item="p" index="i" open="" separator="," close="">
+			(#{p.ID}, #{p.transno}, #{p.OID}, #{p.UID}, #{p.MID}, #{p.mname}, #{p.addtime}, #{p.paidtime},
+			#{p.platformCode}, #{p.platformName}, #{p.done},
+			#{p.money}, #{p.note})
+		</foreach>
+	</insert>
+	<select id="selectPayments" resultType="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity">
+		select <include refid="order_payment_columns"/>
+		from order_payment
+		where oid in
+		<foreach collection="oids" item="oid" open="(" separator="," close=")">
+			#{oid}
+		</foreach>
+	</select>
+</mapper>
