@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,10 +20,11 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
+import com.jingyunbank.etrade.api.merchant.service.IMerchantService;
+import com.jingyunbank.etrade.api.merchant.service.context.IMerchantContextService;
 import com.jingyunbank.etrade.merchant.bean.DeliveryTypeVO;
 import com.jingyunbank.etrade.merchant.bean.InvoiceTypeVO;
 import com.jingyunbank.etrade.merchant.bean.MerchantVO;
-import com.jingyunbank.etrade.merchant.service.MerchantService;
 /**
  * 商家管理控制器
  * @author liug
@@ -32,7 +34,9 @@ import com.jingyunbank.etrade.merchant.service.MerchantService;
 @RequestMapping("/api/merchant")
 public class MerchantController {
 	@Resource
-	private MerchantService merchantService;
+	private IMerchantService merchantService;
+	@Autowired
+	private IMerchantContextService merchantContextService;
 	/**
 	 * 推荐商家检索
 	 * @param request
@@ -68,10 +72,7 @@ public class MerchantController {
 		merchantVO.setID(KeyGen.uuid());
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);
-		if(merchantService.saveMerchant(merchant)
-				&&merchantService.saveMerchantInvoiceType(merchant)
-				&&merchantService.saveMerchantDeliveryType(merchant)
-				){
+		if(merchantContextService.saveMerchant(merchant)){
 			return Result.ok("保存成功");
 		}
 		return Result.ok(merchantVO);
@@ -109,12 +110,7 @@ public class MerchantController {
 		Merchant merchant=Merchant.getInstance();
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型
-		if(merchantService.updateMerchant(merchant)
-				&&merchantService.removeMerchantInvoiceType(merchant)
-				&&merchantService.saveMerchantInvoiceType(merchant)
-				&&merchantService.removeMerchantDeliveryType(merchant)
-				&&merchantService.saveMerchantDeliveryType(merchant)
-				){
+		if(this.merchantContextService.updateMerchant(merchant)){
 			return Result.ok("修改成功");
 		}
 		return Result.ok(merchantVO);
