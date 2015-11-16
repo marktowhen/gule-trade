@@ -73,4 +73,23 @@
 	<delete id="deleteMerchantInvoiceType" parameterType="String">
 		delete from merchant_invoice where mid = #{mid}
 	</delete>
+	<resultMap  id="rlt_deliverytype" type="com.jingyunbank.etrade.merchant.entity.DeliveryTypeEntity">
+		 <result column="code" property="code"/>
+    	 <result column="name" property="name"/>
+    	 <result column="description" property="description"/>
+	</resultMap>
+	<!--查询所有发票类型列表 -->
+	<select id = "selectDeliveryType" resultMap="rlt_deliverytype" >
+	select * from delivery_type ORDER BY code;
+	</select>
+	<!--添加商家发票类型信息 -->
+	<insert id="insertMerchantDeliveryType" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantDeliveryEntity">
+			INSERT INTO merchant_delivery(id,mid,code)
+			VALUES 
+			(#{ID},#{MID},#{code});
+	</insert>
+	<!--删除商家和发票类型关联信息 -->
+	<delete id="deleteMerchantDeliveryType" parameterType="String">
+		delete from merchant_delivery where mid = #{mid}
+	</delete>
 </mapper>

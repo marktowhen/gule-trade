@@ -10,16 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
+import com.jingyunbank.etrade.merchant.bean.DeliveryTypeVO;
 import com.jingyunbank.etrade.merchant.bean.InvoiceTypeVO;
 import com.jingyunbank.etrade.merchant.bean.MerchantVO;
 import com.jingyunbank.etrade.merchant.service.MerchantService;
@@ -68,7 +68,10 @@ public class MerchantController {
 		merchantVO.setID(KeyGen.uuid());
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);
-		if(merchantService.saveMerchant(merchant)&&merchantService.saveMerchantInvoiceType(merchant)){
+		if(merchantService.saveMerchant(merchant)
+				&&merchantService.saveMerchantInvoiceType(merchant)
+				&&merchantService.saveMerchantDeliveryType(merchant)
+				){
 			return Result.ok("保存成功");
 		}
 		return Result.ok(merchantVO);
@@ -106,11 +109,38 @@ public class MerchantController {
 		Merchant merchant=Merchant.getInstance();
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型
-		if(merchantService.updateMerchant(merchant)&&merchantService.removeMerchantInvoiceType(merchant)&&merchantService.saveMerchantInvoiceType(merchant)){
+		if(merchantService.updateMerchant(merchant)
+				&&merchantService.removeMerchantInvoiceType(merchant)
+				&&merchantService.saveMerchantInvoiceType(merchant)
+				&&merchantService.removeMerchantDeliveryType(merchant)
+				&&merchantService.saveMerchantDeliveryType(merchant)
+				){
 			return Result.ok("修改成功");
 		}
 		return Result.ok(merchantVO);
 	}
 	 
+	/**
+	 * 获取快递类型
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/deliverytype/list")
+	public Result getDeliveryType(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
+		//转成VO
+		List<DeliveryType> list = merchantService.listDeliveryType();
+		List<DeliveryTypeVO> rlist = new ArrayList<DeliveryTypeVO>();
+		DeliveryTypeVO vo = null;
+		for(DeliveryType bo : list){
+			vo = new DeliveryTypeVO();
+			BeanUtils.copyProperties(bo,vo);
+			rlist.add(vo);
+		}
+		Result r = Result.ok(list);
+		return r;
+	}
 	
 }

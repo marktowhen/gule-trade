@@ -44,7 +44,9 @@ public class MerchantVO implements Serializable {
 	/** 是否开具发票 0否1是  */
 	private String invoiceFlag;
 	/**发票的类型*/
-	private String codes;
+	private String invoiceCodes;
+	/**快递的类型*/
+	private String deliveryCodes;
 	
 	public String getID() {
 		return ID;
@@ -146,11 +148,18 @@ public class MerchantVO implements Serializable {
 	public static MerchantVO getInstance(){
 		return new MerchantVO();
 	}
-	public String getCodes() {
-		return codes;
+	 
+	public String getInvoiceCodes() {
+		return invoiceCodes;
 	}
-	public void setCodes(String codes) {
-		this.codes = codes;
+	public void setInvoiceCodes(String invoiceCodes) {
+		this.invoiceCodes = invoiceCodes;
+	}
+	public String getDeliveryCodes() {
+		return deliveryCodes;
+	}
+	public void setDeliveryCodes(String deliveryCodes) {
+		this.deliveryCodes = deliveryCodes;
 	}
 	
 }
