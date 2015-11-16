@@ -23,7 +23,7 @@ import com.jingyunbank.etrade.user.bean.UserInfoVO;
 	@todo TODO
  */
 @RestController
-@RequestMapping("/api/userInfo")
+@RequestMapping("/api/userinfo")
 public class UserInfoController {
 	@Autowired
 	private IUserInfoService userInfoService;
@@ -46,9 +46,9 @@ public class UserInfoController {
 			return Result.fail("该uid已经存在！");
 		}
 		if(userInfoService.save(userInfo)){
-			return Result.ok("保存成功");
+			return Result.ok(userInfoVO);
 		}
-		return Result.ok(userInfoVO);
+		return Result.fail("重试！");
 	}
 	
 	
@@ -59,19 +59,15 @@ public class UserInfoController {
 	 * @param uid
 	 * @return
 	 */
-	@RequestMapping(value="/selectById/{uid}",method=RequestMethod.GET)
+	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
 	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid){
-		uid=session.getAttribute("LOGIN_ID").toString();
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		if(userinfo.isPresent()){
 		UserInfo userInfo=userinfo.get();
 		UserInfoVO userInfoVO=new UserInfoVO();
 		BeanUtils.copyProperties(userInfo, userInfoVO);
-		return Result.ok("查找成功");
+		return Result.ok(userInfoVO);
 		}
-			if(uid==null){
-				return Result.fail("该uid不存在，没有数据");
-			}
 		return Result.fail("没有数据");
 	}
 	

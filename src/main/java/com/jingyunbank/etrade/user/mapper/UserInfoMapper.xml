@@ -40,17 +40,40 @@
 	 	<!-- 通过uid修改个人资料信息 -->
 	 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 		update users_info u set
+	 		<if test="birthday!=null and birthday=''">
 	 		u.birthday=#{birthday},
+	 		</if>
+	 		<if test="marriage!=null and marriage=''">
 	 		u.marriage=#{marriage},
+	 		</if>
+	 		<if test="gender!=null and gender=''">
 	 		u.gender=#{gender},
+	 		</if>
+	 		<if test="country!=null and country=''">
 	 		u.country=#{country},
+	 		</if>
+	 		<if test="province!=null and province=''">
 	 		u.province=#{province},
+	 		</if>
+	 		<if test="city!=null and city=''">
 	 		u.city=#{city},
+	 		</if>
+	 		<if test="address!=null and address=''">
 	 		u.address=#{address},
+	 		</if>
+	 		<if test="education!=null and education=''">
 	 		u.education=#{education},
+	 		</if>
+	 		<if test="job!=null and job=''">
 	 		u.job=#{job},
+	 		</if>
+	 		<if test="income!=null and income=''">
 	 		u.income=#{income},
-	 		u.avatar=#{avatar}
+	 		</if>
+	 		<if test="avatar!=null and avatar=''">
+	 		u.avatar=#{avatar},
+	 		</if>
+	 		u.uid=#{uid}
 	 		where u.uid=#{uid}
 	 		
 	 	</update>
