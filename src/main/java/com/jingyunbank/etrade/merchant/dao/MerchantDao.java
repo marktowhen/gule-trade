@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.merchant.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.merchant.entity.InvoiceTypeEntity;
 import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 import com.jingyunbank.etrade.merchant.entity.MerchantInvoiceEntity;
@@ -37,5 +38,18 @@ public interface MerchantDao{
 	 * @throws Exception
 	 */
 	public boolean insertMerchantInvoiceType(MerchantInvoiceEntity merchantInvoiceEntity) throws Exception;
-
+	/**
+	 * 商家修改
+	 * @param merchantEntity
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean updateMerchant(MerchantEntity merchantEntity) throws DataRefreshingException;
+	/**
+	 * 删除商家和发票类型关联记录
+	 * @param id
+	 * @throws Exception
+	 */
+	public boolean deleteMerchantInvoiceType(String mid) throws Exception;
+	
 }
