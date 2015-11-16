@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -174,5 +175,37 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 			throw new DataRemovingException(e);
 		}
 		return flag;
+	}
+	@Override
+	public Optional<Merchant> getMerchant(String mid) {
+		MerchantEntity merchantEntity = merchantDao.selectMerchantByMid(mid);
+		Merchant merchant=new Merchant();
+		BeanUtils.copyProperties(merchantEntity, merchant);
+		return Optional.of(merchant);
+	}
+	@Override
+	public List<InvoiceType> listInvoiceType(String mid) throws IllegalAccessException, InvocationTargetException {
+		List<InvoiceType> rlist = new ArrayList<InvoiceType>();
+		List<InvoiceTypeEntity> list = merchantDao.selectInvoiceTypeByMid(mid);
+		InvoiceType bo = null;
+		for(InvoiceTypeEntity e : list){
+			bo = new InvoiceType();
+			BeanUtils.copyProperties(e,bo);
+			rlist.add(bo);
+		}
+		return rlist;
+	}
+	
+	@Override
+	public List<DeliveryType> listDeliveryType(String mid) throws IllegalAccessException, InvocationTargetException {
+		List<DeliveryType> rlist = new ArrayList<DeliveryType>();
+		List<DeliveryTypeEntity> list = merchantDao.selectDeliveryTypeByMid(mid);
+		DeliveryType bo = null;
+		for(DeliveryTypeEntity e : list){
+			bo = new DeliveryType();
+			BeanUtils.copyProperties(e,bo);
+			rlist.add(bo);
+		}
+		return rlist;
 	}
 }

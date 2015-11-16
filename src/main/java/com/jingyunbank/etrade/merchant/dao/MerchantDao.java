@@ -54,7 +54,7 @@ public interface MerchantDao{
 	 */
 	public boolean deleteMerchantInvoiceType(String mid) throws Exception;
 	/**
-	 * 查询所有的发票类型列表
+	 * 查询所有的邮寄类型列表
 	 * @return
 	 */
 	public List<DeliveryTypeEntity> selectDeliveryType();
@@ -71,5 +71,21 @@ public interface MerchantDao{
 	 * @throws Exception
 	 */
 	public boolean deleteMerchantDeliveryType(String mid) throws Exception;
+	/**
+	 * 根据商家的ID 查询商家的信息
+	 * @param mid
+	 * @return
+	 */
+	public MerchantEntity selectMerchantByMid(String mid);
+	/**
+	 * 根据MID查询发票类型列表
+	 * @return
+	 */
+	public List<InvoiceTypeEntity> selectInvoiceTypeByMid(String mid) ;
+	/**
+	 * 根据MID查询邮寄类型列表
+	 * @return
+	 */
+	public List<DeliveryTypeEntity> selectDeliveryTypeByMid(String mid);
 	
 }

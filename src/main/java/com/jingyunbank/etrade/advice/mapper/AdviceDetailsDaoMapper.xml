@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.advice.dao.AdviceDetailsDao">
+		<resultMap type="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity" id="AdviceDetailsResultMap">
+			<id column="id" property="id"/>
+			<result column="sid" property="sid"/>
+			<result column="name" property="name"/>
+			<result column="title" property="title"/>
+			<result column="content" property="content"/>
+			<result column="publish" property="publish"/>
+			<result column="addtime" property="addtime"/>
+			<result column="status" property="status"/>
+			<result column="orders" property="orders" />
+		</resultMap>
+	<sql id="details_list">
+		id,sid,name,title,content,publish,addtime,status,orders
+	</sql>
+	<!-- 增加详情内容 -->
+		<insert id="insert" parameterType="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity">
+			insert into advice_details(
+				id,sid,name,title,content,publish,addtime,status,orders
+			)values(
+				#{id},#{sid},#{name},#{title},#{content},#{publish},#{addtime},#{status},#{orders}
+			)
+		</insert>
+		<!-- 通过id删除对应的信息 -->
+		<delete id="delete" parameterType="String">
+			delete from advice_details where id=#{id}	
+		</delete>
+		<!-- 通过id修改对应属性的值 -->
+		<update id="update" parameterType="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity">
+			update advice_details a 
+			set 
+			
+			<if test="sid!=null and sid!=''">
+			a.sid=#{sid},
+			</if>
+			<if test="name!=null and name!=''">
+			a.name=#{name},
+			</if>
+			<if test="title!=null and title!=''">
+			a.title=#{title},
+			</if>
+			<if test="content!=null and content!=''">
+			a.content=#{content},
+			</if>
+			<if test="publish!=null and publish!=''">
+			a.publish=#{publish},
+			</if>
+			<if test="addtime!=null and addtime!=''">
+			a.addtime=#{addtime},
+			</if>
+			<if test="status!=null and status!=''">
+			a.status=#{status},
+			</if>
+			<if test="order!=null and order!=''">
+			a.order=#{order},
+			</if>
+			a.id=#{id}
+			where a.id=#{id}
+		</update>
+		<!-- 通过sid查出对应多个详情内容 -->
+		<select id="selectDetailsBySid" parameterType="String" resultMap="AdviceDetailsResultMap">
+			select <include refid="details_list"></include>
+			from advice_details where
+			sid=#{sid}
+			order by orders desc,publish desc
+		</select>
+		<!-- 通过id查出每一条信息的详细内容啊 -->
+		<select id="selectDetailByid" parameterType="String" resultType="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity">
+			select <include refid="details_list"></include>
+			from advice_details where
+			id=#{id}
+		</select>
+	</mapper>
+	
+	
+	
