@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,9 +35,11 @@ import com.jingyunbank.etrade.api.goods.bo.Goods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsDetail;
 import com.jingyunbank.etrade.api.goods.bo.GoodsImg;
 import com.jingyunbank.etrade.api.goods.bo.GoodsOperation;
+import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
+import com.jingyunbank.etrade.goods.bean.GoodsVO;
 import com.jingyunbank.etrade.user.bean.AddressVO;
 
 /**
@@ -58,11 +63,12 @@ public class GoodsOperationController {
 	 * @param vo
 	 * @param valid
 	 * @return
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.PUT)
-	//@RequestParam MultipartFile[] myfiles
-	public Result saveGoods(HttpServletRequest request,
-			@RequestBody @Valid GoodsOperationVO vo, BindingResult valid) {
+	// @RequestParam MultipartFile[] myfiles
+	public Result saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
+			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
@@ -73,14 +79,13 @@ public class GoodsOperationController {
 		Goods goods = new Goods();
 		BeanUtils.copyProperties(vo, goods);
 		goods.setID(KeyGen.uuid()); // id
-		goods.setVolume(0); //销量
+		goods.setVolume(0); // 销量
 		goods.setAddTime(new Date());// 添加时间
 		goods.setAdminSort(0);// 管理员排序
 		goods.setMerchantSort(0);// 商家排序
 		goods.setExpandSort(0);// 推广排序
 		goods.setRecordSort(0);// 推荐排序
-		
-		
+
 		// ------封装商品详细信息-----------
 		GoodsDetail detail = new GoodsDetail();
 		BeanUtils.copyProperties(vo, detail);
@@ -97,7 +102,6 @@ public class GoodsOperationController {
 		img.setThumbpath5(vo.getThumbpath5());
 		img.setContent(vo.getContent());
 
-	
 		// ------封装bo对象--------------------
 		GoodsOperation operation = new GoodsOperation();
 		operation.setGoods(goods);
@@ -109,7 +113,117 @@ public class GoodsOperationController {
 		} else {
 			return Result.fail("添加商品失败!");
 		}
+	}
 
+	/**
+	 * 根据GID 获取商品信息 用于修改商品回显
+	 * 
+	 * @param gid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{gid}", method = RequestMethod.POST)
+	public Result queryGoodsById(@PathVariable String gid) throws Exception {
+		GoodsVO vo = null;
+		Optional<ShowGoods> showbo = goodsOperationService.singleById(gid);
+		if (Objects.nonNull(showbo)) {
+			vo = new GoodsVO();
+			BeanUtils.copyProperties(showbo.get(), vo);
+		}
+		return Result.ok(vo);
+	}
+
+	/**
+	 * 修改商品详细信息
+	 * 
+	 * @param gid
+	 * @param vo
+	 * @param valid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/update/{gid}", method = RequestMethod.POST)
+	public Result updateGoods(@PathVariable String gid, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
+			throws Exception {
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
+
+		// ------封装商品信息---------------
+		Goods goods = new Goods();
+		BeanUtils.copyProperties(vo, goods);
+		goods.setID(gid);
+
+		// ------封装商品详细信息-----------
+		GoodsDetail detail = new GoodsDetail();
+		BeanUtils.copyProperties(vo, detail);
+		detail.setGID(gid);
+
+		// ------封装商品图片信息-----------
+		GoodsImg img = new GoodsImg();
+		img.setGID(gid);
+		img.setThumbpath1(vo.getThumbpath1());
+		img.setThumbpath2(vo.getThumbpath2());
+		img.setThumbpath3(vo.getThumbpath3());
+		img.setThumbpath4(vo.getThumbpath4());
+		img.setThumbpath5(vo.getThumbpath5());
+		img.setContent(vo.getContent());
+		// ------封装bo对象--------------------
+		GoodsOperation operation = new GoodsOperation();
+		operation.setGoods(goods);
+		operation.setGoodsDetail(detail);
+		operation.setGoodsImg(img);
+		// ------------------------------------
+		if (goodsOperationService.refreshGoods(operation)) {
+			return Result.ok("修改商品成功!");
+		} else {
+			return Result.fail("修改商品失败!");
+		}
+	}
+
+	/**
+	 * 商品上架
+	 * @param gid
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/up/{gid}", method = RequestMethod.POST)
+	public Result goodsUp(@PathVariable String gid) throws Exception {
+		if(goodsOperationService.refreshGoodsUp(gid)){
+			return Result.ok("上架成功!");
+		}
+		return Result.fail("上架失败!");
+
+	}
+	/**
+	 * 商品下架
+	 * @param gid
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/down/{gid}", method = RequestMethod.POST)
+	public Result goodsDown(@PathVariable String gid) throws Exception {
+		if(goodsOperationService.refreshGoodsDown(gid)){
+			return Result.ok("下架成功!");
+		}
+		return Result.fail("下架失败!");
+
+	}
+	/**
+	 * 修改库存和销量
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateVolume", method = RequestMethod.POST)
+	public Result goodsUp(HttpServletRequest request) throws Exception {
+		String gid = request.getParameter("gid");
+		int count =  Integer.valueOf(request.getParameter("count"));
+		boolean flag = goodsOperationService.refreshGoodsVolume(gid,count);
+		return Result.ok(flag);
 	}
 
 }
