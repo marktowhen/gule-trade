@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -137,6 +139,29 @@ public class MerchantController {
 		}
 		Result r = Result.ok(list);
 		return r;
+	}
+	
+	/**
+	 * 通过mid查询商家信息	
+	 * @param session
+	 * @param request
+	 * @param uid
+	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 */
+	@RequestMapping(value="/info/{mid}",method=RequestMethod.GET)
+	public Result getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws IllegalAccessException, InvocationTargetException{
+		Optional<Merchant> merchant= merchantContextService.getMerchantInfoByMid(mid);
+		if(merchant.isPresent()){
+			Merchant bo = merchant.get();
+			MerchantVO vo = new MerchantVO();
+			BeanUtils.copyProperties(bo,vo);
+			Result.ok(vo);
+			return Result.ok("查询成功！");
+		}else{
+			return Result.fail("查询没有数据！");
+		}
 	}
 	
 }

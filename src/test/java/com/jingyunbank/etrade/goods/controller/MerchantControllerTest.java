@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import org.junit.Test;
@@ -140,5 +141,23 @@ public class MerchantControllerTest extends TestCaseBase {
 				);
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
 		
+	}
+	
+	/**
+	 * 通过mid查询商家信息
+	 * @throws Exception
+	 */
+	
+	@Test
+	public void Test5() throws Exception{
+		getMockMvc().perform(
+				 get("/api/merchant/info/1")
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andExpect(jsonPath("$.code").value("200"))
+			.andDo(MockMvcResultHandlers.print())
+			.andDo(print());
 	}
 }

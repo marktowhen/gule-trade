@@ -92,4 +92,20 @@
 	<delete id="deleteMerchantDeliveryType" parameterType="String">
 		delete from merchant_delivery where mid = #{mid}
 	</delete>
+	<!-- 通过mid查询商家的信息 -->
+ 	<select id="selectMerchantByMid" resultMap="rlt_merchant">
+ 			select * from merchant where id=#{mid}
+ 	</select>
+ 	
+ 	<!--查询所有发票类型列表 -->
+	<select id = "selectInvoiceTypeByMid" resultMap="rlt_invoicetype" parameterType="String">
+	select a.code as code,a.name as name,a.remark as remark from invoice_type a,merchant_invoice b
+	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	</select>
+	
+	<!--查询所有发票类型列表 -->
+	<select id = "selectDeliveryTypeByMid" resultMap="rlt_deliverytype" parameterType="String">
+	select a.code as code,a.name as name,a.description as description from delivery_type a,merchant_delivery b
+	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	</select>
 </mapper>
