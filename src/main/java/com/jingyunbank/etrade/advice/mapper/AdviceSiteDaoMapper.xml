@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.advice.dao.AdviceSiteDao">
+		<resultMap type="com.jingyunbank.etrade.advice.entity.AdviceSiteEntity" id="AdviceSiteResultMap">
+			<id column="id" property="id"/>
+			<result column="site_id" property="siteid"/>
+			<result column="name" property="name"/>
+		</resultMap>
+		<!-- 添加二级菜单中的多个标题 -->
+		<insert id="insert" parameterType="com.jingyunbank.etrade.advice.entity.AdviceSiteEntity">
+			insert into advice_site(
+			id,site_id,name
+			)values(
+			#{id},#{siteid},#{name}
+			)
+		</insert>
+		<!-- 通过site_id查出对应的多个标题 -->
+		<select id="selectSitesBySiteid" parameterType="String" resultMap="AdviceSiteResultMap">
+			select id,site_id,name from advice_site where site_id=#{siteid}
+		</select>
+	</mapper>

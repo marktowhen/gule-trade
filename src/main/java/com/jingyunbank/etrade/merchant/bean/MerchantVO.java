@@ -2,6 +2,10 @@ package com.jingyunbank.etrade.merchant.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
+import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 /**
  * 
 * Title: 商家展示VO
@@ -44,8 +48,13 @@ public class MerchantVO implements Serializable {
 	/** 是否开具发票 0否1是  */
 	private String invoiceFlag;
 	/**发票的类型*/
-	private String codes;
-	
+	private String invoiceCodes;
+	/**快递的类型*/
+	private String deliveryCodes;
+	/**发票类型列表*/
+	private List<InvoiceType> invoiceList;
+	/**发票类型列表*/
+	private List<DeliveryType> deliverylist;
 	public String getID() {
 		return ID;
 	}
@@ -146,11 +155,30 @@ public class MerchantVO implements Serializable {
 	public static MerchantVO getInstance(){
 		return new MerchantVO();
 	}
-	public String getCodes() {
-		return codes;
+	 
+	public String getInvoiceCodes() {
+		return invoiceCodes;
 	}
-	public void setCodes(String codes) {
-		this.codes = codes;
+	public void setInvoiceCodes(String invoiceCodes) {
+		this.invoiceCodes = invoiceCodes;
+	}
+	public String getDeliveryCodes() {
+		return deliveryCodes;
+	}
+	public void setDeliveryCodes(String deliveryCodes) {
+		this.deliveryCodes = deliveryCodes;
+	}
+	public List<InvoiceType> getInvoiceList() {
+		return invoiceList;
+	}
+	public void setInvoiceList(List<InvoiceType> invoiceList) {
+		this.invoiceList = invoiceList;
+	}
+	public List<DeliveryType> getDeliverylist() {
+		return deliverylist;
+	}
+	public void setDeliverylist(List<DeliveryType> deliverylist) {
+		this.deliverylist = deliverylist;
 	}
 	
 }

@@ -49,4 +49,63 @@
 			VALUES 
 			(#{ID},#{MID},#{code});
 	</insert>
+	<!--修改商家信息 -->
+	<update id="updateMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
+			update merchant set
+			merchant_name = #{merchantName},
+			merchant_ename = #{merchantEname},
+			merchant_code = #{merchantCode},
+			merchant_address = #{merchantAddress},
+			merchant_scale = #{merchantScale},
+			employee_num = #{employeeNum},
+			tel = #{tel},
+			zipcode = #{zipcode},
+			qq = #{qq},
+			two_dimension_code = #{twoDimensionCode},
+			register_date = #{registerDate},
+			admin_sort_num = #{adminSortNum},
+			merchant_desc = #{merchantDesc},
+			img_path = #{imgPath},
+			invoice_flag = #{invoiceFlag} 
+			where id = #{ID}
+	</update>
+	<!--删除商家和发票类型关联信息 -->
+	<delete id="deleteMerchantInvoiceType" parameterType="String">
+		delete from merchant_invoice where mid = #{mid}
+	</delete>
+	<resultMap  id="rlt_deliverytype" type="com.jingyunbank.etrade.merchant.entity.DeliveryTypeEntity">
+		 <result column="code" property="code"/>
+    	 <result column="name" property="name"/>
+    	 <result column="description" property="description"/>
+	</resultMap>
+	<!--查询所有发票类型列表 -->
+	<select id = "selectDeliveryType" resultMap="rlt_deliverytype" >
+	select * from delivery_type ORDER BY code;
+	</select>
+	<!--添加商家发票类型信息 -->
+	<insert id="insertMerchantDeliveryType" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantDeliveryEntity">
+			INSERT INTO merchant_delivery(id,mid,code)
+			VALUES 
+			(#{ID},#{MID},#{code});
+	</insert>
+	<!--删除商家和发票类型关联信息 -->
+	<delete id="deleteMerchantDeliveryType" parameterType="String">
+		delete from merchant_delivery where mid = #{mid}
+	</delete>
+	<!-- 通过mid查询商家的信息 -->
+ 	<select id="selectMerchantByMid" resultMap="rlt_merchant">
+ 			select * from merchant where id=#{mid}
+ 	</select>
+ 	
+ 	<!--查询所有发票类型列表 -->
+	<select id = "selectInvoiceTypeByMid" resultMap="rlt_invoicetype" parameterType="String">
+	select a.code as code,a.name as name,a.remark as remark from invoice_type a,merchant_invoice b
+	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	</select>
+	
+	<!--查询所有发票类型列表 -->
+	<select id = "selectDeliveryTypeByMid" resultMap="rlt_deliverytype" parameterType="String">
+	select a.code as code,a.name as name,a.description as description from delivery_type a,merchant_delivery b
+	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	</select>
 </mapper>

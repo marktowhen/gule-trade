@@ -3,7 +3,10 @@ package com.jingyunbank.etrade.merchant.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.merchant.entity.DeliveryTypeEntity;
 import com.jingyunbank.etrade.merchant.entity.InvoiceTypeEntity;
+import com.jingyunbank.etrade.merchant.entity.MerchantDeliveryEntity;
 import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 import com.jingyunbank.etrade.merchant.entity.MerchantInvoiceEntity;
 
@@ -37,5 +40,52 @@ public interface MerchantDao{
 	 * @throws Exception
 	 */
 	public boolean insertMerchantInvoiceType(MerchantInvoiceEntity merchantInvoiceEntity) throws Exception;
-
+	/**
+	 * 商家修改
+	 * @param merchantEntity
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean updateMerchant(MerchantEntity merchantEntity) throws DataRefreshingException;
+	/**
+	 * 删除商家和发票类型关联记录
+	 * @param id
+	 * @throws Exception
+	 */
+	public boolean deleteMerchantInvoiceType(String mid) throws Exception;
+	/**
+	 * 查询所有的邮寄类型列表
+	 * @return
+	 */
+	public List<DeliveryTypeEntity> selectDeliveryType();
+	/**
+	 * 商家的快递类型保存
+	 * @param merchantEntity
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean insertMerchantDeliveryType(MerchantDeliveryEntity merchantDeliveryEntity) throws Exception;
+	/**
+	 * 删除商家和快递类型关联记录
+	 * @param id
+	 * @throws Exception
+	 */
+	public boolean deleteMerchantDeliveryType(String mid) throws Exception;
+	/**
+	 * 根据商家的ID 查询商家的信息
+	 * @param mid
+	 * @return
+	 */
+	public MerchantEntity selectMerchantByMid(String mid);
+	/**
+	 * 根据MID查询发票类型列表
+	 * @return
+	 */
+	public List<InvoiceTypeEntity> selectInvoiceTypeByMid(String mid) ;
+	/**
+	 * 根据MID查询邮寄类型列表
+	 * @return
+	 */
+	public List<DeliveryTypeEntity> selectDeliveryTypeByMid(String mid);
+	
 }
