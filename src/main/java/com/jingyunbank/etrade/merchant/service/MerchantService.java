@@ -12,6 +12,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
@@ -94,6 +96,34 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		flag = true;
 		}catch(Exception e){
 			throw new DataSavingException(e);
+		}
+		return flag;
+	}
+	
+	@Override
+	public boolean updateMerchant(Merchant merchant) throws DataRefreshingException {
+		boolean flag=false;
+		MerchantEntity me = MerchantEntity.getInstance();
+		BeanUtils.copyProperties(merchant, me);
+		try {
+			if(merchantDao.updateMerchant(me)){
+				flag=true;
+			}else{
+				flag=false;
+			}
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+		return flag;
+		
+	}
+	@Override
+	public boolean removeMerchantInvoiceType(Merchant merchant) throws DataRemovingException {
+		boolean flag=false;
+		try {
+			flag = merchantDao.deleteMerchantInvoiceType(merchant.getID());
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
 		}
 		return flag;
 	}

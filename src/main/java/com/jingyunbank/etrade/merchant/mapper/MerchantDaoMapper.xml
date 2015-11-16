@@ -49,4 +49,28 @@
 			VALUES 
 			(#{ID},#{MID},#{code});
 	</insert>
+	<!--修改商家信息 -->
+	<update id="updateMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
+			update merchant set
+			merchant_name = #{merchantName},
+			merchant_ename = #{merchantEname},
+			merchant_code = #{merchantCode},
+			merchant_address = #{merchantAddress},
+			merchant_scale = #{merchantScale},
+			employee_num = #{employeeNum},
+			tel = #{tel},
+			zipcode = #{zipcode},
+			qq = #{qq},
+			two_dimension_code = #{twoDimensionCode},
+			register_date = #{registerDate},
+			admin_sort_num = #{adminSortNum},
+			merchant_desc = #{merchantDesc},
+			img_path = #{imgPath},
+			invoice_flag = #{invoiceFlag} 
+			where id = #{ID}
+	</update>
+	<!--删除商家和发票类型关联信息 -->
+	<delete id="deleteMerchantInvoiceType" parameterType="String">
+		delete from merchant_invoice where mid = #{mid}
+	</delete>
 </mapper>

@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
 import com.jingyunbank.etrade.merchant.bean.InvoiceTypeVO;
@@ -93,5 +95,22 @@ public class MerchantController {
 		Result r = Result.ok(list);
 		return r;
 	}
+	/**
+	 * 商家修改
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updatemerchant", method = RequestMethod.POST)
+	public Result updateMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception{
+		Merchant merchant=Merchant.getInstance();
+		BeanUtils.copyProperties(merchantVO, merchant);
+		//修改商家和修改商家类型
+		if(merchantService.updateMerchant(merchant)&&merchantService.removeMerchantInvoiceType(merchant)&&merchantService.saveMerchantInvoiceType(merchant)){
+			return Result.ok("修改成功");
+		}
+		return Result.ok(merchantVO);
+	}
+	 
 	
 }
