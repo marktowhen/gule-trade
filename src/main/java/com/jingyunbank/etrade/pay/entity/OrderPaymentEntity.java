@@ -17,6 +17,7 @@ public class OrderPaymentEntity{
 	private String MID;
 	private String mname;
 	private long transno;
+	private long extransno;
 	private BigDecimal money;
 	private String note;
 	private boolean done;
@@ -102,5 +103,11 @@ public class OrderPaymentEntity{
 	}
 	public void setPaidtime(Date paidtime) {
 		this.paidtime = paidtime;
+	}
+	public long getExtransno() {
+		return extransno;
+	}
+	public void setExtransno(long extransno) {
+		this.extransno = extransno;
 	}
 }

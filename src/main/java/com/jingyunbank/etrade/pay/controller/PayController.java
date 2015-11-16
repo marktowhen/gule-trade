@@ -5,34 +5,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
+import com.jingyunbank.etrade.api.pay.handler.PayHandler;
+import com.jingyunbank.etrade.api.pay.handler.PayHandlerResolver;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
-import com.jingyunbank.etrade.api.pay.service.PayHandler;
-import com.jingyunbank.etrade.api.pay.service.PayHandlerResolver;
 import com.jingyunbank.etrade.api.pay.service.context.IPayPlatformService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.pay.bean.OrderPaymentRequestVO;
 import com.jingyunbank.etrade.pay.bean.OrderPaymentVO;
 
-@RestController
+@Controller
 public class PayController {
 
 	@Autowired
 	private IPayService payService;
 	@Autowired
 	private IPayPlatformService payPlatformService;
+	@Autowired
+	private IUserService userService;
+	@Autowired
+	private PayHandlerResolver payHandlerResolver;
 	
 	/**
 	 * 初始化订单支付接口。<p>
@@ -52,6 +60,7 @@ public class PayController {
 	 * @return
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping(value="/api/pay/init", method=RequestMethod.GET,
 					consumes="application/json;charset=UTF-8",
 					produces="application/json;charset=UTF-8")
@@ -85,19 +94,36 @@ public class PayController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/pay/redirect", method=RequestMethod.POST,
-			consumes="application/json;charset=UTF-8",
-			produces="application/json;charset=UTF-8")
+	@RequestMapping(value="/api/pay/redirect", method=RequestMethod.POST)
 	@AuthBeforeOperation
-	public Result redirect(@Valid @RequestBody OrderPaymentRequestVO payvo, BindingResult valid,  HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			return Result.fail("您提交的订单信息有误，请核实正确后支付。");
-		}
-		String platformCode = payvo.getPlatformCode();
+	public void redirect(
+//			@Valid OrderPaymentRequestVO payvo, 
+//				BindingResult valid,  
+				HttpSession session,
+				HttpServletRequest request, HttpServletResponse response) throws Exception{
+//		if(valid.hasErrors()){
+//			return ;
+//		}
+//		String platformCode = payvo.getPlatformCode();
+//		String tradepwd = payvo.getTradepwd();
+//		String tradepwdmd5 = MD5.digest(tradepwd);
+//		Optional<Users> ou = userService.getByUid(ServletBox.getLoginUID(session));
+//		if(!ou.isPresent() || tradepwdmd5.equals(ou.get().getTradepwd())){
+//			return ;
+//		}
 		
-		PayHandlerResolver resolver = null;
-		PayHandler handler = resolver.resolve(platformCode);
-		handler.handle(null, payvo.getPayments().stream().map(x->{return new OrderPayment();}).collect(Collectors.toList()));
-		return Result.ok(platformCode);
+		PayHandler handler = payHandlerResolver.resolve("LLPAY");
+		handler.handle(
+//				payvo.getPayments()
+//					.stream().map(x->{
+//						OrderPayment op = new OrderPayment();
+//						BeanUtils.copyProperties(x, op);
+//						return op;
+//					})
+//					.collect(Collectors.toList()),
+				null,
+				request, response
+		);
+		return ;
 	}
 }

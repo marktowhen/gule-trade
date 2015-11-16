@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.pay.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,6 +22,7 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
+import com.jingyunbank.etrade.pay.bean.OrderPaymentRequestVO;
 import com.jingyunbank.etrade.pay.bean.PayOrderVO;
 
 public class PayControllerTest extends TestCaseBase{
@@ -53,6 +55,28 @@ public class PayControllerTest extends TestCaseBase{
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200"))
+				.andDo(print());
+		
+	}
+	@Test
+	public void testRedirect() throws Exception{
+		OrderPaymentRequestVO vo = new OrderPaymentRequestVO();
+		vo.setPayments(null);
+		vo.setPlatformCode("LLPAY");
+		vo.setTradepwd("XXXXX");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(vo);
+		System.out.println(json);
+		getMockMvc().perform(
+					 post("/api/pay/redirect")
+					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
+					.characterEncoding("UTF-8")
+					.accept(MediaType.APPLICATION_JSON)
+				)
+				.andExpect(status().is3xxRedirection())
+//				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+//				.andExpect(jsonPath("$.code").value("200"))
 				.andDo(print());
 		
 	}

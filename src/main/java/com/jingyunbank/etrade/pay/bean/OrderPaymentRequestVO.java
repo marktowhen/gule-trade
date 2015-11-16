@@ -17,6 +17,9 @@ public class OrderPaymentRequestVO {
 	
 	@NotBlank
 	private String platformCode;
+	@NotBlank
+	@Size(min=6)
+	private String tradepwd;
 
 	@NotNull
 	@Size(min=1)
@@ -33,5 +36,11 @@ public class OrderPaymentRequestVO {
 	}
 	public void setPayments(List<OrderPaymentVO> payments) {
 		this.payments = payments;
+	}
+	public String getTradepwd() {
+		return tradepwd;
+	}
+	public void setTradepwd(String tradepwd) {
+		this.tradepwd = tradepwd;
 	}
 }

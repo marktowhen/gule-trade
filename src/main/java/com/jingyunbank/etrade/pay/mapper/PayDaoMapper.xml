@@ -6,6 +6,7 @@
 	<resultMap type="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity" id="OrderPaymentEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
 		<result column="transno" property="transno" jdbcType="BIGINT"/>
+		<result column="extransno" property="extransno" jdbcType="BIGINT"/>
 		<result column="oid" property="OID" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="mid" property="MID" javaType="String"/>
@@ -19,7 +20,7 @@
 		<result column="note" property="note" javaType="String"/>
 	</resultMap>
 	<sql id="order_payment_columns">
-		id, transno, oid, uid, mid, mname, addtime, paidtime,
+		id, transno, extransno, oid, uid, mid, mname, addtime, paidtime,
 		platform_code, platform_name, done,
 		money, note
 	</sql>
@@ -27,7 +28,7 @@
 		insert into order_payment
 			(<include refid="order_payment_columns"/>)
 		values
-			(#{ID}, #{transno}, #{OID}, #{UID}, #{MID}, #{mname}, #{addtime}, #{paidtime}, 
+			(#{ID}, #{transno}, #{extransno}, #{OID}, #{UID}, #{MID}, #{mname}, #{addtime}, #{paidtime}, 
 			#{platformCode}, #{platformName}, #{done},
 			#{money}, #{note})
 	</insert>
@@ -36,7 +37,7 @@
 			(<include refid="order_payment_columns"/>)
 		values
 		<foreach collection="payments" item="p" index="i" open="" separator="," close="">
-			(#{p.ID}, #{p.transno}, #{p.OID}, #{p.UID}, #{p.MID}, #{p.mname}, #{p.addtime}, #{p.paidtime},
+			(#{p.ID}, #{p.transno}, #{p.extransno}, #{p.OID}, #{p.UID}, #{p.MID}, #{p.mname}, #{p.addtime}, #{p.paidtime},
 			#{p.platformCode}, #{p.platformName}, #{p.done},
 			#{p.money}, #{p.note})
 		</foreach>
