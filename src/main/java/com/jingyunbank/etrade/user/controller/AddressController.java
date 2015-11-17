@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.user.bean.AddressVO;
@@ -41,8 +40,9 @@ public class AddressController {
 	 * @return 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.PUT)
-	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws DataSavingException, DataRefreshingException {
+	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws Exception {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -63,8 +63,9 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.POST)
-	public Result refresh(@PathVariable String id ,@Valid AddressVO addressVO , BindingResult valid) throws DataRefreshingException{
+	public Result refresh(@PathVariable String id ,@Valid AddressVO addressVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -87,8 +88,9 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result setDefualt(@PathVariable String id, HttpServletRequest request ) throws DataRefreshingException{
+	public Result setDefualt(@PathVariable String id, HttpServletRequest request ) throws Exception{
 		addressService.refreshDefualt(id, ServletBox.getLoginUID(request));
 		return Result.ok("成功");
 	}
@@ -102,20 +104,18 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(HttpServletRequest request,@PathVariable String id) throws DataRefreshingException{
+	public Result remove(HttpServletRequest request,@PathVariable String id) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(uid)){
-			AddressVO addressVO = new AddressVO();
-			addressVO.setUID(uid);
-			String [] IDArray = id.split(",");
-			addressVO.setIDArray(IDArray);
-			if(addressService.remove(getBoFromVo(addressVO))){
-				return Result.ok("成功");
-			}
-			return Result.fail("服务器繁忙,请稍后再试");
+		AddressVO addressVO = new AddressVO();
+		addressVO.setUID(uid);
+		String [] IDArray = id.split(",");
+		addressVO.setIDArray(IDArray);
+		if(addressService.remove(getBoFromVo(addressVO))){
+			return Result.ok("成功");
 		}
-		return Result.fail("请先登录");
+		return Result.fail("服务器繁忙,请稍后再试");
 	}
 	
 	/**
@@ -127,12 +127,12 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getDetail(@PathVariable String id){
+	public Result getDetail(@PathVariable String id) throws Exception{
 		Optional<Address> optional = addressService.singleById(id);
 		if(optional.isPresent()){
 			return Result.ok(optional.get());
 		}
-		return Result.ok("地址不存在");
+		return Result.fail("地址不存在");
 	}
 	
 	/**
@@ -143,8 +143,9 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/default",method=RequestMethod.GET)
-	public Result getDefaultAddress(HttpServletRequest request){
+	public Result getDefaultAddress(HttpServletRequest request)throws Exception{
 		
 		Optional<Address> optional = addressService.getDefaultAddress(ServletBox.getLoginUID(request));
 		if(optional.isPresent()){
@@ -161,13 +162,11 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/all",method=RequestMethod.GET)
-	public Result queryAll(HttpServletRequest request){
+	public Result queryAll(HttpServletRequest request) throws Exception{
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		String uid = ServletBox.getLoginUID(request);
-		if(StringUtils.isEmpty(uid)){
-			return Result.fail("请先登录");
-		}
 		List<Address> list = addressService.list(uid);
 		//格式转换
 		if(list!=null && !list.isEmpty()){
@@ -186,16 +185,14 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result queryPage(HttpServletRequest request,AddressVO addressVO,Page page ){
+	public Result queryPage(HttpServletRequest request,AddressVO addressVO,Page page )throws Exception{
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		if(addressVO==null){
 			addressVO = new AddressVO();
 		}
 		String uid = ServletBox.getLoginUID(request);
-		if(StringUtils.isEmpty(uid)){
-			return Result.fail("请先登录");
-		}
 		addressVO.setUID(uid);
 		Range range = new Range();
 		range.setFrom((page.getOffset()));
@@ -218,15 +215,13 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/amount",method=RequestMethod.GET)
-	public Result getAmount(HttpServletRequest request,AddressVO addressVO  ){
+	public Result getAmount(HttpServletRequest request,AddressVO addressVO  )throws Exception{
 		if(addressVO==null){
 			addressVO = new AddressVO();
 		}
 		String uid = ServletBox.getLoginUID(request);
-		if(StringUtils.isEmpty(uid)){
-			return Result.fail("请先登录");
-		}
 		addressVO.setUID(uid);
 		return Result.ok(addressService.getAmount(getBoFromVo(addressVO)));
 	}

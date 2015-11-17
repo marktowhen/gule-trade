@@ -13,10 +13,38 @@ public class UserDiscountCouponEntity implements Serializable{
 	private String UID;
 	private String couponID;
 	private String OID;
-	private Date rechargeTime;//充值时间
 	private Date consumeTime;//消费使用时间
-	private boolean recharged;
 	private boolean consumed;
+	private long offset;
+	private long size;
+	private Date addTime;//激活时间
+	private DiscountCouponEntity discountCouponEntity;
+	
+	public DiscountCouponEntity getDiscountCouponEntity() {
+		return discountCouponEntity;
+	}
+	public void setDiscountCouponEntity(DiscountCouponEntity discountCouponEntity) {
+		this.discountCouponEntity = discountCouponEntity;
+	}
+	public Date getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
+	}
+	
+	public long getOffset() {
+		return offset;
+	}
+	public void setOffset(long offset) {
+		this.offset = offset;
+	}
+	public long getSize() {
+		return size;
+	}
+	public void setSize(long size) {
+		this.size = size;
+	}
 	public String getID() {
 		return ID;
 	}
@@ -41,23 +69,11 @@ public class UserDiscountCouponEntity implements Serializable{
 	public void setOID(String oID) {
 		OID = oID;
 	}
-	public Date getRechargeTime() {
-		return rechargeTime;
-	}
-	public void setRechargeTime(Date rechargeTime) {
-		this.rechargeTime = rechargeTime;
-	}
 	public Date getConsumeTime() {
 		return consumeTime;
 	}
 	public void setConsumeTime(Date consumeTime) {
 		this.consumeTime = consumeTime;
-	}
-	public boolean isRecharged() {
-		return recharged;
-	}
-	public void setRecharged(boolean recharged) {
-		this.recharged = recharged;
 	}
 	public boolean isConsumed() {
 		return consumed;

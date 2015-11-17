@@ -279,7 +279,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testMessage() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/smsMessage")
-				/*.param("mobile", "15853166853")*/
+				/*.param("mobile", "15853161111")*/
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -362,10 +362,10 @@ public class UserControllerTest extends TestCaseBase {
 	public void testCheckMobile() throws Exception{
 		getMockMvc().perform(
 				post("/api/user/message")
-				.param("mobile", "15853166853")
+				.param("mobile", "15853161111")
 				.param("code", "894")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
-				.sessionAttr("UNCHECK_MOBILE", "15853166853")
+				.sessionAttr("UNCHECK_MOBILE", "15853161111")
 				.sessionAttr(ServletBox.SMS_MESSAGE, "894")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))

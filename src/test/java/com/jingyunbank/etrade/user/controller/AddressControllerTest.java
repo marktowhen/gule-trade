@@ -59,7 +59,7 @@ public class AddressControllerTest extends TestCaseBase {
 				.param("address", "山东济南")
 				.param("zipcode", "25600")
 				.param("receiver", "aaa")
-				.param("mobile", "15853166853")
+				.param("mobile", "15853161111")
 				.param("telephone", "84936795")
 				.param("defaulted", "true")
 				.param("valid", "true")
