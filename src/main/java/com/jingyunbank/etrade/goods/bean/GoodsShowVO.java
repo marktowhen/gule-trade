@@ -30,8 +30,6 @@ public class GoodsShowVO implements Serializable  {
 	*/
 	private String goodsName; //结果查询使用
 	private String MID; //  相关产品 -->店铺ID
-	
-	
 	public String getGoodsName() {
 		return goodsName;
 	}
@@ -98,6 +96,7 @@ public class GoodsShowVO implements Serializable  {
 	public void setOrder(int order) {
 		this.order = order;
 	}
+
 
 	
 }

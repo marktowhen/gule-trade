@@ -58,6 +58,7 @@ public class GoodsVO implements Serializable{
 		private String goodsDesc; //宝贝描述
 		private String goodsTitle; //宝贝标题
 		private int state;
+		private int comment; //商品评论数
 		
 		//----------------商品图片属性-----------------//
 		private String thumb_path_1; // 展示图片
@@ -430,6 +431,12 @@ public class GoodsVO implements Serializable{
 		}
 		public void setFactoryTel(String factoryTel) {
 			this.factoryTel = factoryTel;
+		}
+		public int getComment() {
+			return comment;
+		}
+		public void setComment(int comment) {
+			this.comment = comment;
 		}
 		
 		

@@ -21,8 +21,11 @@ public class CommonGoodsVO implements Serializable{
 	private String weight;// 重量
 	private String unit;// 单位
 	private String thumb_path_1; // 缩略图
-	
+	private String goodsTitle; //宝贝标题
+	private int comment; //商品评论数
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date pro_start;  //促销开始时间
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date pro_end;	//促销结束时间
 	private String pro_flag; //是否促销标志
 	
@@ -112,6 +115,18 @@ public class CommonGoodsVO implements Serializable{
 	}
 	public void setCollectTime(Date collectTime) {
 		this.collectTime = collectTime;
+	}
+	public int getComment() {
+		return comment;
+	}
+	public void setComment(int comment) {
+		this.comment = comment;
+	}
+	public String getGoodsTitle() {
+		return goodsTitle;
+	}
+	public void setGoodsTitle(String goodsTitle) {
+		this.goodsTitle = goodsTitle;
 	}
 	
 	
