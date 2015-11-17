@@ -71,6 +71,7 @@ public class MerchantController {
 	public Result saveMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception {
 		//String uid = ServletBox.getLoginUID(request);
 		Merchant merchant=Merchant.getInstance();
+		merchantVO.setAdminSortNum(0);
 		merchantVO.setID(KeyGen.uuid());
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);

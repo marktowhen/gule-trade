@@ -241,7 +241,7 @@
 		select x.*
 		FROM goods x
 		 where 1=1 AND x.state=1
-		 and x.mid in (select id from merchant m where m.admin_sort_num <=5) 
+		 and x.mid in (select id from merchant m where m.admin_sort_num <=5 and m.admin_sort_num <> 0) 
 		 and (select count(*) 
 		     from goods t
 		     where x.mid = t.mid and t.volume > x.volume and x.state=1 ) <= 4
