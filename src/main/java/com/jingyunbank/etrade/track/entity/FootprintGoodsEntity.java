@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.entity;
+package com.jingyunbank.etrade.track.entity;
 
 import java.util.Date;
 

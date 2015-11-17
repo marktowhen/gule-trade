@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.bean;
+package com.jingyunbank.etrade.track.bean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
-import com.jingyunbank.etrade.api.goods.bo.FootprintGoods;
+import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
+import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 
 /**
  * 我的足迹

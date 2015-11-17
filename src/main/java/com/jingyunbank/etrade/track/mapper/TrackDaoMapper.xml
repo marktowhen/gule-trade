@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.track.dao.TrackDao">
+	<!-- 商品图片属性 goods_img i -->
+	<sql id="imgAttr">
+		i.Thumb_path_1 thumb_path_1,
+		i.Thumb_path_2 thumb_path_2,
+		i.Thumb_path_3 thumb_path_3,
+		i.Thumb_path_4 thumb_path_4,
+		i.Thumb_path_5 thumb_path_5,
+		i.content content,
+	</sql>
+	<!-- 我的足迹商品信息 -->
+	<resultMap type="com.jingyunbank.etrade.track.entity.FootprintGoodsEntity" id="selectFootprintGoods">
+		<result column="visit_time" property="visitTime" javaType="java.util.Date"/>
+		<result column="gid" property="GID"/>
+		<result column="name" property="goodsName"/>
+		<result column="price" property="price"/>
+		<result column="now_price" property="nowPrice"/>
+		<result column="thumb_path_1" property="thumb_path_1"/>
+	</resultMap>
+	<!-- 查询我的足迹商品列表 　 -->
+	<select id="selectFootprintGoods"  resultMap="selectFootprintGoods">
+	SELECT 
+	*
+	<![CDATA[
+			 from (
+		select uid,gid,MAX(visit_time) as visit_time 
+		from footprint
+		where uid = '1'
+		group by uid,gid
+		ORDER BY visit_time desc
+		) v inner join goods x
+		 on 1=1 AND x.state=1
+		and v.gid = x.id
+		left join goods_img i
+	    on v.gid = i.gid 
+		 ]]>
+	</select>
+	<!-- 插入一条我的足迹 　 -->
+	<insert id="insertFootprint" parameterType="com.jingyunbank.etrade.track.entity.FootprintEntity">
+	insert into footprint
+	(id,uid,gid,visit_time)
+	values
+	(#{ID},#{GID},#{UID},#{visitTime})
+	</insert>
+	<!-- 检验当前商品或者店家是否已收藏 -->
+	<select id="isCollectExists" resultType="int" parameterType="map">
+	select count(*) from collect t where t.uid = #{uid} and type =#{type} and fid = #{fid}
+	</select>
+	<!-- 插入我的收藏 　 -->
+	<insert id="insertCollect" parameterType="com.jingyunbank.etrade.track.entity.CollectEntity">
+	insert into collect
+	(id,uid,fid,type,collect_time)
+	values
+	(#{ID},#{UID},#{fid},#{type},#{collectTime})
+	</insert>
+	<!--查询我的收藏店铺及包含的商品信息 该语句需要修改 -->
+	<resultMap type="com.jingyunbank.etrade.track.entity.CollectGoodsVEntity"
+		id="collectGoodsVEntity">
+		<!-- 商品概要信息 -->
+		<result column="gid" property="GID" />
+		<result column="goodsname" property="goodsName" />
+		<result column="weight" property="weight" />
+		<result column="unit" property="unit" />
+		<result column="price" property="price" />
+		<result column="promotion_price" property="promotionPrice" />
+		<result column="now_price" property="nowPrice" />
+		<result column="thumb_path_1" property="thumb_path_1" />
+		<!-- 品牌信息 -->
+		<result column="bid" property="BID" />
+		<result column="brandname" property="brandName" />
+		<result column="branddesc" property="brandDesc" />
+		<!--类型信息 -->
+		<result column="tid" property="TID" />
+		<result column="typename" property="typeName" />
+		<result column="collect_time" property="collectTime" />
+	</resultMap>
+	<sql id="merchantCollectField">
+		g.id,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
+		g.price,g.now_price now_price , g.count count, g.volume volume
+		,g.addtime addtime,g.collect_time,
+		<include refid="imgAttr" />
+		d.weight,d.unit ,t.strategy_name,t.parameter1
+	</sql>
+	<select id="selectMerchantCollect" parameterType="java.util.Map" resultMap="collectGoodsVEntity">
+		SELECT
+		<include refid="merchantCollectField" />
+	FROM (
+		select c.collect_time,x.* from collect c
+		inner join goods x
+		<if test="type =='1'.toString()">
+			<![CDATA[ on c.fid = x.mid  ]]>
+		</if>
+		<if test="type =='2'.toString()">
+			<![CDATA[ on c.fid = x.id  ]]>
+		</if>
+		 and c.type = #{type} 
+		 and uid = #{uid} order by c.fid
+		) g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_strategy s ON g.id=s.gid
+		LEFT JOIN strategy t ON s.sid=t.id
+		LEFT JOIN goods_brand b ON b.id=g.bid
+		LEFT JOIN goods_img i ON g.id=i.gid
+		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
+		ORDER BY g.volume DESC
+	</select>
+</mapper>
