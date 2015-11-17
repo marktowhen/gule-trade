@@ -71,7 +71,7 @@ public class MerchantControllerTest extends TestCaseBase {
 	 }
 	 
 	/**
-	 * 测试 首页商家推荐查询
+	 * 获取发票类型
 	 * @throws Exception
 	 */
 	@Test
