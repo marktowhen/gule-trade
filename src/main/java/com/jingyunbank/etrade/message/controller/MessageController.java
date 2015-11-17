@@ -22,6 +22,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -47,8 +48,9 @@ public class MessageController {
 	 * 2015年11月12日 qxs
 	 * @throws DataSavingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/",method=RequestMethod.PUT)
-	public Result sendSysMessage(HttpServletRequest request,@Valid MessageVO messageVO, BindingResult valid) throws DataSavingException{
+	public Result sendSysMessage(HttpServletRequest request,@Valid MessageVO messageVO, BindingResult valid) throws Exception{
 		//验证vo信息
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -81,7 +83,7 @@ public class MessageController {
 	 * @throws DataRefreshingException 
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getSingleInfo(@PathVariable String id, HttpServletRequest request) throws DataRefreshingException{
+	public Result getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
 		Optional<Message> messageOption = messageService.getSingle(id, ServletBox.getLoginUID(request));
 		if(messageOption.isPresent()){
 			//如果未读则置为已读
@@ -105,9 +107,10 @@ public class MessageController {
 	 * @return
 	 * 2015年11月13日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/list/{uid}",method=RequestMethod.GET)
 	public Result getListUID(MessageVO messageVO,boolean needReadStatus
-			, HttpServletRequest request, Page page){
+			, HttpServletRequest request, Page page) throws Exception{
 		Message message = new  Message();
 		BeanUtils.copyProperties(messageVO, message);
 		message.setNeedReadStatus(needReadStatus);
@@ -130,9 +133,10 @@ public class MessageController {
 	 * @return
 	 * 2015年11月13日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/amount/{uid}",method=RequestMethod.GET)
 	public Result getAmountUID(MessageVO messageVO, boolean needReadStatus
-			, HttpServletRequest request){
+			, HttpServletRequest request) throws Exception{
 		Message message = new  Message();
 		BeanUtils.copyProperties(messageVO, message);
 		message.setNeedReadStatus(needReadStatus);
@@ -148,8 +152,9 @@ public class MessageController {
 	 * 2015年11月13日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(@PathVariable String id, HttpServletRequest request) throws DataRefreshingException{
+	public Result remove(@PathVariable String id, HttpServletRequest request) throws Exception{
 		
 		messageService.remove(id.split(","), ServletBox.getLoginUID(request));
 		return Result.ok();
@@ -163,8 +168,9 @@ public class MessageController {
 	 * 2015年11月13日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.POST)
-	public Result readMessage(@PathVariable String id, MessageVO messageVO, HttpServletRequest request) throws DataRefreshingException{
+	public Result readMessage(@PathVariable String id, MessageVO messageVO, HttpServletRequest request) throws Exception{
 		Message message = new Message();
 		BeanUtils.copyProperties(messageVO, message);
 		message.setReceiveUID(ServletBox.getLoginUID(request));

@@ -4,8 +4,92 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.vip.dao.DiscountCouponDao">
 	<resultMap type="com.jingyunbank.etrade.vip.entity.DiscountCouponEntity" id="DiscountCouponEntityResultMap">
-	
+		<id column="id" property="ID" javaType="String" />
+		<result column="code" property="code" javaType="String" />
+		<result column="discount" property="discount" javaType="DECIMAL" />
+		<result column="value" property="value" javaType="DECIMAL" />
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="start" property="start" javaType="java.util.Date"/>
+		<result column="end" property="end" javaType="java.util.Date"/>
+		<result column="used" property="used" javaType="BOOLEAN" />
+		<result column="usedtime" property="usedtime" javaType="java.util.Date"/>
+		<result column="threshhold" property="threshhold" javaType="DECIMAL" />
+		<result column="del" property="del" javaType="BOOLEAN" />
+		<result column="remark" property="remark" javaType="String" />
 	</resultMap>
+	<sql id="column_list">
+		 id,code,discount,value,addtime,start,end,used,usedtime,threshhold,del,remark 
+	</sql>
+	<insert id="insert">
+		insert into discount_coupon(<include refid="column_list"/>) 
+		values(#{ID},#{code},#{discount},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},#{del},#{remark})
+	</insert>
+	
+	<select id="selectList" resultMap="DiscountCouponEntityResultMap"
+		parameterType="com.jingyunbank.etrade.vip.entity.DiscountCouponEntity" >
+		select 
+			<include refid="column_list"></include>
+		from 	discount_coupon 
+		<where>
+			<include refid="base_condition"></include>
+		</where>
+		order by addtime,usedtime desc
+		<if test="size!=0">
+			limit offset,size
+		</if>
+	</select>
+	<sql id="base_condition">
+		<if test="ID!=null and ID!=''" >
+				and id =#{ID}
+		</if>
+		<if test="code!=null and code!=''" >
+			and code =#{code}
+		</if>
+		<if test="discount!=null and discount!=''" >
+			and discount =#{discount}
+		</if>
+		<if test="value!=null and value!=''" >
+			and value =#{value}
+		</if>
+		<if test="addtimeStart!=null">
+			and addtime &gt;=addtimeStart
+		</if>
+		<if test="addtiemEnd!=null">
+			and addtime &lt;=addtiemEnd
+		</if>
+		<if test="validTime">
+			and now() between start and end
+		</if>
+		<if test="needUsed">
+			and used = #{used}
+		</if>
+		<if test="needDelete">
+			and del = #{del}
+		</if>
+		<if test="threshholdLow!=null">
+			and threshhold &gt;=threshholdLow
+		</if>
+		<if test="threshholdHigh!=null">
+			and threshhold &lt;=threshholdHigh
+		</if>
+	</sql>
+	<!-- 修改删除状态 -->
+	<update id="updateDeleteStatus">
+		update discount_coupon  set 
+			del =#{del},
+			remark =#{remark} 
+		where 1=1
+			and code =#{code}
+	</update>
+	
+	<!-- 置为已使用 -->
+	<update id="updateUsedStatus">
+		update discount_coupon  set 
+			used =#{used},
+			usedtime =now()
+		where 1=1
+			and code =#{code}
+	</update>
 	
 	
 </mapper>

@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+
 /**
  * 现金购物金（代金券）<br>
  * <strong>规则：</strong><br>
@@ -22,12 +25,18 @@ public class CashCouponVO extends BaseCouponVO implements Serializable {
 	private static final long serialVersionUID = 1413508875776533336L;
 	private String ID;
 	private String code;//充值码
+	@NotNull(message="金额不能为空")
+	@DecimalMin(value="0.01", message="价值不能低于1分")
 	private BigDecimal value;//
 	private Date addtime;
+	@NotNull(message="开始时间不能为空")
 	private Date start;
+	@NotNull(message="结束时间不能为空")
 	private Date end;
 	private boolean used;
 	private Date usedtime;
+	@NotNull(message="使用门槛不能为空")
+	@DecimalMin(value="0.00")
 	private BigDecimal threshhold;//使用门槛
 	
 	public String getID() {
