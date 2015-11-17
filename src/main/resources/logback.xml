@@ -2,10 +2,9 @@
 <configuration>
     <property name="LOG_HOME" value="D:/log" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-       <Encoding>UTF-8</Encoding>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%-5level %logger{50} %n ---> %msg%n</pattern>
-        </layout>
+	    <encoder>
+	      <pattern>%-5level %logger{50} %n ---> %msg%n</pattern>
+	    </encoder>
     </appender>
     <!--  
     <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
