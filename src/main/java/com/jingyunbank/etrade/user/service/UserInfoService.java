@@ -88,7 +88,7 @@ public class UserInfoService implements IUserInfoService{
 	@Override
 	public boolean refreshPicture(UserInfo uinfo)	throws DataRefreshingException {
 		 UserInfoEntity userInfoEntity = new UserInfoEntity();
-		 userInfoEntity.setUid(uinfo.getUid());
+		 userInfoEntity.setUID(uinfo.getUID());
 		 userInfoEntity.setPicture(uinfo.getPicture());
 		try {
 			return userInfoDao.updatePicture(userInfoEntity);

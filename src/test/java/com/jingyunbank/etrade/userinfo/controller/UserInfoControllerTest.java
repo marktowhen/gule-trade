@@ -33,7 +33,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		/*SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy.mm.dd");*/
 		getMockMvc().perform(
 				 put("/api/userinfo/")
-				 .sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+				 .sessionAttr(ServletBox.LOGIN_ID, "lWptToNIT8SpzteYV6HKuQ")
 				.param("country", "1")
 				.param("province", "1")
 				.param("city", "1")
@@ -58,9 +58,9 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test1() throws Exception{
 			getMockMvc().perform(
 				 post("/api/userinfo/update")
-				.sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+				.sessionAttr(ServletBox.LOGIN_ID, "wId_HVY3Rl6N4ipHSk04Zg")
 				.param("country", "4")
-				.param("province", "4")
+				.param("province", "3")
 				.param("city", "4")
 				.param("address", "山东济南")
 				.param("education", "4")
@@ -71,7 +71,6 @@ public class UserInfoControllerTest extends TestCaseBase{
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			/*.andExpect(jsonPath("$.code").value("200"))*/
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	}

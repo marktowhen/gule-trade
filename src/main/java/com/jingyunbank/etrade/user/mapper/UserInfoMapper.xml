@@ -4,7 +4,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	<mapper namespace="com.jingyunbank.etrade.user.dao.UserInfoDao">
 		<resultMap type="com.jingyunbank.etrade.user.entity.UserInfoEntity" id="resultMap">
-			<result column="uid" property="uid"/>
+			<result column="uid" property="UID"/>
 			<result column="birthday" property="birthday"/>
 			<result column="marriage" property="marriage"/>
 			<result column="gender" property="gender"/>
@@ -28,63 +28,39 @@
 		<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 			insert into users_info(uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice)
 			values
-			(#{uid},#{birthday},#{marriage},#{gender},#{country},#{province},#{city},#{address},#{education},#{job},#{income},
+			(#{UID},#{birthday},#{marriage},#{gender},#{country},#{province},#{city},#{address},#{education},#{job},#{income},
 			#{avatar},#{regtime},#{regip},#{regdevice})
 		</insert>
 		<!-- 通过uid查询个人的信息（也可通过uid查询用户注册时信息） -->
 	 	<select id="selectByUid" resultType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 			select 
 	 			<include refid="column_list"/>
-	 			from users_info where uid=#{uid}
+	 			from users_info where uid=#{UID}
 	 	</select>
 	 	<!-- 通过uid修改个人资料信息 -->
 	 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 		update users_info u set
-	 		<if test="birthday!=null and birthday=''">
 	 		u.birthday=#{birthday},
-	 		</if>
-	 		<if test="marriage!=null and marriage=''">
 	 		u.marriage=#{marriage},
-	 		</if>
-	 		<if test="gender!=null and gender=''">
 	 		u.gender=#{gender},
-	 		</if>
-	 		<if test="country!=null and country=''">
 	 		u.country=#{country},
-	 		</if>
-	 		<if test="province!=null and province=''">
 	 		u.province=#{province},
-	 		</if>
-	 		<if test="city!=null and city=''">
 	 		u.city=#{city},
-	 		</if>
-	 		<if test="address!=null and address=''">
 	 		u.address=#{address},
-	 		</if>
-	 		<if test="education!=null and education=''">
 	 		u.education=#{education},
-	 		</if>
-	 		<if test="job!=null and job=''">
 	 		u.job=#{job},
-	 		</if>
-	 		<if test="income!=null and income=''">
 	 		u.income=#{income},
-	 		</if>
-	 		<if test="avatar!=null and avatar=''">
-	 		u.avatar=#{avatar},
-	 		</if>
-	 		u.uid=#{uid}
-	 		where u.uid=#{uid}
-	 		
+	 		u.avatar=#{avatar}
+	 		where u.uid=#{UID}
 	 	</update>
 	 	<!-- 测试该uid是否存在 -->
 	 	<select id="UidExists" parameterType="String" resultType="int">
-	 		select count(uid) from users_info where uid=#{uid}
+	 		select count(uid) from users_info where uid=#{UID}
 	 	</select>
 	 	<!-- 修改头像 -->
 	 	<update id="updatePicture" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 		update users_info u set
 	 		 picture=#{picture}
-	 		where u.uid=#{uid}
+	 		where u.uid=#{UID}
 	 	</update>
 	</mapper>

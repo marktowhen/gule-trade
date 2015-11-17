@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
@@ -38,11 +39,12 @@ public class UserInfoController {
 	 */
 	
 	@RequestMapping(value="/",method=RequestMethod.PUT)
-	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO) throws Exception{
+	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO,HttpServletRequest request) throws Exception{
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-		userInfoVO.setUid(session.getAttribute("LOGIN_ID").toString());
-		if(userInfoService.UidExists(userInfoVO.getUid())>0){
+		String id = ServletBox.getLoginUID(request);
+		userInfoVO.setUID(id);;
+		if(userInfoService.UidExists(userInfoVO.getUID())>0){
 			return Result.fail("该uid已经存在！");
 		}
 		if(userInfoService.save(userInfo)){
@@ -60,7 +62,7 @@ public class UserInfoController {
 	 * @return
 	 */
 	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
-	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid){
+	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid) throws Exception{
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		if(userinfo.isPresent()){
 		UserInfo userInfo=userinfo.get();
@@ -68,7 +70,7 @@ public class UserInfoController {
 		BeanUtils.copyProperties(userInfo, userInfoVO);
 		return Result.ok(userInfoVO);
 		}
-		return Result.fail("没有数据");
+		return Result.fail("重试");
 	}
 	
 	/**
@@ -82,8 +84,11 @@ public class UserInfoController {
 	@RequestMapping(value="/update",method=RequestMethod.POST)
 	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws Exception {
 		UserInfo userInfo=new UserInfo();
+		String id = ServletBox.getLoginUID(request);
+		userInfoVO.setUID(id);
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-		userInfoVO.setUid(session.getAttribute("LOGIN_ID").toString());
+	
+		
 		if(userInfoService.refresh(userInfo)){
 			
 			return Result.ok(userInfoVO);
