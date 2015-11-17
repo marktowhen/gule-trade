@@ -22,7 +22,7 @@ public class AdviceDetailsControllerTest extends TestCaseBase{
 		
 		getMockMvc().perform(
 				put("/api/advice/savedetails")
-				.param("sid", "B_zVBGGoRkqdq1Zvs5tLxw")
+				.param("SID", "B_zVBGGoRkqdq1Zvs5tLxw")
 				.param("name", "人物事故")
 				.param("title", "个人专辑")
 				.param("content", "受不少新老客户的关爱")
@@ -56,8 +56,8 @@ public class AdviceDetailsControllerTest extends TestCaseBase{
 	public void testUpdateDetails() throws Exception{
 		getMockMvc().perform(
 				post("/api/advice/update")
-				.param("id", "nEhuYPL2Rcus0_KG4pIfXA")
-				.param("name", "人物传记")
+				.param("ID", "nEhuYPL2Rcus0_KG4pIfXA")
+				.param("name", "人物传记11")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())

@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.pay.service.context;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
+import com.jingyunbank.etrade.api.pay.handler.PayHandler;
+import com.jingyunbank.etrade.api.pay.handler.PayHandlerResolver;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
@@ -23,6 +26,8 @@ public class PayContextService implements IPayContextService{
 
 	@Autowired
 	private IPayService payService;
+	@Autowired
+	private PayHandlerResolver payHandlerResolver;
 	
 	@Override
 	@Transactional
@@ -47,6 +52,16 @@ public class PayContextService implements IPayContextService{
 	public boolean ifpayable(List<Orders> orders) {
 		
 		return false;
+	}
+
+	@Override
+	@Transactional
+	public Map<String, String> buildPayInfo(List<OrderPayment> payments, String platformCode)
+			throws Exception {
+		payments.forEach(x->x.setExtransno(UniqueSequence.next18()));
+		payService.refreshExtransno(payments);
+		PayHandler handler = payHandlerResolver.resolve(platformCode);
+		return handler.handle(payments);
 	}
 
 //	@Override

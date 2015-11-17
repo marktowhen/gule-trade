@@ -36,7 +36,7 @@ public class AdviceSiteController {
 	@RequestMapping(value="/api/advice/site",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result saveSite(AdviceSiteVO adviceSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
-		adviceSiteVO.setId(KeyGen.uuid());
+		adviceSiteVO.setID(KeyGen.uuid());;
 		AdviceSite adviceSite=new AdviceSite();
 		BeanUtils.copyProperties(adviceSiteVO, adviceSite);
 		if(adviceSiteService.save(adviceSite)){
@@ -54,7 +54,7 @@ public class AdviceSiteController {
 	 */
 	@RequestMapping(value="/api/advice/sites/{siteid}",method=RequestMethod.GET)
 	@ResponseBody
-	public Result selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session){
+	public Result selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session) throws Exception{
 		return Result.ok(adviceSiteService.getSitesBySiteid(siteid).stream().map(bo ->{
 			AdviceSiteVO adviceSiteVO=new AdviceSiteVO();
 			BeanUtils.copyProperties(bo, adviceSiteVO);
