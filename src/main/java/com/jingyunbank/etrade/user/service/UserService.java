@@ -90,7 +90,7 @@ public class UserService implements IUserService{
 			}
 			
 			UserInfoEntity userInfoEntity=new UserInfoEntity();
-			userInfoEntity.setUid(userEntity.getID());
+			userInfoEntity.setUID(userEntity.getID());
 			userInfoEntity.setRegip(userInfo.getRegip());
 			Date date=new Date();
 			userInfoEntity.setRegtime(date);

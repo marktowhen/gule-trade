@@ -92,7 +92,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/register/checkCode",method=RequestMethod.POST)
+	@RequestMapping(value="/register/checkcode",method=RequestMethod.POST)
 	public Result registerCheckCode(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -180,7 +180,7 @@ public class UserController {
 		}
 		return Result.fail("手机或验证码不一致,没有登录");
 	}
-	
+	//修改手机号的操作
 	/**
 	 * 1更换手机发送验证码的过程操作
 	 * @param userVO
@@ -191,25 +191,23 @@ public class UserController {
 	 */
 	@RequestMapping(value="/update/phone",method=RequestMethod.GET)
 	public Result sendUpdatePhone(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		String uid = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(uid)){
-			
-			if(userVO.getMobile()!=null){
+		//验证手机号输入的准确性
+		if(userVO.getMobile()!=null){
 				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 				if(!p.matcher(userVO.getMobile()).matches()){
 					return Result.fail("手机格式不正确");
 				}
+				//检验手机号是否已经存在
 				if(userService.phoneExists(userVO.getMobile())){
 					return Result.fail("该手机号已存在。");
 				}
-				
 			}
-			
 			 return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
 		
-		}
-		return Result.fail("手机修改失败或是没能发送验证码");
+		
+		
 	}
+	//修改手机号的操作
 	/**
 	 * 1更换手机之后的验证码是否输入正确呢
 	 * @param userVO
@@ -221,7 +219,6 @@ public class UserController {
 	@RequestMapping(value="/update/phone",method=RequestMethod.POST)
 	public Result checkCodeUpdatePhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(uid)){
 			Users users=new Users();
 			userVO.setID(uid);
 			BeanUtils.copyProperties(userVO, users);
@@ -229,8 +226,8 @@ public class UserController {
 			if(checkResult.isOk() && userService.refresh(users)){
 				return Result.ok("手机验证成功,保存成功");
 			}
-		}
-		return Result.fail("手机或验证码不一致,没有登录");
+		
+		return Result.fail("手机或验证码不一致,");
 	}
 	/**
 	 * 2修改登录密码
@@ -810,7 +807,7 @@ public class UserController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value="/message",method=RequestMethod.POST)
-	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws DataRefreshingException {
+	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
 		if(StringUtils.isEmpty(sessionCode)){
@@ -858,7 +855,7 @@ public class UserController {
 		file.transferTo(target);
 		//修改用户信息
 		UserInfo userInfo = new UserInfo();
-		userInfo.setUid(ServletBox.getLoginUID(request));
+		userInfo.setUID(ServletBox.getLoginUID(request));
 		userInfo.setPicture(fileName);
 		userInfoService.refreshPicture(userInfo);
 		return Result.ok();

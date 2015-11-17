@@ -73,15 +73,17 @@ public class UserControllerTest extends TestCaseBase {
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	}
+	//测试注册
 	/**
+	 * 邮箱注册或是手机注册
 	 * 测试验证校验是否成功和保存信息是否成功
 	 * @throws Exception
 	 */
 	@Test
 	public void test2() throws Exception{
 		getMockMvc().perform(
-				 post("/api/user/register/checkCode")
-				.param("username", "xiaoyuIii")
+				 post("/api/user/register/checkcode")
+				.param("username", "xiaoyuIiii")
 				.param("mobile", "18766169803")
 				.param("code", "4278")
 				/*.param("email", "5559018888@qq.com")*/
@@ -93,7 +95,6 @@ public class UserControllerTest extends TestCaseBase {
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-			/*.andExpect(jsonPath("$.code").value("500"))*/
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 	}
@@ -111,7 +112,6 @@ public class UserControllerTest extends TestCaseBase {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("200"))
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
@@ -165,7 +165,7 @@ public class UserControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				post("/api/user/update/tradepwd")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
-				.param("tradepwd", "77777777777")
+				.param("tradepwd", "4568787989888")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -174,6 +174,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andReturn();
 	}
 	/**
+	 * 只有在交易密码为空的时候才会设置成功！
 	 * 测试设置交易密码
 	 * @throws Exception
 	 */
@@ -182,7 +183,7 @@ public class UserControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				post("/api/user/install/tradepwd")
 				.sessionAttr(ServletBox.LOGIN_ID, "vcAxfKg-TlOB4Ql5AB3k-w")
-				.param("tradepwd", "77777777788")
+				.param("tradepwd", "777777777888")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -191,7 +192,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andReturn();
 	}
 
-	
+	//为当前手机发送验证码
 	/**
 	 * 测试发送当前手机号的验证码
 	 * 
@@ -210,6 +211,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
+	//当前手机检验验证码是否正确
 	/**
 	 * 测试当前手机号的验证码输入和发送的是否一致
 	 * 
@@ -231,7 +233,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
-	
+	//更换手机号
 	/**
 	 * 测试发送修改后手机号的验证码
 	 * 
@@ -241,7 +243,6 @@ public class UserControllerTest extends TestCaseBase {
 	public void testUpdatePhone() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/update/phone")
-				.sessionAttr(ServletBox.LOGIN_ID, "123")
 				.param("mobile", "18766169803")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -250,6 +251,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 	}
+	//更换手机号
 	/**
 	 * 检验修改后的手机号和验证码是否输入正确
 	 * @throws Exception
