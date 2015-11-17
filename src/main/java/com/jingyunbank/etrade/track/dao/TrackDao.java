@@ -3,8 +3,8 @@ package com.jingyunbank.etrade.track.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.jingyunbank.etrade.track.entity.CollectEntity;
-import com.jingyunbank.etrade.track.entity.CollectGoodsVEntity;
+import com.jingyunbank.etrade.track.entity.FavoritesEntity;
+import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
 
@@ -33,18 +33,18 @@ public interface TrackDao {
 	 * @param map   --uid fid type
 	 * @return
 	 */
-	public int isCollectExists(Map<String,String> map);
+	public int isFavoritesExists(Map<String,String> map);
 	/**
 	 * 保存我的收藏信息
 	 * @param fe
 	 * @return
 	 * @throws Exception
 	 */
-	public int insertCollect(CollectEntity ce) throws Exception;
+	public int insertFavorites(FavoritesEntity ce) throws Exception;
 	/**
 	 * 查询我的收藏信息
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CollectGoodsVEntity> selectMerchantCollect(Map<String,String> map) throws Exception;
+	public List<FavoritesGoodsVEntity> selectMerchantFavorites(Map<String,String> map) throws Exception;
 }

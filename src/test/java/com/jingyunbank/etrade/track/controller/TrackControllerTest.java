@@ -1,8 +1,6 @@
 package com.jingyunbank.etrade.track.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,7 +50,7 @@ public class TrackControllerTest extends TestCaseBase{
 	@Test
 	public void test8() throws Exception{
 		getMockMvc().perform(
-				 post("/api/track/collect/savemerchant")
+				 post("/api/track/favorites/savemerchant")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("mid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +67,7 @@ public class TrackControllerTest extends TestCaseBase{
 	@Test
 	public void test9() throws Exception{
 		getMockMvc().perform(
-				 post("/api/track/collect/savegoods")
+				 post("/api/track/favorites/savegoods")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("gid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +84,7 @@ public class TrackControllerTest extends TestCaseBase{
 	@Test
 	public void test10() throws Exception{
 		getMockMvc().perform(
-				 post("/api/track/collect/listmerchantcollect")
+				 post("/api/track/favorites/listmerchantfavorites")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("uid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +101,7 @@ public class TrackControllerTest extends TestCaseBase{
 	@Test
 	public void test11() throws Exception{
 		getMockMvc().perform(
-				 post("/api/track/collect/listgoodscollect")
+				 post("/api/track/favorites/listgoodsfavorites")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("uid", "3")
 					.contentType(MediaType.APPLICATION_JSON)

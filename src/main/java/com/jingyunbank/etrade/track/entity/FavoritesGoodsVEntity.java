@@ -9,7 +9,7 @@ import com.jingyunbank.etrade.api.goods.bo.BaseGoods;
 * @author    liug
 * @date      2015年11月12日
  */
-public class CollectGoodsVEntity  extends BaseGoods{
+public class FavoritesGoodsVEntity  extends BaseGoods{
 
 	/**
 	 * 

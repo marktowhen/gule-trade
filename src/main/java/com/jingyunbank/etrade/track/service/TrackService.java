@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.track.bo.CollectGoods;
+import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.track.dao.TrackDao;
-import com.jingyunbank.etrade.track.entity.CollectEntity;
-import com.jingyunbank.etrade.track.entity.CollectGoodsVEntity;
+import com.jingyunbank.etrade.track.entity.FavoritesEntity;
+import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
 
@@ -72,8 +72,8 @@ public class TrackService implements ITrackService {
 	}
 
 	@Override
-	public boolean saveCollect(String uid,String fid,String type) throws DataSavingException {
-		CollectEntity ce = new CollectEntity();
+	public boolean saveFavorites(String uid,String fid,String type) throws DataSavingException {
+		FavoritesEntity ce = new FavoritesEntity();
 		ce.setID(KeyGen.uuid());
 		ce.setUID(uid);
 		ce.setFid(fid);
@@ -81,7 +81,7 @@ public class TrackService implements ITrackService {
 		ce.setCollectTime(new Date());
 		int result = 0;
 		try {
-			result = trackDao.insertCollect(ce);
+			result = trackDao.insertFavorites(ce);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
@@ -92,26 +92,26 @@ public class TrackService implements ITrackService {
 	}
 	
 	@Override
-	public boolean isCollectExists(String uid,String fid,String type)throws Exception{
+	public boolean isFavoritesExists(String uid,String fid,String type)throws Exception{
 		int rlt = 0;
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("uid", uid);
 		map.put("fid", fid);
 		map.put("type", type);
-		rlt = this.trackDao.isCollectExists(map);
+		rlt = this.trackDao.isFavoritesExists(map);
 		return rlt > 0 ? true : false;
 	}
 	
 	@Override
-	public List<CollectGoods> listMerchantCollect(String uid,String type) throws Exception {
+	public List<FavoritesGoods> listMerchantFavorites(String uid,String type) throws Exception {
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("uid", uid);
 		map.put("type", type);
-		List<CollectGoods> rltlist = new ArrayList<CollectGoods>();
-		List<CollectGoodsVEntity> goodslist = trackDao.selectMerchantCollect(map);
+		List<FavoritesGoods> rltlist = new ArrayList<FavoritesGoods>();
+		List<FavoritesGoodsVEntity> goodslist = trackDao.selectMerchantFavorites(map);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
-				CollectGoods bo = new CollectGoods();
+				FavoritesGoods bo = new FavoritesGoods();
 				try {
 					BeanUtils.copyProperties(eo, bo);
 				} catch (Exception e) {

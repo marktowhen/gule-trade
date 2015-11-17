@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.ServletBox;
-import com.jingyunbank.etrade.api.track.bo.CollectGoods;
+import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
-import com.jingyunbank.etrade.track.bean.CollectMerchantVO;
+import com.jingyunbank.etrade.track.bean.FavoritesMerchantVO;
 import com.jingyunbank.etrade.track.bean.FootprintGoodsVO;
 
 /**
@@ -76,15 +76,15 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/collect/savemerchant", method = RequestMethod.POST)
-	public Result saveMerchantCollect(HttpServletRequest request, HttpSession session, String mid) throws Exception {
+	@RequestMapping(value = "/favorites/savemerchant", method = RequestMethod.POST)
+	public Result saveMerchantFavorites(HttpServletRequest request, HttpSession session, String mid) throws Exception {
 		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
-		flag = trackService.isCollectExists(uid, mid, "1");
+		flag = trackService.isFavoritesExists(uid, mid, "1");
 		if (flag) {
 			return Result.fail("您已经收藏过该商家！");
 		}
-		flag = trackService.saveCollect(uid, mid, "1");
+		flag = trackService.saveFavorites(uid, mid, "1");
 		if (flag) {
 			return Result.ok("收藏成功！");
 		} else {
@@ -98,15 +98,15 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/collect/savegoods", method = RequestMethod.POST)
-	public Result saveGoodsCollect(HttpServletRequest request, HttpSession session, String gid) throws Exception {
+	@RequestMapping(value = "/favorites/savegoods", method = RequestMethod.POST)
+	public Result saveGoodsFavorites(HttpServletRequest request, HttpSession session, String gid) throws Exception {
 		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
-		flag = trackService.isCollectExists(uid, gid, "2");
+		flag = trackService.isFavoritesExists(uid, gid, "2");
 		if (flag) {
 			return Result.fail("您已经收藏过该商品！");
 		}
-		flag = trackService.saveCollect(uid, gid, "2");
+		flag = trackService.saveFavorites(uid, gid, "2");
 		if (flag) {
 			return Result.ok("收藏成功！");
 		} else {
@@ -120,14 +120,14 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/collect/listmerchantcollect", method = RequestMethod.POST)
-	public Result listMerchantCollect(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/favorites/listmerchantfavorites", method = RequestMethod.POST)
+	public Result listMerchantFavorites(HttpServletRequest request) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
-		List<CollectMerchantVO> rltlist = new ArrayList<CollectMerchantVO>();
-		List<CollectGoods> goodslist = trackService.listMerchantCollect(uid, "1");
-		List<CollectGoods> tmplist = new ArrayList<CollectGoods>();// 存放商家分组LIST
+		List<FavoritesMerchantVO> rltlist = new ArrayList<FavoritesMerchantVO>();
+		List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "1");
+		List<FavoritesGoods> tmplist = new ArrayList<FavoritesGoods>();// 存放商家分组LIST
 		if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
-			CollectMerchantVO cmvo = new CollectMerchantVO();
+			FavoritesMerchantVO cmvo = new FavoritesMerchantVO();
 			for (int i = 0; i < goodslist.size(); i++) {
 				// 第一条处理
 				if (i == 0) {
@@ -135,19 +135,19 @@ public class TrackController {
 				} else if (!goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家不是一家
 					cmvo.init(tmplist);
 					rltlist.add(cmvo);
-					tmplist = new ArrayList<CollectGoods>();
+					tmplist = new ArrayList<FavoritesGoods>();
 					tmplist.add(goodslist.get(i));
 					if (i == (goodslist.size() - 1)) {// 最后一条
-						cmvo = new CollectMerchantVO();
+						cmvo = new FavoritesMerchantVO();
 						cmvo.init(tmplist);
 						rltlist.add(cmvo);
 					} else {
-						cmvo = new CollectMerchantVO();
+						cmvo = new FavoritesMerchantVO();
 					}
 				} else if (goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家是一家
 					tmplist.add(goodslist.get(i));
 					if (i == (goodslist.size() - 1)) {// 最后一条
-						cmvo = new CollectMerchantVO();
+						cmvo = new FavoritesMerchantVO();
 						cmvo.init(tmplist);
 						rltlist.add(cmvo);
 					}
@@ -164,11 +164,11 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/collect/listgoodscollect", method = RequestMethod.POST)
-	public Result listGoodsCollect(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/favorites/listgoodsfavorites", method = RequestMethod.POST)
+	public Result listGoodsFavorites(HttpServletRequest request) throws Exception {
 			String uid = ServletBox.getLoginUID(request);
 			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
-			List<CollectGoods> goodslist = trackService.listMerchantCollect(uid, "2");
+			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2");
 			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 				rltlist = goodslist.stream().map(bo -> {
 					CommonGoodsVO vo = new CommonGoodsVO();

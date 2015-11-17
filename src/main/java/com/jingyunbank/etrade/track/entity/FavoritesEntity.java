@@ -7,7 +7,7 @@ import java.util.Date;
  * @author liug
  *
  */
-public class CollectEntity implements Serializable{
+public class FavoritesEntity implements Serializable{
 	/**
 	 * 
 	 */

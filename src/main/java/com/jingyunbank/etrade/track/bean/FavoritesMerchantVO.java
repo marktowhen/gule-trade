@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
-import com.jingyunbank.etrade.api.track.bo.CollectGoods;
+import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.merchant.bean.MerchantVO;
 
@@ -16,7 +16,7 @@ import com.jingyunbank.etrade.merchant.bean.MerchantVO;
  * @author liug
  *
  */
-public class CollectMerchantVO {
+public class FavoritesMerchantVO {
 	/** 商家id */
 	private String MID;
 	/** 商家信息 */
@@ -62,13 +62,13 @@ public class CollectMerchantVO {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	public void init(List<CollectGoods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
+	public void init(List<FavoritesGoods> goodslist) throws IllegalAccessException, InvocationTargetException, InstantiationException{
 		if(goodslist == null || goodslist.size() <= 0){
 			return;
 		}
 		this.merchantVO = new MerchantVO();
 		this.goodsList = new ArrayList<CommonGoodsVO>();
-		CollectGoods goods = goodslist.get(0);
+		FavoritesGoods goods = goodslist.get(0);
 		this.MID = goods.getMID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
 		this.goodsList = goodslist.stream().map(bo -> {
