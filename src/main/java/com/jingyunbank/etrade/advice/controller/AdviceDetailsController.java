@@ -38,7 +38,7 @@ public class AdviceDetailsController {
 		
 		
 		AdviceDetails adviceDetails=new AdviceDetails();
-		adviceDetailsVO.setId(KeyGen.uuid());
+		adviceDetailsVO.setID(KeyGen.uuid());;
 		adviceDetailsVO.setPublish(new Date());
 		BeanUtils.copyProperties(adviceDetailsVO, adviceDetails);
 		if(adviceDetailsService.save(adviceDetails)){
@@ -88,7 +88,7 @@ public class AdviceDetailsController {
 	 */
 	@RequestMapping(value="/api/advice/details/{sid}",method=RequestMethod.GET)
 	@ResponseBody
-	public Result selectDetailBySid(@PathVariable String sid,HttpServletRequest request,HttpSession session){
+	public Result selectDetailBySid(@PathVariable String sid,HttpServletRequest request,HttpSession session) throws Exception{
 		return Result.ok(adviceDetailsService.getDeailsBySiteid(sid)
 			.stream().map(bo -> {
 			AdviceDetailsVO vo=new AdviceDetailsVO();
@@ -104,7 +104,7 @@ public class AdviceDetailsController {
 	 */
 	@RequestMapping(value="/api/advice/detail/{id}",method=RequestMethod.GET)
 	@ResponseBody
-	public Result selectDetailByid(@PathVariable String id){
+	public Result selectDetailByid(@PathVariable String id) throws Exception{
 	Optional<AdviceDetails> oadviceDetails=adviceDetailsService.getDetailByid(id);
 	AdviceDetails adviceDetails=oadviceDetails.get();
 	AdviceDetailsVO adviceDetailsVO=new AdviceDetailsVO();

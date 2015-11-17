@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class AdviceDetailsVO {
 	
-	private String id;
-	private String sid;
+	private String ID;
+	private String SID;
 	private String name;//主要的信息
 	private String title;//标题
 	private String content;//内容
@@ -13,11 +13,19 @@ public class AdviceDetailsVO {
 	private Date addtime;//添加时间
 	private String status;
 	private int orders;//按order排序
-	public String getSid() {
-		return sid;
+	
+	
+	public String getID() {
+		return ID;
 	}
-	public void setSid(String sid) {
-		this.sid = sid;
+	public void setID(String iD) {
+		ID = iD;
+	}
+	public String getSID() {
+		return SID;
+	}
+	public void setSID(String sID) {
+		SID = sID;
 	}
 	public String getStatus() {
 		return status;
@@ -30,12 +38,6 @@ public class AdviceDetailsVO {
 	}
 	public void setOrders(int orders) {
 		this.orders = orders;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 	public String getName() {
 		return name;
