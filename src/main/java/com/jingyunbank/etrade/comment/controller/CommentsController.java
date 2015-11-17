@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
@@ -41,6 +42,7 @@ public class CommentsController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/list",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result saveComments(CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
@@ -84,6 +86,7 @@ public class CommentsController {
 	 * @param session
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/getbyid/{gid}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result getComments(@PathVariable String gid,HttpServletRequest request,HttpSession session) throws Exception{
@@ -102,6 +105,7 @@ public class CommentsController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
 	public Result remove(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{

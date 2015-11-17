@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
@@ -37,7 +38,7 @@ public class UserInfoController {
 	 * @return
 	 * @throws Exception
 	 */
-	
+	@AuthBeforeOperation
 	@RequestMapping(value="/",method=RequestMethod.PUT)
 	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO,HttpServletRequest request) throws Exception{
 		UserInfo userInfo=new UserInfo();
@@ -61,6 +62,7 @@ public class UserInfoController {
 	 * @param uid
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
 	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid) throws Exception{
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
@@ -81,6 +83,7 @@ public class UserInfoController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/update",method=RequestMethod.POST)
 	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws Exception {
 		UserInfo userInfo=new UserInfo();

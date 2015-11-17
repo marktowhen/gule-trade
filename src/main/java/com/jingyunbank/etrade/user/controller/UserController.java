@@ -30,6 +30,7 @@ import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.msg.MessagerManager;
 import com.jingyunbank.core.msg.sms.SmsMessage;
 import com.jingyunbank.core.util.MD5;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
@@ -141,16 +142,16 @@ public class UserController {
 	 * @param userVO
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/send/message",method=RequestMethod.GET)
 	public Result currentPhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(id)){
+		
 		Users users=userService.getByUid(id).get();
 		if(users.getMobile()!=null){
 			return sendCodeToMobile(users.getMobile(), getCheckCode(), request);
 		}
-		return Result.fail("请重新登录");
-		}
+		
 		return Result.fail("重试");
 	}
 	/**
@@ -161,11 +162,9 @@ public class UserController {
 	 * @param session
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/send/message",method=RequestMethod.POST)
 	public Result chenckPhoneCode(String mobile,String code,HttpServletRequest request, HttpSession session){
-		String uid = ServletBox.getLoginUID(request);
-		
-		if(!StringUtils.isEmpty(uid)){
 		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
 			if(checkResult.isOk()){
 				return Result.ok("手机验证成功");
@@ -177,8 +176,8 @@ public class UserController {
 				//只有当前手机号验证成功了，才可以进行修改支付密码！
 				//只有当前手机号验证成功了，才可以进行设置支付密码！
 			}*/
-		}
-		return Result.fail("手机或验证码不一致,没有登录");
+		
+		return Result.fail("手机或验证码不一致");
 	}
 	//修改手机号的操作
 	/**
@@ -189,6 +188,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/update/phone",method=RequestMethod.GET)
 	public Result sendUpdatePhone(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
@@ -216,6 +216,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/update/phone",method=RequestMethod.POST)
 	public Result checkCodeUpdatePhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
@@ -236,6 +237,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/update/password",method=RequestMethod.POST)
 	public Result updatePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 	
@@ -260,6 +262,7 @@ public class UserController {
 	 * @param session
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/update/tradepwd",method=RequestMethod.POST)
 	public Result updateTradePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
@@ -286,6 +289,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/install/tradepwd",method=RequestMethod.POST)
 	public Result installTradepwd(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		
@@ -693,13 +697,12 @@ public class UserController {
 	 * 2015年11月10日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/ckemail-link",method=RequestMethod.GET)
 	public Result checkEmailLink(HttpServletRequest request,
 			String m, String u, String d) throws DataRefreshingException{
 		Optional<Users> userOption = userService.getByUid(d);
-		if(!userOption.isPresent()){
-			return Result.fail("用户不存在");
-		}
+		
 		Users users = userOption.get();
 		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
 			return Result.fail("链接格式错误");
@@ -769,6 +772,7 @@ public class UserController {
 	 * 2015年11月6日 qxs
 	 * @throws Exception 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/message",method=RequestMethod.GET)
 	public Result getMessage(HttpServletRequest request, HttpSession session,String mobile) throws Exception{
 		if(StringUtils.isEmpty(mobile)){
@@ -783,7 +787,6 @@ public class UserController {
 		}
 		//获取验证码
 		String code  = getCheckCode();
-		if(!StringUtils.isEmpty(id)){
 			//如何设置验证码的有效期限--待解决
 			Result result = sendCodeToMobile(mobile, code, request);
 			if(result.isBad()){
@@ -791,8 +794,7 @@ public class UserController {
 			}
 			session.setAttribute("UNCHECK_MOBILE", mobile);
 			return Result.ok("成功");
-		}
-		return Result.fail("未登录");
+		
 	}
 	
 	//4、
@@ -806,6 +808,7 @@ public class UserController {
 	 * @throws DataRefreshingException 
 	 * @throws Exception 
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/message",method=RequestMethod.POST)
 	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
@@ -813,7 +816,6 @@ public class UserController {
 		if(StringUtils.isEmpty(sessionCode)){
 			return Result.fail("未发送短信或短信已失效");
 		}
-		if(!StringUtils.isEmpty(uid)){
 			//验证发送短信的手机号与最后提交的手机号是否一致
 			if(session.getAttribute("UNCHECK_MOBILE").equals(mobile)){
 				//判断是否成功
@@ -833,8 +835,6 @@ public class UserController {
 			}else{
 				return Result.fail("请确认手机号是否正确");
 			}
-		}
-		return Result.fail("未登录");
 	}
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
