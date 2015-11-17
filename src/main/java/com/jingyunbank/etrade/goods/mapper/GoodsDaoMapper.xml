@@ -26,6 +26,9 @@
 		<result column="barvode" property="barCode" />
 		<result column="goodsdesc" property="goodsDesc" />
 		<result column="goodstitle" property="goodsTitle" />
+		<result column="state" property="state" />
+		<result column="comment" property="comment" />
+		
 		<!-- 详细信息 -->
 		<result column="standard_no" property="standardNo" />
 		<result column="shelf_life" property="shelfLife" />
@@ -111,31 +114,33 @@
 	</sql>
 	<!-- 商品详细信息  (包含商品属性 详细属性 商家 品牌 图片属性)-->
 	<sql id="detailedSql">
-	g.id gid,g.name goodsname,g.code CODE,g.price price,g.promotion_price promotion_price,
-	<include refid="nowprice"/>
-	g.up_time up_time,g.down_time down_time,g.count counts,g.volume volume,
-	g.pro_start pro_start,g.pro_end pro_end, g.pro_flag proflag,
-	m.id MID,m.merchant_name merchantname,m.img_path merchantimg,
-	b.id bid,b.name brandname,
-	<include refid="imgAttr"/>
-	d.standard_no standard_no,d.shelf_life shelf_life,d.approve_no approve_no,d.usage usages,
-	d.commended_user commended_user,d.not_commended_user not_commended_user,d.ingredients ingredients,
-	d.food_additives food_additives,d.specifications specifications,d.ingredient ingredient,
-	d.functions functions,d.note note,d.storage_methods storage_methods,d.is_gift_box is_gift_box,
-	d.production_date production_date,d.weight weight,d.unit unit,t.id tid,t.name typename
+		g.id gid,g.mid MID,g.`bid` bid,g.name goodsname,g.`code` CODE,g.tid tid,g.`price` price,
+		g.`promotion_price` promotion_price,<include refid="nowprice"/>
+		g.`state` state,g.`count` counts,g.`up_time` up_time, 
+		g.`down_time` down_time,g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
+		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
+		g.`title` goodstitle,m.`merchant_name` merchantname ,b.`name` brandname,t.`name` typename,
+		<include refid="imgAttr"/>
+		d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
+		d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
+		d.`ingredients` ingredients,d.`food_additives` food_additives,d.`specifications` specifications,
+		d.`ingredient` ingredient, d.`functions` functions,d.`note` note,d.`storage_methods` storage_methods,
+		d.`is_gift_box` is_gift_box,d.`production_date` ProductionDate,d.`weight` weight,d.`unit` unit,
+		d.`factory_name` factoryname,d.`factory_addr` factoryaddr,d.`factory_tel` factorytel,COUNT(c.id) COMMENT
 	</sql>
 	
 	<!-- 根据促销标志算出当然价格 -->
 	<sql id="nowprice">
 		CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END AS nowprice,
 	</sql>
-	<!-- 商品概要信息查询字段 -->
+	<!-- 商品概要信息查询字段 用于多条件搜索和商品展示 -->
 	<sql id="commentGoods">
-		g.id gid, g.name goodsname,d.weight weight,d.unit
-		unit,g.price price ,g.promotion_price promotion_price,
+		g.id gid, g.name goodsname,g.title goodstitle,d.weight weight,d.unit unit,g.price price ,
+		g.promotion_price promotion_price,
 		<include refid="nowprice"/>
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
-		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end
+		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,
+		COUNT(c.goods_comment) comment
 	</sql>
 
 	<!-- 根据名称like查询商品 -->
@@ -145,10 +150,11 @@
 		<include refid="commentGoods" />
 		FROM GOODS g
 		LEFT JOIN goods_detail d ON g.id=d.gid
-		LEFT JOIN goods_img
-		i ON g.id = i.gid
-		WHERE 1 = 1 AND g.state=1 AND g.name LIKE
-		CONCAT(CONCAT('%', #{goodsname}), '%')
+		LEFT JOIN goods_img i ON g.id = i.gid
+		LEFT JOIN COMMENT c ON c.gid=g.id
+		WHERE 1 = 1 AND g.state=1  
+		AND g.name LIKE CONCAT(CONCAT('%', #{goodsname}), '%')
+		GROUP BY g.id
 		LIMIT #{from} , #{size}
 	</select>
 
@@ -180,11 +186,11 @@
 		resultMap="baseGoodsMap">
 		SELECT
 		<include refid="commentGoods" />
-		FROM goods g
-		LEFT JOIN goods_detail d ON d.gid = g.id
-		LEFT JOIN
-		goods_img i ON i.gid=g.id
-		WHERE 1=1 AND g.state=1
+		FROM GOODS g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_img i ON g.id = i.gid
+		LEFT JOIN COMMENT c ON c.gid=g.id
+		WHERE 1 = 1 AND g.state=1 
 		<if test="brandArr !='' and brandArr !=null ">
 			AND g.bid IN
 			<foreach collection="brandArr" index="index" item="item"
@@ -206,6 +212,7 @@
 		<if test="endprice !=''">
 			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
 		</if>
+		GROUP BY g.id
 		<!-- 销量排序 -->
 		<if test="order ==1 ">
 			ORDER BY g.volume DESC
@@ -216,7 +223,7 @@
 		</if>
 		<!-- 评论数排序 -->
 		<if test="order ==3 ">
-			<!-- 目前还没有评论功能 ORDER BY g.volume DESC -->
+			ORDER BY COMMENT DESC
 		</if>
 		<!-- 新品排序 -->
 		<if test="order ==4 ">
@@ -250,15 +257,37 @@
 	</select>
 	<!-- 根据商品 推荐序号 查询 宝贝推荐的商品 -->
 	<select id="selectRecommend" resultMap="baseGoodsMap">
-		SELECT g.id gid,g.name
-		goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
+	<![CDATA[	
+		SELECT g.id gid,g.name goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
-		LEFT JOIN goods_img i ON
-		i.gid = g.id
-		WHERE g.record_sort IS NOT NULL
-		ORDER BY g.record_sort
+		LEFT JOIN goods_img i ON i.gid = g.id
+		 WHERE g.record_sort <> 0 ORDER BY g.record_sort 
+		]]>
 	</select>
+	<!-- 判断sql -->
+	<sql id="where">
+				<if test="brandArr !='' and brandArr !=null ">
+					AND g.bid IN
+					<foreach collection="brandArr" index="index" item="item"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="typeArr !='' and typeArr !=null ">
+					AND g.tid IN
+					<foreach collection="typeArr" index="index" item="item" open="("
+						separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="beginprice !=''">
+					<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
+				</if>
+				<if test="endprice !=''">
+					<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
+				</if>
+			</sql>
 	<!-- 根据商品条件搜索关联店铺 -->
 	<select id="selectMerchantByWhere" parameterType="java.util.Map"
 		resultMap="GoodsMerchantMap">
@@ -273,66 +302,42 @@
 		LEFT JOIN goods_type t ON t.id=g.tid
 		WHERE 1=1 AND
 		g.state=1
-		<if test="brandArr !='' and brandArr !=null ">
-			AND g.bid IN
-			<foreach collection="brandArr" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-		<if test="typeArr !='' and typeArr !=null ">
-			AND g.tid IN
-			<foreach collection="typeArr" index="index" item="item" open="("
-				separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-
-		<if test="beginprice !=''">
-			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
-		</if>
-		<if test="endprice !=''">
-			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
-		</if>
+		<include refid="where" />
 		GROUP BY merchantname LIMIT #{from} , #{size}
 	</select>
-	<!-- 查询店铺相关产品 -->
-	<select id="selectMerchantByWhereGoods" parameterType="java.util.Map"
+	<!--查询店铺相关产品4条 -->
+	<select id="selectMerchantByWhereGoods4" parameterType="java.util.Map"
 		resultMap="baseGoodsMap">
 		SELECT
 		<include refid="commentGoods" />
-		FROM goods g
-		LEFT JOIN goods_detail d ON d.gid = g.id
-		LEFT JOIN goods_img i ON i.gid =
-		g.id
-		LEFT JOIN merchant m ON m.id=g.mid
-		LEFT JOIN goods_brand b ON
-		b.id=g.`bid`
-		LEFT JOIN goods_type t ON t.id=g.tid
-		WHERE 1=1 AND
-		g.state=1 AND m.id = #{mid}
-		<if test="brandArr !='' and brandArr !=null ">
-			AND g.bid IN
-			<foreach collection="brandArr" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-		<if test="typeArr !='' and typeArr !=null ">
-			AND g.tid IN
-			<foreach collection="typeArr" index="index" item="item" open="("
-				separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-
-		<if test="beginprice !=''">
-			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
-		</if>
-		<if test="endprice !=''">
-			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
-		</if>
+				FROM goods g
+				LEFT JOIN goods_detail d ON d.gid = g.id
+				LEFT JOIN goods_img i ON i.gid = g.id
+				LEFT JOIN merchant m ON m.id=g.mid
+				LEFT JOIN goods_brand b ON b.id=g.`bid`
+				LEFT JOIN goods_type t ON t.id=g.tid
+				LEFT JOIN COMMENT c ON c.gid=g.id
+				WHERE 1=1 AND g.state=1  AND m.id = #{mid}
+		<include refid="where" />
+		GROUP BY g.id
+		LIMIT 0,4
 	</select>
+	<!--查询店铺相关产品->>更多相关产品 -->
+	<select id="selectMerchantByWhereGoodsMax" parameterType="java.util.Map"
+		resultMap="baseGoodsMap">
+		SELECT <include refid="commentGoods" /> FROM goods g
+				LEFT JOIN goods_detail d ON d.gid = g.id
+				LEFT JOIN goods_img i ON i.gid = g.id
+				LEFT JOIN merchant m ON m.id=g.mid
+				LEFT JOIN goods_brand b ON b.id=g.`bid`
+				LEFT JOIN goods_type t ON t.id=g.tid
+				LEFT JOIN COMMENT c ON c.gid=g.id
+				WHERE 1=1 AND g.state=1  AND m.id = #{mid}
+		<include refid="where" />
+		GROUP BY g.id
+		LIMIT #{from}, #{size}
+	</select>
+	<!-- -->
 	<!-- 查询热门推荐商品的基本信息 -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity"
 		id="hot24GoodsEntity">
@@ -362,12 +367,14 @@
 	</select>
 	<!-- 查询推广商品 -->
 	<select id="selectGoodsExpand" resultMap="baseGoodsMap">
-		SELECT
-		<include refid="commentGoods" />
+		select <include refid="commentGoods" />
 		FROM goods g
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN goods_detail d ON g.id=d.gid
-		WHERE expand_sort IS NOT NULL ORDER BY expand_sort
+		LEFT JOIN COMMENT c ON c.gid=g.id
+		WHERE 1=1 AND <![CDATA[ expand_sort <> 0  ]]>
+		GROUP BY g.id
+		ORDER BY expand_sort
 	</select>
 	<!-- 我的足迹商品信息 -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.FootprintGoodsEntity" id="selectFootprintGoods">
@@ -405,39 +412,17 @@
 	</insert>
 	
 	<!-- 在结果中查询商品 -->
-	<select id="selectGoodsByGoodsResult" parameterType="java.util.Map"
-		resultMap="baseGoodsMap">
-		SELECT
-		<include refid="commentGoods" />
-		FROM goods g
-		LEFT JOIN goods_detail d ON d.gid = g.id
-		LEFT JOIN goods_img i ON i.gid=g.id
-		WHERE 1=1 AND g.state=1
-		<if test="brandArr !='' and brandArr !=null ">
-			AND g.bid IN
-			<foreach collection="brandArr" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-		<if test="typeArr !='' and typeArr !=null ">
-			AND g.tid IN
-			<foreach collection="typeArr" index="index" item="item" open="("
-				separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-		
+	<select id="selectGoodsByGoodsResult" parameterType="java.util.Map" resultMap="baseGoodsMap">
+		SELECT <include refid="commentGoods" /> FROM GOODS g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_img i ON g.id = i.gid
+		LEFT JOIN COMMENT c ON c.gid=g.id
+		WHERE 1 = 1 AND g.state=1 
+		<include refid="where" />
 		<if test="goodsname !=''">
 			<![CDATA[ AND g.name LIKE CONCAT(CONCAT('%', #{goodsname}), '%')]]>
 		</if>
-		
-		<if test="beginprice !=''">
-			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
-		</if>
-		<if test="endprice !=''">
-			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
-		</if>
+		GROUP BY g.id
 		<!-- 销量排序 -->
 		<if test="order ==1 ">
 			ORDER BY g.volume DESC
@@ -448,7 +433,7 @@
 		</if>
 		<!-- 评论数排序 -->
 		<if test="order ==3 ">
-			<!-- 目前还没有评论功能 ORDER BY g.volume DESC -->
+			ORDER BY COMMENT DESC
 		</if>
 		<!-- 新品排序 -->
 		<if test="order ==4 ">
@@ -458,15 +443,16 @@
 	</select>
 	<!-- 根据ID 查询商品属性 -->
 	<select id="selectOne" parameterType="string" resultMap="baseGoodsMap">
-	SELECT
-	<include refid="detailedSql"/>
-	FROM goods g
-	LEFT JOIN goods_img i ON g.id=i.gid
-	LEFT JOIN goods_detail d ON g.id=d.gid
-	LEFT JOIN goods_brand b ON b.id=g.bid 
-	LEFT JOIN merchant m ON g.mid=m.id
-	LEFT JOIN goods_type t ON t.id=g.tid
-	WHERE 1=1 AND g.id= #{gid}
+		SELECT
+		<include refid="detailedSql"/>
+		FROM goods g
+		LEFT JOIN goods_img i ON g.id=i.gid
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_brand b ON b.id=g.bid 
+		LEFT JOIN merchant m ON g.mid=m.id
+		LEFT JOIN goods_type t ON t.id=g.tid
+		LEFT JOIN COMMENT c ON g.id=c.gid
+		WHERE 1=1 AND g.id = #{gid} GROUP BY g.id
 	</select>
 	<!-- 检验当前商品或者店家是否已收藏 -->
 	<select id="isCollectExists" resultType="int" parameterType="map">

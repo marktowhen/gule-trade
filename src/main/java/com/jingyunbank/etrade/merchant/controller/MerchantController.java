@@ -58,7 +58,7 @@ public class MerchantController {
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}
-		Result r = Result.ok(list);
+		Result r = Result.ok(rlist);
 		return r;
 	}
 	/**
@@ -75,7 +75,7 @@ public class MerchantController {
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);
 		if(merchantContextService.saveMerchant(merchant)){
-			return Result.ok("保存成功");
+			return Result.ok(merchantVO);
 		}
 		return Result.ok(merchantVO);
 	}
@@ -98,7 +98,7 @@ public class MerchantController {
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}
-		Result r = Result.ok(list);
+		Result r = Result.ok(rlist);
 		return r;
 	}
 	/**
@@ -113,7 +113,7 @@ public class MerchantController {
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型
 		if(this.merchantContextService.updateMerchant(merchant)){
-			return Result.ok("修改成功");
+			return Result.ok(merchantVO);
 		}
 		return Result.ok(merchantVO);
 	}
@@ -137,7 +137,7 @@ public class MerchantController {
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}
-		Result r = Result.ok(list);
+		Result r = Result.ok(rlist);
 		return r;
 	}
 	
@@ -157,8 +157,7 @@ public class MerchantController {
 			Merchant bo = merchant.get();
 			MerchantVO vo = new MerchantVO();
 			BeanUtils.copyProperties(bo,vo);
-			Result.ok(vo);
-			return Result.ok("查询成功！");
+			return Result.ok(vo);
 		}else{
 			return Result.fail("查询没有数据！");
 		}

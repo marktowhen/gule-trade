@@ -66,7 +66,6 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.PUT)
-	// @RequestParam MultipartFile[] myfiles
 	public Result saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
