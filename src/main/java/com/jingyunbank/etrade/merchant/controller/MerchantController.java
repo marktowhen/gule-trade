@@ -48,7 +48,7 @@ public class MerchantController {
 	 * @throws IllegalAccessException 
 	 */
 	@RequestMapping("/recommend/list")
-	public Result recommend(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
+	public Result recommend(HttpServletRequest request, HttpSession session) throws Exception{
 		//转成VO
 		List<Merchant> list = merchantService.listMerchants();
 		List<MerchantVO> rlist = new ArrayList<MerchantVO>();
@@ -88,7 +88,7 @@ public class MerchantController {
 	 * @throws InvocationTargetException
 	 */
 	@RequestMapping("/invoicetype/list")
-	public Result getInvoiceType(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
+	public Result getInvoiceType(HttpServletRequest request, HttpSession session) throws Exception{
 		//转成VO
 		List<InvoiceType> list = merchantService.listInvoiceType();
 		List<InvoiceTypeVO> rlist = new ArrayList<InvoiceTypeVO>();
@@ -127,7 +127,7 @@ public class MerchantController {
 	 * @throws InvocationTargetException
 	 */
 	@RequestMapping("/deliverytype/list")
-	public Result getDeliveryType(HttpServletRequest request, HttpSession session) throws IllegalAccessException, InvocationTargetException{
+	public Result getDeliveryType(HttpServletRequest request, HttpSession session) throws Exception{
 		//转成VO
 		List<DeliveryType> list = merchantService.listDeliveryType();
 		List<DeliveryTypeVO> rlist = new ArrayList<DeliveryTypeVO>();
@@ -151,7 +151,7 @@ public class MerchantController {
 	 * @throws IllegalAccessException 
 	 */
 	@RequestMapping(value="/info/{mid}",method=RequestMethod.GET)
-	public Result getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws IllegalAccessException, InvocationTargetException{
+	public Result getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws Exception{
 		Optional<Merchant> merchant= merchantContextService.getMerchantInfoByMid(mid);
 		if(merchant.isPresent()){
 			Merchant bo = merchant.get();
