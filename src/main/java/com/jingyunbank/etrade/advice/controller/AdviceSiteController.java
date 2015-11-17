@@ -36,7 +36,7 @@ public class AdviceSiteController {
 	@RequestMapping(value="/api/advice/site",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result saveSite(AdviceSiteVO adviceSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
-		adviceSiteVO.setId(KeyGen.uuid());
+		adviceSiteVO.setID(KeyGen.uuid());;
 		AdviceSite adviceSite=new AdviceSite();
 		BeanUtils.copyProperties(adviceSiteVO, adviceSite);
 		if(adviceSiteService.save(adviceSite)){

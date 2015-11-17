@@ -38,7 +38,7 @@ public class AdviceDetailsController {
 		
 		
 		AdviceDetails adviceDetails=new AdviceDetails();
-		adviceDetailsVO.setId(KeyGen.uuid());
+		adviceDetailsVO.setID(KeyGen.uuid());;
 		adviceDetailsVO.setPublish(new Date());
 		BeanUtils.copyProperties(adviceDetailsVO, adviceDetails);
 		if(adviceDetailsService.save(adviceDetails)){

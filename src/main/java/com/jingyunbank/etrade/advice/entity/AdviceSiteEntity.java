@@ -1,20 +1,21 @@
 package com.jingyunbank.etrade.advice.entity;
 
 public class AdviceSiteEntity {
-	private String id;
-	private String siteid;
+	private String ID;
+	private String SiteID;
 	private String name;
-	public String getId() {
-		return id;
+	
+	public String getID() {
+		return ID;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setID(String iD) {
+		ID = iD;
 	}
-	public String getSiteid() {
-		return siteid;
+	public String getSiteID() {
+		return SiteID;
 	}
-	public void setSiteid(String siteid) {
-		this.siteid = siteid;
+	public void setSiteID(String siteID) {
+		SiteID = siteID;
 	}
 	public String getName() {
 		return name;
