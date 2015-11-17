@@ -22,8 +22,7 @@ public class CommentsImgControllerTest extends TestCaseBase{
 	@Test
 	public void selectById() throws Exception{
 		getMockMvc().perform(
-				 get("/api/commentsImg/getImg/1")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 get("/api/commentsImg/getImg/7")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

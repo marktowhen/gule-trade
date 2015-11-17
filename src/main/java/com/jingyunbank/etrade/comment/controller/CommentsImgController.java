@@ -23,7 +23,7 @@ public class CommentsImgController{
 	
 	@RequestMapping(value="/api/commentsImg/getImg/{imgid}")
 	@ResponseBody
-	public Result selectById(@PathVariable String imgid,HttpSession session){
+	public Result selectById(@PathVariable String imgid,HttpSession session) throws Exception{
 		
 		return Result.ok(commentImgService.getById(imgid)
 				.stream().map(bo -> {

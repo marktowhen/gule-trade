@@ -1,20 +1,21 @@
 package com.jingyunbank.etrade.comment.entity;
 
 public class CommentsImgEntity {
-	private String id;
-	private String imgid;
+	private String ID;
+	private String ImgID;
 	private String picture;
-	public String getId() {
-		return id;
+	
+	public String getID() {
+		return ID;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setID(String iD) {
+		ID = iD;
 	}
-	public String getImgid() {
-		return imgid;
+	public String getImgID() {
+		return ImgID;
 	}
-	public void setImgid(String imgid) {
-		this.imgid = imgid;
+	public void setImgID(String imgID) {
+		ImgID = imgID;
 	}
 	public String getPicture() {
 		return picture;

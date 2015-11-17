@@ -3,21 +3,42 @@ package com.jingyunbank.etrade.comment.entity;
 import java.util.Date;
 
 public class CommentsEntity {
-	private String id;
-	private String uid;
-	private String gid;
-	private String imgid;
+	private String ID;
+	private String UID;
+	private String GID;
+	private String ImgID;
 	private String goodsComment;//商品的评价
 	private int commentGrade;//商品评价的等级
 	private String goodsService;//商品的服务
 	private int serviceGrade;//服务级别
 	private Date addtime;//添加评价的时间
 	private int commentStatus;//评价的是否的状态
-	public String getId() {
-		return id;
+	private int orders;
+	
+	
+	public String getID() {
+		return ID;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setID(String iD) {
+		ID = iD;
+	}
+	public String getUID() {
+		return UID;
+	}
+	public void setUID(String uID) {
+		UID = uID;
+	}
+	public String getGID() {
+		return GID;
+	}
+	public void setGID(String gID) {
+		GID = gID;
+	}
+	public String getImgID() {
+		return ImgID;
+	}
+	public void setImgID(String imgID) {
+		ImgID = imgID;
 	}
 	public Date getAddtime() {
 		return addtime;
@@ -25,24 +46,7 @@ public class CommentsEntity {
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-	public String getImgid() {
-		return imgid;
-	}
-	public void setImgid(String imgid) {
-		this.imgid = imgid;
-	}
-	public String getUid() {
-		return uid;
-	}
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
-	public String getGid() {
-		return gid;
-	}
-	public void setGid(String gid) {
-		this.gid = gid;
-	}
+
 	public String getGoodsComment() {
 		return goodsComment;
 	}
@@ -72,6 +76,12 @@ public class CommentsEntity {
 	}
 	public void setCommentStatus(int commentStatus) {
 		this.commentStatus = commentStatus;
+	}
+	public int getOrders() {
+		return orders;
+	}
+	public void setOrders(int orders) {
+		this.orders = orders;
 	}
 	
 }

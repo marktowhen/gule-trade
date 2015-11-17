@@ -1,9 +1,6 @@
 package com.jingyunbank.etrade.comment.controller;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
@@ -48,12 +44,9 @@ public class CommentsController {
 	@RequestMapping(value="/api/comments/list",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result saveComments(CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
-		commentVO.setId(KeyGen.uuid());
+		commentVO.setID(KeyGen.uuid());
 		String id = ServletBox.getLoginUID(request);
-		if(StringUtils.isEmpty(id)){
-			return Result.fail("请登录");
-		}
-		commentVO.setUid(id);
+		commentVO.setUID(id);
 		commentVO.setAddtime(new Date());
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentVO, comments);
@@ -73,9 +66,9 @@ public class CommentsController {
 			}*/
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
 			for(int i=0;i<3;i++){
-				commentsImgVO.setId(KeyGen.uuid());
+				commentsImgVO.setID(KeyGen.uuid());
 				commentsImgVO.setPicture("a.jpg");
-				commentsImgVO.setImgid(commentVO.getImgid());
+				commentsImgVO.setImgID(commentVO.getImgID());
 				CommentsImg commentsImg=new CommentsImg();
 				BeanUtils.copyProperties(commentsImgVO, commentsImg);
 				commentImgService.save(commentsImg);
@@ -93,7 +86,7 @@ public class CommentsController {
 	 */
 	@RequestMapping(value="/api/comments/getbyid/{gid}",method=RequestMethod.GET)
 	@ResponseBody
-	public Result getComments(@PathVariable String gid,HttpServletRequest request,HttpSession session){
+	public Result getComments(@PathVariable String gid,HttpServletRequest request,HttpSession session) throws Exception{
 		return Result.ok(commentService.getCommentsByGid(gid)
 				.stream().map(bo-> {
 					CommentsVO vo= new CommentsVO();
@@ -116,13 +109,11 @@ public class CommentsController {
 		Comments comments=commentService.getById(id);
 		CommentsVO commentsVO=new CommentsVO();
 		BeanUtils.copyProperties(comments, commentsVO);
-		if(commentsVO.getUid().equals(uid)){
-			commentImgService.remove(commentsVO.getImgid());
+		if(commentsVO.getUID().equals(uid)){
+			commentImgService.remove(commentsVO.getImgID());
 			commentService.remove(id);
 			return Result.ok("删除成功");
 		}
 		return Result.fail("没有删除的权限");
-		
-		
 	}
 }

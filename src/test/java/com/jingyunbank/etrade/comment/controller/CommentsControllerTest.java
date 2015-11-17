@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.comment.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,15 +23,16 @@ public class CommentsControllerTest extends TestCaseBase{
 	public void test1() throws Exception{
 		getMockMvc().perform(
 				 put("/api/comments/list")
-				 .sessionAttr(ServletBox.LOGIN_ID, "14")
-				 	.param("gid", "2")
-				 	.param("imgid", "9")
+				 .sessionAttr(ServletBox.LOGIN_ID, "21")
+				 	.param("GID", "3")
+				 	.param("ImgID", "7")
 				 	.param("goodsComment", "挺好")
 				 	.param("commentGrade", "1")
 				 	.param("goodsService", "挺好的")
 				 	.param("serviceGrade", "1")
 				 	/*.param("picture", "c:/bulid/b.jpg")*/
 				 	.param("commentStatus", "1")
+				 	.param("orders", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -41,14 +41,14 @@ public class CommentsControllerTest extends TestCaseBase{
 			.andDo(print());
 	}
 	/**
-	 * 测试通过产品的id查询其评价信息
+	 * 测试通过产品的Gid查询其所有的评价信息
 	 * @throws Exception
 	 */
 	@Test
 	public void test2() throws Exception{
 		getMockMvc().perform(
-				 get("/api/comments/getbyid/1")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 get("/api/comments/getbyid/3")
+				 .sessionAttr(ServletBox.LOGIN_ID, "12")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -58,13 +58,14 @@ public class CommentsControllerTest extends TestCaseBase{
 	}
 	/**
 	 * 测试通过id删除评价一起对应的照片
+	 * (只能删除自己的评价)
 	 * @throws Exception
 	 */
 	@Test
 	public void test3() throws Exception{
 		getMockMvc().perform(
-				 delete("/api/comments/delete/a1ginJ3sTJS1JoMr5Ws9fA")
-				 .sessionAttr(ServletBox.LOGIN_ID, "10")
+				 delete("/api/comments/delete/olRSbilERzqleBUsC1TMiQ")
+				 .sessionAttr(ServletBox.LOGIN_ID, "12")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
