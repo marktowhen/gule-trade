@@ -12,15 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.io.FileInputStream;
 
-import net.minidev.json.JSONObject;
-
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.user.bean.LoginUserVO;
 
 public class UserControllerTest extends TestCaseBase {
 	/**
@@ -29,10 +29,15 @@ public class UserControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testLogin() throws Exception{
+		LoginUserVO user = new LoginUserVO();
+		user.setKey("username");
+		user.setPassword("12345678");
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(user);
+		System.out.println(" ================= " + json);
 		getMockMvc()
 			.perform(post("/api/user/login")
-					.param("loginfo", "qxstest")
-					.param("password", "123456")
+					.content(json)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

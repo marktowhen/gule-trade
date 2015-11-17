@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +39,7 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.SystemConfigProperties;
+import com.jingyunbank.etrade.user.bean.LoginUserVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
@@ -321,14 +323,12 @@ public class UserController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public Result login(HttpServletRequest request, HttpSession session,String loginfo ,String password,String captcha ){
-		//1、参数校验
-		if(StringUtils.isEmpty(loginfo)){
-			return Result.fail("请输入用户名/手机/邮箱");
-		}
-		if(StringUtils.isEmpty(password)){
-			return Result.fail("请输入密码");
+	@RequestMapping(value="/login",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result login(@Valid @RequestBody LoginUserVO user, 
+						BindingResult valid, HttpSession session){
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
 		}
 		
 		//密码不正确3次后需要验证码
@@ -337,18 +337,18 @@ public class UserController {
 		if(session.getAttribute("loginWrongTimes")!=null){
 			loginWrongTimes = Integer.parseInt((String)session.getAttribute("loginWrongTimes"));
 			if(loginWrongTimes>=3){
-				if(!checkCaptcha(session, captcha)){
+				if(!checkCaptcha(session, user.getCaptcha())){
 					return Result.fail("验证码错误");
 				}
 			}
 		}
 		//2、根据用户名/手机号/邮箱查询用户信息
-		Optional<Users> usersOptional =  userService.getByKey(loginfo);
+		Optional<Users> usersOptional =  userService.getByKey(user.getKey());
 		//是否存在该用户
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
 			//密码是否正确
-			if(!users.getPassword().equals(MD5.digest(password))){
+			if(!users.getPassword().equals(MD5.digest(user.getPassword()))){
 				//记录错误次数
 				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
 				return Result.fail("密码错误");
