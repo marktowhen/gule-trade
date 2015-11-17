@@ -372,7 +372,7 @@
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN goods_detail d ON g.id=d.gid
 		LEFT JOIN COMMENT c ON c.gid=g.id
-		WHERE 1=1 AND <![CDATA[ expand_sort <> 0  ]]>
+		WHERE 1=1 AND <![CDATA[expand_sort <> 0  ]]>
 		GROUP BY g.id
 		ORDER BY expand_sort
 	</select>
