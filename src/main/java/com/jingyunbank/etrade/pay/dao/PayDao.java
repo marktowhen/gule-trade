@@ -14,4 +14,6 @@ public interface PayDao {
 
 	public List<OrderPaymentEntity> selectPayments(@Param("oids") List<String> oids);
 	
+	public void updateMany(@Param("payments") List<OrderPaymentEntity> payments) throws Exception;
+	
 }

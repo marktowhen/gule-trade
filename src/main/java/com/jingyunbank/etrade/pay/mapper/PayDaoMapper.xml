@@ -50,4 +50,16 @@
 			#{oid}
 		</foreach>
 	</select>
+	
+	<update id="updateMany">
+		<foreach collection="payments" item="p">
+			update order_payment
+			<set>
+				<if test="p.extransno != ''">
+					extransno = p.extransno,
+				</if>
+			</set>
+			where id = p.ID
+		</foreach>
+	</update>
 </mapper>

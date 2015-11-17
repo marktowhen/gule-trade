@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.pay.bean.OrderPaymentRequestVO;
+import com.jingyunbank.etrade.pay.bean.OrderPaymentVO;
 import com.jingyunbank.etrade.pay.bean.PayOrderVO;
 
 public class PayControllerTest extends TestCaseBase{
@@ -59,22 +61,29 @@ public class PayControllerTest extends TestCaseBase{
 		
 	}
 	@Test
-	public void testRedirect() throws Exception{
+	public void testBuild() throws Exception{
+		List<OrderPaymentVO> pvos = new ArrayList<>();
+		OrderPaymentVO pvo = new OrderPaymentVO();
+		pvo.setAddtime(new Date());
+		pvo.setID("XCFSDA");
+		pvos.add(pvo);
 		OrderPaymentRequestVO vo = new OrderPaymentRequestVO();
-		vo.setPayments(null);
+		vo.setPayments(pvos);
 		vo.setPlatformCode("LLPAY");
-		vo.setTradepwd("XXXXX");
+		vo.setTradepwd("XXXXXX");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		System.out.println(json);
 		getMockMvc().perform(
-					 post("/api/pay/redirect")
+					 post("/api/pay/build")
+					.content(json)
+					.contentType(MediaType.APPLICATION_JSON)
 					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)
-				.andExpect(status().is3xxRedirection())
+				.andExpect(status().isOk())
 //				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 //				.andExpect(jsonPath("$.code").value("200"))
 				.andDo(print());

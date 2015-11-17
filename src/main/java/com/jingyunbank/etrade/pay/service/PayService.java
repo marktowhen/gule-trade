@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.pay.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,20 @@ public class PayService implements IPayService{
 			bos.add(op);
 		});
 		return bos;
+	}
+
+	@Override
+	public void refreshExtransno(List<OrderPayment> payments)
+			throws DataSavingException {
+		try {
+			payDao.updateMany(payments.stream().map(bo->{
+				OrderPaymentEntity entity = new OrderPaymentEntity();
+				BeanUtils.copyProperties(bo, entity);
+				return entity;
+			}).collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
 	}
 
 }
