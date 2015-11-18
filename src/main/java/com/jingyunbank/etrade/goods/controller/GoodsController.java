@@ -76,7 +76,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listBrands", method = RequestMethod.GET)
+	@RequestMapping(value = "/brand/list", method = RequestMethod.GET)
 	public Result queryBrands(HttpServletRequest request) throws Exception {
 		List<GoodsBrandVO> list = goodsService.listBrands().stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
@@ -93,7 +93,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listTypes", method = RequestMethod.GET)
+	@RequestMapping(value = "/type/list", method = RequestMethod.GET)
 	public Result queryTypes(HttpServletRequest request) throws Exception {
 		List<GoodsTypesVO> list = goodsService.listTypes().stream().map(bo -> {
 			GoodsTypesVO vo = new GoodsTypesVO();
@@ -111,7 +111,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listByWhere", method = RequestMethod.GET)
+	@RequestMapping(value = "/queryByWhere/list", method = RequestMethod.GET)
 	public Result queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		Range range = new Range();
@@ -133,7 +133,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listRecommendGoods", method = RequestMethod.GET)
+	@RequestMapping(value = "/recommend/list", method = RequestMethod.GET)
 	public Result queryGoodsByWhere(HttpServletRequest request) throws Exception {
 		List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
 			RecommendGoods vo = new RecommendGoods();
@@ -151,7 +151,7 @@ public class GoodsController {
 	 * @param page
 	 * 			@return @throws Exception @throws
 	 */
-	@RequestMapping(value = "/listGoodsMerchantByWhere", method = RequestMethod.GET)
+	@RequestMapping(value = "/goodsMerchantByWhere/list", method = RequestMethod.GET)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		Range range = new Range();
@@ -173,7 +173,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listMerchantByWhereGoods4", method = RequestMethod.GET)
+	@RequestMapping(value = "/merchantGoodsByWhere4/list", method = RequestMethod.GET)
 	public Result queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
 		 GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods4(goodshowBO).stream().map(bo -> {
@@ -190,7 +190,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/listMerchantByWhereGoodsMax", method = RequestMethod.GET)
+	@RequestMapping(value = "/merchantGoodsByWhereMax/list", method = RequestMethod.GET)
 	public Result queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
 		 GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		 Range range = new Range();
@@ -282,7 +282,7 @@ public class GoodsController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/GoodsExpand/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/expand/list", method = RequestMethod.GET)
 	public Result listGoodsExpand() throws Exception {
 		List<CommonGoodsVO> list = goodsService.listGoodsExpand().stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
@@ -298,7 +298,7 @@ public class GoodsController {
 	 * @param vo
 	 * @return
 	 */
-	@RequestMapping(value = "/GoodsByGoodsResult/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/goodsByResult/list", method = RequestMethod.GET)
 	public Result listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
 		// ----分页条件 [待修改]
 		Range range = new Range();
