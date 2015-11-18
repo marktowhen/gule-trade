@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
@@ -108,6 +109,7 @@ public class MerchantController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value = "/updatemerchant", method = RequestMethod.POST)
 	public Result updateMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception{
 		Merchant merchant=Merchant.getInstance();
