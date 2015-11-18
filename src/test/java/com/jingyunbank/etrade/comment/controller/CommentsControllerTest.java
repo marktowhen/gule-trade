@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.comment.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,8 +31,9 @@ public class CommentsControllerTest extends TestCaseBase{
 				 	.param("commentGrade", "1")
 				 	.param("goodsService", "挺好的")
 				 	.param("serviceGrade", "1")
+				 	.param("replyUID", "21")
 				 	/*.param("picture", "c:/bulid/b.jpg")*/
-				 	.param("commentStatus", "1")
+				 	/*.param("commentStatus", "1")*/
 				 	.param("orders", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -64,8 +66,25 @@ public class CommentsControllerTest extends TestCaseBase{
 	@Test
 	public void test3() throws Exception{
 		getMockMvc().perform(
-				 delete("/api/comments/delete/olRSbilERzqleBUsC1TMiQ")
+				 delete("/api/comments/delete/rNa4bwnwQvOF0PaRGlY6VQ")
 				 .sessionAttr(ServletBox.LOGIN_ID, "12")
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+			.andDo(MockMvcResultHandlers.print())
+			.andDo(print());
+	}
+	/**
+	 * 测试修改状态的
+	 * @throws Exception
+	 */
+	@Test
+	public void test4() throws Exception{
+		getMockMvc().perform(
+				 post("/api/comments/update/status")
+				 .param("ID", "9zzH2f9FRiicAo0Sg10zgw")
+				 .sessionAttr(ServletBox.LOGIN_ID, "13")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

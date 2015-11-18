@@ -13,4 +13,12 @@ public interface CommentsDao {
 	public CommentsEntity selectById(String id);
 	
 	public void delete(String id) throws Exception;
+	
+	public boolean updateStatus(CommentsEntity commentsEntity) throws Exception;
+	
+/*	public List<CommentsEntity> selectList();*/
+	
+	public boolean refreshReadStatus(CommentsEntity commentsEntity) throws Exception;
+	
+	
 }

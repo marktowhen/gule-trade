@@ -5,8 +5,10 @@ import java.util.Date;
 public class CommentsEntity {
 	private String ID;
 	private String UID;
+	private String replyUID;//对于评论进行回复的人
 	private String GID;
 	private String ImgID;
+	private String replyComment;//回复人回复的内容
 	private String goodsComment;//商品的评价
 	private int commentGrade;//商品评价的等级
 	private String goodsService;//商品的服务
@@ -28,12 +30,14 @@ public class CommentsEntity {
 	public void setUID(String uID) {
 		UID = uID;
 	}
-	public String getGID() {
-		return GID;
+	
+	public String getReplyUID() {
+		return replyUID;
 	}
-	public void setGID(String gID) {
-		GID = gID;
+	public void setReplyUID(String replyUID) {
+		this.replyUID = replyUID;
 	}
+	
 	public String getImgID() {
 		return ImgID;
 	}
@@ -83,5 +87,18 @@ public class CommentsEntity {
 	public void setOrders(int orders) {
 		this.orders = orders;
 	}
+	public String getGID() {
+		return GID;
+	}
+	public void setGID(String gID) {
+		GID = gID;
+	}
+	public String getReplyComment() {
+		return replyComment;
+	}
+	public void setReplyComment(String replyComment) {
+		this.replyComment = replyComment;
+	}
+	
 	
 }

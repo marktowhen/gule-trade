@@ -7,9 +7,11 @@
 		<resultMap type="com.jingyunbank.etrade.comment.entity.CommentsEntity" id="ResultMap">
 			<id column="id" property="ID" jdbcType="CHAR"/>
 			<result column="uid" property="UID" jdbcType="CHAR"/>
+			<result column="reply_uid" property="replyUID"/>
 			<result column="gid" property="GID" jdbcType="CHAR"/>
 			<result column="imgid" property="ImgID" jdbcType="CHAR"/>
-			<result column="goods_comment" property="goodsComment" jdbcType="VARCHAR"/>
+			<result column="reply_comment" property="replyComment"/>
+			<result column="goods_comment" property="goodsComment" javaType="String" />
 			<result column="comment_grade" property="commentGrade" jdbcType="INTEGER"/>
 			<result column="goods_service" property="goodsService" jdbcType="VARCHAR"/>
 			<result column="service_grade" property="serviceGrade" jdbcType="INTEGER"/>
@@ -18,14 +20,14 @@
 			<result column="orders" property="orders" jdbcType="INTEGER"/>
 		</resultMap>
 		<sql id="comment_list">
-			id,uid,gid,imgid,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
+			id,uid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
 		</sql>
 		<!-- 添加评价的信息 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.comment.entity.CommentsEntity">
 		insert into comment(
-			id,uid,gid,imgid,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
+			id,uid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
 		)values(
-			#{ID},#{UID},#{GID},#{ImgID},#{goodsComment},#{commentGrade},#{goodsService},#{serviceGrade},#{addtime},#{commentStatus},#{orders}
+			#{ID},#{UID},#{replyUID},#{GID},#{ImgID},#{replyComment},#{goodsComment},#{commentGrade},#{goodsService},#{serviceGrade},#{addtime},#{commentStatus},#{orders}
 		)
 		</insert>
 		<!-- 通过gid查询评论信息，多条 -->
@@ -36,7 +38,7 @@
 		   order by addtime desc,orders desc
 		</select>
 		<!-- 通过id查询出评论信息 -->
-		<select id="selectById" parameterType="String" resultType="com.jingyunbank.etrade.comment.entity.CommentsEntity">
+		<select id="selectById" parameterType="String" resultMap="ResultMap">
 			select <include refid="comment_list"></include>
 			from comment where id=#{ID}
 		</select>
@@ -44,5 +46,9 @@
 		<delete id="delete" parameterType="String">
 			delete from comment where id=#{ID}
 		</delete>
-		
+		<!-- 修改评价的状态 -->
+		<update id="updateStatus" parameterType="com.jingyunbank.etrade.comment.entity.CommentsEntity">
+			update comment c set c.comment_status=#{commentStatus}
+			where id=#{ID}
+		</update>
 	</mapper>
