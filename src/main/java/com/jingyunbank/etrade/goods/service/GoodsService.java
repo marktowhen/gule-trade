@@ -79,11 +79,7 @@ public class GoodsService implements IGoodsService {
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				HotGoods bo = new HotGoods();
-				try {
 					BeanUtils.copyProperties(eo, bo);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 				return bo;
 			}).collect(Collectors.toList());
 		}
@@ -189,11 +185,7 @@ public class GoodsService implements IGoodsService {
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				Hot24Goods bo = new Hot24Goods();
-				try {
 					BeanUtils.copyProperties(eo, bo);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 				return bo;
 			}).collect(Collectors.toList());
 		}
