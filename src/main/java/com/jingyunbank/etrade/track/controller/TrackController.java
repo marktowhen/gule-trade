@@ -40,7 +40,7 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/footprint/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/footprint/list", method = RequestMethod.GET)
 	public Result listFootprintGoods() throws Exception {
 		try {
 			List<FootprintGoods> goodslist = trackService.listFootprintGoods();
@@ -120,7 +120,7 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/listmerchantfavorites", method = RequestMethod.POST)
+	@RequestMapping(value = "/favorites/listmerchantfavorites", method = RequestMethod.GET)
 	public Result listMerchantFavorites(HttpServletRequest request) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		List<FavoritesMerchantVO> rltlist = new ArrayList<FavoritesMerchantVO>();
@@ -164,7 +164,7 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/listgoodsfavorites", method = RequestMethod.POST)
+	@RequestMapping(value = "/favorites/listgoodsfavorites", method = RequestMethod.GET)
 	public Result listGoodsFavorites(HttpServletRequest request) throws Exception {
 			String uid = ServletBox.getLoginUID(request);
 			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
