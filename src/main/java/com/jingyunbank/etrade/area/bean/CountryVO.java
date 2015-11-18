@@ -2,6 +2,8 @@ package com.jingyunbank.etrade.area.bean;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class CountryVO implements Serializable {
 
 	
@@ -10,6 +12,7 @@ public class CountryVO implements Serializable {
 	 */
 	private static final long serialVersionUID = -4236983888643178415L;
 	private int countryID;
+	@NotEmpty(message="名称不能为空")
 	private String countryName;
 	
 	public int getCountryID() {

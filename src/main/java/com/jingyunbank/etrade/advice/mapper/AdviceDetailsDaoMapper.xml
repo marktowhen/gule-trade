@@ -69,7 +69,7 @@
 			order by orders desc,publish desc
 		</select>
 		<!-- 通过id查出每一条信息的详细内容啊 -->
-		<select id="selectDetailByid" parameterType="String" resultType="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity">
+		<select id="selectDetailByid" parameterType="String" resultMap="AdviceDetailsResultMap">
 			select <include refid="details_list"></include>
 			from advice_details where
 			id=#{ID}

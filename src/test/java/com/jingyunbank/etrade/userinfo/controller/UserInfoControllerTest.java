@@ -58,14 +58,14 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test1() throws Exception{
 			getMockMvc().perform(
 				 post("/api/userinfo/update")
-				.sessionAttr(ServletBox.LOGIN_ID, "wId_HVY3Rl6N4ipHSk04Zg")
-				.param("country", "4")
-				.param("province", "3")
-				.param("city", "4")
+				.sessionAttr(ServletBox.LOGIN_ID, "R_r90WHXQSKnG6b82jr6NA")
+				.param("country", "5")
+				.param("province", "5")
+				.param("city", "5")
 				.param("address", "山东济南")
-				.param("education", "4")
-				.param("job", "4")
-				.param("income", "2")
+				.param("education", "5")
+				.param("job", "5")
+				.param("income", "5")
 				.param("avatar", "rt")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -85,6 +85,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test2() throws Exception{
 			getMockMvc().perform(
 					 get("/api/userinfo/IoBST6elTCarSyzl6Z277g")
+					 .sessionAttr(ServletBox.LOGIN_ID, "R_r90WHXQSKnG6b82jr6NA")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
