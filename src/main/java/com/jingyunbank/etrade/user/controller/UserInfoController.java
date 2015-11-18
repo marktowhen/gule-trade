@@ -54,7 +54,6 @@ public class UserInfoController {
 		return Result.fail("重试！");
 	}
 	
-	
 	/**
 	 * 通过uid查询个人信息	
 	 * @param session
@@ -90,7 +89,6 @@ public class UserInfoController {
 		String id = ServletBox.getLoginUID(request);
 		userInfoVO.setUID(id);
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-	
 		
 		if(userInfoService.refresh(userInfo)){
 			

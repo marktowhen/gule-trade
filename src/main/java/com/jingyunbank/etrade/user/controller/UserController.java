@@ -64,23 +64,27 @@ public class UserController {
  * @throws Exception
  */
 	@RequestMapping(value="/register/send",method=RequestMethod.PUT)
-	public Result register(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result register(UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
 		//验证邮箱是否存在
-		if(userVO.getMobile()!=null){
+		if(!StringUtils.isEmpty(userVO.getMobile())){
+			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+			if(!p.matcher(userVO.getMobile()).matches()){
+				return Result.fail("手机格式不正确");
+			}
 			if(userService.phoneExists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
-		}
-		//验证邮箱是否存在
-		if(userVO.getEmail()!=null){
-			if(userService.emailExists(userVO.getEmail())){
-			return Result.fail("该邮箱已存在");
-			}
-		}
-		if(userVO.getMobile()!=null){
 			return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
 		}
-		if(userVO.getEmail()!=null){
+		//验证邮箱是否存在
+		if(!StringUtils.isEmpty(userVO.getEmail())){
+			Pattern p1 = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
+			if(!p1.matcher(userVO.getEmail()).matches()){
+				return Result.fail("手机格式不正确");
+			}
+			if(userService.emailExists(userVO.getEmail())){
+				return Result.fail("该邮箱已存在");
+			}
 			return sendCodeToEmail(userVO.getEmail(), "验证码", getCheckCode(), request);
 		}
 		return Result.fail("发送验证码失败");
@@ -227,7 +231,7 @@ public class UserController {
 			BeanUtils.copyProperties(userVO, users);
 		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
 			if(checkResult.isOk() && userService.refresh(users)){
-				return Result.ok("手机验证成功,保存成功");
+				return Result.ok(userVO);
 			}
 		
 		return Result.fail("手机或验证码不一致,");
@@ -254,9 +258,9 @@ public class UserController {
 		Users users=new Users();
 		BeanUtils.copyProperties(userVO, users);
 		if(userService.refresh(users)){
-			return Result.ok("修改登录密码成功");
+			return Result.ok(userVO);
 		}
-		return Result.ok(userVO);
+		return Result.fail("修改登录密码失败");
 	}
 	/**
 	 * 3修改交易密码
@@ -278,9 +282,9 @@ public class UserController {
 		Users users=new Users();
 		BeanUtils.copyProperties(userVO, users);
 		if(userService.refresh(users)){
-			return Result.ok("修改交易密码成功");
+			return Result.ok(userVO);
 		}
-		return Result.ok(userVO);
+		return Result.fail("修改交易密码失败");
 		
 	}
 	/**
@@ -303,11 +307,11 @@ public class UserController {
 		String uid = ServletBox.getLoginUID(request);
 		Optional<Users> optional=userService.getByUid(uid);
 		Users users=optional.get();
-		if(users.getTradepwd()==null||users.getTradepwd()==""){
+		if(StringUtils.isEmpty(users.getTradepwd())){
 				userVO.setID(uid);
 				BeanUtils.copyProperties(userVO, users);
 				if(userService.refresh(users)){
-					return Result.ok("设置交易密码成功");
+					return Result.ok(userVO);
 				}
 		}
 		return Result.fail("设置交易密码失败");
@@ -460,7 +464,7 @@ public class UserController {
 		userVO.setID(users.getID());
 		BeanUtils.copyProperties(userVO, users);
 		if(userService.refresh(users)&&result.isOk()){
-			return Result.ok("修改登录密码成功");
+			return Result.ok(userVO);
 		}
 		
 		return Result.fail("验证码出现错误或是修改未成功");
