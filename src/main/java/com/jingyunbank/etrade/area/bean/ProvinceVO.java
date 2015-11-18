@@ -2,6 +2,10 @@ package com.jingyunbank.etrade.area.bean;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class ProvinceVO implements Serializable {
 
 	
@@ -10,7 +14,9 @@ public class ProvinceVO implements Serializable {
 	 */
 	private static final long serialVersionUID = -5819650834620876659L;
 	private int provinceID;
+	@NotEmpty(message="名称不能为空")
 	private String provinceName;
+	@NotNull(message="国家不能为空")
 	private int countryID;
 	public int getProvinceID() {
 		return provinceID;
