@@ -213,7 +213,6 @@ public class GoodsController {
 	@RequestMapping(value = "/hotgoods/list", method = RequestMethod.POST)
 	public Result listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
-		try {
 			List<HotGoods> goodslist = goodsService.listHotGoods();
 			List<HotGoods> tmplist = new ArrayList<HotGoods>();// 存放商家分组LIST
 			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
@@ -245,11 +244,6 @@ public class GoodsController {
 
 				}
 			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		return Result.ok(rltlist);
 	}
 
