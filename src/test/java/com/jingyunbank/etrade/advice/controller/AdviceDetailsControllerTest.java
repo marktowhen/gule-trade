@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.advice.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,7 +42,7 @@ public class AdviceDetailsControllerTest extends TestCaseBase{
 	@Test
 	public void testDeleteDetails() throws Exception{
 		getMockMvc().perform(
-				post("/api/advice/delete/1Qy7eqxSStKzgp-O8QjiXw")
+				delete("/api/advice/delete/1Qy7eqxSStKzgp-O8QjiXw")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())

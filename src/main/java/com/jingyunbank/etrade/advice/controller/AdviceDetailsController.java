@@ -53,7 +53,7 @@ public class AdviceDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/delete/{id}",method=RequestMethod.POST)
+	@RequestMapping(value="/api/advice/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
 	public Result deleteDetails(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
 		adviceDetailsService.remove(id);
