@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.comment.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
@@ -65,12 +67,13 @@ public class CommentsService implements ICommentService{
 	 * 通过id查出对应的评论信息
 	 */
 	@Override
-	public Comments getById(String id) {
+	public Optional<Comments> getById(String id) {
 		// TODO Auto-generated method stub
+		
 		CommentsEntity commentsEntity=commentsDao.selectById(id);
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentsEntity, comments);
-		return comments;
+		return Optional.of(comments);
 	}
 
 	/**
@@ -85,6 +88,24 @@ public class CommentsService implements ICommentService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	@Override
+	public void refreshStatus(Comments comments) throws DataRefreshingException {
+		// TODO Auto-generated method stub
+		CommentsEntity commentsEntity=new CommentsEntity();
+		BeanUtils.copyProperties(comments, commentsEntity);
+		try {
+			commentsDao.updateStatus(commentsEntity);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new DataRefreshingException(e);
+		}
+		
+	}
+	@Override
+	public void refreshStatus(String[] ids, Comments comments) throws DataRefreshingException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

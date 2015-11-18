@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.comment.controller;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +51,7 @@ public class CommentsController {
 		String id = ServletBox.getLoginUID(request);
 		commentVO.setUID(id);
 		commentVO.setAddtime(new Date());
+		commentVO.setCommentStatus(2);
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentVO, comments);
 
@@ -110,14 +112,42 @@ public class CommentsController {
 	@ResponseBody
 	public Result remove(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
-		Comments comments=commentService.getById(id);
+		Optional<Comments> comments=commentService.getById(id);
 		CommentsVO commentsVO=new CommentsVO();
-		BeanUtils.copyProperties(comments, commentsVO);
+		BeanUtils.copyProperties(comments.get(), commentsVO);
 		if(commentsVO.getUID().equals(uid)){
 			commentImgService.remove(commentsVO.getImgID());
 			commentService.remove(id);
 			return Result.ok("删除成功");
 		}
 		return Result.fail("没有删除的权限");
+	}
+	/**
+	 * 修改评论的状态
+	 * @param commentsVO
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/comments/update/status",method=RequestMethod.POST)
+	@ResponseBody
+	public Result updateStatus(CommentsVO commentsVO,HttpServletRequest request,HttpSession session) throws Exception{
+		
+		Optional<Comments> optionComments=commentService.getById(commentsVO.getID());
+		Comments comments=	optionComments.get();
+	
+		if(!StringUtils.isEmpty(comments.getGoodsComment())){
+			//如果已经评价就把设置为2
+			
+			comments.setCommentStatus(2);
+			commentService.refreshStatus(comments);
+			
+			BeanUtils.copyProperties(comments, commentsVO);
+			return Result.ok(commentsVO);
+		}
+		return Result.fail("请重试");
+		
 	}
 }
