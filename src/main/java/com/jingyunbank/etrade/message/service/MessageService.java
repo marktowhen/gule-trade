@@ -192,5 +192,10 @@ public class MessageService implements IMessageService {
 		}
 		return message;
 	}
+
+	@Override
+	public void inform(Message msg) throws Exception {
+		this.save(msg);
+	}
 	
 }
