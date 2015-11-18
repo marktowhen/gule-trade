@@ -206,10 +206,10 @@
 			</foreach>
 		</if>
 
-		<if test="beginprice !=''">
+		<if test="beginprice !='' and beginprice !=null">
 			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
 		</if>
-		<if test="endprice !=''">
+		<if test="endprice !='' and endprice!= null ">
 			<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
 		</if>
 		GROUP BY g.id
@@ -281,10 +281,10 @@
 						#{item}
 					</foreach>
 				</if>
-				<if test="beginprice !=''">
+				<if test="beginprice !='' and beginprice !=null">
 					<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
 				</if>
-				<if test="endprice !=''">
+				<if test="endprice !='' and endprice !=null">
 					<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
 				</if>
 			</sql>

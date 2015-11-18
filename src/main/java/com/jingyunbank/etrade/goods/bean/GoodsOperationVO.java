@@ -36,6 +36,7 @@ public class GoodsOperationVO implements Serializable {
 	private int state;//是否上架0否1是
 	private Date upTime;//上架时间
 	private Date downTime;//下架时间
+	@NotNull(message="库存不能为空")
 	private int count;//库存
 	private int volume;//销量
 	private Date addTime;//添加时间
