@@ -22,7 +22,7 @@ public class InformationDetailsControllerTest extends TestCaseBase{
 	public void testSaveDetails() throws Exception{
 		
 		getMockMvc().perform(
-				put("/api/advice/savedetails")
+				put("/api/information/savedetails")
 				.param("SID", "B_zVBGGoRkqdq1Zvs5tLxw")
 				.param("name", "人物事故")
 				.param("title", "个人专辑")
@@ -42,7 +42,7 @@ public class InformationDetailsControllerTest extends TestCaseBase{
 	@Test
 	public void testDeleteDetails() throws Exception{
 		getMockMvc().perform(
-				delete("/api/advice/delete/1Qy7eqxSStKzgp-O8QjiXw")
+				delete("/api/information/delete/1Qy7eqxSStKzgp-O8QjiXw")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())
@@ -56,7 +56,7 @@ public class InformationDetailsControllerTest extends TestCaseBase{
 	@Test
 	public void testUpdateDetails() throws Exception{
 		getMockMvc().perform(
-				post("/api/advice/update")
+				post("/api/information/update")
 				.param("ID", "nEhuYPL2Rcus0_KG4pIfXA")
 				.param("name", "人物传记11")
 				.accept(MediaType.APPLICATION_JSON)
@@ -72,7 +72,7 @@ public class InformationDetailsControllerTest extends TestCaseBase{
 	@Test
 	public void testGetDetailsBySid() throws Exception{
 		getMockMvc().perform(
-				get("/api/advice/details/B_zVBGGoRkqdq1Zvs5tLxw")
+				get("/api/information/details/B_zVBGGoRkqdq1Zvs5tLxw")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())
@@ -86,7 +86,7 @@ public class InformationDetailsControllerTest extends TestCaseBase{
 	@Test
 	public void testGetDetailByid() throws Exception{
 		getMockMvc().perform(
-				get("/api/advice/detail/zEm49RFHSq-QrxQK38J1Gw")
+				get("/api/information/detail/zEm49RFHSq-QrxQK38J1Gw")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())

@@ -17,7 +17,7 @@ public class InformationSiteControllerTest extends TestCaseBase{
 	@Test
 	public void testSaveSite() throws Exception{
 		getMockMvc().perform(
-				put("/api/advice/site")
+				put("/api/information/site")
 				.param("SiteID", "103")
 				.param("name", "品牌故事")
 				.accept(MediaType.APPLICATION_JSON)
@@ -33,7 +33,7 @@ public class InformationSiteControllerTest extends TestCaseBase{
 	@Test
 	public void testSelectSites() throws Exception{
 		getMockMvc().perform(
-				get("/api/advice/sites/103")
+				get("/api/information/sites/103")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())

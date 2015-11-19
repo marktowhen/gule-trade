@@ -33,7 +33,7 @@ public class InformationSiteController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value="/api/advice/site",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/information/site",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result saveSite(InformationSiteVO informationSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
 		informationSiteVO.setID(KeyGen.uuid());;
@@ -52,7 +52,7 @@ public class InformationSiteController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/sites/{siteid}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/information/sites/{siteid}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session) throws Exception{
 		return Result.ok(informationSiteService.getSitesBySiteid(siteid).stream().map(bo ->{

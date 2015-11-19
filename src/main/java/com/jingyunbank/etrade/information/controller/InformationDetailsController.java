@@ -32,7 +32,7 @@ public class InformationDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/advice/savedetails",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/information/savedetails",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result saveDetails(HttpServletRequest request,HttpSession session,InformationDetailsVO informationDetailsVO) throws Exception{
 		
@@ -53,7 +53,7 @@ public class InformationDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/delete/{id}",method=RequestMethod.DELETE)
+	@RequestMapping(value="/api/information/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
 	public Result deleteDetails(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
 		informationDetailsService.remove(id);
@@ -68,7 +68,7 @@ public class InformationDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/advice/update",method=RequestMethod.POST)
+	@RequestMapping(value="/api/information/update",method=RequestMethod.POST)
 	@ResponseBody
 	public Result updateDetsils(InformationDetailsVO informationDetailsVO,HttpServletRequest request,HttpSession session) throws Exception{
 		InformationDetails informationDetails=new InformationDetails();
@@ -86,7 +86,7 @@ public class InformationDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/details/{sid}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/information/details/{sid}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectDetailBySid(@PathVariable String sid,HttpServletRequest request,HttpSession session) throws Exception{
 		return Result.ok(informationDetailsService.getDeailsBySiteid(sid)
@@ -102,7 +102,7 @@ public class InformationDetailsController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/detail/{id}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/information/detail/{id}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectDetailByid(@PathVariable String id) throws Exception{
 	Optional<InformationDetails> informationDetails=informationDetailsService.getDetailByid(id);
