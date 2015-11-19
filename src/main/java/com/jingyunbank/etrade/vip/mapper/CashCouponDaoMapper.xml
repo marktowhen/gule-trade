@@ -37,6 +37,14 @@
 			limit offset,size
 		</if>
 	</select>
+	
+	<select id="selectAmount" resultType="int" parameterType="com.jingyunbank.etrade.vip.entity.CashCouponEntity" >
+		select count(1) from cash_coupon 
+		<where>
+			<include refid="base_condition"></include>
+		</where>
+	</select>
+	
 	<sql id="base_condition">
 		<if test="ID!=null and ID!=''" >
 				and id =#{ID}

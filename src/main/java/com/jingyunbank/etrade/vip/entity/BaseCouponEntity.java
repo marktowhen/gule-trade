@@ -24,7 +24,7 @@ public class BaseCouponEntity implements Serializable{
 	private BigDecimal threshholdLow;//查询时添加条件 and threshhold>=threshholdLow
 	private BigDecimal threshholdHigh;//查询时添加条件 and threshhold<=threshholdHigh
 	
-	private boolean validTime;//当前时间是否在有效期内
+	private boolean validTime;//true ->查询有效期内 false不起效
 	private boolean needUsed;//查询时是否需要加上used这个字段的条件
 	private boolean needDelete;//查询时是否需要加上Delete这个字段的条件
 	

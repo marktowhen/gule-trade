@@ -13,4 +13,6 @@ public interface UserCashCouponDao {
 
 	boolean updateConsumeStatus(UserCashCouponEntity entity) throws Exception;
 
+	int getUnusedCouponAmount(UserCashCouponEntity entityFromBo);
+
 }

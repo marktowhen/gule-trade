@@ -32,6 +32,15 @@ public class UserCashCouponController {
 	@Autowired
 	private ICashCouponService cashCouponService;
 	
+	/**
+	 * 用户未使用的现金券
+	 * @param uid
+	 * @param vo
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
 	public Result getUserCashCoupon(@PathVariable String uid,UserCashCouponVO vo, Page page)
@@ -47,6 +56,24 @@ public class UserCashCouponController {
 		return Result.ok(userCashCouponService.getUnusedCoupon(boFromVo, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
+	}
+	
+	/**
+	 * 用户未使用的现金券数量
+	 * @param uid
+	 * @param vo
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/amount",method=RequestMethod.GET)
+	public Result getUserCashCouponAmount(HttpServletRequest request, UserCashCouponVO vo)
+		throws Exception{
+		UserCashCoupon boFromVo = getBoFromVo(vo);
+		boFromVo.setUID(ServletBox.getLoginUID(request));
+		return Result.ok(userCashCouponService.getUnusedCouponAmount(boFromVo));
 	}
 	/**
 	 * 激活一张未使用的卡

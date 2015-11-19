@@ -96,10 +96,10 @@
 			and m.receive_uid=#{receiveUID}
 		</if>	
 		<if test="title!=null and title!='' ">
-			and m.title=#{title}
+			and m.title like  concat ('%' ,#{title} ,'%')
 		</if>	
 		<if test="content!=null and content!='' ">
-			and m.content like '%' || #{content} ||'%'
+			and m.content like  concat ('%' , #{content} ,'%')
 		</if>	
 		<if test="type!=null and type!='' ">
 			and m.type=#{type}

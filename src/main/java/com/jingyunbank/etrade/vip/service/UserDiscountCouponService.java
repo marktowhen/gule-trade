@@ -50,6 +50,11 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 	}
 	
 	@Override
+	public int getUnusedCouponAmount(UserDiscountCoupon bo) {
+		return userDiscountCouponDao.getUnusedCouponAmount(getEntityFromBo(bo));
+	}
+	
+	@Override
 	public List<UserDiscountCoupon> getUnusedCoupon(UserDiscountCoupon bo,
 			Range range) {
 		UserDiscountCouponEntity entity = getEntityFromBo(bo);
@@ -111,5 +116,7 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 		}
 		return null;
 	}
+
+	
 
 }

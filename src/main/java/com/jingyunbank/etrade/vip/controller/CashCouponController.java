@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Page;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
@@ -77,6 +80,7 @@ public class CashCouponController {
 			return Result.fail("有效期限设置错误");
 		}
 		vo.setID(KeyGen.uuid());
+		vo.setCode(String.valueOf(UniqueSequence.next18()));
 		Users manager = new Users();
 		manager.setID(ServletBox.getLoginUID(request));
 		cashCouponService.save(getBoFromVo(vo), manager);
@@ -116,6 +120,43 @@ public class CashCouponController {
 		}
 		return Result.fail("未知错误");
 	}
+	
+	/**
+	 * 列表查询
+	 * @param vo
+	 * @param page
+	 * @return
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/list", method=RequestMethod.GET)
+	public Result getList(CashCouponVO vo, Page page){
+		Range range = null;
+		if(page!=null){
+			range = new Range();
+			range.setFrom(page.getOffset());
+			range.setTo(page.getOffset()+page.getSize());
+		}
+		return Result.ok(cashCouponService.listAll(getBoFromVo(vo), range)
+		 	.stream().map( bo ->{
+		 		return getVoFromBo(bo);
+		 	}).collect(Collectors.toList()));
+	}
+	
+	/**
+	 * 查询数量
+	 * @param vo
+	 * @param page
+	 * @return
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/amount", method=RequestMethod.GET)
+	public Result getAmount(CashCouponVO vo){
+		return Result.ok(cashCouponService.getAmount(getBoFromVo(vo)));
+	}
+	
+	
 	
 	private CashCoupon getBoFromVo(CashCouponVO vo){
 		if(vo!=null){

@@ -27,4 +27,13 @@ public interface CashCouponDao {
 	 * 2015年11月16日 qxs
 	 */
 	public boolean updateUsedStatus(CashCouponEntity entity) throws Exception;
+
+
+	/**
+	 * 查询数量
+	 * @param entityFromBo
+	 * @return
+	 * 2015年11月19日 qxs
+	 */
+	public int selectAmount(CashCouponEntity entity);
 }

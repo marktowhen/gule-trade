@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Page;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -78,6 +81,7 @@ public class DiscountCouponController {
 		vo.setID(KeyGen.uuid());
 		Users manager = new Users();
 		manager.setID(ServletBox.getLoginUID(request));
+		vo.setCode(String.valueOf(UniqueSequence.next18()));
 		discountCouponService.save(getBoFromVo(vo), manager);
 		return Result.ok();
 	}
@@ -115,12 +119,53 @@ public class DiscountCouponController {
 		return Result.fail("未知错误");
 	}
 	
-	
+	/**
+	 * 列表查询
+	 * @param vo
+	 * @param page
+	 * @return
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/list", method=RequestMethod.GET)
+	public Result getList(DiscountCouponVO vo, Page page){
+		Range range = null;
+		if(page!=null){
+			range = new Range();
+			range.setFrom(page.getOffset());
+			range.setTo(page.getOffset()+page.getSize());
+		}
+		return Result.ok(discountCouponService.listAll(getBoFromVo(vo), range)
+		 	.stream().map( bo ->{
+		 		return getVoFromBo(bo);
+		 	}).collect(Collectors.toList()));
+	}
+	/**
+	 * 查询数量
+	 * @param vo
+	 * @param page
+	 * @return
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/amount", method=RequestMethod.GET)
+	public Result getAmount(DiscountCouponVO vo){
+		return Result.ok(discountCouponService.getAmount(getBoFromVo(vo)));
+	}
 	private DiscountCoupon getBoFromVo(DiscountCouponVO vo) {
 		if(vo!=null){
 			DiscountCoupon bo = new DiscountCoupon();
 			BeanUtils.copyProperties(vo, bo);
 			return bo;
+		}
+		return null;
+	}
+	
+	private DiscountCouponVO getVoFromBo(DiscountCoupon bo){
+		if(bo!=null){
+			DiscountCouponVO vo = new DiscountCouponVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
 		}
 		return null;
 	}

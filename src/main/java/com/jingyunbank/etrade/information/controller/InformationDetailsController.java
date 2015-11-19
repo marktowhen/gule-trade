@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.advice.controller;
+package com.jingyunbank.etrade.information.controller;
 
 import java.util.Date;
 import java.util.Optional;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.advice.bean.AdviceDetailsVO;
-import com.jingyunbank.etrade.api.advice.bo.AdviceDetails;
-import com.jingyunbank.etrade.api.advice.service.IAdviceDetailsService;
+import com.jingyunbank.etrade.api.information.bo.InformationDetails;
+import com.jingyunbank.etrade.api.information.service.IInformationDetailsService;
+import com.jingyunbank.etrade.information.bean.InformationDetailsVO;
 @Controller
-public class AdviceDetailsController {
+public class InformationDetailsController {
 	@Autowired
-	private IAdviceDetailsService adviceDetailsService;
+	private IInformationDetailsService informationDetailsService;
 	/**
 	 * 保存相应的多个内容
 	 * @param request
@@ -32,17 +32,17 @@ public class AdviceDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/advice/savedetails",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/information/savedetails",method=RequestMethod.PUT)
 	@ResponseBody
-	public Result saveDetails(HttpServletRequest request,HttpSession session,AdviceDetailsVO adviceDetailsVO) throws Exception{
+	public Result saveDetails(HttpServletRequest request,HttpSession session,InformationDetailsVO informationDetailsVO) throws Exception{
 		
 		
-		AdviceDetails adviceDetails=new AdviceDetails();
-		adviceDetailsVO.setID(KeyGen.uuid());;
-		adviceDetailsVO.setPublish(new Date());
-		BeanUtils.copyProperties(adviceDetailsVO, adviceDetails);
-		if(adviceDetailsService.save(adviceDetails)){
-			return Result.ok(adviceDetailsVO);
+		InformationDetails informationDetails=new InformationDetails();
+		informationDetailsVO.setID(KeyGen.uuid());;
+		informationDetailsVO.setPublish(new Date());
+		BeanUtils.copyProperties(informationDetailsVO, informationDetails);
+		if(informationDetailsService.save(informationDetails)){
+			return Result.ok(informationDetailsVO);
 		}
 		return Result.fail("保存失败");
 	}
@@ -53,10 +53,10 @@ public class AdviceDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/delete/{id}",method=RequestMethod.DELETE)
+	@RequestMapping(value="/api/information/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
 	public Result deleteDetails(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
-		adviceDetailsService.remove(id);
+		informationDetailsService.remove(id);
 		return Result.ok("删除成功");
 		
 	}
@@ -68,13 +68,13 @@ public class AdviceDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/advice/update",method=RequestMethod.POST)
+	@RequestMapping(value="/api/information/update",method=RequestMethod.POST)
 	@ResponseBody
-	public Result updateDetsils(AdviceDetailsVO adviceDetailsVO,HttpServletRequest request,HttpSession session) throws Exception{
-		AdviceDetails adviceDetails=new AdviceDetails();
-		BeanUtils.copyProperties(adviceDetailsVO, adviceDetails);
-		if(adviceDetailsService.refresh(adviceDetails)){
-			return Result.ok(adviceDetailsVO);
+	public Result updateDetsils(InformationDetailsVO informationDetailsVO,HttpServletRequest request,HttpSession session) throws Exception{
+		InformationDetails informationDetails=new InformationDetails();
+		BeanUtils.copyProperties(informationDetailsVO, informationDetails);
+		if(informationDetailsService.refresh(informationDetails)){
+			return Result.ok(informationDetailsVO);
 		}
 		return Result.fail("修改失败");
 		
@@ -86,12 +86,12 @@ public class AdviceDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/details/{sid}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/information/details/{sid}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectDetailBySid(@PathVariable String sid,HttpServletRequest request,HttpSession session) throws Exception{
-		return Result.ok(adviceDetailsService.getDeailsBySiteid(sid)
+		return Result.ok(informationDetailsService.getDeailsBySiteid(sid)
 			.stream().map(bo -> {
-			AdviceDetailsVO vo=new AdviceDetailsVO();
+			InformationDetailsVO vo=new InformationDetailsVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList()));
@@ -102,12 +102,12 @@ public class AdviceDetailsController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/api/advice/detail/{id}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/information/detail/{id}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectDetailByid(@PathVariable String id) throws Exception{
-	Optional<AdviceDetails> oadviceDetails=adviceDetailsService.getDetailByid(id);
-	AdviceDetails adviceDetails=oadviceDetails.get();
-	AdviceDetailsVO adviceDetailsVO=new AdviceDetailsVO();
+	Optional<InformationDetails> informationDetails=informationDetailsService.getDetailByid(id);
+	InformationDetails adviceDetails=informationDetails.get();
+	InformationDetailsVO adviceDetailsVO=new InformationDetailsVO();
 	BeanUtils.copyProperties(adviceDetails, adviceDetailsVO);
 		return Result.ok(adviceDetailsVO);
 	}

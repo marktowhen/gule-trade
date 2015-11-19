@@ -28,7 +28,7 @@ public class CommentsControllerTest extends TestCaseBase{
 				 	.param("GID", "3")
 				 	.param("ImgID", "7")
 				 	.param("goodsComment", "挺好")
-				 	.param("commentGrade", "1")
+				 	.param("commentGrade", "1")//级别应该是自动生成的
 				 	.param("goodsService", "挺好的")
 				 	.param("serviceGrade", "1")
 				 	.param("replyUID", "21")

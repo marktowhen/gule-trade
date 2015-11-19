@@ -73,5 +73,26 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		}
 		
 		
+		/**
+		 * 查询数量
+		 * @throws Exception
+		 * 2015年11月17日 qxs
+		 */
+		@Test
+		public void testGetAmount() throws Exception{
+			getMockMvc().perform(
+					 get("/api/user-cashcoupon/amount")
+					.param("cashCoupon.threshholdLow", "1")
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
+		
+		
 
 }

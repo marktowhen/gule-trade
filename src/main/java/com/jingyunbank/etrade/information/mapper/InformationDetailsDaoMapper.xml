@@ -2,8 +2,8 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-	<mapper namespace="com.jingyunbank.etrade.advice.dao.AdviceDetailsDao">
-		<resultMap type="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity" id="AdviceDetailsResultMap">
+	<mapper namespace="com.jingyunbank.etrade.information.dao.InformationDetailsDao">
+		<resultMap type="com.jingyunbank.etrade.information.entity.InformationDetailsEntity" id="InformationDetailsResultMap">
 			<id column="id" property="ID"/>
 			<result column="sid" property="SID"/>
 			<result column="name" property="name"/>
@@ -18,8 +18,8 @@
 		id,sid,name,title,content,publish,addtime,status,orders
 	</sql>
 	<!-- 增加详情内容 -->
-		<insert id="insert" parameterType="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity">
-			insert into advice_details(
+		<insert id="insert" parameterType="com.jingyunbank.etrade.information.entity.InformationDetailsEntity">
+			insert into information_details(
 				id,sid,name,title,content,publish,addtime,status,orders
 			)values(
 				#{ID},#{SID},#{name},#{title},#{content},#{publish},#{addtime},#{status},#{orders}
@@ -27,11 +27,11 @@
 		</insert>
 		<!-- 通过id删除对应的信息 -->
 		<delete id="delete" parameterType="String">
-			delete from advice_details where id=#{ID}	
+			delete from information_details where id=#{ID}	
 		</delete>
 		<!-- 通过id修改对应属性的值 -->
-		<update id="update" parameterType="com.jingyunbank.etrade.advice.entity.AdviceDetailsEntity">
-			update advice_details a 
+		<update id="update" parameterType="com.jingyunbank.etrade.information.entity.InformationDetailsEntity">
+			update information_details a 
 			set 
 			
 			<if test="SID!=null and SID!=''">
@@ -62,16 +62,16 @@
 			where a.id=#{ID}
 		</update>
 		<!-- 通过sid查出对应多个详情内容 -->
-		<select id="selectDetailsBySid" parameterType="String" resultMap="AdviceDetailsResultMap">
+		<select id="selectDetailsBySid" parameterType="String" resultMap="InformationDetailsResultMap">
 			select <include refid="details_list"></include>
-			from advice_details where
+			from information_details where
 			sid=#{SID}
 			order by orders desc,publish desc
 		</select>
 		<!-- 通过id查出每一条信息的详细内容啊 -->
-		<select id="selectDetailByid" parameterType="String" resultMap="AdviceDetailsResultMap">
+		<select id="selectDetailByid" parameterType="String" resultMap="InformationDetailsResultMap">
 			select <include refid="details_list"></include>
-			from advice_details where
+			from information_details where
 			id=#{ID}
 		</select>
 	</mapper>

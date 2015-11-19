@@ -1,8 +1,8 @@
-package com.jingyunbank.etrade.advice.entity;
+package com.jingyunbank.etrade.information.entity;
 
 import java.util.Date;
 
-public class AdviceDetailsEntity {
+public class InformationDetailsEntity {
 	
 	private String ID;
 	private String SID;

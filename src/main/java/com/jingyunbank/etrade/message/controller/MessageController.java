@@ -115,6 +115,9 @@ public class MessageController {
 		BeanUtils.copyProperties(messageVO, message);
 		message.setNeedReadStatus(needReadStatus);
 		message.setReceiveUID(ServletBox.getLoginUID(request));
+		if(message.getStatus()==0){
+			message.setStatus(IInboxService.STATUS_SUC);
+		}
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getOffset()+page.getSize());
@@ -139,6 +142,9 @@ public class MessageController {
 			, HttpServletRequest request) throws Exception{
 		Message message = new  Message();
 		BeanUtils.copyProperties(messageVO, message);
+		if(message.getStatus()==0){
+			message.setStatus(IInboxService.STATUS_SUC);
+		}
 		message.setNeedReadStatus(needReadStatus);
 		message.setReceiveUID(ServletBox.getLoginUID(request));
 		return Result.ok( inboxService.getAmount(message));
@@ -170,10 +176,10 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.POST)
-	public Result readMessage(@PathVariable String id, MessageVO messageVO, HttpServletRequest request) throws Exception{
+	public Result readMessage(@PathVariable String id, boolean hasRead, HttpServletRequest request) throws Exception{
 		Message message = new Message();
-		BeanUtils.copyProperties(messageVO, message);
 		message.setReceiveUID(ServletBox.getLoginUID(request));
+		message.setHasRead(hasRead);
 		inboxService.refreshReadStatus(id.split(","), message);
 		return Result.ok();
 	}

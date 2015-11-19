@@ -145,4 +145,9 @@ public class CashCouponService implements ICashCouponService{
 			throw new DataRefreshingException(e);
 		}
 	}
+
+	@Override
+	public int getAmount(CashCoupon cashCoupon) {
+		return cashCouponDao.selectAmount(getEntityFromBo(cashCoupon));
+	}
 }

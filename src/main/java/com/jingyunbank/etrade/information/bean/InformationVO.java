@@ -1,6 +1,6 @@
-package com.jingyunbank.etrade.advice.bean;
+package com.jingyunbank.etrade.information.bean;
 
-public class AdviceSiteVO {
+public class InformationVO {
 	private String ID;
 	private String SiteID;
 	private String name;
@@ -22,6 +22,5 @@ public class AdviceSiteVO {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	
+	} 
 }

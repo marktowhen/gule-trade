@@ -143,6 +143,11 @@ public class DiscountCouponService implements IDiscountCouponService{
 		}
 		return null;
 	}
+
+	@Override
+	public int getAmount(DiscountCoupon cashCoupon) {
+		return discountCouponDao.selectAmount(getEntityFromBo(cashCoupon));
+	}
 	
 
 }

@@ -108,9 +108,9 @@ public class GoodsOperationController {
 		operation.setGoodsImg(img);
 		// ------------------------------------
 		if (goodsOperationService.save(operation)) {
-			return Result.ok("添加商品成功!");
+			return Result.ok("success");
 		} else {
-			return Result.fail("添加商品失败!");
+			return Result.fail("fail");
 		}
 	}
 
@@ -121,7 +121,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{gid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{gid}", method = RequestMethod.GET)
 	public Result queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsVO vo = null;
 		Optional<ShowGoods> showbo = goodsOperationService.singleById(gid);
@@ -177,9 +177,9 @@ public class GoodsOperationController {
 		operation.setGoodsImg(img);
 		// ------------------------------------
 		if (goodsOperationService.refreshGoods(operation)) {
-			return Result.ok("修改商品成功!");
+			return Result.ok("success");
 		} else {
-			return Result.fail("修改商品失败!");
+			return Result.fail("fail");
 		}
 	}
 
@@ -192,9 +192,9 @@ public class GoodsOperationController {
 	@RequestMapping(value = "/up/{gid}", method = RequestMethod.POST)
 	public Result goodsUp(@PathVariable String gid) throws Exception {
 		if(goodsOperationService.refreshGoodsUp(gid)){
-			return Result.ok("上架成功!");
+			return Result.ok("success");
 		}
-		return Result.fail("上架失败!");
+		return Result.fail("fail");
 
 	}
 	/**
@@ -206,9 +206,9 @@ public class GoodsOperationController {
 	@RequestMapping(value = "/down/{gid}", method = RequestMethod.POST)
 	public Result goodsDown(@PathVariable String gid) throws Exception {
 		if(goodsOperationService.refreshGoodsDown(gid)){
-			return Result.ok("下架成功!");
+			return Result.ok("success");
 		}
-		return Result.fail("下架失败!");
+		return Result.fail("fail");
 
 	}
 	/**

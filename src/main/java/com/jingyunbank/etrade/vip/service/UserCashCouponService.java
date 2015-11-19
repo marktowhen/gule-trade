@@ -60,8 +60,14 @@ public class UserCashCouponService  implements IUserCashCouponService {
 			entity.setSize(range.getTo()-range.getFrom());
 		}
 		return userCashCouponDao.getUnusedCoupon(entity)
-			.stream().map( entityResul ->{return getEntityFromBo(entityResul);})
+			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
+	}
+	
+	@Override
+	public int getUnusedCouponAmount(UserCashCoupon bo) {
+		
+		return userCashCouponDao.getUnusedCouponAmount(getEntityFromBo(bo));
 	}
 	
 	private boolean save(UserCashCoupon userCashCoupon) throws DataSavingException{
@@ -100,7 +106,7 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		
 	}
 	
-	private UserCashCoupon getEntityFromBo(UserCashCouponEntity entity){
+	private UserCashCoupon getBoFromEntity(UserCashCouponEntity entity){
 		if(entity!=null){
 			UserCashCoupon bo = new UserCashCoupon();
 			BeanUtils.copyProperties(entity, bo);
@@ -113,6 +119,8 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		}
 		return null;
 	}
+
+	
 
 	
 
