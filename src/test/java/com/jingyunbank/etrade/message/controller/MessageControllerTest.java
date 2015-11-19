@@ -28,7 +28,7 @@ public class MessageControllerTest extends TestCaseBase{
 				put("/api/message/")
 				.param("title", "测试")
 				.param("content", "真帅")
-				.param("receiveUID", "1,1,1,1,1,")
+				.param("receiveUID", "1")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))

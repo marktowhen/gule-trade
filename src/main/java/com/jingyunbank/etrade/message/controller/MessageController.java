@@ -62,7 +62,7 @@ public class MessageController {
 		messageVO.setAddip(EtradeUtil.getIpAddr(request));
 		messageVO.setSentUID(ServletBox.getLoginUID(request));
 		messageVO.setStatus(IMessageService.STATUS_SUC);
-		messageVO.setTitle(IMessageService.TYPE_LETTER);
+		messageVO.setType(IMessageService.TYPE_LETTER);
 		List<Message> listMsg = new ArrayList<Message>();
 		for (int i = 0; i < receiveUids.length; i++) {
 			Message message = new Message();

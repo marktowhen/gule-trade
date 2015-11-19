@@ -28,12 +28,12 @@
 	</sql>
 	
 	<insert id="insert" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
-		insert into message m (<include refid="column_list"/>)
+		insert into message (id,sent_uid,receive_uid,title,content,type,status,addtime,addip,has_read)
 		values(#{ID},#{sentUID},#{receiveUID},#{title},#{content},#{type},#{status},now(),#{addip},#{hasRead})
 	</insert>
 	
 	<insert id="insertMulti">
-		insert into message m(<include refid="column_list"/>)
+		insert into message (id,sent_uid,receive_uid,title,content,type,status,addtime,addip,has_read)
 		values
 		<foreach collection="messages" item="item"   open="" close="" separator=",">
 			(#{item.ID},#{item.sentUID},#{item.receiveUID},#{item.title},#{item.content},#{item.type},#{item.status},now(),#{item.addip},#{item.hasRead})
