@@ -385,26 +385,26 @@ public class UserController {
 	@RequestMapping(value="/logout",method=RequestMethod.GET)
 	public Result logout(HttpSession session){
 		session.invalidate();
-		return Result.ok();
+		return Result.ok("成功");
 	}
 	
 	/**
 	 * 根据用户名/手机/邮箱查询用户信息
 	 * @param request
 	 * @param session
-	 * @param loginfo 用户名/手机/邮箱
+	 * @param key 用户名/手机/邮箱
 	 * 
 	 * @return
 	 * qxs
 	 */
 	@RequestMapping(value="/query",method=RequestMethod.GET)
-	public Result query(HttpServletRequest request, HttpSession session,String loginfo  ){
+	public Result query(HttpServletRequest request, HttpSession session,String key  ){
 		//1、参数校验
-		if(StringUtils.isEmpty(loginfo)){
+		if(StringUtils.isEmpty(key)){
 			return Result.fail("请输入用户名/手机/邮箱");
 		}
 		//2、根据用户名/手机号/邮箱查询用户信息
-		Optional<Users> usersOptional =  userService.getByKey(loginfo);
+		Optional<Users> usersOptional =  userService.getByKey(key);
 		//是否存在该用户
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
@@ -591,6 +591,7 @@ public class UserController {
 	 * @throws Exception
 	 * 2015年11月11日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/smsMessage",method=RequestMethod.GET)
 	public Result sendCodeToRegistMobile(HttpServletRequest request) throws Exception{
 		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
@@ -618,17 +619,11 @@ public class UserController {
 	 * @return
 	 * 2015年11月11日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/email-link",method=RequestMethod.GET)
 	public Result checkCodeAndSendEamil(HttpServletRequest request, String code, String email){
 		if(!checkCaptcha(request.getSession(), code)){
 			return Result.fail("验证码错误");
-		}
-		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
-		if(!userOption.isPresent()){
-			return Result.fail("请登录");
-		}
-		if(userService.getByEmail(email).isPresent()){
-			return Result.fail("该邮箱已被使用");
 		}
 		if(StringUtils.isEmpty(email)){
 			return Result.fail("邮箱地址不能为空");
@@ -636,6 +631,10 @@ public class UserController {
 		Pattern p = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
 		if(!p.matcher(email).matches()){
 			return Result.fail("邮箱格式错误");
+		}
+		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		if(userService.getByEmail(email).isPresent()){
+			return Result.fail("该邮箱已被使用");
 		}
 		return sendLinkToEmail(request,userOption.get(), email);
 	}
@@ -748,6 +747,7 @@ public class UserController {
 	 * @return
 	 * 2015年11月10日 qxs
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/email-message",method=RequestMethod.GET)
 	public Result sendCodeToEmail(HttpServletRequest request) {
 		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
@@ -844,6 +844,7 @@ public class UserController {
 	//------------------------------qxs 验证手机  end-----------------------------------------------
   
 	//-------------------------------头像上传 start-----------------------------------
+	@AuthBeforeOperation
 	@RequestMapping(value="/picture",method=RequestMethod.POST)
 	public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws  Exception{
 		String path = SystemConfigProperties.getString(SystemConfigProperties.ROOT_FILE_PATH);

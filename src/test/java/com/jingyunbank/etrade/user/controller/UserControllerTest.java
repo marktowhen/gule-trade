@@ -409,6 +409,24 @@ public class UserControllerTest extends TestCaseBase {
 	}
 	
 	
-
+	/**
+	 * 测试根据key查询用户
+	 * @throws Exception
+	 */
+	@Test
+	public void testQuery() throws Exception{
+		getMockMvc().perform(
+				get("/api/user/query")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.param("key", "15853161111")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andExpect(jsonPath("$.code").value("200"))
+				.andReturn();
+			
+	}
 	
 }
