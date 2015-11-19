@@ -27,7 +27,7 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.message.bo.Message;
-import com.jingyunbank.etrade.api.message.service.IMessageService;
+import com.jingyunbank.etrade.api.message.service.IInboxService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.message.bean.MessageVO;
 
@@ -36,7 +36,7 @@ import com.jingyunbank.etrade.message.bean.MessageVO;
 public class MessageController {
 	
 	@Autowired
-	private IMessageService messageService;
+	private IInboxService inboxService;
 	
 	/**
 	 * 发送站内信
@@ -61,8 +61,8 @@ public class MessageController {
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
 		messageVO.setAddip(EtradeUtil.getIpAddr(request));
 		messageVO.setSentUID(ServletBox.getLoginUID(request));
-		messageVO.setStatus(IMessageService.STATUS_SUC);
-		messageVO.setType(IMessageService.TYPE_LETTER);
+		messageVO.setStatus(IInboxService.STATUS_SUC);
+		messageVO.setType(IInboxService.TYPE_LETTER);
 		List<Message> listMsg = new ArrayList<Message>();
 		for (int i = 0; i < receiveUids.length; i++) {
 			Message message = new Message();
@@ -71,7 +71,7 @@ public class MessageController {
 			message.setReceiveUID(receiveUids[i]);
 			listMsg.add(message);
 		}
-		messageService.save(listMsg);
+		inboxService.save(listMsg);
 		return Result.ok();
 	}
 	/**
@@ -84,12 +84,12 @@ public class MessageController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
 	public Result getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
-		Optional<Message> messageOption = messageService.getSingle(id, ServletBox.getLoginUID(request));
+		Optional<Message> messageOption = inboxService.getSingle(id, ServletBox.getLoginUID(request));
 		if(messageOption.isPresent()){
 			//如果未读则置为已读
 			if(!messageOption.get().isHasRead()){
 				messageOption.get().setHasRead(true);
-				messageService.refreshReadStatus(messageOption.get());
+				inboxService.refreshReadStatus(messageOption.get());
 			}
 			
 			return Result.ok(copyBoToVo(messageOption.get(), new MessageVO()));
@@ -118,7 +118,7 @@ public class MessageController {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getOffset()+page.getSize());
-		return Result.ok( messageService.list(message, range)
+		return Result.ok( inboxService.list(message, range)
 				.stream().map(bo ->{
 					return copyBoToVo(bo, new MessageVO());
 				}).collect(Collectors.toList()));
@@ -141,7 +141,7 @@ public class MessageController {
 		BeanUtils.copyProperties(messageVO, message);
 		message.setNeedReadStatus(needReadStatus);
 		message.setReceiveUID(ServletBox.getLoginUID(request));
-		return Result.ok( messageService.getAmount(message));
+		return Result.ok( inboxService.getAmount(message));
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public class MessageController {
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result remove(@PathVariable String id, HttpServletRequest request) throws Exception{
 		
-		messageService.remove(id.split(","), ServletBox.getLoginUID(request));
+		inboxService.remove(id.split(","), ServletBox.getLoginUID(request));
 		return Result.ok();
 	}
 	
@@ -174,7 +174,7 @@ public class MessageController {
 		Message message = new Message();
 		BeanUtils.copyProperties(messageVO, message);
 		message.setReceiveUID(ServletBox.getLoginUID(request));
-		messageService.refreshReadStatus(id.split(","), message);
+		inboxService.refreshReadStatus(id.split(","), message);
 		return Result.ok();
 	}
 	
