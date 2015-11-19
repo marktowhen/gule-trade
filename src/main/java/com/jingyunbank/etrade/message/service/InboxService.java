@@ -13,12 +13,12 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.message.bo.Message;
-import com.jingyunbank.etrade.api.message.service.IMessageService;
+import com.jingyunbank.etrade.api.message.service.IInboxService;
 import com.jingyunbank.etrade.message.dao.MessageDao;
 import com.jingyunbank.etrade.message.entity.MessageEntity;
 
-@Service("messageService")
-public class MessageService implements IMessageService {
+@Service("inboxService")
+public class InboxService implements IInboxService {
 
 	@Autowired
 	private MessageDao messageDao;
