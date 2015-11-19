@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
@@ -28,6 +30,7 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	@Autowired
 	private ICashCouponService cashCouponService;
 
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public boolean active(String code, String UID) throws DataRefreshingException, DataSavingException {
 		CashCoupon cashCoupon = new CashCoupon();
