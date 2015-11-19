@@ -1,6 +1,7 @@
-package com.jingyunbank.etrade.advice.entity;
+package com.jingyunbank.etrade.information.entity;
 
-public class AdviceSiteEntity {
+public class InformationEntity {
+	
 	private String ID;
 	private String SiteID;
 	private String name;
@@ -22,5 +23,6 @@ public class AdviceSiteEntity {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
+	} 
+	
 }

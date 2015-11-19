@@ -1,8 +1,8 @@
-package com.jingyunbank.etrade.advice.bean;
+package com.jingyunbank.etrade.information.bean;
 
 import java.util.Date;
 
-public class AdviceDetailsVO {
+public class InformationDetailsVO {
 	
 	private String ID;
 	private String SID;

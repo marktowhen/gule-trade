@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.advice.controller;
+package com.jingyunbank.etrade.information.controller;
 
 import java.util.stream.Collectors;
 
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.advice.bean.AdviceSiteVO;
-import com.jingyunbank.etrade.api.advice.bo.AdviceSite;
-import com.jingyunbank.etrade.api.advice.service.IAdviceSiteService;
+import com.jingyunbank.etrade.api.information.bo.InformationSite;
+import com.jingyunbank.etrade.api.information.service.IInformationSiteService;
+import com.jingyunbank.etrade.information.bean.InformationSiteVO;
 
 @Controller
-public class AdviceSiteController {
+public class InformationSiteController {
 	@Autowired
-	private IAdviceSiteService adviceSiteService;
+	private IInformationSiteService informationSiteService;
 	
 	/**
 	 * 插入到advice_site表中的多个标题
@@ -35,12 +35,12 @@ public class AdviceSiteController {
 	
 	@RequestMapping(value="/api/advice/site",method=RequestMethod.PUT)
 	@ResponseBody
-	public Result saveSite(AdviceSiteVO adviceSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
-		adviceSiteVO.setID(KeyGen.uuid());;
-		AdviceSite adviceSite=new AdviceSite();
-		BeanUtils.copyProperties(adviceSiteVO, adviceSite);
-		if(adviceSiteService.save(adviceSite)){
-			return Result.ok(adviceSiteVO);
+	public Result saveSite(InformationSiteVO informationSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
+		informationSiteVO.setID(KeyGen.uuid());;
+		InformationSite adviceSite=new InformationSite();
+		BeanUtils.copyProperties(informationSiteVO, adviceSite);
+		if(informationSiteService.save(adviceSite)){
+			return Result.ok(informationSiteVO);
 		}
 		return Result.fail("保存失败");
 		
@@ -55,10 +55,10 @@ public class AdviceSiteController {
 	@RequestMapping(value="/api/advice/sites/{siteid}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session) throws Exception{
-		return Result.ok(adviceSiteService.getSitesBySiteid(siteid).stream().map(bo ->{
-			AdviceSiteVO adviceSiteVO=new AdviceSiteVO();
-			BeanUtils.copyProperties(bo, adviceSiteVO);
-			return adviceSiteVO;
+		return Result.ok(informationSiteService.getSitesBySiteid(siteid).stream().map(bo ->{
+			InformationSiteVO informationSiteVO=new InformationSiteVO();
+			BeanUtils.copyProperties(bo, informationSiteVO);
+			return informationSiteVO;
 		}).collect(Collectors.toList()));
 		
 	}

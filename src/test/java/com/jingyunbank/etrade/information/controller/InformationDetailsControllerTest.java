@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.advice.controller;
+package com.jingyunbank.etrade.information.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 
 import com.jingyunbank.etrade.TestCaseBase;
 
-public class AdviceDetailsControllerTest extends TestCaseBase{
+public class InformationDetailsControllerTest extends TestCaseBase{
 	/**
 	 * 增加多个内容
 	 * @throws Exception
