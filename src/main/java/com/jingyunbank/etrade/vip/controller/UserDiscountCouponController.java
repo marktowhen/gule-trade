@@ -17,10 +17,12 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.vip.bo.DiscountCoupon;
+import com.jingyunbank.etrade.api.vip.bo.UserCashCoupon;
 import com.jingyunbank.etrade.api.vip.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
 import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
+import com.jingyunbank.etrade.vip.bean.UserCashCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserDiscountCouponVO;
 
 @RestController
@@ -57,6 +59,24 @@ public class UserDiscountCouponController {
 		return Result.ok(userDiscountCouponService.getUnusedCoupon(boFromVo, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
+	}
+	
+	/**
+	 * 用户未使用的现金券数量
+	 * @param uid
+	 * @param vo
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/amount",method=RequestMethod.GET)
+	public Result getUserCashCouponAmount(HttpServletRequest request, UserDiscountCouponVO vo)
+		throws Exception{
+		UserDiscountCoupon boFromVo = getBoFromVo(vo);
+		boFromVo.setUID(ServletBox.getLoginUID(request));
+		return Result.ok(userDiscountCouponService.getUnusedCouponAmount(boFromVo));
 	}
 	/**
 	 * 激活一张未使用的卡

@@ -302,7 +302,7 @@ public class UserControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				get("/api/user/email-link")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
-				.param("email", "627956245@qq.com")
+				.param("email", "6@qq.com")
 				.param("code", "1234")
 				.sessionAttr("session_code", "1234")
 				.contentType(MediaType.APPLICATION_JSON)

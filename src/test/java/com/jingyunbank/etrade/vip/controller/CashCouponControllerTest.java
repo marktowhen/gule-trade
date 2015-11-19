@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class CashCouponControllerTest extends TestCaseBase{
@@ -28,13 +29,15 @@ public class CashCouponControllerTest extends TestCaseBase{
 		public void testSave() throws Exception{
 			getMockMvc().perform(
 					 put("/api/cashcoupon/")
-					.param("code", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()))
+					//.param("code", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()))
 					.param("value", "1")
 					.param("start", "2015-11-16 01:02:03")
-					.param("end", "2015-11-18 13:10:90")
+					.param("end", "2016-11-18 13:10:90")
 					.param("threshhold", "1.111")
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
+						
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("200"))
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -52,6 +55,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/cashcoupon/isvalid")
 					.param("code", "20151117103601")
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -62,7 +66,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 		}
 		
 		/**
-		 * 判断卡号是否可以被激活
+		 * 删除
 		 * @throws Exception
 		 * 2015年11月16日 qxs
 		 */
@@ -71,8 +75,49 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 delete("/api/cashcoupon/")
 					.param("code", "20151117103601")
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
+		
+		/**
+		 * 列表查询
+		 * @throws Exception
+		 * 2015年11月19日 qxs
+		 */
+		@Test
+		public void testList() throws Exception{
+			getMockMvc().perform(
+					 get("/api/cashcoupon/list")
+					 .param("validTime", "true")
+					 .sessionAttr(ServletBox.LOGIN_ID, "1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
+		
+		/**
+		 * 数量查询
+		 * @throws Exception
+		 * 2015年11月19日 qxs
+		 */
+		@Test
+		public void testAmount() throws Exception{
+			getMockMvc().perform(
+					 get("/api/cashcoupon/amount")
+					 .param("validTime", "true")
+					 .sessionAttr(ServletBox.LOGIN_ID, "1")
+					 .contentType(MediaType.APPLICATION_JSON)
+					 .accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("200"))
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))

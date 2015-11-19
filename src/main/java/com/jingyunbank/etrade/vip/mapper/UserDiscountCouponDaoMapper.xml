@@ -53,6 +53,25 @@
 				</if>
 	</select>
 	
+	<!-- 用户可使用的券数量 -->
+	<select id="getUnusedCouponAmount" resultType="int">
+		select count(1) from
+			 user_discount_coupon u , discount_coupon c
+			where u.coupon_id = c.id
+				and u.uid=#{UID}
+				and c.del=false
+				and c.used=true
+				and u.consumed=false
+				and now() BETWEEN c.`start` and c.`end`
+				<if test="discountCouponEntity != null">
+					<if test="discountCouponEntity.threshholdHigh!=null">
+					and c.threshhold &lt;=#{discountCouponEntity.threshholdHigh}
+					</if>
+					<if test="discountCouponEntity.threshholdLow!=null">
+					and c.threshhold &gt;=#{discountCouponEntity.threshholdLow}
+					</if>
+				</if>
+	</select>
 	
 	<update id="updateConsumeStatus">
 		update user_discount_coupon 

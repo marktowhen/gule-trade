@@ -26,7 +26,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		public void testSave() throws Exception{
 			getMockMvc().perform(
 					 put("/api/user-discountcoupon/")
-					.param("code", "20151117112038")
+					.param("code", "20151117161936")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
@@ -71,6 +71,28 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 				.andDo(MockMvcResultHandlers.print())
 				.andDo(print());
 		}
+		
+		
+		/**
+		 * 查询数量
+		 * @throws Exception
+		 * 2015年11月17日 qxs
+		 */
+		@Test
+		public void testGetAmount() throws Exception{
+			getMockMvc().perform(
+					 get("/api/user-discountcoupon/amount")
+					//.param("cashCoupon.threshholdLow", "1")
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
+		
 		
 		
 

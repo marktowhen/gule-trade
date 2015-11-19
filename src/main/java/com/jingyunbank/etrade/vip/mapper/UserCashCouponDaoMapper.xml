@@ -51,8 +51,26 @@
 				LIMIT offset,size
 				</if>
 	</select>
-	
-	
+	<!-- 用户可使用的券数量 -->
+	<select id="getUnusedCouponAmount" resultType="int">
+		select count(1) from  
+				user_cash_coupon u , cash_coupon c
+			where u.coupon_id = c.id
+				and u.uid=#{UID}
+				and c.del=false
+				and c.used=true
+				and u.consumed=false
+				and now() BETWEEN c.`start` and c.`end`
+				<if test="cashCoupon != null">
+					<if test="cashCoupon.threshholdHigh!=null">
+					and c.threshhold &lt;=#{cashCoupon.threshholdHigh}
+					</if>
+					<if test="cashCoupon.threshholdLow!=null">
+					and c.threshhold &gt;=#{cashCoupon.threshholdLow}
+					</if>
+				</if>
+	</select>
+	<!-- 将消费状态置为true 并更新订单号 -->
 	<update id="updateConsumeStatus">
 		update user_cash_coupon 
 		 set oid = #{OID},

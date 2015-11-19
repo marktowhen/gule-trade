@@ -22,6 +22,28 @@ public class BaseCouponVO implements Serializable{
 	private BigDecimal threshholdLow;//查询时添加条件 and threshhold>=threshholdLow
 	private BigDecimal threshholdHigh;//查询时添加条件 and threshhold<=threshholdHigh
 	
+	private boolean validTime;//true ->查询有效期内 false不起效
+	private boolean needUsed;//查询时是否需要加上used这个字段的条件
+	private boolean needDelete;//查询时是否需要加上Delete这个字段的条件
+	
+	public boolean isValidTime() {
+		return validTime;
+	}
+	public void setValidTime(boolean validTime) {
+		this.validTime = validTime;
+	}
+	public boolean isNeedUsed() {
+		return needUsed;
+	}
+	public void setNeedUsed(boolean needUsed) {
+		this.needUsed = needUsed;
+	}
+	public boolean isNeedDelete() {
+		return needDelete;
+	}
+	public void setNeedDelete(boolean needDelete) {
+		this.needDelete = needDelete;
+	}
 	public Date getAddtimeStart() {
 		return addtimeStart;
 	}
