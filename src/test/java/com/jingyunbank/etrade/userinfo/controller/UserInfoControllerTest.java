@@ -85,7 +85,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test2() throws Exception{
 			getMockMvc().perform(
 					 get("/api/userinfo/IoBST6elTCarSyzl6Z277g")
-					 .sessionAttr(ServletBox.LOGIN_ID, "R_r90WHXQSKnG6b82jr6NA")
+					 .sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
