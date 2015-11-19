@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.bean;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,8 +9,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class GoodsInCartVO {
+public class GoodsInCartVO implements Serializable {
 
+	private static final long serialVersionUID = -1660039064502485211L;
 	private String ID;
 	private String cartID;
 	private Date addtime;

@@ -20,7 +20,9 @@ import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.order.bean.CartVO;
 import com.jingyunbank.etrade.order.bean.GoodsInCartVO;
+import com.jingyunbank.etrade.order.bean.OrdersInCartVO;
 
 
 public class CartControllerTest extends TestCaseBase{
@@ -133,6 +135,14 @@ public class CartControllerTest extends TestCaseBase{
 	
 	@Test
 	public void testListClearing() throws Exception{
+		CartVO cart = new CartVO();
+		OrdersInCartVO ovo = new OrdersInCartVO();
+		ovo.setMID("XXXXYYYYZZZZXXXXYYYYZZ");
+		ovo.setMname("ZXCVASDF");
+		ovo.setPrice(new BigDecimal("128.22"));
+		ovo.setPostage(new BigDecimal("12"));
+		cart.getOrders().add(ovo);
+		
 		List<GoodsInCartVO> vos = new ArrayList<GoodsInCartVO>();
 		for (int i = 0; i < 3; i++) {
 			GoodsInCartVO vo = new GoodsInCartVO();
@@ -147,9 +157,11 @@ public class CartControllerTest extends TestCaseBase{
 			vo.setPrice(new BigDecimal("1200.00"));
 			vos.add(vo);
 		}
+		ovo.getGoods().addAll(vos);
+		
 		getMockMvc().perform(
 					 get("/api/cart/clearing/list")
-					.sessionAttr(CartController.GOODS_IN_CART_TO_CLEARING, vos)
+					.sessionAttr(CartController.GOODS_IN_CART_TO_CLEARING, cart)
 					.sessionAttr(ServletBox.LOGIN_ID, "123321")
 					.sessionAttr(ServletBox.LOGIN_CART_ID, "123321123")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -158,7 +170,7 @@ public class CartControllerTest extends TestCaseBase{
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200"))
-				.andExpect(jsonPath("$.body[0].id").value("XXXXYYYYZZZ"))
+				//.andExpect(jsonPath("$.body[0].id").value("XXXXYYYYZZZ"))
 				.andDo(print());
 	}
 	

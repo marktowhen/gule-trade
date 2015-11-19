@@ -1,10 +1,10 @@
 package com.jingyunbank.etrade.order.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -27,7 +27,9 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.order.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.order.service.ICartService;
+import com.jingyunbank.etrade.order.bean.CartVO;
 import com.jingyunbank.etrade.order.bean.GoodsInCartVO;
+import com.jingyunbank.etrade.order.bean.OrdersInCartVO;
 
 
 @RestController
@@ -41,18 +43,38 @@ public class CartController {
 	/**
 	 *	uri : get /api/cart/goods/list
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/goods/list",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
 	public Result list(HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(session);
-		return Result.ok(cartService.listGoods(uid)
-				.stream().map(bo->{
-					GoodsInCartVO vo = new GoodsInCartVO();
-					BeanUtils.copyProperties(bo, vo);
-					return vo;
-				}).collect(Collectors.toList()));
+		List<GoodsInCart> goodsincart = cartService.listGoods("userid");
+		CartVO cart = convert(goodsincart);
+		return Result.ok(cart);
+	}
+
+	private CartVO convert(List<GoodsInCart> goodsincart) {
+		CartVO cart = new CartVO();
+		goodsincart.forEach(goods -> {
+			String mid = goods.getMID();
+			List<OrdersInCartVO> orders = cart.getOrders();
+			Optional<OrdersInCartVO> optionalOrder = orders.stream()
+									.filter(order -> {return mid.equals(order.getMID());})
+									.findAny();
+			OrdersInCartVO order = new OrdersInCartVO();
+			order.setMID(goods.getMID());
+			order.setMname(goods.getMname());
+			if(optionalOrder.isPresent()){
+				order = optionalOrder.get();
+			}else{
+				cart.getOrders().add(order);
+			}
+			GoodsInCartVO goodsVo = new GoodsInCartVO();
+			BeanUtils.copyProperties(goods, goodsVo);
+			order.getGoods().add(goodsVo);
+		});
+		return cart;
 	}
 	
 	/**
@@ -129,11 +151,11 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
-	public Result clearing(@Valid @RequestBody List<GoodsInCartVO> goods,
+	public Result clearing(@Valid @RequestBody CartVO cart,
 					BindingResult valid, HttpSession session) throws Exception{
-		session.setAttribute(GOODS_IN_CART_TO_CLEARING, goods);
+		session.setAttribute(GOODS_IN_CART_TO_CLEARING, cart);
 		return Result.ok();
 	}
 	
@@ -144,15 +166,14 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing/list", method=RequestMethod.GET)
 	public Result listClearing(HttpSession session) throws Exception{
 		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);
-		List<GoodsInCartVO> list = new ArrayList<GoodsInCartVO>();
+		CartVO cart = new CartVO();
 		if(Objects.nonNull(obj)){
-			list = (List<GoodsInCartVO>)obj;
+			cart = (CartVO)obj;
 		}
-		return Result.ok(list);
+		return Result.ok(cart);
 	}
 }
