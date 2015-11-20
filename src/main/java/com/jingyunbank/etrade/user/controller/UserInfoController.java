@@ -16,8 +16,11 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
+import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 /**
  * @author Administrator 
@@ -29,7 +32,8 @@ import com.jingyunbank.etrade.user.bean.UserInfoVO;
 public class UserInfoController {
 	@Autowired
 	private IUserInfoService userInfoService;
-	
+	@Autowired
+	private IUserService userService;
 	
 	/**
 	 * 个人资料的添加
@@ -64,6 +68,14 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
 	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid) throws Exception{
+		/*Result checkResult = null;
+		
+	
+		Optional<Users> users=userService.getByUid(uid);
+		if(users.isPresent()){
+		Users userss=users.get();
+		UserVO userVO=new UserVO();
+		BeanUtils.copyProperties(userss, userVO);*/
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		if(userinfo.isPresent()){
 		UserInfo userInfo=userinfo.get();
