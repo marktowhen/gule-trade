@@ -40,6 +40,9 @@
 	 	<!-- 通过uid修改个人资料信息 -->
 	 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
 	 		update users_info u set
+	 		<if test="picture!=null and picture!=''">
+	 			u.picture = #{picture},
+	 		</if>
 	 		u.birthday=#{birthday},
 	 		u.marriage=#{marriage},
 	 		u.gender=#{gender},

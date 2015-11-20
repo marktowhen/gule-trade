@@ -26,7 +26,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		public void testSave() throws Exception{
 			getMockMvc().perform(
 					 put("/api/user-cashcoupon/")
-					.param("code", "20151117144652")
+					.param("code", "5922969784792231886")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))

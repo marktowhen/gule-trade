@@ -67,6 +67,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 				.param("job", "5")
 				.param("income", "5")
 				.param("avatar", "rt")
+				.param("picture", "")//选填
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

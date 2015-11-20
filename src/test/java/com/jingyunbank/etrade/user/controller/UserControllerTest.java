@@ -302,7 +302,7 @@ public class UserControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				get("/api/user/email-link")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
-				.param("email", "6@qq.com")
+				.param("email", "627956245@qq.com")
 				.param("code", "1234")
 				.sessionAttr("session_code", "1234")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -387,7 +387,7 @@ public class UserControllerTest extends TestCaseBase {
 	 * 上传头像
 	 * @throws Exception
 	 */
-	@Test
+	/*@Test
 	public void testUploadFile() throws Exception{
 		String fileName = new File("").getAbsolutePath()+"/pom.xml";
 		MockMultipartFile file = new MockMultipartFile(
@@ -395,7 +395,7 @@ public class UserControllerTest extends TestCaseBase {
 				,"pom"//原文件名
 				,"xml"//扩展名
 				, new FileInputStream(new File(fileName)));
-		getMockMvc().perform(fileUpload("/api/user/picture")
+		getMockMvc().perform(fileUpload("/api/resource/upload/multiple")
 				.file(file)
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				
@@ -406,7 +406,7 @@ public class UserControllerTest extends TestCaseBase {
 				.andDo(MockMvcResultHandlers.print())  
 				.andReturn();
 			
-	}
+	}*/
 	
 	
 	/**

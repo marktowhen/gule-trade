@@ -1,6 +1,4 @@
 package com.jingyunbank.etrade.user.controller;
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +7,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -22,23 +21,20 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
-import com.jingyunbank.core.msg.MessagerManager;
-import com.jingyunbank.core.msg.sms.SmsMessage;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.message.bo.Message;
+import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
@@ -48,6 +44,10 @@ public class UserController {
 	private IUserService userService;
 	@Autowired 
   	private IUserInfoService userInfoService;
+	@Resource
+	private ISyncNotifyService emailService;
+	@Resource
+	private ISyncNotifyService smsService;
   	
 	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
 	
@@ -170,7 +170,7 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/send/message",method=RequestMethod.POST)
-	public Result chenckPhoneCode(String mobile,String code,HttpServletRequest request, HttpSession session){
+	public Result chenckPhoneCode(String mobile,String code,HttpServletRequest request, HttpSession session) throws Exception{
 		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
 			if(checkResult.isOk()){
 				return Result.ok("手机验证成功");
@@ -330,7 +330,7 @@ public class UserController {
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
 	public Result login(@Valid @RequestBody LoginUserVO user, 
-						BindingResult valid, HttpSession session){
+						BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("用户名或者密码错误！");
 		}
@@ -383,7 +383,7 @@ public class UserController {
 	 * 2015年11月11日 qxs
 	 */
 	@RequestMapping(value="/logout",method=RequestMethod.GET)
-	public Result logout(HttpSession session){
+	public Result logout(HttpSession session) throws Exception{
 		session.invalidate();
 		return Result.ok("成功");
 	}
@@ -398,7 +398,7 @@ public class UserController {
 	 * qxs
 	 */
 	@RequestMapping(value="/query",method=RequestMethod.GET)
-	public Result query(HttpServletRequest request, HttpSession session,String key  ){
+	public Result query(HttpServletRequest request, HttpSession session,String key  ) throws Exception{
 		//1、参数校验
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("请输入用户名/手机/邮箱");
@@ -479,7 +479,7 @@ public class UserController {
 	 * 2015年11月6日 qxs
 	 */
 	@RequestMapping(value="/loginuser",method=RequestMethod.GET)
-	public Result queryLoginUser(HttpServletRequest request, HttpSession session){
+	public Result queryLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
 			Optional<Users> users = userService.getByUid(id);
@@ -490,95 +490,6 @@ public class UserController {
 		return Result.fail("未登录");
 	}
 	
-	
-	/**
-	 * user bo转vo
-	 * @param users
-	 * @return
-	 * 2015年11月5日 qxs
-	 */
-	private UserVO getUserVoFromBo(Users users){
-		UserVO vo = null;
-		
-		if(users!=null){
-			vo = new UserVO();
-			BeanUtils.copyProperties(users, vo);
-		}
-		return vo;
-	}
-	
-	/**
-	 * 校验图形验证码
-	 * @param session
-	 * @param captcha
-	 * @return
-	 */
-	private boolean checkCaptcha(HttpSession session, String captcha) {
-		return true;
-	}
-	
-	/**
-	 * 获取4位随机数
-	 * @return
-	 * 2015年11月7日 qxs
-	 */
-	private String getCheckCode(){
-		return String.valueOf(Math.abs(new Random().nextInt()%10000));
-	}
-	
-	
-	
-	/**
-	 * 发送邮箱验证码,将code放入session  EMAIL_MESSAGE
-	 * @param email
-	 * @param subTitle
-	 * @param code
-	 * @param request
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	private Result sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request){
-		request.getSession().setAttribute(EMAIL_MESSAGE, code);
-		return MessagerManager.getEmailSender().send(email, subTitle, code);
-	}
-	/**
-	 * 发送手机验证码 将code放入session  SMS_MESSAGE
-	 * @param mobile
-	 * @param code
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 * 2015年11月10日 qxs
-	 */
-	private Result sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
-		request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
-		SmsMessage message = new SmsMessage();
-		message.setMobile(mobile);
-		message.setBody("您的验证码是:"+code);
-		return MessagerManager.getSmsSender().send(message);
-	}
-	/**
-	 * 验证验证码,成功后清除session
-	 * @param code
-	 * @param request
-	 * @param sessionKey 验证码在session中的name
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	private Result checkCode(String code, HttpServletRequest request, String sessionName){
-		if(StringUtils.isEmpty(code)){
-			return Result.fail("验证码不能为空");
-		}
-		String sessionCode = (String)request.getSession().getAttribute(sessionName);
-		if(StringUtils.isEmpty(sessionCode)){
-			return Result.fail("验证码未发送或已失效");
-		}
-		if(code.equals(sessionCode)){
-			request.getSession().setAttribute(sessionName, null);
-			return Result.ok();
-		}
-		return Result.fail("验证码错误");
-	}
 	
 	
 	//------------------------------qxs 验证/修改邮箱  start-----------------------------------------------
@@ -618,10 +529,11 @@ public class UserController {
 	 * @param email
 	 * @return
 	 * 2015年11月11日 qxs
+	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/email-link",method=RequestMethod.GET)
-	public Result checkCodeAndSendEamil(HttpServletRequest request, String code, String email){
+	public Result checkCodeAndSendEamil(HttpServletRequest request, String code, String email) throws Exception{
 		if(!checkCaptcha(request.getSession(), code)){
 			return Result.fail("验证码错误");
 		}
@@ -639,56 +551,7 @@ public class UserController {
 		return sendLinkToEmail(request,userOption.get(), email);
 	}
 	
-	/**
-	 * 发送绑定邮箱的链接 点击链接验证后绑定
-	 * 链接地址 http://ip(:port)?d=1&u=2&m=3
-	 * d: uid
-	 * u: email+"~"+邮件发送时间 base64编码后字符
-	 * m: uid+"_"+username MD5加密后字符串
-	 * @param request
-	 * @param email
-	 * @return
-	 */
-	private  Result sendLinkToEmail(HttpServletRequest request,Users user, String email){
-		
-		String basePath = getBasePath(request);
-		String msg1 = user.getID() + "_"
-				+ user.getUsername();
-		// MD5加密（用户id和用户名）
-		String msg1Md5 = MD5.digest(msg1);
-		// 密钥
-		String message = email + "~"
-				+ System.currentTimeMillis();
-		// 邮箱和当前时间戳进行base64编码
-		String verifyCode = new Base64().encodeAsString(message.getBytes());
-		//验证链接的地址
-		String url = basePath
-				+ "api/user/ckemail.htm?d="+ user.getID()
-				+ "&u=" + verifyCode + "&m=" + msg1Md5;
-		//编辑邮箱内容
-		StringBuffer content = new StringBuffer();
-		content.append("验证链接:"+url+"\r\n");
-		content.append("有效期:"+(EMAIL_VILAD_TIME/1000/60/60)+"小时");
-		return MessagerManager.getEmailSender().send(email, "用户验证", content.toString());
-	}
-	/**
-	 * 获取项目根目录
-	 * @param request
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	private  String getBasePath(HttpServletRequest request){
-		String basePath;
-		if (request.getServerPort() == 80) {
-			basePath = request.getScheme() + "://" + request.getServerName()
-					+ "/";
-		} else {
-			basePath = request.getScheme() + "://" + request.getServerName()
-					+ ":" + request.getServerPort() + "/";
-		}
-		
-		return basePath;
-	}
+	
 	//4、验证邮箱链接，通过后绑定邮箱
 	/**
 	 * 验证绑定邮箱的链接
@@ -746,10 +609,11 @@ public class UserController {
 	 * @param email
 	 * @return
 	 * 2015年11月10日 qxs
+	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/email-message",method=RequestMethod.GET)
-	public Result sendCodeToEmail(HttpServletRequest request) {
+	public Result sendCodeToEmail(HttpServletRequest request) throws Exception {
 		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
 		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", getCheckCode(), request);
 	}
@@ -843,29 +707,160 @@ public class UserController {
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
   
-	//-------------------------------头像上传 start-----------------------------------
-	@AuthBeforeOperation
-	@RequestMapping(value="/picture",method=RequestMethod.POST)
-	public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws  Exception{
-		String path = SystemConfigProperties.getString(SystemConfigProperties.ROOT_FILE_PATH);
-		File dir = new File(path);
-		if(!dir.exists()){
-			dir.mkdirs();
+	
+	
+	/**
+	 * user bo转vo
+	 * @param users
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	private UserVO getUserVoFromBo(Users users){
+		UserVO vo = null;
+		
+		if(users!=null){
+			vo = new UserVO();
+			BeanUtils.copyProperties(users, vo);
 		}
-		if(file.getSize()>SystemConfigProperties.getLong(SystemConfigProperties.HEAD_PICTURE_SIZE)){
-			return Result.fail("文件太大");
-		}
-		String fileName = new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date())+getCheckCode()+"."+file.getContentType();
-		File target = new File(path+fileName);
-		file.transferTo(target);
-		//修改用户信息
-		UserInfo userInfo = new UserInfo();
-		userInfo.setUID(ServletBox.getLoginUID(request));
-		userInfo.setPicture(fileName);
-		userInfoService.refreshPicture(userInfo);
-		return Result.ok();
+		return vo;
 	}
 	
-	//-------------------------------头像上传 end-------------------------------------
+	/**
+	 * 校验图形验证码
+	 * @param session
+	 * @param captcha
+	 * @return
+	 */
+	private boolean checkCaptcha(HttpSession session, String captcha) {
+		return true;
+	}
+	
+	/**
+	 * 获取4位随机数
+	 * @return
+	 * 2015年11月7日 qxs
+	 */
+	private String getCheckCode(){
+		return String.valueOf(Math.abs(new Random().nextInt()%10000));
+	}
+	
+	
+	
+	/**
+	 * 发送邮箱验证码,将code放入session  EMAIL_MESSAGE
+	 * @param email
+	 * @param subTitle
+	 * @param code
+	 * @param request
+	 * @return
+	 * 2015年11月10日 qxs
+	 * @throws Exception 
+	 */
+	private Result sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
+		request.getSession().setAttribute(EMAIL_MESSAGE, code);
+		Message message = new Message();
+		message.setTitle(subTitle);
+		message.setContent("您的验证码是:"+code);
+		message.getReceiveUser().setEmail(email);
+		emailService.inform(message);
+		return Result.ok();
+	}
+	/**
+	 * 发送手机验证码 将code放入session  SMS_MESSAGE
+	 * @param mobile
+	 * @param code
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * 2015年11月10日 qxs
+	 */
+	private Result sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
+		request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
+		Message message = new Message();
+		message.setContent("您的验证码是:"+code);
+		message.getReceiveUser().setMobile(mobile);
+		message.setTitle("");
+		smsService.inform(message);
+		return Result.ok();
+	}
+	/**
+	 * 验证验证码,成功后清除session
+	 * @param code
+	 * @param request
+	 * @param sessionKey 验证码在session中的name
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+		if(StringUtils.isEmpty(code)){
+			return Result.fail("验证码不能为空");
+		}
+		String sessionCode = (String)request.getSession().getAttribute(sessionName);
+		if(StringUtils.isEmpty(sessionCode)){
+			return Result.fail("验证码未发送或已失效");
+		}
+		if(code.equals(sessionCode)){
+			request.getSession().setAttribute(sessionName, null);
+			return Result.ok();
+		}
+		return Result.fail("验证码错误");
+	}
+	/**
+	 * 发送绑定邮箱的链接 点击链接验证后绑定
+	 * 链接地址 http://ip(:port)?d=1&u=2&m=3
+	 * d: uid
+	 * u: email+"~"+邮件发送时间 base64编码后字符
+	 * m: uid+"_"+username MD5加密后字符串
+	 * @param request
+	 * @param email
+	 * @return
+	 * @throws Exception 
+	 */
+	private  Result sendLinkToEmail(HttpServletRequest request,Users user, String email) throws Exception{
+		
+		String basePath = getBasePath(request);
+		String msg1 = user.getID() + "_"
+				+ user.getUsername();
+		// MD5加密（用户id和用户名）
+		String msg1Md5 = MD5.digest(msg1);
+		// 密钥
+		String message = email + "~"
+				+ System.currentTimeMillis();
+		// 邮箱和当前时间戳进行base64编码
+		String verifyCode = new Base64().encodeAsString(message.getBytes());
+		//验证链接的地址
+		String url = basePath
+				+ "api/user/ckemail.htm?d="+ user.getID()
+				+ "&u=" + verifyCode + "&m=" + msg1Md5;
+		//编辑邮箱内容
+		StringBuffer content = new StringBuffer();
+		content.append("验证链接:"+url+"\r\n");
+		content.append("有效期:"+(EMAIL_VILAD_TIME/1000/60/60)+"小时");
+		
+		Message emailMessage = new Message();
+		emailMessage.setTitle("用户验证");
+		emailMessage.setContent(content.toString());
+		emailMessage.getReceiveUser().setEmail(email);
+		emailService.inform(emailMessage);
+		return Result.ok();
+	}
+	/**
+	 * 获取项目根目录
+	 * @param request
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	private  String getBasePath(HttpServletRequest request){
+		String basePath;
+		if (request.getServerPort() == 80) {
+			basePath = request.getScheme() + "://" + request.getServerName()
+					+ "/";
+		} else {
+			basePath = request.getScheme() + "://" + request.getServerName()
+					+ ":" + request.getServerPort() + "/";
+		}
+		
+		return basePath;
+	}
 	
 }
