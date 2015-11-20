@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.message.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,11 +101,10 @@ public class InboxService implements IInboxService {
 	}
 
 	@Override
-	public Optional<Message> getSingle(String ID, String receiveUID) {
+	public Optional<Message> getSingle(String ID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setID(ID);
-		entity.setReceiveUID(receiveUID);
-		List<MessageEntity> list = messageDao.selectList(entity);
+		List<MessageEntity> list = messageDao.selectList(entity, 0 ,1);
 		if(list==null || list.isEmpty()){
 			return Optional.empty();
 		}
@@ -112,53 +112,16 @@ public class InboxService implements IInboxService {
 	}
 
 	@Override
-	public List<Message> list(Message message, Range range) {
-		List<Message> listResult = new ArrayList<Message>();
+	public List<Message> list(String uid, Range range) {
 		MessageEntity entity = new MessageEntity();
-		BeanUtils.copyProperties(message, entity);
-		entity.setOffset(range.getFrom());
-		entity.setSize(range.getTo()-range.getFrom());
-		List<MessageEntity> entityList = messageDao.selectList(entity);
-		entityList.forEach(resultEntity->{
-			listResult.add(copyEntityToBo(resultEntity, new Message()));
-		});
-		return listResult;
+		entity.setReceiveUID(uid);
+		entity.setStatus(STATUS_SUC);
+		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
+					.stream().map( entityResul->{
+						return copyEntityToBo(entityResul, new Message());
+					}).collect(Collectors.toList());
 	}
-
-	@Override
-	public List<Message> list(Message message) {
-		List<Message> listResult = new ArrayList<Message>();
-		MessageEntity entity = new MessageEntity();
-		BeanUtils.copyProperties(message, entity);
-		List<MessageEntity> entityList = messageDao.selectList(entity);
-		entityList.forEach(resultEntity->{
-			listResult.add(copyEntityToBo(resultEntity, new Message()));
-		});
-		return listResult;
-	}
-
-	@Override
-	public void refreshReadStatus(Message message) throws DataRefreshingException  {
-		MessageEntity entity = new MessageEntity();
-		BeanUtils.copyProperties(message, entity);
-		try {
-			messageDao.updateReadStatus(entity);
-		} catch (Exception e) {
-			throw new DataRefreshingException(e);
-		}
-	}
-
-	@Override
-	public void refreshReadStatus(String[] ids, Message message) throws DataRefreshingException  {
-		MessageEntity entity = new MessageEntity();
-		BeanUtils.copyProperties(message, entity);
-		entity.setIDs(ids);
-		try {
-			messageDao.updateReadStatus(entity);
-		} catch (Exception e) {
-			throw new DataRefreshingException(e);
-		}
-	}
+	
 	/**
 	 * 查询数量
 	 * @param message
@@ -166,11 +129,58 @@ public class InboxService implements IInboxService {
 	 * 2015年11月13日 qxs
 	 */
 	@Override
-	public int getAmount(Message message) {
+	public int getAmount(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
-		BeanUtils.copyProperties(message, entity);
+		entity.setReceiveUID(receiveUID);
+		entity.setStatus(STATUS_SUC);
 		return messageDao.getAmount(entity);
 	}
+
+	@Override
+	public List<Message> listUnread(String uid, Range range) {
+		MessageEntity entity = new MessageEntity();
+		entity.setReceiveUID(uid);
+		entity.setNeedReadStatus(true);
+		entity.setHasRead(false);
+		entity.setStatus(STATUS_SUC);
+		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
+					.stream().map( entityResul->{
+						return copyEntityToBo(entityResul, new Message());
+					}).collect(Collectors.toList());
+	}
+	@Override
+	public int getAmountUnread(String receiveUID) {
+		MessageEntity entity = new MessageEntity();
+		entity.setReceiveUID(receiveUID);
+		entity.setStatus(STATUS_SUC);
+		entity.setNeedReadStatus(true);
+		entity.setHasRead(false);
+		return messageDao.getAmount(entity);
+	}
+	@Override
+	public void refreshReadStatus(String id, boolean hasRead) throws DataRefreshingException  {
+		MessageEntity entity = new MessageEntity();
+		entity.setID(id);
+		entity.setHasRead(hasRead);
+		try {
+			messageDao.updateReadStatus(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
+	@Override
+	public void refreshReadStatus(String[] ids, boolean hasRead) throws DataRefreshingException  {
+		MessageEntity entity = new MessageEntity();
+		entity.setIDs(ids);
+		entity.setHasRead(hasRead);
+		try {
+			messageDao.updateReadStatus(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+	
 
 	/**
 	 * 将entity值copy到vo
@@ -197,5 +207,8 @@ public class InboxService implements IInboxService {
 	public void inform(Message msg) throws Exception {
 		this.save(msg);
 	}
+
 	
+
+
 }

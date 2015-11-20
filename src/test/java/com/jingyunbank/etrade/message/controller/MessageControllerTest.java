@@ -104,6 +104,47 @@ public class MessageControllerTest extends TestCaseBase{
 	}
 	
 	/**
+	 * 未读列表
+	 * @throws Exception
+	 * 2015年11月13日 qxs
+	 */
+	@Test
+	public void testListUnread() throws Exception{
+		getMockMvc().perform(
+				get("/api/message/list/unread/1")
+				.param("offset", "0")
+				.param("size", "5")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	/**
+	 * 未读数量
+	 * @throws Exception
+	 * 2015年11月13日 qxs
+	 */
+	@Test
+	public void testGetAmountUnread() throws Exception{
+		getMockMvc().perform(
+				get("/api/message/amount/unread/1")
+				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())  
+				.andReturn();
+			
+	}
+	
+	/**
 	 * 删除
 	 * @throws Exception
 	 * 2015年11月13日 qxs

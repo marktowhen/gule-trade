@@ -28,7 +28,7 @@ public interface MessageDao {
 	 */
 	public boolean updateReadStatus(MessageEntity m) throws Exception;
 	
-	public List<MessageEntity> selectList(MessageEntity m);
+	public List<MessageEntity> selectList(@Param(value="entity") MessageEntity m, @Param(value="offset")long offset, @Param(value="size")long size);
 
 	/**
 	 * 查询数量
@@ -36,7 +36,7 @@ public interface MessageDao {
 	 * @return
 	 * 2015年11月13日 qxs
 	 */
-	public int getAmount(MessageEntity entity);
+	public int getAmount(@Param(value="entity") MessageEntity entity);
 	
 	
 }

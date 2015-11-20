@@ -41,30 +41,28 @@
 	</insert>
 	<update id="updateStatus" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
 		update message m set m.`status`=#{status} 
-		where receive_uid=#{receiveUID} and( id=#{ID} 
+		where  id=#{ID} 
 		<if test="IDs!=null ">
 			or id in  
 				<foreach collection="IDs" item="item" open="(" separator="," close=")">
 					#{item}
 				</foreach>
 		</if>
-		)
 	</update>
 	
 	<update id="updateReadStatus" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity">
 		update message m set m.`has_read`=#{hasRead}
-		where receive_uid=#{receiveUID} and(id=#{ID} 
+		where id=#{ID} 
 		<if test="IDs!=null ">
 			or id in  
 				<foreach collection="IDs" item="item" open="(" separator="," close=")">
 					#{item}
 				</foreach>
 		</if>
-		)
 	</update>
 	
 	<!-- 查询 -->
-	<select id="selectList" parameterType="com.jingyunbank.etrade.message.entity.MessageEntity"
+	<select id="selectList" 
 		resultMap="ResultMap">
 		select 
 			<include refid="column_list"/>
@@ -77,7 +75,7 @@
 			<include refid="baseCondition"/>
 		order by addtime desc
 		<if test="offset!=null and size!=null and size!=0">
-			LIMIT #{offset},#{size}
+			LIMIT #{offset,javaType=LONG},#{size,javaType=LONG}
 		</if>
 	</select>
 	
@@ -86,38 +84,38 @@
 	</select>
 	
 	<sql id="baseCondition">
-		<if test="ID!=null and ID!='' ">
-			and m.id=#{ID}
+		<if test="entity.ID!=null and entity.ID!='' ">
+			and m.id=#{entity.ID}
 		</if>	
-		<if test="sentUID!=null and sentUID!='' ">
-			and m.sent_uid=#{sentUID}
+		<if test="entity.sentUID!=null and entity.sentUID!='' ">
+			and m.sent_uid=#{entity.sentUID}
 		</if>	
-		<if test="receiveUID!=null and receiveUID!='' ">
-			and m.receive_uid=#{receiveUID}
+		<if test="entity.receiveUID!=null and entity.receiveUID!='' ">
+			and m.receive_uid=#{entity.receiveUID}
 		</if>	
-		<if test="title!=null and title!='' ">
-			and m.title like  concat ('%' ,#{title} ,'%')
+		<if test="entity.title!=null and entity.title!='' ">
+			and m.title like  concat ('%' ,#{entity.title} ,'%')
 		</if>	
-		<if test="content!=null and content!='' ">
-			and m.content like  concat ('%' , #{content} ,'%')
+		<if test="entity.content!=null and entity.content!='' ">
+			and m.content like  concat ('%' , #{entity.content} ,'%')
 		</if>	
-		<if test="type!=null and type!='' ">
-			and m.type=#{type}
+		<if test="entity.type!=null and entity.type!='' ">
+			and m.type=#{entity.type}
 		</if>	
-		<if test="status!=null and status!='' ">
-			and m.status=#{status}
+		<if test="entity.status!=null and entity.status!='' ">
+			and m.status=#{entity.status}
 		</if>	
-		<if test="addtime!=null and addtime!='' ">
-			and m.addtime=#{addtime}
+		<if test="entity.addtime!=null and entity.addtime!='' ">
+			and m.addtime=#{entity.addtime}
 		</if>	
-		<if test="addip!=null and addip!='' ">
-			and m.addip=#{addip}
+		<if test="entity.addip!=null and entity.addip!='' ">
+			and m.addip=#{entity.addip}
 		</if>
-		<if test="valid">
+		<if test="entity.valid">
 			and m.status!='3'
 		</if>
-		<if test="needReadStatus">
-			and has_read=#{hasRead}
+		<if test="entity.needReadStatus">
+			and has_read=#{entity.hasRead}
 		</if>
 	</sql>
 	

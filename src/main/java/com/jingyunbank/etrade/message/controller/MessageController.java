@@ -84,12 +84,12 @@ public class MessageController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
 	public Result getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
-		Optional<Message> messageOption = inboxService.getSingle(id, ServletBox.getLoginUID(request));
+		Optional<Message> messageOption = inboxService.getSingle(id);
 		if(messageOption.isPresent()){
 			//如果未读则置为已读
 			if(!messageOption.get().isHasRead()){
 				messageOption.get().setHasRead(true);
-				inboxService.refreshReadStatus(messageOption.get());
+				inboxService.refreshReadStatus(messageOption.get().getID(), true);
 			}
 			
 			return Result.ok(copyBoToVo(messageOption.get(), new MessageVO()));
@@ -97,57 +97,77 @@ public class MessageController {
 		return Result.fail("未找到");
 	}
 	
+	
 	/**
 	 * 查询用户的消息列表
-	 * @param messageVO
-	 * @param needReadStatus 是否需要关注是否已读的状态
-	 * 		(boolean类型默认为false 当vo中hasRead值为false,无法区分是查询未读信息还是查询所有的)
+	 * @param uid
 	 * @param request
 	 * @param page
 	 * @return
-	 * 2015年11月13日 qxs
+	 * @throws Exception
+	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/list/{uid}",method=RequestMethod.GET)
-	public Result getListUID(MessageVO messageVO,boolean needReadStatus
-			, HttpServletRequest request, Page page) throws Exception{
-		Message message = new  Message();
-		BeanUtils.copyProperties(messageVO, message);
-		message.setNeedReadStatus(needReadStatus);
-		message.setReceiveUID(ServletBox.getLoginUID(request));
-		if(message.getStatus()==0){
-			message.setStatus(IInboxService.STATUS_SUC);
-		}
+	public Result getList(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getOffset()+page.getSize());
-		return Result.ok( inboxService.list(message, range)
+		return Result.ok( inboxService.list(uid, range)
 				.stream().map(bo ->{
 					return copyBoToVo(bo, new MessageVO());
 				}).collect(Collectors.toList()));
 	}
 	
+	
 	/**
 	 * 查询用户的消息列表数量
-	 * @param messageVO
-	 * @param needReadStatus 是否需要关注是否已读的状态
-	 * 		(boolean类型默认为false 当vo中hasRead值为false,无法区分是查询未读信息还是查询所有的)
+	 * @param uid
 	 * @param request
 	 * @return
-	 * 2015年11月13日 qxs
+	 * @throws Exception
+	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount/{uid}",method=RequestMethod.GET)
-	public Result getAmountUID(MessageVO messageVO, boolean needReadStatus
-			, HttpServletRequest request) throws Exception{
-		Message message = new  Message();
-		BeanUtils.copyProperties(messageVO, message);
-		if(message.getStatus()==0){
-			message.setStatus(IInboxService.STATUS_SUC);
-		}
-		message.setNeedReadStatus(needReadStatus);
-		message.setReceiveUID(ServletBox.getLoginUID(request));
-		return Result.ok( inboxService.getAmount(message));
+	public Result getAmountUID(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.getAmount(uid));
+	}
+	
+	/**
+	 * 查询用户未读的消息列表
+	 * @param uid
+	 * @param request
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月20日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/list/unread/{uid}",method=RequestMethod.GET)
+	public Result getListUnread(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getOffset()+page.getSize());
+		return Result.ok( inboxService.listUnread(uid, range)
+				.stream().map(bo ->{
+					return copyBoToVo(bo, new MessageVO());
+				}).collect(Collectors.toList()));
+	}
+	
+	
+	/**
+	 * 查询用户未读的消息列表数量
+	 * @param uid
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * 2015年11月20日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/amount/unread/{uid}",method=RequestMethod.GET)
+	public Result getAmountUnread(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.getAmountUnread(uid));
 	}
 	
 	/**
@@ -177,10 +197,7 @@ public class MessageController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.POST)
 	public Result readMessage(@PathVariable String id, boolean hasRead, HttpServletRequest request) throws Exception{
-		Message message = new Message();
-		message.setReceiveUID(ServletBox.getLoginUID(request));
-		message.setHasRead(hasRead);
-		inboxService.refreshReadStatus(id.split(","), message);
+		inboxService.refreshReadStatus(id.split(","), hasRead);
 		return Result.ok();
 	}
 	
