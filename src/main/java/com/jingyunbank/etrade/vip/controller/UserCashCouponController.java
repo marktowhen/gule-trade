@@ -87,7 +87,7 @@ public class UserCashCouponController {
 	@RequestMapping(value="/", method=RequestMethod.PUT)
 	public Result active(String code, HttpServletRequest request) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
-		Result valid = cashCouponService.isValid(code);
+		Result valid = cashCouponService.canActive(code);
 		if(valid.isBad()){
 			return valid;
 		}

@@ -15,6 +15,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.bo.CashCoupon;
 import com.jingyunbank.etrade.api.vip.service.ICashCouponService;
+import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.vip.dao.CashCouponDao;
 import com.jingyunbank.etrade.vip.entity.CashCouponEntity;
 
@@ -48,28 +49,37 @@ public class CashCouponService implements ICashCouponService{
 	}
 
 	@Override
-	public Result isValid(String code) {
-		CashCoupon cashCoupon = new CashCoupon();
-		cashCoupon.setCode(code);
-		cashCoupon.setValidTime(true);
-		cashCoupon = getSingle(cashCoupon);
-		if(cashCoupon==null){
-			return Result.fail("卡号错误,或已失效");
+	public Result canActive(String code) {
+		CashCouponEntity entity = cashCouponDao.selectSingle(code);
+		if(entity==null){
+			return Result.fail("卡号错误");
 		}
-		if(cashCoupon.isDel()){
+		if(entity.isDel()){
 			return Result.fail("该卡已作废");
 		}
-		if(cashCoupon.isUsed()){
+		if(entity.isUsed()){
 			return Result.fail("该卡已被使用");
+		}
+		if(entity.getEnd().before(EtradeUtil.getNowDate())){
+			return Result.fail("已过期");
 		}
 		return Result.ok("可激活");
 	}
 
 	@Override
-	public CashCoupon getSingle(CashCoupon cashCoupon) {
-		List<CashCouponEntity> list = cashCouponDao.selectList(getEntityFromBo(cashCoupon));
-		if(list!=null && !list.isEmpty()){
-			return getBofromEntity(list.get(0));
+	public CashCoupon getSingleByCode(String code) {
+		CashCouponEntity entity = cashCouponDao.selectSingle(code);
+		if(entity!=null){
+			return getBofromEntity(entity);
+		}
+		return null;
+	}
+
+	@Override
+	public CashCoupon getSingleByID(String id) {
+		CashCouponEntity entity = cashCouponDao.selectSingle(id);
+		if(entity!=null){
+			return getBofromEntity(entity);
 		}
 		return null;
 	}
@@ -150,4 +160,6 @@ public class CashCouponService implements ICashCouponService{
 	public int getAmount(CashCoupon cashCoupon) {
 		return cashCouponDao.selectAmount(getEntityFromBo(cashCoupon));
 	}
+
+	
 }

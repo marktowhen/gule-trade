@@ -15,6 +15,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
+import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.vip.dao.DiscountCouponDao;
 import com.jingyunbank.etrade.vip.entity.DiscountCouponEntity;
 
@@ -46,32 +47,39 @@ public class DiscountCouponService implements IDiscountCouponService{
 	}
 
 	@Override
-	public Result isValid(String code) {
-		DiscountCoupon discountCoupon = new DiscountCoupon();
-		discountCoupon.setCode(code);
-		discountCoupon.setValidTime(true);
-		discountCoupon = getSingle(discountCoupon);
-		if(discountCoupon==null){
-			return Result.fail("卡号错误,或已失效");
+	public Result canActive(String code) {
+		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(code);
+		if(entity==null){
+			return Result.fail("卡号错误");
 		}
-		if(discountCoupon.isDel()){
+		if(entity.isDel()){
 			return Result.fail("该卡已作废");
 		}
-		if(discountCoupon.isUsed()){
+		if(entity.isUsed()){
 			return Result.fail("该卡已被使用");
+		}
+		if(entity.getEnd().before(EtradeUtil.getNowDate())){
+			return Result.fail("已过期");
 		}
 		return Result.ok("可激活");
 	}
 
 	@Override
-	public DiscountCoupon getSingle(DiscountCoupon discountCoupon) {
-		List<DiscountCouponEntity> list = discountCouponDao.selectList(getEntityFromBo(discountCoupon));
-		if(list!=null && !list.isEmpty()){
-			return getBoFromEntity( list.get(0));
+	public DiscountCoupon getSingleByCode(String code) {
+		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(code);
+		if(entity!=null){
+			return getBoFromEntity(entity);
 		}
 		return null;
 	}
-
+	@Override
+	public DiscountCoupon getSingleByID(String ID) {
+		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(ID);
+		if(entity!=null){
+			return getBoFromEntity(entity);
+		}
+		return null;
+	}
 	@Override
 	public List<DiscountCoupon> listAll(DiscountCoupon discountCoupon) {
 		

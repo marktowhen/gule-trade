@@ -11,6 +11,13 @@ public interface DiscountCouponDao {
 	
 	public List<DiscountCouponEntity> selectList(DiscountCouponEntity entity); 
 	
+	/**
+	 * 根据id或code获取单条详情
+	 * @param key
+	 * @return
+	 * 2015年11月20日 qxs
+	 */
+	public DiscountCouponEntity getSingleByKey(String key);
 	
 	/**
 	 * 修改删除状态

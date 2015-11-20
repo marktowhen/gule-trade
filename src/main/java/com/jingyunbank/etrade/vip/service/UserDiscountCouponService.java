@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.vip.service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
+import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.vip.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
+import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.vip.dao.UserDiscountCouponDao;
 import com.jingyunbank.etrade.vip.entity.DiscountCouponEntity;
 import com.jingyunbank.etrade.vip.entity.UserDiscountCouponEntity;
@@ -32,9 +36,7 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public boolean active(String code, String uid) throws DataSavingException, DataRefreshingException {
-		DiscountCoupon discountCoupon = new DiscountCoupon();
-		discountCoupon.setCode(code);
-		discountCoupon = discountCouponService.getSingle(discountCoupon);
+		DiscountCoupon discountCoupon  = discountCouponService.getSingleByCode(code);
 		if(discountCouponService==null){
 			return false;
 		}
@@ -55,6 +57,12 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 	}
 	
 	@Override
+	public List<UserDiscountCoupon> getUnusedCoupon(String uid, Range range) {
+		UserDiscountCoupon bo = new UserDiscountCoupon();
+		bo.setUID(uid);
+		return this.getUnusedCoupon(bo, range);
+	}
+	@Override
 	public List<UserDiscountCoupon> getUnusedCoupon(UserDiscountCoupon bo,
 			Range range) {
 		UserDiscountCouponEntity entity = getEntityFromBo(bo);
@@ -66,7 +74,36 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 				.stream().map(rEntity->{return getBoFromEntity(rEntity);})
 				.collect(Collectors.toList());
 	}
-
+	
+	@Override
+	public Result canConsume(String couponId, String uid, BigDecimal orderPrice) {
+		UserDiscountCouponEntity entity =  userDiscountCouponDao.getUserDiscountCoupon(couponId,  uid);
+		if(entity==null){
+			return Result.fail("未找到");
+		}
+		DiscountCouponEntity discountCoupon = entity.getDiscountCouponEntity();
+		if(discountCoupon==null){
+			return Result.fail("数据错误");
+		}
+		if(entity.isConsumed()){
+			return  Result.fail("该券已消费");
+		}
+		if(discountCoupon.isDel()){
+			return  Result.fail("该券已被删除");
+		}
+		Date nowDate = EtradeUtil.getNowDate();
+		if(discountCoupon.getStart().after(nowDate)){
+			return Result.fail("未到使用时间");
+		}
+		if(discountCoupon.getEnd().before(nowDate)){
+			return Result.fail("已失效");
+		}
+		if(orderPrice==null || orderPrice.compareTo(discountCoupon.getThreshhold())==-1){
+			return Result.fail("未到使用门槛:"+discountCoupon.getThreshhold().doubleValue());
+		}
+		
+		return Result.ok();
+	}
 
 	@Override
 	public boolean consume(String couponId, String oid) throws DataRefreshingException {
@@ -116,6 +153,10 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 		}
 		return null;
 	}
+
+	
+
+	
 
 	
 

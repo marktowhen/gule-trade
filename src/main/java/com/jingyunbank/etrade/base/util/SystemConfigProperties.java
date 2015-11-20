@@ -6,35 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-/**
- * 加载短信邮箱服务类 
- * @author qxs
- *
- */
+
 @Component("systemConfigProperties")
 @Scope("singleton")
 public final class SystemConfigProperties {
 
-	private Logger logger = Logger.getLogger(SystemConfigProperties.class);
-	private SystemConfigProperties() {
-		try {
-			//加载短信服务类
-			Class.forName(getString(MOBILE_PROVIDER));
-			//加载邮箱服务类
-			Class.forName(getString(EMAIL_PROVIDER));
-		} catch (ClassNotFoundException e) {
-			logger.error(e);
-		}
-	}
-	/**
-	 * 图片等文件的存放目录
-	 */
-	public final static String ROOT_FILE_PATH = "root.file.path";
-	
-	public final static String HEAD_PICTURE_SIZE = "head.picture.size";
+//	private Logger logger = Logger.getLogger(SystemConfigProperties.class);
+//	private SystemConfigProperties() {
+//		try {
+//			//加载短信服务类
+//			Class.forName(getString(MOBILE_PROVIDER));
+//			//加载邮箱服务类
+//			Class.forName(getString(EMAIL_PROVIDER));
+//		} catch (ClassNotFoundException e) {
+//			logger.error(e);
+//		}
+//	}
 	
 	private final static String PROPERTIES_FILE_LOCATION = "system.properties";
 	

@@ -14,5 +14,6 @@ public interface UserDiscountCouponDao {
 
 	int getUnusedCouponAmount(UserDiscountCouponEntity entityFromBo);
 
+	UserDiscountCouponEntity getUserDiscountCoupon(String couponID, String uid);
 
 }

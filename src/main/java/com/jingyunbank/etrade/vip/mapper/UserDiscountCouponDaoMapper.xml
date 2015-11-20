@@ -28,7 +28,7 @@
 		insert into user_discount_coupon (<include refid="column_list"/>)
 		values(#{ID},#{UID},#{couponID},#{OID},now(),#{consumeTime},#{consumed})
 	</insert>
-	<!-- 用户可使用的券 -->
+	<!-- 用户未消费且未过期的 -->
 	<select id="getUnusedCoupon" resultMap="UserDiscountCouponEntityResultMap">
 		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold ,c.discount
 			from 
@@ -38,7 +38,7 @@
 				and c.del=false
 				and c.used=true
 				and u.consumed=false
-				and now() BETWEEN c.`start` and c.`end`
+				and now() &lt;= c.`end`
 				<if test="discountCouponEntity != null">
 					<if test="discountCouponEntity.threshholdHigh!=null">
 					and c.threshhold &lt;=#{discountCouponEntity.threshholdHigh}
@@ -53,7 +53,7 @@
 				</if>
 	</select>
 	
-	<!-- 用户可使用的券数量 -->
+	<!-- 用户未消费且未过期的数量 -->
 	<select id="getUnusedCouponAmount" resultType="int">
 		select count(1) from
 			 user_discount_coupon u , discount_coupon c
@@ -62,7 +62,7 @@
 				and c.del=false
 				and c.used=true
 				and u.consumed=false
-				and now() BETWEEN c.`start` and c.`end`
+				and now() &lt;= c.`end`
 				<if test="discountCouponEntity != null">
 					<if test="discountCouponEntity.threshholdHigh!=null">
 					and c.threshhold &lt;=#{discountCouponEntity.threshholdHigh}
@@ -80,5 +80,14 @@
 		 consume_time = now()
 		 where coupon_id = #{couponID}
 	</update>
+	
+	<select id="getUserCashCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold  ,c.discount
+			from 
+				user_discount_coupon u , discount_coupon c
+			where u.coupon_id = c.id
+				and u.uid=#{uid}
+				and c.id=#{couponID} 
+	</select>
 	
 </mapper>

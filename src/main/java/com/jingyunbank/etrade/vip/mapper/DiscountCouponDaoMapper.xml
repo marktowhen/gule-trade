@@ -98,5 +98,9 @@
 			and code =#{code}
 	</update>
 	
+	<select id="getSingleByKey" resultMap="DiscountCouponEntityResultMap">
+		select <include refid="column_list"/>
+		from discount_coupon where id =#{key} or code=#{key}
+	</select>
 	
 </mapper>
