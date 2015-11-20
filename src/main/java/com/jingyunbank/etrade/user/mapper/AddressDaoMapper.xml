@@ -28,42 +28,42 @@
 		<if test="entity.UID!=null and entity.UID!=''">
 		    and uid=#{entity.UID}
 		 </if>
-		 <!-- <if test="ID!=null and ID!=''">
+		 <if test="entity.ID!=null and entity.ID!=''">
 		 	and id=#{ID}
 		 </if>
-		 <if test="name!=null and name!=''">
-		 	and name=#{name}
+		 <if test="entity.name!=null and entity.name!=''">
+		 	and name=#{entity.name}
 		 </if>
-		 <if test="country!=null and country!=''">
-		 	and country=#{country}
+		 <if test="entity.country!=null and entity.country!=''">
+		 	and country=#{entity.country}
 		 </if>
-		 <if test="province!=null and province!=''">
+		 <if test="entity.province!=null and entity.province!=''">
 		 	and province=#{province}
 		 </if>
-		 <if test="city!=null and city!=''">
+		 <if test="entity.city!=null and entity.city!=''">
 		 	and city=#{city}
 		 </if>
-		 <if test="address!=null and address!=''">
+		 <if test="entity.address!=null and entity.address!=''">
 		 	and address=#{address}
 		 </if>
-		 <if test="zipcode!=null and zipcode!=''">
-		 	and zipcode=#{zipcode}
+		 <if test="entity.zipcode!=null and entity.zipcode!=''">
+		 	and zipcode=#{entity.zipcode}
 		 </if>
-		 <if test="receiver!=null and receiver!=''">
-		 	and receiver=#{receiver}
+		 <if test="entity.receiver!=null and entity.receiver!=''">
+		 	and receiver=#{entity.receiver}
 		 </if>	
-		 <if test="mobile!=null and mobile!=''">
-		 	and mobile=#{mobile}
+		 <if test="entity.mobile!=null and entity.mobile!=''">
+		 	and mobile=#{entity.mobile}
 		 </if>
-		 <if test="telephone!=null and telephone!=''">
-		 	and telephone=#{telephone}
+		 <if test="entity.telephone!=null and entity.telephone!=''">
+		 	and telephone=#{entity.telephone}
 		 </if>
-		 <if test="defaulted">
-		 	and defaulted=#{defaulted}
+		 <if test="entity.defaulted">
+		 	and defaulted=#{entity.defaulted}
 		 </if>
-		 <if test="valid">
-		 	and valid=#{valid}
-		 </if> -->
+		 <if test="entity.valid">
+		 	and valid=#{entity.valid}
+		 </if>
 	</sql>
 	<!-- 查询 -->
 	<select id="selectList" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity" resultMap="AddressEntityResultMap">

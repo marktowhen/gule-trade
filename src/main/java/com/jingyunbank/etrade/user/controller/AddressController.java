@@ -186,7 +186,7 @@ public class AddressController {
 		Range range = new Range();
 		range.setFrom((page.getOffset()));
 		range.setTo(page.getOffset()+page.getSize());
-		return Result.ok(addressService.listUserAdd(uid, range).stream().map( bo->{
+		return Result.ok(addressService.list(uid, range).stream().map( bo->{
 			return getVoFrombo(bo);
 		}).collect(Collectors.toList()));
 		

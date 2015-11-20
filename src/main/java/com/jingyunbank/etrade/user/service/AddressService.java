@@ -153,7 +153,7 @@ public class AddressService implements IAddressService{
 	}
 
 	@Override
-	public List<Address> listUserAdd(String uid, Range range) {
+	public List<Address> list(String uid, Range range) {
 		AddressEntity entity = new AddressEntity();
 		entity.setUID(uid);
 		entity.setValid(true);

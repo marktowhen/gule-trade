@@ -41,7 +41,7 @@ public interface AddressDao {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	public List<AddressEntity> selectList(AddressEntity addressEntity);
+	public List<AddressEntity> selectList(@Param(value = "entity")AddressEntity addressEntity);
 	
 	/**
 	 * 分页查询
@@ -67,6 +67,6 @@ public interface AddressDao {
 	 * @return
 	 * 2015年11月13日 qxs
 	 */
-	public int selectAmount(AddressEntity entity);
+	public int selectAmount(@Param(value = "entity") AddressEntity entity);
 	
 }
