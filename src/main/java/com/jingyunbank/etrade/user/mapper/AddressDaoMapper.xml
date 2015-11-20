@@ -25,10 +25,10 @@
 		id ID,uid UID,name,country,province,city,address,zipcode,receiver,mobile,telephone,defaulted,valid
 	</sql>
 	<sql id="base_condition">
-		<if test="UID!=null and UID!=''">
-		    and uid=#{UID}
+		<if test="entity.UID!=null and entity.UID!=''">
+		    and uid=#{entity.UID}
 		 </if>
-		 <if test="ID!=null and ID!=''">
+		 <!-- <if test="ID!=null and ID!=''">
 		 	and id=#{ID}
 		 </if>
 		 <if test="name!=null and name!=''">
@@ -63,7 +63,7 @@
 		 </if>
 		 <if test="valid">
 		 	and valid=#{valid}
-		 </if>
+		 </if> -->
 	</sql>
 	<!-- 查询 -->
 	<select id="selectList" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity" resultMap="AddressEntityResultMap">
@@ -81,7 +81,7 @@
 		 order by u.defaulted desc
 	</select>
 	<!-- 分页查询 -->
-	<select id="selectListRang" parameterType="com.jingyunbank.etrade.user.entity.AddressEntity"  resultMap="AddressEntityResultMap">
+	<select id="selectListRang"  resultMap="AddressEntityResultMap">
 		select 
 			<include refid="base_column_list" />
 			,c.country_name country_name 
@@ -94,7 +94,7 @@
 		 where	 1=1
 		<include refid="base_condition"></include>
 		 order by u.defaulted desc
-		 limit #{from},#{size}
+		 limit #{offset, javaType=LONG},#{size, javaType=LONG}
 	</select>
 	
 	<!-- 新增 -->

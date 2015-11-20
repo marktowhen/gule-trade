@@ -136,6 +136,7 @@ public class AddressControllerTest extends TestCaseBase {
 				get("/api/address/list")
 				.param("offset", "0")
 				.param("size", "2")
+				.param("uid", "1")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))

@@ -107,12 +107,7 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result remove(HttpServletRequest request,@PathVariable String id) throws Exception{
-		String uid = ServletBox.getLoginUID(request);
-		AddressVO addressVO = new AddressVO();
-		addressVO.setUID(uid);
-		String [] IDArray = id.split(",");
-		addressVO.setIDArray(IDArray);
-		if(addressService.remove(getBoFromVo(addressVO))){
+		if(addressService.remove(id.split(","), ServletBox.getLoginUID(request))){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -178,33 +173,23 @@ public class AddressController {
 	}
 
 	/**
-	 * 分页查询
-	 * 
-	 * @param request
-	 * @param addressVO
+	 * 列表查询
+	 * @param uid
+	 * @param page
 	 * @return
-	 * 2015年11月5日 qxs
+	 * @throws Exception
+	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result queryPage(HttpServletRequest request,AddressVO addressVO,Page page )throws Exception{
-		List<AddressVO> result = new ArrayList<AddressVO>();
-		if(addressVO==null){
-			addressVO = new AddressVO();
-		}
-		String uid = ServletBox.getLoginUID(request);
-		addressVO.setUID(uid);
+	public Result queryPage( String uid,Page page )throws Exception{
 		Range range = new Range();
 		range.setFrom((page.getOffset()));
 		range.setTo(page.getOffset()+page.getSize());
-		List<Address> list = addressService.listPage(getBoFromVo(addressVO), range);
-		//格式转换
-		if(list!=null && !list.isEmpty()){
-			for (Address address : list) {
-				result.add(getVoFrombo(address));
-			}
-		}
-		return Result.ok(result);
+		return Result.ok(addressService.listUserAdd(uid, range).stream().map( bo->{
+			return getVoFrombo(bo);
+		}).collect(Collectors.toList()));
+		
 	}
 	
 	/**
@@ -218,12 +203,7 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount",method=RequestMethod.GET)
 	public Result getAmount(HttpServletRequest request,AddressVO addressVO  )throws Exception{
-		if(addressVO==null){
-			addressVO = new AddressVO();
-		}
-		String uid = ServletBox.getLoginUID(request);
-		addressVO.setUID(uid);
-		return Result.ok(addressService.getAmount(getBoFromVo(addressVO)));
+		return Result.ok(addressService.getAmount(ServletBox.getLoginUID(request)));
 	}
 	
 	

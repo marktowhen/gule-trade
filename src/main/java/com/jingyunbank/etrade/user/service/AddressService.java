@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.user.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,20 +55,6 @@ public class AddressService implements IAddressService{
 		return result;
 	}
 
-	@Override
-	public boolean remove(Address address) throws DataRefreshingException {
-		boolean result = false;
-		AddressEntity entity = new AddressEntity();
-		entity.setIDArray(address.getIDArray());
-		entity.setValid(false);
-		entity.setUID(address.getUID());
-		try {
-			result = addressDao.updateStatus(entity);
-		} catch (Exception e) {
-			throw new DataRefreshingException(e);
-		}
-		return result;
-	}
 
 	@Override
 	public Optional<Address> singleById(String id) {
@@ -97,6 +84,88 @@ public class AddressService implements IAddressService{
 		}
 		return result;
 	}
+	
+	
+
+	
+	/**
+	 * 设置默认收货地址
+	 * @param id
+	 * @param uid
+	 * 2015年11月9日 qxs
+	 * @throws DataRefreshingException 
+	 */
+	public void refreshDefualt(String id, String uid) throws DataRefreshingException{
+		AddressEntity entity = new AddressEntity();
+		entity.setUID(uid);
+		try {
+			//将用户所有的地址改为非默认
+			entity.setDefaulted(false);
+			addressDao.updateDefault(entity);
+			//将指定地址设为默认
+			entity.setDefaulted(true);
+			entity.setID(id);
+			addressDao.updateDefault(entity);
+			
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+		
+	}
+
+
+	@Override
+	public Optional<Address> getDefaultAddress(String uid) {
+		AddressEntity entity = new AddressEntity();
+		entity.setUID(uid);
+		entity.setDefaulted(true);
+		entity.setValid(true);
+		List<AddressEntity> list = addressDao.selectList(entity);
+		if(list!=null && !list.isEmpty()){
+			return Optional.of(getBoFromEntity(list.get(0)));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public boolean remove(String id, String uid) throws DataRefreshingException {
+		String IDArray[] = {id};
+		return remove(IDArray, uid);
+	}
+	
+	@Override
+	public boolean remove(String[] ids, String uid)
+			throws DataRefreshingException {
+		AddressEntity entity = new AddressEntity();
+		entity.setIDArray(ids);
+		entity.setValid(false);
+		entity.setUID(uid);
+		try {
+			return addressDao.updateStatus(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
+	@Override
+	public List<Address> listUserAdd(String uid, Range range) {
+		AddressEntity entity = new AddressEntity();
+		entity.setUID(uid);
+		entity.setValid(true);
+		return  addressDao.selectListRang(entity, range.getFrom(), range.getTo()-range.getFrom())
+				.stream().map( entityResult -> {
+					return getBoFromEntity(entityResult);
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public int getAmount(String uid) {
+		AddressEntity entity = new AddressEntity();
+		entity.setUID(uid);
+		entity.setValid(true);
+		return addressDao.selectAmount(entity);
+	}
+
 	
 	/**
 	 * bo转entity
@@ -128,66 +197,5 @@ public class AddressService implements IAddressService{
 		return vo;
 	}
 
-	@Override
-	public List<Address> listPage(Address address, Range range) {
-		AddressEntity entityFromBo = getEntityFromBo(address);
-		entityFromBo.setFrom(range.getFrom());
-		entityFromBo.setSize(range.getTo()-range.getFrom());
-		entityFromBo.setValid(true);
-		List<AddressEntity> entityList = addressDao.selectListRang(entityFromBo);
-		List<Address> boList = new ArrayList<Address>();
-		if(entityList!=null && !entityList.isEmpty()){
-			for (AddressEntity entity : entityList) {
-				boList.add(getBoFromEntity(entity));
-			}
-		}
-		return boList;
-	}
 	
-	/**
-	 * 设置默认收货地址
-	 * @param id
-	 * @param uid
-	 * 2015年11月9日 qxs
-	 * @throws DataRefreshingException 
-	 */
-	public void refreshDefualt(String id, String uid) throws DataRefreshingException{
-		AddressEntity entity = new AddressEntity();
-		entity.setUID(uid);
-		try {
-			//将用户所有的地址改为非默认
-			entity.setDefaulted(false);
-			addressDao.updateDefault(entity);
-			//将指定地址设为默认
-			entity.setDefaulted(true);
-			entity.setID(id);
-			addressDao.updateDefault(entity);
-			
-		} catch (Exception e) {
-			throw new DataRefreshingException(e);
-		}
-		
-	}
-
-	@Override
-	public int getAmount(Address addressBo) {
-		AddressEntity entity = new AddressEntity();
-		BeanUtils.copyProperties(addressBo, entity);
-		entity.setValid(true);
-		return addressDao.selectAmount(entity);
-	}
-
-	@Override
-	public Optional<Address> getDefaultAddress(String uid) {
-		AddressEntity entity = new AddressEntity();
-		entity.setUID(uid);
-		entity.setDefaulted(true);
-		entity.setValid(true);
-		List<AddressEntity> list = addressDao.selectList(entity);
-		if(list!=null && !list.isEmpty()){
-			return Optional.of(getBoFromEntity(list.get(0)));
-		}
-		return Optional.empty();
-	}
-
 }

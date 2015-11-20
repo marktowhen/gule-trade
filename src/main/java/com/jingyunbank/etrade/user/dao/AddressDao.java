@@ -2,6 +2,8 @@ package com.jingyunbank.etrade.user.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.user.entity.AddressEntity;
 
 public interface AddressDao {
@@ -48,7 +50,8 @@ public interface AddressDao {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	public List<AddressEntity> selectListRang(AddressEntity addressEntity);
+	public List<AddressEntity> selectListRang(@Param(value = "entity") AddressEntity addressEntity 
+			,@Param(value="offset") long offset, @Param(value="size") long size);
 	
 	/**
 	 * 修改是否为默认地址
