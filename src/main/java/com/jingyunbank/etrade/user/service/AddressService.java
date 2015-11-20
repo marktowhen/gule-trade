@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.KeyGen;
@@ -23,6 +25,7 @@ public class AddressService implements IAddressService{
 	@Autowired
 	private AddressDao addressDao;
 
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public boolean save(Address address) throws DataSavingException, DataRefreshingException {
 		boolean result = false;
@@ -41,6 +44,7 @@ public class AddressService implements IAddressService{
 		return result;
 	}
 
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public boolean refresh(Address address) throws DataRefreshingException {
 		boolean result = false;
@@ -95,6 +99,7 @@ public class AddressService implements IAddressService{
 	 * 2015年11月9日 qxs
 	 * @throws DataRefreshingException 
 	 */
+	@Transactional(propagation=Propagation.REQUIRED)
 	public void refreshDefualt(String id, String uid) throws DataRefreshingException{
 		AddressEntity entity = new AddressEntity();
 		entity.setUID(uid);

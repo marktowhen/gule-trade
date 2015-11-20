@@ -95,6 +95,7 @@ public class AddressControllerTest extends TestCaseBase {
 				.param("telephone", "84936795")
 				.param("defaulted", "true")
 				.param("valid", "true")
+				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -184,7 +185,7 @@ public class AddressControllerTest extends TestCaseBase {
 	}
 	
 	/**
-	 * 测试查单个
+	 * 测试查默认地址
 	 * @throws Exception
 	 */
 	@Test
