@@ -398,7 +398,7 @@ public class UserController {
 	 * qxs
 	 */
 	@RequestMapping(value="/query",method=RequestMethod.GET)
-	public Result query(HttpServletRequest request, HttpSession session,String key  ) throws Exception{
+	public Result getUserByKey(HttpServletRequest request, HttpSession session,String key  ) throws Exception{
 		//1、参数校验
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("请输入用户名/手机/邮箱");
@@ -479,7 +479,7 @@ public class UserController {
 	 * 2015年11月6日 qxs
 	 */
 	@RequestMapping(value="/loginuser",method=RequestMethod.GET)
-	public Result queryLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
+	public Result getLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
 			Optional<Users> users = userService.getByUid(id);
