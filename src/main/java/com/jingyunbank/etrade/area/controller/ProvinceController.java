@@ -28,7 +28,7 @@ import com.jingyunbank.etrade.area.bean.ProvinceVO;
 public class ProvinceController {
 	
 	@Autowired
-	private IProvinceService crovinceService;
+	private IProvinceService provinceService;
 	
 	/**
 	 * 新增
@@ -49,7 +49,7 @@ public class ProvinceController {
 		}
 		Province bo = new Province();
 		BeanUtils.copyProperties(vo, bo);
-		crovinceService.save(bo);
+		provinceService.save(bo);
 		return Result.ok();
 	}
 	
@@ -65,7 +65,7 @@ public class ProvinceController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result remove(HttpServletRequest request,@PathVariable int id) throws Exception{
-		if(crovinceService.remove(id)){
+		if(provinceService.remove(id)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -74,14 +74,14 @@ public class ProvinceController {
 	
 	/**
 	 * 修改
-	 * @param crovinceVO
+	 * @param provinceVO
 	 * @return
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.POST)
-	public Result refresh(@PathVariable int id ,@Valid ProvinceVO crovinceVO , BindingResult valid) throws Exception{
+	public Result refresh(@PathVariable int id ,@Valid ProvinceVO provinceVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -89,11 +89,11 @@ public class ProvinceController {
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		crovinceVO.setProvinceID(id);
-		Province crovince = new Province();
-		BeanUtils.copyProperties(crovinceVO, crovince);
+		provinceVO.setProvinceID(id);
+		Province province = new Province();
+		BeanUtils.copyProperties(provinceVO, province);
 		//修改
-		if(crovinceService.refresh(crovince)){
+		if(provinceService.refresh(province)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -107,10 +107,10 @@ public class ProvinceController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
 	public Result getDetail(@PathVariable int id) throws Exception{
-		Province crovince = crovinceService.selectSingle(id);
-		if(crovince!=null){
+		Province province = provinceService.single(id);
+		if(province!=null){
 			ProvinceVO vo = new ProvinceVO();
-			BeanUtils.copyProperties(crovince, vo);
+			BeanUtils.copyProperties(province, vo);
 			return Result.ok(vo);
 		}
 		return Result.fail("地址不存在");
@@ -124,9 +124,9 @@ public class ProvinceController {
 	 */
 	@RequestMapping(value="/list",method=RequestMethod.GET)
 	public Result getList(ProvinceVO vo) throws Exception{
-		Province crovince = new Province();
-		BeanUtils.copyProperties(vo, crovince);
-		return Result.ok(crovinceService.selectList(crovince)
+		Province province = new Province();
+		BeanUtils.copyProperties(vo, province);
+		return Result.ok(provinceService.list(province)
 				.stream().map( bo->{ 
 					Province c = new Province();
 					BeanUtils.copyProperties(bo, c);
@@ -135,5 +135,21 @@ public class ProvinceController {
 				);
 	}
 	
+	/**
+	 * 查询
+	 * @param countryID
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	@RequestMapping(value="/list/{countryID}",method=RequestMethod.GET)
+	public Result getListByCountry(@PathVariable int countryID) throws Exception{
+		return Result.ok(provinceService.listByCountry(countryID)
+				.stream().map( bo->{ 
+					Province c = new Province();
+					BeanUtils.copyProperties(bo, c);
+					return c;
+					}).collect(Collectors.toList())
+				);
+	}
 
 }

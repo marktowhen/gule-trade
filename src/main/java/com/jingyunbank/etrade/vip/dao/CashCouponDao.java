@@ -36,4 +36,13 @@ public interface CashCouponDao {
 	 * 2015年11月19日 qxs
 	 */
 	public int selectAmount(CashCouponEntity entity);
+
+
+	/**
+	 * 单个查询
+	 * @param key 编码或id
+	 * @return
+	 * 2015年11月20日 qxs
+	 */
+	public CashCouponEntity selectSingle(String key);
 }

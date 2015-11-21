@@ -107,7 +107,7 @@ public class CountryController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
 	public Result getDetail(@PathVariable int id) throws Exception{
-		Country country = countryService.selectSingle(id);
+		Country country = countryService.single(id);
 		if(country!=null){
 			CountryVO vo = new CountryVO();
 			BeanUtils.copyProperties(country, vo);
@@ -126,7 +126,7 @@ public class CountryController {
 	public Result getList(CountryVO vo) throws Exception{
 		Country country = new Country();
 		BeanUtils.copyProperties(vo, country);
-		return Result.ok(countryService.selectList(country)
+		return Result.ok(countryService.list(country)
 				.stream().map( bo->{ 
 					Country c = new Country();
 					BeanUtils.copyProperties(bo, c);

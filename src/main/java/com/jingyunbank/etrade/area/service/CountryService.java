@@ -58,7 +58,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	public List<Country> selectList(Country bo, Range range) {
+	public List<Country> list(Country bo, Range range) {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
 		if(range!=null){
@@ -73,15 +73,15 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	public List<Country> selectList(Country bo) {
-		return selectList(bo, null);
+	public List<Country> list(Country bo) {
+		return list(bo, null);
 	}
 
 	@Override
-	public Country selectSingle(int id) {
+	public Country single(int id) {
 		Country bo = new Country();
 		bo.setCountryID(id);
-		List<Country> list = selectList(bo);
+		List<Country> list = list(bo);
 		if(list!=null && !list.isEmpty()){
 			return list.get(0);
 		}

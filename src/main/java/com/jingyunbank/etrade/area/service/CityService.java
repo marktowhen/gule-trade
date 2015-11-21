@@ -58,7 +58,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	public List<City> selectList(City bo, Range range) {
+	public List<City> list(City bo, Range range) {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
 		if(range!=null){
@@ -73,19 +73,26 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	public List<City> selectList(City bo) {
-		return selectList(bo, null);
+	public List<City> list(City bo) {
+		return list(bo, null);
 	}
 
 	@Override
-	public City selectSingle(int id) {
+	public City single(int id) {
 		City bo = new City();
 		bo.setCityID(id);
-		List<City> list = selectList(bo);
+		List<City> list = list(bo);
 		if(list!=null && !list.isEmpty()){
 			return list.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public List<City> listByProvince(int provinceID) {
+		City c = new City();
+		c.setProvinceID(provinceID);
+		return this.list(c);
 	}
 
 }

@@ -97,7 +97,7 @@ public class DiscountCouponController {
 	@RequestMapping(value="isvalid", method=RequestMethod.GET)
 	public Result isValid(String code) throws Exception{
 		
-		return discountCouponService.isValid(code);
+		return discountCouponService.canActive(code);
 	}
 	
 	/**

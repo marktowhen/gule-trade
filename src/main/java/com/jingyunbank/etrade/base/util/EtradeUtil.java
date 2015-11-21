@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.base.util;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class EtradeUtil {
@@ -23,4 +25,15 @@ public class EtradeUtil {
 	     }   
 	      return  ip;  
 	 }
+	
+	/**
+	 * 获取当前时间(暂时)
+	 * 应从数据库取
+	 * @return
+	 * 2015年11月20日 qxs
+	 */
+	public static Date getNowDate(){
+		return new Date();
+	}
+	
 }
