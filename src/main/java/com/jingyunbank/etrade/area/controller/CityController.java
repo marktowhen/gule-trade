@@ -107,7 +107,7 @@ public class CityController {
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
 	public Result getDetail(@PathVariable int id) throws Exception{
-		City city = cityService.selectSingle(id);
+		City city = cityService.single(id);
 		if(city!=null){
 			CityVO vo = new CityVO();
 			BeanUtils.copyProperties(city, vo);
@@ -126,7 +126,7 @@ public class CityController {
 	public Result getList(CityVO vo) throws Exception{
 		City city = new City();
 		BeanUtils.copyProperties(vo, city);
-		return Result.ok(cityService.selectList(city)
+		return Result.ok(cityService.list(city)
 				.stream().map( bo->{ 
 					City c = new City();
 					BeanUtils.copyProperties(bo, c);
@@ -135,5 +135,21 @@ public class CityController {
 				);
 	}
 	
+	/**
+	 * 查询
+	 * @param id
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	@RequestMapping(value="/list/{provinceID}",method=RequestMethod.GET)
+	public Result getList(@PathVariable int provinceID) throws Exception{
+		return Result.ok(cityService.listByProvince(provinceID)
+				.stream().map( bo->{ 
+					City c = new City();
+					BeanUtils.copyProperties(bo, c);
+					return c;
+					}).collect(Collectors.toList())
+				);
+	}
 
 }

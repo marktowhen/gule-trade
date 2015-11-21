@@ -58,7 +58,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	public List<Province> selectList(Province bo, Range range) {
+	public List<Province> list(Province bo, Range range) {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
 		if(range!=null){
@@ -73,19 +73,26 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	public List<Province> selectList(Province bo) {
-		return selectList(bo, null);
+	public List<Province> list(Province bo) {
+		return list(bo, null);
 	}
 
 	@Override
-	public Province selectSingle(int id) {
+	public Province single(int id) {
 		Province bo = new Province();
 		bo.setProvinceID(id);
-		List<Province> list = selectList(bo);
+		List<Province> list = list(bo);
 		if(list!=null && !list.isEmpty()){
 			return list.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public List<Province> listByCountry(int countryID) {
+		Province p = new Province();
+		p.setCountryID(countryID);
+		return this.list(p);
 	}
 
 }
