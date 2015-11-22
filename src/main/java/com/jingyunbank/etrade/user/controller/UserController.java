@@ -2,8 +2,10 @@ package com.jingyunbank.etrade.user.controller;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -627,7 +630,7 @@ public class UserController {
 	 * 2015年11月10日 qxs
 	 */
 	@RequestMapping(value="/email-message",method=RequestMethod.POST)
-	public Result checkEmailCode(HttpServletRequest request, String code) {
+	public Result checkEmailCode(HttpServletRequest request,@RequestBody String code) {
 		return  checkCode(code, request, EMAIL_MESSAGE);
 	}
 	//3、
@@ -677,8 +680,8 @@ public class UserController {
 	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/message",method=RequestMethod.POST)
-	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception {
+	@RequestMapping(value="/message/{mobile}",method=RequestMethod.POST)
+	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,@PathVariable String mobile,@RequestBody String code) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
 		if(StringUtils.isEmpty(sessionCode)){
@@ -762,7 +765,8 @@ public class UserController {
 		message.setTitle(subTitle);
 		message.setContent("您的验证码是:"+code);
 		message.getReceiveUser().setEmail(email);
-		emailService.inform(message);
+		System.out.println("-----------------"+"您的验证码是:"+code);
+		//emailService.inform(message);
 		return Result.ok();
 	}
 	/**
@@ -780,7 +784,8 @@ public class UserController {
 		message.setContent("您的验证码是:"+code);
 		message.getReceiveUser().setMobile(mobile);
 		message.setTitle("");
-		smsService.inform(message);
+		System.out.println("-----------------"+"您的验证码是:"+code);
+		//smsService.inform(message);
 		return Result.ok();
 	}
 	/**
