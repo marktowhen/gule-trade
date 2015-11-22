@@ -18,6 +18,8 @@ public class GoodsShowVO implements Serializable  {
 	private String [] types;  //类别数组
 	private String [] accessorys; //辅料数组
 	
+	private int priceFlag;
+	
 	private BigDecimal beginPrice;
 	private BigDecimal endPrice;
 	
@@ -95,6 +97,14 @@ public class GoodsShowVO implements Serializable  {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public int getPriceFlag() {
+		return priceFlag;
+	}
+
+	public void setPriceFlag(int priceFlag) {
+		this.priceFlag = priceFlag;
 	}
 
 
