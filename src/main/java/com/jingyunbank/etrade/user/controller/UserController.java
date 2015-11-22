@@ -2,8 +2,10 @@ package com.jingyunbank.etrade.user.controller;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -340,8 +343,9 @@ public class UserController {
 		//密码不正确3次后需要验证码
 		int loginWrongTimes = 0;
 		//session中存放的错误次数
-		if(session.getAttribute("loginWrongTimes")!=null){
-			loginWrongTimes = Integer.parseInt((String)session.getAttribute("loginWrongTimes"));
+		Object objLoginTimes = session.getAttribute("loginWrongTimes");
+		if(objLoginTimes != null && objLoginTimes instanceof Integer){
+			loginWrongTimes = (int)session.getAttribute("loginWrongTimes");
 			if(loginWrongTimes>=3){
 				if(!checkCaptcha(session, user.getCaptcha())){
 					return Result.fail("验证码错误");
@@ -400,7 +404,7 @@ public class UserController {
 	 * qxs
 	 */
 	@RequestMapping(value="/query",method=RequestMethod.GET)
-	public Result query(HttpServletRequest request, HttpSession session,String key  ) throws Exception{
+	public Result getUserByKey(HttpServletRequest request, HttpSession session,String key  ) throws Exception{
 		//1、参数校验
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("请输入用户名/手机/邮箱");
@@ -481,7 +485,7 @@ public class UserController {
 	 * 2015年11月6日 qxs
 	 */
 	@RequestMapping(value="/loginuser",method=RequestMethod.GET)
-	public Result queryLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
+	public Result getLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
 			Optional<Users> users = userService.getByUid(id);
@@ -629,7 +633,7 @@ public class UserController {
 	 * 2015年11月10日 qxs
 	 */
 	@RequestMapping(value="/email-message",method=RequestMethod.POST)
-	public Result checkEmailCode(HttpServletRequest request, String code) {
+	public Result checkEmailCode(HttpServletRequest request,@RequestBody String code) {
 		return  checkCode(code, request, EMAIL_MESSAGE);
 	}
 	//3、
@@ -679,8 +683,8 @@ public class UserController {
 	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/message",method=RequestMethod.POST)
-	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception {
+	@RequestMapping(value="/message/{mobile}",method=RequestMethod.POST)
+	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,@PathVariable String mobile,@RequestBody String code) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
 		if(StringUtils.isEmpty(sessionCode)){
@@ -764,7 +768,7 @@ public class UserController {
 		message.setTitle(subTitle);
 		message.setContent("您的验证码是:"+code);
 		message.getReceiveUser().setEmail(email);
-		System.out.println("您的验证码是:"+code);
+		System.out.println("-----------------"+"您的验证码是:"+code);
 		//emailService.inform(message);
 		return Result.ok();
 	}
@@ -783,7 +787,7 @@ public class UserController {
 		message.setContent("您的验证码是:"+code);
 		message.getReceiveUser().setMobile(mobile);
 		message.setTitle("");
-		System.out.println("您的验证码是:"+code);
+		System.out.println("-----------------"+"您的验证码是:"+code);
 		//smsService.inform(message);
 		return Result.ok();
 	}
