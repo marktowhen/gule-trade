@@ -341,8 +341,9 @@ public class UserController {
 		//密码不正确3次后需要验证码
 		int loginWrongTimes = 0;
 		//session中存放的错误次数
-		if(session.getAttribute("loginWrongTimes")!=null){
-			loginWrongTimes = Integer.parseInt((String)session.getAttribute("loginWrongTimes"));
+		Object objLoginTimes = session.getAttribute("loginWrongTimes");
+		if(objLoginTimes != null && objLoginTimes instanceof Integer){
+			loginWrongTimes = (int)session.getAttribute("loginWrongTimes");
 			if(loginWrongTimes>=3){
 				if(!checkCaptcha(session, user.getCaptcha())){
 					return Result.fail("验证码错误");
