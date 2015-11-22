@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
@@ -59,8 +61,8 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/footprint/save", method = RequestMethod.POST)
-	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session, String gid) throws Exception {
+	@RequestMapping(value = "/footprint/save/{gid}", method = RequestMethod.GET)
+	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		boolean flag = trackService.saveFootprint(uid, gid);
 		if (flag) {
@@ -76,8 +78,9 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/savemerchant", method = RequestMethod.POST)
-	public Result saveMerchantFavorites(HttpServletRequest request, HttpSession session, String mid) throws Exception {
+	@RequestMapping(value = "/favorites/savemerchant/{mid}", method = RequestMethod.GET)
+	@AuthBeforeOperation
+	public Result saveMerchantFavorites(HttpServletRequest request, HttpSession session, @PathVariable String mid) throws Exception {
 		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
 		flag = trackService.isFavoritesExists(uid, mid, "1");
@@ -98,8 +101,9 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/savegoods", method = RequestMethod.POST)
-	public Result saveGoodsFavorites(HttpServletRequest request, HttpSession session, String gid) throws Exception {
+	@RequestMapping(value = "/favorites/savegoods/{gid}", method = RequestMethod.GET)
+	@AuthBeforeOperation
+	public Result saveGoodsFavorites(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
 		flag = trackService.isFavoritesExists(uid, gid, "2");
