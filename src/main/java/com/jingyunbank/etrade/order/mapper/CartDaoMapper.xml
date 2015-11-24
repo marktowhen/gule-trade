@@ -77,4 +77,7 @@
 			 #{id}
 		</foreach>
 	</delete>
+	<delete id="deleteByUID" parameterType="String">
+		delete from goods_in_cart where uid = #{uid}
+	</delete>
 </mapper>
