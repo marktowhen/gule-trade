@@ -15,7 +15,7 @@ public class OrderEntity {
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 code
 	private String paytypeName;
-	private String deliveryTypeCode;
+	private String deliveryTypeID;
 	private String deliveryTypeName;
 	private BigDecimal price;//订单总价
 	private String statusCode;//订单状态id
@@ -113,12 +113,11 @@ public class OrderEntity {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	
-	public String getDeliveryTypeCode() {
-		return deliveryTypeCode;
+	public String getDeliveryTypeID() {
+		return deliveryTypeID;
 	}
-	public void setDeliveryTypeCode(String deliveryTypeCode) {
-		this.deliveryTypeCode = deliveryTypeCode;
+	public void setDeliveryTypeID(String deliveryTypeID) {
+		this.deliveryTypeID = deliveryTypeID;
 	}
 	public String getDeliveryTypeName() {
 		return deliveryTypeName;

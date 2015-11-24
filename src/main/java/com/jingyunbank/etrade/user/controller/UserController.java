@@ -2,8 +2,10 @@ package com.jingyunbank.etrade.user.controller;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,7 +67,7 @@ public class UserController {
  * @throws Exception
  */
 	@RequestMapping(value="/register/send",method=RequestMethod.PUT)
-	public Result register(UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getMobile())){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
@@ -75,6 +78,7 @@ public class UserController {
 				return Result.fail("该手机号已存在。");
 			}
 			return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
+			
 		}
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getEmail())){
@@ -86,6 +90,7 @@ public class UserController {
 				return Result.fail("该邮箱已存在");
 			}
 			return sendCodeToEmail(userVO.getEmail(), "验证码", getCheckCode(), request);
+			
 		}
 		return Result.fail("发送验证码失败");
 	}
@@ -100,7 +105,7 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/register/checkcode",method=RequestMethod.POST)
-	public Result registerCheckCode(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception{
+	public Result registerCheckCode(@Valid @RequestBody UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -112,22 +117,22 @@ public class UserController {
 			return Result.fail("该用户名已存在。");
 		}
 		Result checkResult = null;
-		if(userVO.getMobile()==null&&userVO.getEmail()==null){
+		if(StringUtils.isEmpty(userVO.getMobile())&&StringUtils.isEmpty(userVO.getEmail())){
 			return Result.fail("邮箱和手机号至少有一个不为空");
 		}
 		//验证手机号是否存在
-		if(userVO.getMobile()!=null){
+		if(!StringUtils.isEmpty(userVO.getMobile())){
 			if(userService.phoneExists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
-			checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
 		}
 		//验证邮箱是否存在
-		if(userVO.getEmail()!=null){
+		if(!StringUtils.isEmpty(userVO.getEmail())){
 			if(userService.emailExists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
 			}
-			checkResult = checkCode(code, request, EMAIL_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, EMAIL_MESSAGE);
 		}
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
@@ -628,7 +633,7 @@ public class UserController {
 	 * 2015年11月10日 qxs
 	 */
 	@RequestMapping(value="/email-message",method=RequestMethod.POST)
-	public Result checkEmailCode(HttpServletRequest request, String code) {
+	public Result checkEmailCode(HttpServletRequest request,@RequestBody String code) {
 		return  checkCode(code, request, EMAIL_MESSAGE);
 	}
 	//3、
@@ -678,8 +683,8 @@ public class UserController {
 	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/message",method=RequestMethod.POST)
-	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception {
+	@RequestMapping(value="/message/{mobile}",method=RequestMethod.POST)
+	public Result checkBindingMobile(HttpServletRequest request, HttpSession session,@PathVariable String mobile,@RequestBody String code) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		String sessionCode  = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
 		if(StringUtils.isEmpty(sessionCode)){
@@ -763,7 +768,8 @@ public class UserController {
 		message.setTitle(subTitle);
 		message.setContent("您的验证码是:"+code);
 		message.getReceiveUser().setEmail(email);
-		emailService.inform(message);
+		System.out.println("-----------------"+"您的验证码是:"+code);
+		//emailService.inform(message);
 		return Result.ok();
 	}
 	/**
@@ -781,7 +787,8 @@ public class UserController {
 		message.setContent("您的验证码是:"+code);
 		message.getReceiveUser().setMobile(mobile);
 		message.setTitle("");
-		smsService.inform(message);
+		System.out.println("-----------------"+"您的验证码是:"+code);
+		//smsService.inform(message);
 		return Result.ok();
 	}
 	/**

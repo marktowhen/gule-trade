@@ -29,7 +29,16 @@ public class UserVO {
 	private String nickname;
 	//private UserInfo uinfo;
 	private boolean locked;
+	private String code;
 	
+	
+	
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
 	public String getID() {
 		return ID;
 	}
