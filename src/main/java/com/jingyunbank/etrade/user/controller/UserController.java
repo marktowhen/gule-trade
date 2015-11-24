@@ -67,7 +67,7 @@ public class UserController {
  * @throws Exception
  */
 	@RequestMapping(value="/register/send",method=RequestMethod.PUT)
-	public Result register(UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getMobile())){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
@@ -78,6 +78,7 @@ public class UserController {
 				return Result.fail("该手机号已存在。");
 			}
 			return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
+			
 		}
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getEmail())){
@@ -89,6 +90,7 @@ public class UserController {
 				return Result.fail("该邮箱已存在");
 			}
 			return sendCodeToEmail(userVO.getEmail(), "验证码", getCheckCode(), request);
+			
 		}
 		return Result.fail("发送验证码失败");
 	}
@@ -103,7 +105,7 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/register/checkcode",method=RequestMethod.POST)
-	public Result registerCheckCode(@Valid UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session,String mobile,String code) throws Exception{
+	public Result registerCheckCode(@Valid @RequestBody UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -115,22 +117,22 @@ public class UserController {
 			return Result.fail("该用户名已存在。");
 		}
 		Result checkResult = null;
-		if(userVO.getMobile()==null&&userVO.getEmail()==null){
+		if(StringUtils.isEmpty(userVO.getMobile())&&StringUtils.isEmpty(userVO.getEmail())){
 			return Result.fail("邮箱和手机号至少有一个不为空");
 		}
 		//验证手机号是否存在
-		if(userVO.getMobile()!=null){
+		if(!StringUtils.isEmpty(userVO.getMobile())){
 			if(userService.phoneExists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
-			checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
 		}
 		//验证邮箱是否存在
-		if(userVO.getEmail()!=null){
+		if(!StringUtils.isEmpty(userVO.getEmail())){
 			if(userService.emailExists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
 			}
-			checkResult = checkCode(code, request, EMAIL_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, EMAIL_MESSAGE);
 		}
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);

@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.vip.controller;
 
-import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +17,12 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.vip.bo.DiscountCoupon;
+import com.jingyunbank.etrade.api.vip.bo.UserCashCoupon;
 import com.jingyunbank.etrade.api.vip.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
 import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
+import com.jingyunbank.etrade.vip.bean.UserCashCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserDiscountCouponVO;
 
 @RestController
@@ -114,20 +115,6 @@ public class UserDiscountCouponController {
 			return Result.ok();
 		}
 		return Result.fail("");
-	}
-	
-	/**
-	 * 是否可以消费
-	 * @param couponId 券id
-	 * @param orderPrice 订单价值
-	 * @param request
-	 * @return
-	 * 2015年11月21日 qxs
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="can-consume", method=RequestMethod.GET)
-	public Result canConsume(String couponId, BigDecimal orderPrice,HttpServletRequest request){
-		return userDiscountCouponService.canConsume(couponId, ServletBox.getLoginUID(request), orderPrice);
 	}
 	
 	private UserDiscountCouponVO getVoFromBo(UserDiscountCoupon bo){

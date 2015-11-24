@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,18 +22,18 @@ public class PurchaseOrderVO {
 	@NotNull
 	private String mname;
 	@NotNull
-	private String deliveryTypeCode;
+	private String deliveryTypeID;
 	@NotNull
 	private String deliveryTypeName;
 	@NotNull
 	@DecimalMin(value="0.00", inclusive=true)
 	private BigDecimal postage = new BigDecimal(0);
-
+	@NotNull
+	@DecimalMin(value="0.00", inclusive=false)
+	private BigDecimal price;
 	private Date addtime;
 	
 	private String note;
-	
-	@Valid
 	@NotNull
 	@Size(min=1)
 	private List<PurchaseGoodsVO> goods = new ArrayList<>();
@@ -63,12 +62,12 @@ public class PurchaseOrderVO {
 		this.goods = goods;
 	}
 
-	public String getDeliveryTypeCode() {
-		return deliveryTypeCode;
+	public String getDeliveryTypeID() {
+		return deliveryTypeID;
 	}
 
-	public void setDeliveryTypeCode(String deliveryTypeCode) {
-		this.deliveryTypeCode = deliveryTypeCode;
+	public void setDeliveryTypeID(String deliveryTypeID) {
+		this.deliveryTypeID = deliveryTypeID;
 	}
 
 	public String getDeliveryTypeName() {
@@ -101,6 +100,14 @@ public class PurchaseOrderVO {
 
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 
 	public long getOrderno() {
