@@ -121,7 +121,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{gid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateveiw/{gid}", method = RequestMethod.GET)
 	public Result queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsVO vo = null;
 		Optional<ShowGoods> showbo = goodsOperationService.singleById(gid);
