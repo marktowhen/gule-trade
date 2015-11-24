@@ -29,16 +29,9 @@ public class CartControllerTest extends TestCaseBase{
 	
 	@Test
 	public void testDelete() throws Exception{
-		List<String> s = new ArrayList<>();
-		s.add("xxxx");
-		s.add("bbbb");
-		ObjectMapper mapper = new ObjectMapper();
-		String json = mapper.writeValueAsString(s);
-		System.out.println(" ================= " + json);
 		getMockMvc().perform(
 				delete("/api/cart/goods")
-				.content(json)
-				.contentType(MediaType.APPLICATION_JSON)
+				.param("gids", "XXXXX").param("gids", "YYYYYY")
 				.sessionAttr(ServletBox.LOGIN_ID, "123321")
 				.accept(MediaType.APPLICATION_JSON)
 			)
