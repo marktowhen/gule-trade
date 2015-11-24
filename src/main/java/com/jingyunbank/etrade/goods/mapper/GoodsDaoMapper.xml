@@ -44,7 +44,7 @@
 		<result column="note" property="note" />
 		<result column="storage_methods" property="storageMethods" />
 		<result column="is_gift_box" property="isGiftBox" />
-		<result column="ProductionDate" property="production_date" />
+		<result column="production_date" property="productionDate" />
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="factoryname" property="factoryName" />
@@ -125,7 +125,7 @@
 		d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
 		d.`ingredients` ingredients,d.`food_additives` food_additives,d.`specifications` specifications,
 		d.`ingredient` ingredient, d.`functions` functions,d.`note` note,d.`storage_methods` storage_methods,
-		d.`is_gift_box` is_gift_box,d.`production_date` ProductionDate,d.`weight` weight,d.`unit` unit,
+		d.`is_gift_box` is_gift_box,d.`production_date` production_date,d.`weight` weight,d.`unit` unit,
 		d.`factory_name` factoryname,d.`factory_addr` factoryaddr,d.`factory_tel` factorytel,COUNT(c.id) COMMENT
 	</sql>
 	

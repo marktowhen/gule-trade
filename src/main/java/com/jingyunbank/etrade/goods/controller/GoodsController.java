@@ -381,6 +381,7 @@ public class GoodsController {
 			vo = new GoodsVO();
 			BeanUtils.copyProperties(showbo.get(), vo);
 		}
+		System.out.println(vo);
 		return Result.ok(vo);
 	}
 
