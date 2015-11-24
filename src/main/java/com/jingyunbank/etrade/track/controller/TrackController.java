@@ -61,6 +61,7 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value = "/footprint/save/{gid}", method = RequestMethod.GET)
 	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
