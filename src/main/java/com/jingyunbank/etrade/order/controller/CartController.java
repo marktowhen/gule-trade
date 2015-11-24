@@ -43,13 +43,13 @@ public class CartController {
 	/**
 	 *	uri : get /api/cart/goods/list
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/goods/list",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
 	public Result list(HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(session);
-		List<GoodsInCart> goodsincart = cartService.listGoods("userid");
+		List<GoodsInCart> goodsincart = cartService.listGoods(uid);
 		CartVO cart = convert(goodsincart);
 		return Result.ok(cart);
 	}
@@ -118,11 +118,10 @@ public class CartController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/goods", 
 					method=RequestMethod.DELETE,
-					consumes={"text/plain", "application/json"},
 					produces="application/json;charset=UTF-8")
-	public Result delete(@RequestBody List<String> id) throws Exception{
-		cartService.remove(id);
-		return Result.ok(id);
+	public Result delete(@RequestParam List<String> gids) throws Exception{
+		cartService.remove(gids);
+		return Result.ok(gids);
 	}
 	/**
 	 * 更新购物车中商品的数量
@@ -151,7 +150,7 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
 	public Result clearing(@Valid @RequestBody CartVO cart,
 					BindingResult valid, HttpSession session) throws Exception{
@@ -166,7 +165,7 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing/list", method=RequestMethod.GET)
 	public Result listClearing(HttpSession session) throws Exception{
 		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);
