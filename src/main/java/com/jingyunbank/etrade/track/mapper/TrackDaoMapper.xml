@@ -37,6 +37,7 @@
 		and v.gid = x.id
 		left join goods_img i
 	    on v.gid = i.gid 
+	    limit #{from},#{to}
 		 ]]>
 	</select>
 	<!-- 插入一条我的足迹 　 -->
@@ -106,6 +107,6 @@
 		LEFT JOIN goods_brand b ON b.id=g.bid
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
-		ORDER BY g.volume DESC
+		limit #{from},#{to}
 	</select>
 </mapper>

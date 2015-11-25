@@ -17,6 +17,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
+import com.jingyunbank.etrade.goods.service.ServiceTemplate;
 import com.jingyunbank.etrade.track.dao.TrackDao;
 import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
@@ -25,19 +26,23 @@ import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
 
 /**
  * 
- * Title: 商品接口
+ * Title: 推广服务
  * 
- * @author duanxf
+ * @author liug
  * @date 2015年11月4日
  */
 @Service("trackService")
-public class TrackService implements ITrackService {
+public class TrackService extends ServiceTemplate implements ITrackService {
 	@Resource
 	private TrackDao trackDao;
 	@Override
-	public List<FootprintGoods> listFootprintGoods() throws Exception {
+	public List<FootprintGoods> listFootprintGoods(int to) throws Exception {
+		this.to = to;
+		Map<String, Integer> params = new HashMap<String,Integer>();
+		params.put("from", this.from);
+		params.put("to", this.to);
 		List<FootprintGoods> rltlist = new ArrayList<FootprintGoods>();
-		List<FootprintGoodsEntity> goodslist = trackDao.selectFootprintGoods();
+		List<FootprintGoodsEntity> goodslist = trackDao.selectFootprintGoods(params);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				FootprintGoods bo = new FootprintGoods();
@@ -103,10 +108,13 @@ public class TrackService implements ITrackService {
 	}
 	
 	@Override
-	public List<FavoritesGoods> listMerchantFavorites(String uid,String type) throws Exception {
-		Map<String,String> map = new HashMap<String,String>();
+	public List<FavoritesGoods> listMerchantFavorites(String uid,String type,int to) throws Exception {
+		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
 		map.put("type", type);
+		this.to = to;
+		map.put("from", this.from);
+		map.put("to", this.to);
 		List<FavoritesGoods> rltlist = new ArrayList<FavoritesGoods>();
 		List<FavoritesGoodsVEntity> goodslist = trackDao.selectMerchantFavorites(map);
 		if (goodslist != null) {
@@ -122,6 +130,5 @@ public class TrackService implements ITrackService {
 		}
 		return rltlist;
 	}
-
 
 }
