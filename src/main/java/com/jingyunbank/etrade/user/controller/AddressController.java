@@ -41,7 +41,7 @@ public class AddressController {
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value = "/", method = RequestMethod.PUT)
+	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws Exception {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -64,7 +64,7 @@ public class AddressController {
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/{id}",method=RequestMethod.POST)
+	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
 	public Result refresh(@PathVariable String id ,@Valid AddressVO addressVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
@@ -89,7 +89,7 @@ public class AddressController {
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
+	@RequestMapping(value="/default/{id}",method=RequestMethod.PUT)
 	public Result setDefualt(@PathVariable String id, HttpServletRequest request ) throws Exception{
 		addressService.refreshDefualt(id, ServletBox.getLoginUID(request));
 		return Result.ok("成功");

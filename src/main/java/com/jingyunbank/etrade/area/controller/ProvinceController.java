@@ -39,7 +39,7 @@ public class ProvinceController {
 	 * 2015年11月18日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value = "/", method = RequestMethod.PUT)
+	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Result save(@Valid ProvinceVO vo, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -80,7 +80,7 @@ public class ProvinceController {
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/{id}",method=RequestMethod.POST)
+	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
 	public Result refresh(@PathVariable int id ,@Valid ProvinceVO provinceVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){

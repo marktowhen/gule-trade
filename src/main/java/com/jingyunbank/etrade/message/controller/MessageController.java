@@ -49,7 +49,7 @@ public class MessageController {
 	 * @throws DataSavingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/",method=RequestMethod.PUT)
+	@RequestMapping(value="/",method=RequestMethod.POST)
 	public Result sendSysMessage(HttpServletRequest request,@Valid MessageVO messageVO, BindingResult valid) throws Exception{
 		//验证vo信息
 		if(valid.hasErrors()){
@@ -195,7 +195,7 @@ public class MessageController {
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/{id}",method=RequestMethod.POST)
+	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
 	public Result readMessage(@PathVariable String id, boolean hasRead, HttpServletRequest request) throws Exception{
 		inboxService.refreshReadStatus(id.split(","), hasRead);
 		return Result.ok();

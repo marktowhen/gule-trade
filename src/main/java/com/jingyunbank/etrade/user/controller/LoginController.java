@@ -23,7 +23,7 @@ import com.jingyunbank.etrade.user.bean.LoginUserVO;
 
 @RestController
 @RequestMapping("/api")
-public class UserLoginController {
+public class LoginController {
 
 	@Autowired
 	private IUserService userService;
