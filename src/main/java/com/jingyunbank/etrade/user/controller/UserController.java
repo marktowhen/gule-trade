@@ -672,7 +672,11 @@ public class UserController {
 	 * @return
 	 */
 	private boolean checkCaptcha(HttpSession session, String captcha) {
-		return true;
+		String sessionCaptcha = session.getAttribute(ServletBox.SIMPLE_CAPTCHA_CODE)==null ? "" : (String)session.getAttribute(ServletBox.SIMPLE_CAPTCHA_CODE);
+		if(!StringUtils.isEmpty(captcha) && captcha.equalsIgnoreCase(sessionCaptcha )){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
