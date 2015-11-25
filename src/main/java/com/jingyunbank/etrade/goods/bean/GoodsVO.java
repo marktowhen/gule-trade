@@ -84,7 +84,7 @@ public class GoodsVO implements Serializable{
 		private String note;// 注意事项
 		private String storageMethods;// 储藏方法
 		private String isGiftBox;// 是否礼盒装
-		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		@JsonFormat(pattern="yyyy-MM-dd",locale = "zh" , timezone="GMT+8")
 		private Date productionDate;//生产日期
 		private String weight;// 重量
 		private String unit;// 单位
