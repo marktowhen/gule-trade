@@ -2,10 +2,8 @@ package com.jingyunbank.etrade.user.controller;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -27,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
@@ -40,6 +39,7 @@ import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
@@ -54,7 +54,7 @@ public class UserController {
 	@Resource
 	private ISyncNotifyService smsService;
   	
-	private static long EMAIL_VILAD_TIME = (1*60*60*1000); //1小时 单位毫秒
+	private static long EMAIL_VILAD_TIME = (2*60*60*1000); //1小时 单位毫秒
 	
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
@@ -546,8 +546,8 @@ public class UserController {
 	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/email-link",method=RequestMethod.GET)
-	public Result checkCodeAndSendEamil(HttpServletRequest request, String code, String email) throws Exception{
+	@RequestMapping(value="/email-link/{code}",method=RequestMethod.POST)
+	public Result checkCodeAndSendEamil(HttpServletRequest request,@PathVariable String code,@RequestBody String email) throws Exception{
 		if(!checkCaptcha(request.getSession(), code)){
 			return Result.fail("验证码错误");
 		}
@@ -579,34 +579,39 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/ckemail-link",method=RequestMethod.GET)
-	public Result checkEmailLink(HttpServletRequest request,
+	public ModelAndView checkEmailLink(HttpServletRequest request,
 			String m, String u, String d) throws DataRefreshingException{
 		Optional<Users> userOption = userService.getByUid(d);
-		
 		Users users = userOption.get();
+		int result = 1;
 		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
-			return Result.fail("链接格式错误");
+//			return Result.fail("链接格式错误");
+			result = 2;
 		}
 		//emial~time(long)
 		String[] emailTime = new String(Base64.decodeBase64(u)).split("~");
 		if(emailTime.length!=2){
-			return Result.fail("链接格式错误");
+//			return Result.fail("链接格式错误");
+			result = 2;
 		}
 		String email = emailTime[0];
 		long sendtime = Long.valueOf(emailTime[1]);
 		if(new Date(sendtime+EMAIL_VILAD_TIME).before(new Date())){
-			return Result.fail("链接已失效");
+//			return Result.fail("链接已失效");
+			result = 3;
 		}
 		if(userService.getByEmail(email).isPresent()){
-			return Result.fail("该邮箱已被使用");
+//			return Result.fail("该邮箱已被使用");
+			result = 4;
 		}
-		
-		//修改用户邮箱
-		Users userUpdate = new Users();
-		userUpdate.setID(users.getID());
-		userUpdate.setEmail(email);
-		userService.refresh(userUpdate);
-		return Result.ok();
+		if(result == 1 ){
+			//修改用户邮箱
+			Users userUpdate = new Users();
+			userUpdate.setID(users.getID());
+			userUpdate.setEmail(email);
+			userService.refresh(userUpdate);
+		}
+		return new ModelAndView( "redirect:"+SystemConfigProperties.getString(SystemConfigProperties.ROOT_WEB_URL)+"user-center/verify-email?rst="+result);
 	}
 	
 	
@@ -846,7 +851,7 @@ public class UserController {
 		String verifyCode = new Base64().encodeAsString(message.getBytes());
 		//验证链接的地址
 		String url = basePath
-				+ "api/user/ckemail.htm?d="+ user.getID()
+				+ "api/user/ckemail-link.htm?d="+ user.getID()
 				+ "&u=" + verifyCode + "&m=" + msg1Md5;
 		//编辑邮箱内容
 		StringBuffer content = new StringBuffer();
