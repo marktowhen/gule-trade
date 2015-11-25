@@ -65,7 +65,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/save", method = RequestMethod.PUT)
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public Result saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
@@ -141,7 +141,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/update/{gid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/update/{gid}", method = RequestMethod.PUT)
 	public Result updateGoods(@PathVariable String gid, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
@@ -189,7 +189,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/up/{gid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/up/{gid}", method = RequestMethod.PUT)
 	public Result goodsUp(@PathVariable String gid) throws Exception {
 		if(goodsOperationService.refreshGoodsUp(gid)){
 			return Result.ok("success");
@@ -203,7 +203,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/down/{gid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/down/{gid}", method = RequestMethod.PUT)
 	public Result goodsDown(@PathVariable String gid) throws Exception {
 		if(goodsOperationService.refreshGoodsDown(gid)){
 			return Result.ok("success");

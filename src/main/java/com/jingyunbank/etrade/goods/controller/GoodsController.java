@@ -145,8 +145,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@RequestMapping(value = "/queryByWhere/list", method = RequestMethod.GET)
-	@RequestMapping(value = "/query/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
@@ -189,7 +188,7 @@ public class GoodsController {
 	 * @return @throws Exception @throws
 	 */
 	//@RequestMapping(value = "/goodsMerchantByWhere/list", method = RequestMethod.GET)
-	@RequestMapping(value = "/querymerchant/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/merchant/list", method = RequestMethod.GET)
 	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
@@ -215,7 +214,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	//@RequestMapping(value = "/merchantGoodsByWhere4/list", method = RequestMethod.GET)
-	@RequestMapping(value = "/querymerchantgoods4/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/merchantgoods4/list", method = RequestMethod.GET)
 	public Result queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
@@ -237,8 +236,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@RequestMapping(value = "/merchantGoodsByWhereMax/list", method = RequestMethod.GET)
-	@RequestMapping(value = "/querymerchantgoodsmore/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/merchantgoods/list", method = RequestMethod.GET)
 	public Result queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request, GoodsShowVO goodshowvo, Page page)
 			throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
@@ -373,7 +371,7 @@ public class GoodsController {
 	 * @param gid
 	 * @return
 	 */
-	@RequestMapping(value = "/queryid/{gid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/byid/{gid}", method = RequestMethod.GET)
 	public Result queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsVO vo = null;
 		Optional<ShowGoods> showbo = goodsService.singleById(gid);
