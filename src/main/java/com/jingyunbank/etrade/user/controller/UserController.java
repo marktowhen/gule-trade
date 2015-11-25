@@ -55,96 +55,21 @@ public class UserController {
 	
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
-	
-/**
- * 用户注册信息及其发送手机或邮箱验证码
- * @param userVO
- * @param valid
- * @param request
- * @param session
- * @return
- * @throws Exception
- */
-	@RequestMapping(value="/register/send",method=RequestMethod.PUT)
-	public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
-		//验证邮箱是否存在
-		if(!StringUtils.isEmpty(userVO.getMobile())){
-			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-			if(!p.matcher(userVO.getMobile()).matches()){
-				return Result.fail("手机格式不正确");
-			}
-			if(userService.phoneExists(userVO.getMobile())){
-				return Result.fail("该手机号已存在。");
-			}
-			return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
-			
-		}
-		//验证邮箱是否存在
-		if(!StringUtils.isEmpty(userVO.getEmail())){
-			Pattern p1 = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
-			if(!p1.matcher(userVO.getEmail()).matches()){
-				return Result.fail("手机格式不正确");
-			}
-			if(userService.emailExists(userVO.getEmail())){
-				return Result.fail("该邮箱已存在");
-			}
-			return sendCodeToEmail(userVO.getEmail(), "验证码", getCheckCode(), request);
-			
-		}
-		return Result.fail("发送验证码失败");
-	}
 	/**
-	 * 判断验证码是否输入正确
+	 * 通过id查出对应的对象
 	 * @param userVO
 	 * @param request
-	 * @param session
-	 * @param mobile
-	 * @param code
 	 * @return
-	 * @throws Exception
 	 */
-	@RequestMapping(value="/register/checkcode",method=RequestMethod.POST)
-	public Result registerCheckCode(@Valid @RequestBody UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
-						.collect(Collectors.joining(" ; ")));
-		}
-		//验证用户名是否已存在
-		if(userService.unameExists(userVO.getUsername())){
-			return Result.fail("该用户名已存在。");
-		}
-		Result checkResult = null;
-		if(StringUtils.isEmpty(userVO.getMobile())&&StringUtils.isEmpty(userVO.getEmail())){
-			return Result.fail("邮箱和手机号至少有一个不为空");
-		}
-		//验证手机号是否存在
-		if(!StringUtils.isEmpty(userVO.getMobile())){
-			if(userService.phoneExists(userVO.getMobile())){
-				return Result.fail("该手机号已存在。");
-			}
-			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
-		}
-		//验证邮箱是否存在
-		if(!StringUtils.isEmpty(userVO.getEmail())){
-			if(userService.emailExists(userVO.getEmail())){
-			return Result.fail("该邮箱已存在");
-			}
-			checkResult = checkCode(userVO.getCode(), request, EMAIL_MESSAGE);
-		}
-		Users user=new Users();
-		BeanUtils.copyProperties(userVO, user);
-		UserInfo userInfo=new UserInfo();
-		userInfo.setRegip(request.getRemoteAddr());
-		//保存用户信息和个人资料信息
-		if(checkResult.isOk()){
-			if(userService.save(user, userInfo)){
-			return	Result.ok("注册信息成功");
-			}
-		}
-		return Result.fail("验证失败或是保存失败");
+	@AuthBeforeOperation
+	@RequestMapping(value="/select/user",method=RequestMethod.GET)
+	public Result selectPhone(UserVO userVO,HttpServletRequest request){
+		String id = ServletBox.getLoginUID(request);
+		Users users=userService.getByUid(id).get();
+		BeanUtils.copyProperties(users, userVO);
+		return Result.ok(userVO);
 	}
+
 	/**
 	 * 当前手机号发送验证
 	 * @param request
@@ -174,8 +99,8 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/send/message",method=RequestMethod.POST)
-	public Result chenckPhoneCode(String mobile,String code,HttpServletRequest request, HttpSession session) throws Exception{
-		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+	public Result chenckPhoneCode(@RequestBody UserVO userVO,HttpServletRequest request, HttpSession session) throws Exception{
+		Result	checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
 			if(checkResult.isOk()){
 				return Result.ok("手机验证成功");
 			}
@@ -248,8 +173,8 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update/password",method=RequestMethod.POST)
-	public Result updatePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/update/password",method=RequestMethod.PUT)
+	public Result updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 	
 		//验证登录密码有效性
 		if(userVO.getPassword()!=null){
