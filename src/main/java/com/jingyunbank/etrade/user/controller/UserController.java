@@ -467,7 +467,7 @@ public class UserController {
 	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/email-link/{code}",method=RequestMethod.POST)
+	@RequestMapping(value="/email-link/{code}",method=RequestMethod.PUT)
 	public Result checkCodeAndSendEamil(HttpServletRequest request,@PathVariable String code,@RequestBody String email) throws Exception{
 		if(!checkCaptcha(request.getSession(), code)){
 			return Result.fail("验证码错误");

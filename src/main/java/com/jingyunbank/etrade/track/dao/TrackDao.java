@@ -20,7 +20,7 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FootprintGoodsEntity> selectFootprintGoods() throws Exception;
+	public List<FootprintGoodsEntity> selectFootprintGoods(Map<String, Integer> params) throws Exception;
 	/**
 	 * 保存我的足迹信息
 	 * @param fe
@@ -46,5 +46,5 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FavoritesGoodsVEntity> selectMerchantFavorites(Map<String,String> map) throws Exception;
+	public List<FavoritesGoodsVEntity> selectMerchantFavorites(Map<String,Object> map) throws Exception;
 }

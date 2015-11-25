@@ -25,7 +25,7 @@ public class MessageControllerTest extends TestCaseBase{
 	@Test
 	public void testSendMessage() throws Exception{
 		getMockMvc().perform(
-				put("/api/message/")
+				post("/api/message/")
 				.param("title", "测试")
 				.param("content", "真帅")
 				.param("receiveUID", "1")
@@ -172,7 +172,7 @@ public class MessageControllerTest extends TestCaseBase{
 	@Test
 	public void testRead() throws Exception{
 		getMockMvc().perform(
-				post("/api/message/WBok41umRUqb1jrHzS2C0A,cfk8_BplSSygxukvXXQkpw")
+				put("/api/message/WBok41umRUqb1jrHzS2C0A,cfk8_BplSSygxukvXXQkpw")
 				.param("hasRead", "true")
 				.sessionAttr(ServletBox.LOGIN_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)

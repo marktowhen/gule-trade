@@ -37,15 +37,33 @@ public class TrackController {
 	protected ITrackService trackService;
 	 
 	/**
-	 * 我的足迹商品查询
+	 * 我的足迹商品查询1(展示4条)
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/footprint/list", method = RequestMethod.GET)
-	public Result listFootprintGoods() throws Exception {
+	@RequestMapping(value = "/footprint/list1", method = RequestMethod.GET)
+	public Result listFootprintGoods1() throws Exception {
 		try {
-			List<FootprintGoods> goodslist = trackService.listFootprintGoods();
+			List<FootprintGoods> goodslist = trackService.listFootprintGoods(4);
+			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
+			footprintGoodsVO.init(goodslist);
+			return Result.ok(footprintGoodsVO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	/**
+	 * 我的足迹商品查询2(展示6条)
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/footprint/list2", method = RequestMethod.GET)
+	public Result listFootprintGoods2() throws Exception {
+		try {
+			List<FootprintGoods> goodslist = trackService.listFootprintGoods(6);
 			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
 			footprintGoodsVO.init(goodslist);
 			return Result.ok(footprintGoodsVO);
@@ -128,7 +146,7 @@ public class TrackController {
 	public Result listMerchantFavorites(HttpServletRequest request) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		List<FavoritesMerchantVO> rltlist = new ArrayList<FavoritesMerchantVO>();
-		List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "1");
+		List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "1",4);
 		List<FavoritesGoods> tmplist = new ArrayList<FavoritesGoods>();// 存放商家分组LIST
 		if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 			FavoritesMerchantVO cmvo = new FavoritesMerchantVO();
@@ -163,16 +181,41 @@ public class TrackController {
 	}
 
 	/**
-	 * 查询我的收藏（商品）
+	 * 查询我的收藏（商品）1(展示4条)
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/listgoodsfavorites", method = RequestMethod.GET)
-	public Result listGoodsFavorites(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/favorites/listgoodsfavorites1", method = RequestMethod.GET)
+	public Result listGoodsFavorites1(HttpServletRequest request) throws Exception {
 			String uid = ServletBox.getLoginUID(request);
 			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
-			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2");
+			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2" ,4);
+			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
+				rltlist = goodslist.stream().map(bo -> {
+					CommonGoodsVO vo = new CommonGoodsVO();
+					try {
+						BeanUtils.copyProperties(bo, vo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return vo;
+				}).collect(Collectors.toList());
+			}
+			return Result.ok(rltlist);
+	}
+	
+	/**
+	 * 查询我的收藏（商品）2（展示6条）
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/favorites/listgoodsfavorites2", method = RequestMethod.GET)
+	public Result listGoodsFavorites2(HttpServletRequest request) throws Exception {
+			String uid = ServletBox.getLoginUID(request);
+			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
+			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2", 6);
 			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 				rltlist = goodslist.stream().map(bo -> {
 					CommonGoodsVO vo = new CommonGoodsVO();

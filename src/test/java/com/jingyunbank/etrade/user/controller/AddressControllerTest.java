@@ -29,7 +29,7 @@ public class AddressControllerTest extends TestCaseBase {
 	@Test
 	public void test0() throws Exception{
 		getMockMvc().perform(
-				 put("/api/address/")
+				 post("/api/address/")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("valid", "true")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -50,7 +50,7 @@ public class AddressControllerTest extends TestCaseBase {
 	@Test
 	public void testAdd() throws Exception{
 		getMockMvc().perform(
-				 put("/api/address/")
+				post("/api/address/")
 				 .sessionAttr(ServletBox.LOGIN_ID, "1")
 				.param("name", "q")
 				.param("country", "1")
