@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
@@ -166,7 +167,8 @@ public class CartController {
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
 	public Result clearing(@Valid @RequestBody CartVO cart,
 					BindingResult valid, HttpSession session) throws Exception{
-		session.setAttribute(GOODS_IN_CART_TO_CLEARING, cart);
+		ObjectMapper mapper = new ObjectMapper();
+		session.setAttribute(GOODS_IN_CART_TO_CLEARING, mapper.writeValueAsString(cart));
 		return Result.ok();
 	}
 	
@@ -183,7 +185,8 @@ public class CartController {
 		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);
 		CartVO cart = new CartVO();
 		if(Objects.nonNull(obj)){
-			cart = (CartVO)obj;
+			ObjectMapper mapper = new ObjectMapper();
+			cart = mapper.readValue((String)obj, CartVO.class);
 		}
 		return Result.ok(cart);
 	}
