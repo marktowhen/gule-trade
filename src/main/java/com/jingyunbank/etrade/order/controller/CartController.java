@@ -123,6 +123,18 @@ public class CartController {
 		cartService.remove(gids);
 		return Result.ok(gids);
 	}
+	
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/cart/goods/{uid}", method=RequestMethod.DELETE,
+					produces="application/json;charset=UTF-8")
+	public Result delete(@PathVariable("uid") String uid, HttpSession session) throws Exception{
+		String loginuid = ServletBox.getLoginUID(session);
+		if(loginuid.equals(uid)){
+			cartService.clear(uid);
+		}
+		return Result.ok();
+	}
+	
 	/**
 	 * 更新购物车中商品的数量
 	 * <br>

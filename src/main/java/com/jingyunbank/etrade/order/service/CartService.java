@@ -125,4 +125,13 @@ public class CartService implements ICartService {
 		return Optional.ofNullable(cbo);
 	}
 
+	@Override
+	public void clear(String uid) throws DataRemovingException {
+		try {
+			cartDao.deleteByUID(uid);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+	}
+
 }

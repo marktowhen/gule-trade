@@ -84,7 +84,8 @@ public class GoodsVO implements Serializable{
 		private String note;// 注意事项
 		private String storageMethods;// 储藏方法
 		private String isGiftBox;// 是否礼盒装
-		private Date ProductionDate;//生产日期
+		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		private Date productionDate;//生产日期
 		private String weight;// 重量
 		private String unit;// 单位
 		private String factoryName; //厂名
@@ -396,11 +397,12 @@ public class GoodsVO implements Serializable{
 		public void setIsGiftBox(String isGiftBox) {
 			this.isGiftBox = isGiftBox;
 		}
+
 		public Date getProductionDate() {
-			return ProductionDate;
+			return productionDate;
 		}
 		public void setProductionDate(Date productionDate) {
-			ProductionDate = productionDate;
+			this.productionDate = productionDate;
 		}
 		public String getWeight() {
 			return weight;

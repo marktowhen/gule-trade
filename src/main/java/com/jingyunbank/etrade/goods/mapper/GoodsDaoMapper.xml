@@ -44,7 +44,7 @@
 		<result column="note" property="note" />
 		<result column="storage_methods" property="storageMethods" />
 		<result column="is_gift_box" property="isGiftBox" />
-		<result column="ProductionDate" property="production_date" />
+		<result column="production_date" property="productionDate" />
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="factoryname" property="factoryName" />
@@ -119,13 +119,13 @@
 		g.`state` state,g.`count` counts,g.`up_time` up_time, 
 		g.`down_time` down_time,g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
 		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
-		g.`title` goodstitle,m.`merchant_name` merchantname ,b.`name` brandname,t.`name` typename,
+		g.`title` goodstitle,m.`merchant_name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
 		<include refid="imgAttr"/>
 		d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
 		d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
 		d.`ingredients` ingredients,d.`food_additives` food_additives,d.`specifications` specifications,
 		d.`ingredient` ingredient, d.`functions` functions,d.`note` note,d.`storage_methods` storage_methods,
-		d.`is_gift_box` is_gift_box,d.`production_date` ProductionDate,d.`weight` weight,d.`unit` unit,
+		d.`is_gift_box` is_gift_box,d.`production_date` production_date,d.`weight` weight,d.`unit` unit,
 		d.`factory_name` factoryname,d.`factory_addr` factoryaddr,d.`factory_tel` factorytel,COUNT(c.id) COMMENT
 	</sql>
 	

@@ -21,6 +21,8 @@ public interface CartDao{
 	
 	public void deleteMany(@Param(value="gidsInCart") List<String> gidsInCart) throws Exception;
 	
+	public void deleteByUID(String uid) throws Exception;
+	
 	public void update(GoodsInCartEntity goods) throws Exception ;
 
 	public List<GoodsInCartEntity> selectRangeByUID(@Param(value="uid") String uid, @Param(value="offset") long offset, @Param(value="size") long size) ;

@@ -8,7 +8,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -335,7 +337,8 @@ public class UserController {
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
 	public Result login(@Valid @RequestBody LoginUserVO user, 
-						BindingResult valid, HttpSession session) throws Exception{
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("用户名或者密码错误！");
 		}
@@ -379,6 +382,11 @@ public class UserController {
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(ServletBox.LOGIN_ID, users.getID());
+		cookie.setPath("/");
+		response.addCookie(cookie);
 		
 		return Result.ok("成功");
 	}
