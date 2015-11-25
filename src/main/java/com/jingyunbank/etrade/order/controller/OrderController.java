@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -117,6 +118,10 @@ public class OrderController {
 				orderGoods.setAddtime(new Date());
 				orderGoodses.add(orderGoods);
 			}
+			order.setPrice(orderGoodses.stream()
+					.map(x->x.getPrice())
+					.reduce(new BigDecimal(0), (x,y)->x.add(y))
+					);
 			order.setGoods(orderGoodses);
 			orders.add(order);
 		}
