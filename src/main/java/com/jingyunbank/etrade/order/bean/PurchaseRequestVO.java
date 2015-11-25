@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.order.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -37,6 +38,7 @@ public class PurchaseRequestVO {
 	private boolean businessReceipt;//是否是单位发票
 	private String invoiceTitle;//发票抬头
 	
+	@Valid
 	@NotNull
 	@Size(min=1)
 	private List<PurchaseOrderVO> orders = new ArrayList<>();

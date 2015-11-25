@@ -69,14 +69,13 @@ public class OrderControllerTest extends TestCaseBase {
 		for (int i = 0; i < 3; i++) {
 			PurchaseOrderVO povo = new PurchaseOrderVO();
 			povo.setAddtime(new Date());
-			povo.setDeliveryTypeID("XCSDFAXCFS");
+			povo.setDeliveryTypeCode("D002");
 			povo.setDeliveryTypeName("普通快递");
 			povo.setID(KeyGen.uuid());
 			povo.setMID("XXXXX"+i);
 			povo.setMname("YYYYY"+i);
 			povo.setNote("NOTE"+i);
 			povo.setPostage(new BigDecimal("12.00"));
-			povo.setPrice(new BigDecimal("20000.00"));
 			List<PurchaseGoodsVO> goods = new ArrayList<PurchaseGoodsVO>();
 			for (int j = 0; j < 3; j++) {
 				PurchaseGoodsVO g = new PurchaseGoodsVO();
