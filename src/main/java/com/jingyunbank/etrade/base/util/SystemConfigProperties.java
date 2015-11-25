@@ -13,17 +13,6 @@ import org.springframework.stereotype.Component;
 @Scope("singleton")
 public final class SystemConfigProperties {
 
-//	private Logger logger = Logger.getLogger(SystemConfigProperties.class);
-//	private SystemConfigProperties() {
-//		try {
-//			//加载短信服务类
-//			Class.forName(getString(MOBILE_PROVIDER));
-//			//加载邮箱服务类
-//			Class.forName(getString(EMAIL_PROVIDER));
-//		} catch (ClassNotFoundException e) {
-//			logger.error(e);
-//		}
-//	}
 	
 	private final static String PROPERTIES_FILE_LOCATION = "system.properties";
 	
@@ -56,6 +45,8 @@ public final class SystemConfigProperties {
 	public final static String DEFAULT_1ST_LEVEL_RATE = "default.first.level.rate";
 	public final static String DEFAULT_2ND_LEVEL_RATE = "default.second.level.rate";
 	public final static String DEFAULT_3RD_LEVEL_RATE = "default.third.level.rate";
+	
+	public final static String ROOT_WEB_URL = "root.web.url";
 	
 	public final static ClassLoader RESOURCE_LOADER = SystemConfigProperties.class.getClassLoader();
 	
