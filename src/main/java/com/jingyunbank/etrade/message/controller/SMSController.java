@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.message.controller;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
@@ -25,7 +28,54 @@ public class SMSController {
 
 	@Autowired
 	private IUserService userService;
-	
+	/**
+	 * 当前手机号发送验证
+	 * @param request
+	 * @param session
+	 * @param userVO
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/send/message",method=RequestMethod.GET)
+	public Result currentPhone(HttpServletRequest request, HttpSession session) throws Exception{
+		String id = ServletBox.getLoginUID(request);
+		
+		Users users=userService.getByUid(id).get();
+		if(users.getMobile()!=null){
+			return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
+		}
+		
+		return Result.fail("重试");
+	}
+	//修改手机号的操作
+	/**
+	 * 1更换手机发送验证码的过程操作
+	 * @param userVO
+	 * @param valid
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/update/phone",method=RequestMethod.GET)
+	public Result sendUpdatePhone(@RequestParam("mobile") String mobile,HttpSession session,HttpServletRequest request) throws Exception{
+		//验证手机号输入的准确性
+		if(mobile!=null){
+				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+				if(!p.matcher(mobile).matches()){
+					return Result.fail("手机格式不正确");
+				}
+				//检验手机号是否已经存在
+				if(userService.phoneExists(mobile)){
+					return Result.fail("该手机号已存在。");
+				}
+			}
+
+			 return sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
+		
+		
+		
+	}
 	/**
 	 * 发送验证码到注册手机 
 	 * @param request
