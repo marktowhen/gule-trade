@@ -46,7 +46,7 @@ public class GoodsVO implements Serializable{
 		private Date pro_start;  //促销开始时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date pro_end;	//促销结束时间
-		private int pro_flag; //是否促销标志
+		private String pro_flag; //是否促销标志
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date upTime; //上架时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
@@ -222,10 +222,10 @@ public class GoodsVO implements Serializable{
 		public void setPro_end(Date pro_end) {
 			this.pro_end = pro_end;
 		}
-		public int getPro_flag() {
+		public String getPro_flag() {
 			return pro_flag;
 		}
-		public void setPro_flag(int pro_flag) {
+		public void setPro_flag(String pro_flag) {
 			this.pro_flag = pro_flag;
 		}
 		public Date getUpTime() {
