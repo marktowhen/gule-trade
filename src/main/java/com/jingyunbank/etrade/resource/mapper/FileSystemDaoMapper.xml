@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.resource.dao.FileSystemDao">
+	
+	<sql id="fsserver_columns">
+		name, code, host, rootpath, rankl, rankh
+	</sql>
+	<select id="selectServers" resultType="com.jingyunbank.etrade.resource.entity.FileSystemServerEntity">
+		select <include refid="fsserver_columns"/> from fs_server
+	</select>
+	<select id="selectServer" resultType="com.jingyunbank.etrade.resource.entity.FileSystemServerEntity"
+		parameterType="int">
+		select <include refid="fsserver_columns"/> from fs_server where #{rank} between rankl and rankh limit 1
+	</select>
+	<select id="selectFirst" resultType="com.jingyunbank.etrade.resource.entity.FileSystemServerEntity">
+		select <include refid="fsserver_columns"/> from fs_server limit 1
+	</select>
+	
+</mapper>

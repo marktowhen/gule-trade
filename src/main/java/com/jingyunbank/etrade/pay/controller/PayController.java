@@ -61,7 +61,7 @@ public class PayController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/pay/init", method=RequestMethod.GET,
+	@RequestMapping(value="/api/pay/init", method=RequestMethod.POST,
 					consumes="application/json;charset=UTF-8",
 					produces="application/json;charset=UTF-8")
 	@AuthBeforeOperation
@@ -81,7 +81,7 @@ public class PayController {
 		List<OrderPaymentVO> opvs = new ArrayList<OrderPaymentVO>();
 		payments.forEach(p -> {
 			OrderPaymentVO opv = new OrderPaymentVO();
-			BeanUtils.copyProperties(p, opvs);
+			BeanUtils.copyProperties(p, opv);
 			opvs.add(opv);
 		});
 		return Result.ok(opvs);
