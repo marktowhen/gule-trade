@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,20 +58,16 @@ public class EmailController {
 	}
 	
 	/**
-	 * 校验图形验证码，校验邮箱格式,通过后发送验证链接到用户输入的邮箱
+	 * 发送验证链接到用户输入的邮箱
 	 * @param request
-	 * @param code
 	 * @param email
 	 * @return
 	 * 2015年11月11日 qxs
 	 * @throws Exception 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/email-link/{code}",method=RequestMethod.PUT)
-	public Result checkCodeAndSendEamil(HttpServletRequest request,@PathVariable String code,@RequestBody String email) throws Exception{
-		if(!checkCaptcha(request.getSession(), code)){
-			return Result.fail("验证码错误");
-		}
+	@RequestMapping(value="/email-link",method=RequestMethod.PUT)
+	public Result checkCodeAndSendEamil(HttpServletRequest request,@RequestBody String email) throws Exception{
 		if(StringUtils.isEmpty(email)){
 			return Result.fail("邮箱地址不能为空");
 		}

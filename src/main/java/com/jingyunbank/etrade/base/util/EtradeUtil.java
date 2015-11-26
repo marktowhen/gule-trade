@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.base.util;
 
 import java.util.Date;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
