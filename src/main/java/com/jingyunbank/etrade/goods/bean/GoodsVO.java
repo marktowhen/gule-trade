@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jingyunbank.etrade.api.goods.bo.BaseGoods;
 
 /**
  * 商品VO

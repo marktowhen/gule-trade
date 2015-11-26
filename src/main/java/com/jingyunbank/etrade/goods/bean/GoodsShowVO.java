@@ -2,8 +2,6 @@ package com.jingyunbank.etrade.goods.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 商品查询VO对象

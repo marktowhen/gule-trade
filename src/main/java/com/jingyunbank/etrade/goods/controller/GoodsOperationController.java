@@ -1,23 +1,15 @@
 package com.jingyunbank.etrade.goods.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import org.apache.log4j.spi.LoggerFactory;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -25,10 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.goods.bo.Goods;
@@ -37,10 +26,8 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsImg;
 import com.jingyunbank.etrade.api.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
-import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 import com.jingyunbank.etrade.goods.bean.GoodsVO;
-import com.jingyunbank.etrade.user.bean.AddressVO;
 
 /**
  * 
@@ -52,7 +39,6 @@ import com.jingyunbank.etrade.user.bean.AddressVO;
 @RestController
 @RequestMapping("/api/goodsOperation")
 public class GoodsOperationController {
-	private Logger logger = org.slf4j.LoggerFactory.getLogger(GoodsOperationController.class);
 	@Resource
 	private IGoodsOperationService goodsOperationService;
 

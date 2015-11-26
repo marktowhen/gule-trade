@@ -375,6 +375,7 @@
 		WHERE 1=1 AND <![CDATA[expand_sort <> 0  ]]>
 		GROUP BY g.id
 		ORDER BY expand_sort
+		limit 0,3
 	</select>
 	<!-- 在结果中查询商品 -->
 	<select id="selectGoodsByGoodsResult" parameterType="java.util.Map" resultMap="baseGoodsMap">

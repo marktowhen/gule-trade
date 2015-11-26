@@ -3,10 +3,6 @@ package com.jingyunbank.etrade.goods.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.BeginState;
-
-import com.jingyunbank.core.Result;
-
 /**
  * 商品表实体
  * @author liug
