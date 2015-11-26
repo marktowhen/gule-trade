@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -72,7 +73,7 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/send/message",method=RequestMethod.GET)
-	public Result currentPhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
+	public Result currentPhone(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		
 		Users users=userService.getByUid(id).get();
@@ -118,19 +119,20 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/update/phone",method=RequestMethod.GET)
-	public Result sendUpdatePhone(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	public Result sendUpdatePhone(@RequestParam("mobile") String mobile,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
-		if(userVO.getMobile()!=null){
+		if(mobile!=null){
 				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-				if(!p.matcher(userVO.getMobile()).matches()){
+				if(!p.matcher(mobile).matches()){
 					return Result.fail("手机格式不正确");
 				}
 				//检验手机号是否已经存在
-				if(userService.phoneExists(userVO.getMobile())){
+				if(userService.phoneExists(mobile)){
 					return Result.fail("该手机号已存在。");
 				}
 			}
-			 return sendCodeToMobile(userVO.getMobile(), EtradeUtil.getRandomCode(), request);
+
+			 return sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
 		
 		
 		
@@ -146,9 +148,11 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/update/phone",method=RequestMethod.POST)
-	public Result checkCodeUpdatePhone(UserVO userVO,String code,HttpServletRequest request, HttpSession session) throws Exception{
+	public Result checkCodeUpdatePhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
 			Users users=new Users();
+			UserVO userVO=new UserVO();
+			userVO.setMobile(mobile);
 			userVO.setID(uid);
 			BeanUtils.copyProperties(userVO, users);
 		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
