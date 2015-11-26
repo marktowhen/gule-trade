@@ -1,12 +1,6 @@
 package com.jingyunbank.etrade.resource.controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,15 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.fs.FileStore;
-import com.jingyunbank.etrade.api.resource.bo.FileSystemServer;
-import com.jingyunbank.etrade.api.resource.service.IFileSystemService;
+import com.jingyunbank.etrade.api.exception.FileStorageException;
+import com.jingyunbank.etrade.api.resource.service.IStoreService;
 
 @RestController
 public class ResourceController {
 
 	@Autowired
-	private IFileSystemService fileSystemService;
+	private IStoreService storeService;
 	
 	@RequestMapping(value="/api/resource/upload/multiple", method=RequestMethod.POST,
 			consumes="multipart/form-data")
@@ -45,32 +38,10 @@ public class ResourceController {
 		return Result.ok(url);
 	}
 
-	private String process(MultipartFile file) throws IOException {
+	private String process(MultipartFile file) throws IOException, FileStorageException  {
 		byte[] contents = file.getBytes();
-		
 		String fname = file.getOriginalFilename();
-		fname = FileStore.rename(fname);
-		String dpath = FileStore.buildpath();
-		///static/upload/2015/11/16/random_sequence_code/random_sequece.name
-		FileSystemServer server = fileSystemService.random();
-		Path pp = Paths.get(server.getRootpath(), 
-								dpath,
-								fname);
-		
-		File f = pp.toFile();
-		File parent = f.getParentFile();
-		if(!parent.exists()) parent.mkdirs();
-		if(!f.exists()) f.createNewFile();
-		
-		String url = new StringBuilder().append(server.getHost())
-							.append(Paths.get(dpath, fname).toString()).toString();
-		
-		Path p = f.toPath();
-		FileChannel fc = FileChannel.open(p, StandardOpenOption.WRITE);
-		ByteBuffer buffer = ByteBuffer.wrap(contents);
-		fc.write(buffer);
-		fc.close();
-		return url;
+		return storeService.store(fname, contents);
 	}
 	
 }
