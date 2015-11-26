@@ -175,7 +175,7 @@
 	<sql id="hotGoodsWhere">
 		g.id,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
 		g.price,g.now_price now_price , g.count count, g.volume volume
-		,g.addtime addtime,
+		,g.addtime addtime,g.pro_flag,g.promotion_price,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
