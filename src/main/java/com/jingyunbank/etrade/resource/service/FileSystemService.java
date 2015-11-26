@@ -1,11 +1,12 @@
 package com.jingyunbank.etrade.resource.service;
 
-import java.util.Random;
+import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.util.EnvirVariable;
 import com.jingyunbank.etrade.api.resource.bo.FileSystemServer;
 import com.jingyunbank.etrade.api.resource.service.IFileSystemService;
 import com.jingyunbank.etrade.resource.dao.FileSystemDao;
@@ -18,10 +19,10 @@ public class FileSystemService implements IFileSystemService {
 	private FileSystemDao fileSystemDao;
 	
 	@Override
-	public FileSystemServer random() {
-		int rank = new Random().nextInt(1000);
-		FileSystemServerEntity entity = fileSystemDao.selectServer(rank);
-		if(entity == null){
+	public FileSystemServer current() {
+		String serverid = System.getenv(EnvirVariable.SERVER_ID_IN_CLUSTER_ENV_KEY);
+		FileSystemServerEntity entity = fileSystemDao.selectServer(Objects.isNull(serverid)?"":serverid);
+		if(Objects.isNull(entity)){
 			entity = fileSystemDao.selectFirst();
 		}
 		FileSystemServer server = new FileSystemServer();

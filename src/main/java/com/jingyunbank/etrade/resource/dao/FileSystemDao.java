@@ -8,7 +8,7 @@ public interface FileSystemDao {
 
 	public List<FileSystemServerEntity> selectServers();
 	
-	public FileSystemServerEntity selectServer(int rank);
+	public FileSystemServerEntity selectServer(String id);
 	
 	public FileSystemServerEntity selectFirst();
 	

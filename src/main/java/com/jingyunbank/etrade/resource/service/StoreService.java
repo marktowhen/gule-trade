@@ -28,7 +28,7 @@ public class StoreService implements IStoreService {
 			fname = FileStore.rename(fname);
 			String dpath = FileStore.buildpath();
 			///static/upload/2015/11/16/random_sequence_code/random_sequece.name
-			FileSystemServer server = fileSystemService.random();
+			FileSystemServer server = fileSystemService.current();
 			Path pp = Paths.get(server.getRootpath(), 
 									dpath,
 									fname);
