@@ -6,8 +6,6 @@ public class FileSystemServerEntity {
 	private String name;
 	private String host;
 	private String rootpath;
-	private int rankl;
-	private int rankh;
 	
 	public String getCode() {
 		return code;
@@ -32,17 +30,5 @@ public class FileSystemServerEntity {
 	}
 	public void setRootpath(String rootpath) {
 		this.rootpath = rootpath;
-	}
-	public int getRankl() {
-		return rankl;
-	}
-	public void setRankl(int rankl) {
-		this.rankl = rankl;
-	}
-	public int getRankh() {
-		return rankh;
-	}
-	public void setRankh(int rankh) {
-		this.rankh = rankh;
 	}
 }
