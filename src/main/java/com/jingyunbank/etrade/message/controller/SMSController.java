@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
 @RequestMapping("/api/sms")
@@ -28,6 +30,33 @@ public class SMSController {
 
 	@Autowired
 	private IUserService userService;
+	
+	
+	/**
+	 * 用户注册信息及其发送手机验证码
+	 * @param userVO
+	 * @param valid
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+		@RequestMapping(value="register/sendcode",method=RequestMethod.PUT)
+		public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
+			//验证邮箱是否存在
+			if(!StringUtils.isEmpty(userVO.getMobile())){
+				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+				if(!p.matcher(userVO.getMobile()).matches()){
+					return Result.fail("手机格式不正确");
+				}
+				if(userService.phoneExists(userVO.getMobile())){
+					return Result.fail("该手机号已存在。");
+				}
+				return sendCodeToMobile(userVO.getMobile(), EtradeUtil.getRandomCode(), request);
+				
+			}
+			return Result.fail("发送验证码失败");
+		}
 	/**
 	 * 当前手机号发送验证
 	 * @param request
@@ -36,7 +65,7 @@ public class SMSController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/send/message",method=RequestMethod.GET)
+	@RequestMapping(value="/sendcode/message",method=RequestMethod.GET)
 	public Result currentPhone(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		
@@ -57,7 +86,7 @@ public class SMSController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update/phone",method=RequestMethod.GET)
+	@RequestMapping(value="/phone",method=RequestMethod.GET)
 	public Result sendUpdatePhone(@RequestParam("mobile") String mobile,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
 		if(mobile!=null){
@@ -75,6 +104,27 @@ public class SMSController {
 		
 		
 		
+	}
+	//忘记密码
+		/**
+		 * 1手机号发送验证码
+		 * @param request
+		 * @param session
+		 * @param loginfo
+		 * @return
+		 */
+	@RequestMapping(value="/forgetpwd/code",method=RequestMethod.GET)
+	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String loginfo) throws Exception{
+		if(StringUtils.isEmpty(loginfo)){
+			return Result.fail("手机/邮箱");
+		}
+		Optional<Users> usersOptional = userService.getByKey(loginfo);
+		Users users=usersOptional.get();
+		
+		if(users.getMobile()!=null){
+			return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
+		}
+		return Result.fail("发送验证码失败");
 	}
 	/**
 	 * 发送验证码到注册手机 
