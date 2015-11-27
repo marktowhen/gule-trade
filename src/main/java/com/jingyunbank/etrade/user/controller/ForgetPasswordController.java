@@ -23,7 +23,7 @@ import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
 @RequestMapping("/api/forget")
-public class ForgetPassword {
+public class ForgetPasswordController {
 	@Autowired
 	private IUserService userService;
 
