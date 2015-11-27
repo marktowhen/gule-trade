@@ -369,6 +369,35 @@ public class UserController {
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
   
+	/**
+	 * 安全等级
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月27日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
+	public Result getSafetyLevel(@PathVariable String uid) throws Exception {
+		int level = 0;
+		Optional<Users> userOption = userService.getByUid(uid);
+		if(userOption.isPresent()){
+			Users users = userOption.get();
+			//已验证邮箱
+			if(!StringUtils.isEmpty(users.getEmail())){
+				level += 33;
+			}
+			//已验证手机
+			if(!StringUtils.isEmpty(users.getMobile())){
+				level += 33;
+			}
+			//支付密码与登录密码不同
+			if(!users.getPassword().equals(users.getTradepwd())){
+				level += 33;
+			}
+		}
+		return Result.ok(level);
+	}
 	
 	
 	/**
