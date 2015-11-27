@@ -136,8 +136,8 @@ public class UserController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update/tradepwd",method=RequestMethod.POST)
-	public Result updateTradePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/update/tradepwd",method=RequestMethod.PUT)
+	public Result updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
 		if(userVO.getTradepwd()!=null){
 			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
@@ -163,8 +163,8 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/install/tradepwd",method=RequestMethod.POST)
-	public Result installTradepwd(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
+	public Result installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		
 		if(userVO.getTradepwd()!=null){
 			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
@@ -181,7 +181,7 @@ public class UserController {
 					return Result.ok(userVO);
 				}
 		}
-		return Result.fail("设置交易密码失败");
+		return Result.fail("交易密码已经存在");
 	}
 	
 	
