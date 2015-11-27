@@ -82,6 +82,9 @@ public class TrackController {
 	@RequestMapping(value = "/footprint/save/{gid}", method = RequestMethod.GET)
 	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
+		if(uid == null || "".equals(uid)){
+			return null;
+		}
 		boolean flag = trackService.saveFootprint(uid, gid);
 		if (flag) {
 			return Result.ok("足迹保存成功！");

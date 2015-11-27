@@ -22,8 +22,8 @@ import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
-@RequestMapping("/api/forget")
-public class ForgetPassword {
+@RequestMapping("/api/pwd")
+public class PasswordController {
 	@Autowired
 	private IUserService userService;
 
@@ -31,29 +31,8 @@ public class ForgetPassword {
 	
 	
 	
-	//忘记密码
-		/**
-		 * 1为输入的邮箱或手机号发送验证码
-		 * @param request
-		 * @param session
-		 * @param loginfo
-		 * @return
-		 */
-		@RequestMapping(value="/forgetpwd/send",method=RequestMethod.GET)
-		public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String loginfo) throws Exception{
-			if(StringUtils.isEmpty(loginfo)){
-				return Result.fail("手机/邮箱");
-			}
-			Optional<Users> usersOptional = userService.getByKey(loginfo);
-			Users users=usersOptional.get();
-			if(users.getEmail()!=null){
-				return sendCodeToEmail(loginfo, "验证码", EtradeUtil.getRandomCode(), request);
-			}
-			if(users.getMobile()!=null){
-				return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
-			}
-			return Result.fail("发送验证码失败");
-		}
+	
+	
 		//忘记密码
 		/**
 		 * 2.验证输入的验证码是否正确并且保存修改后的密码进行保存
@@ -65,7 +44,7 @@ public class ForgetPassword {
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value="/forgetpwd/check",method=RequestMethod.POST)
+		@RequestMapping(value="/forgetpwd/checkcode",method=RequestMethod.POST)
 		public Result forgetpwdCheck(UserVO userVO,HttpServletRequest request, HttpSession session,String loginfo,String code) throws Exception{
 			if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
 				return Result.fail("登录密码必须是8-20位");
@@ -89,45 +68,6 @@ public class ForgetPassword {
 			
 		}
 		
-		/**
-		 * 发送邮箱验证码,将code放入session  EMAIL_MESSAGE
-		 * @param email
-		 * @param subTitle
-		 * @param code
-		 * @param request
-		 * @return
-		 * 2015年11月10日 qxs
-		 * @throws Exception 
-		 */
-		private Result sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
-			request.getSession().setAttribute(EMAIL_MESSAGE, code);
-			Message message = new Message();
-			message.setTitle(subTitle);
-			message.setContent("您的验证码是:"+code);
-			message.getReceiveUser().setEmail(email);
-			System.out.println("-----------------"+"您的验证码是:"+code);
-			//emailService.inform(message);
-			return Result.ok();
-		}
-		/**
-		 * 发送手机验证码 将code放入session  SMS_MESSAGE
-		 * @param mobile
-		 * @param code
-		 * @param request
-		 * @return
-		 * @throws Exception
-		 * 2015年11月10日 qxs
-		 */
-		private Result sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
-			request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
-			Message message = new Message();
-			message.setContent("您的验证码是:"+code);
-			message.getReceiveUser().setMobile(mobile);
-			message.setTitle("");
-			System.out.println("-----------------"+"您的验证码是:"+code);
-			//smsService.inform(message);
-			return Result.ok();
-		}
 		/**
 		 * 验证验证码,成功后清除session
 		 * @param code
