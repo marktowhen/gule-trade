@@ -9,7 +9,7 @@ import com.jingyunbank.etrade.api.pay.handler.PayHandler;
 public class AlipayHandler implements PayHandler {
 
 	@Override
-	public Map<String, String> handle(List<OrderPayment> payments) throws Exception {
+	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
 		return null;
 	}
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
@@ -102,6 +103,24 @@ public class PayService implements IPayService{
 	public boolean allDone(List<String> orderpaymentids) {
 		int count = payDao.countDone(orderpaymentids);
 		return count == orderpaymentids.size();
+	}
+
+	@Override
+	public void finish(String extransno) throws DataRefreshingException {
+		try {
+			payDao.updateStatus(extransno, true);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
+	@Override
+	public void fail(String extransno) throws DataRefreshingException {
+		try {
+			payDao.updateStatus(extransno, false);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
 	}
 
 }

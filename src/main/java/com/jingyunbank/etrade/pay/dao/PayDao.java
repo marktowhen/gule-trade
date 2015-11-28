@@ -17,4 +17,6 @@ public interface PayDao {
 	public void updateMany(@Param("payments") List<OrderPaymentEntity> payments) throws Exception;
 	//指定的支付id中已完成的支付数
 	public int countDone(@Param("pids") List<String> pids);
+	
+	public void updateStatus(@Param("extransno")String extransno, @Param("done")boolean done) throws Exception;
 }

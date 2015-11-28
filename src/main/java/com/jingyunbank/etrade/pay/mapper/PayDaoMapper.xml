@@ -74,4 +74,7 @@
 			where id = #{p.ID}
 		</foreach>
 	</update>
+	<update id="updateStatus">
+		update order_payment set done = #{done}, paidtime = now() where extransno = #{extransno}
+	</update>
 </mapper>
