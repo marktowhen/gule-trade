@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,8 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsImg;
 import com.jingyunbank.etrade.api.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
+import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
+import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 import com.jingyunbank.etrade.goods.bean.GoodsVO;
 
@@ -209,6 +212,40 @@ public class GoodsOperationController {
 		int count =  Integer.valueOf(request.getParameter("count"));
 		boolean flag = goodsOperationService.refreshGoodsVolume(gid,count);
 		return Result.ok(flag);
+	}
+	
+	
+	
+	/**
+	 * 查询所属的店铺
+	 * @param mid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/merchant/list", method = RequestMethod.GET)
+	public Result getmerchants() throws Exception{
+		List<GoodsMerchantVO> list =goodsOperationService.listMerchant().stream().map(bo -> {
+			GoodsMerchantVO vo = new GoodsMerchantVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+	
+	/**
+	 * 根据MID 查询所属的品牌
+	 * @param mid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/brands/{mid}", method = RequestMethod.GET)
+	public Result getBrandByMid(@PathVariable String mid) throws Exception{
+		List<GoodsBrandVO> list = goodsOperationService.listBrandsByMid(mid).stream().map(bo -> {
+			GoodsBrandVO vo = new GoodsBrandVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 
 }

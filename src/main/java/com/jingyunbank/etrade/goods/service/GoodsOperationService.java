@@ -1,9 +1,11 @@
 package com.jingyunbank.etrade.goods.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -122,6 +124,26 @@ public class GoodsOperationService implements IGoodsOperationService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<ShowGoods> listBrandsByMid(String mid) throws Exception {
+		List<ShowGoods> brandslist = goodsOperationDao.selectBrandsByMid(mid).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return brandslist;
+	}
+
+	@Override
+	public List<ShowGoods> listMerchant() throws Exception {
+		List<ShowGoods> merchantlist = goodsOperationDao.selectMerchant().stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return merchantlist;
 	}
 
 }
