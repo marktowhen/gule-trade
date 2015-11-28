@@ -65,8 +65,9 @@ public class PayContextService implements IPayContextService{
 			map.put("error", "订单信息已过期！");
 			return map;
 		}
+		long newExtransno = UniqueSequence.next18();
 		payments.forEach(x->{
-			x.setExtransno(UniqueSequence.next18());
+			x.setExtransno(newExtransno);
 			x.setPlatformCode(platformCode);
 			x.setPlatformName(platformName);
 		});
