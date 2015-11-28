@@ -128,7 +128,7 @@ public class ProvinceController {
 		BeanUtils.copyProperties(vo, province);
 		return Result.ok(provinceService.list(province)
 				.stream().map( bo->{ 
-					Province c = new Province();
+					ProvinceVO c = new ProvinceVO();
 					BeanUtils.copyProperties(bo, c);
 					return c;
 					}).collect(Collectors.toList())
@@ -145,7 +145,7 @@ public class ProvinceController {
 	public Result getListByCountry(@PathVariable int countryID) throws Exception{
 		return Result.ok(provinceService.listByCountry(countryID)
 				.stream().map( bo->{ 
-					Province c = new Province();
+					ProvinceVO c = new ProvinceVO();
 					BeanUtils.copyProperties(bo, c);
 					return c;
 					}).collect(Collectors.toList())

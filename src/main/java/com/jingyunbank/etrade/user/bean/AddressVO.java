@@ -22,8 +22,6 @@ public class AddressVO extends BaseAddress {
 	
 	private String ID;
 	private String UID;//用户id
-	@NotEmpty(message="标题不能为空")
-	@Size(max=20, message="标题错误")
 	private String name;//标题
 	@NotNull(message="国家不能为空")
 	private int country;//国家

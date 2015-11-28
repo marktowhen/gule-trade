@@ -128,7 +128,7 @@ public class CityController {
 		BeanUtils.copyProperties(vo, city);
 		return Result.ok(cityService.list(city)
 				.stream().map( bo->{ 
-					City c = new City();
+					CityVO c = new CityVO();
 					BeanUtils.copyProperties(bo, c);
 					return c;
 					}).collect(Collectors.toList())
@@ -145,7 +145,7 @@ public class CityController {
 	public Result getList(@PathVariable int provinceID) throws Exception{
 		return Result.ok(cityService.listByProvince(provinceID)
 				.stream().map( bo->{ 
-					City c = new City();
+					CityVO c = new CityVO();
 					BeanUtils.copyProperties(bo, c);
 					return c;
 					}).collect(Collectors.toList())

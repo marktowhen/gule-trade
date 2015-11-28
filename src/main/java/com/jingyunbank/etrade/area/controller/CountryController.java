@@ -128,7 +128,7 @@ public class CountryController {
 		BeanUtils.copyProperties(vo, country);
 		return Result.ok(countryService.list(country)
 				.stream().map( bo->{ 
-					Country c = new Country();
+					CountryVO c = new CountryVO();
 					BeanUtils.copyProperties(bo, c);
 					return c;
 					}).collect(Collectors.toList())

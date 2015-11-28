@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,36 +37,36 @@ public class AddressController {
 	/**
 	 * 新增
 	 * @param request
-	 * @param addressVO
+	 * @param address
 	 * @return 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result add(HttpServletRequest request,@Valid AddressVO addressVO, BindingResult valid) throws Exception {
+	public Result add(HttpServletRequest request,@RequestBody @Valid AddressVO address, BindingResult valid) throws Exception {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		Address address = new Address();
-		BeanUtils.copyProperties(addressVO, address);
-		address.setUID(ServletBox.getLoginUID(request));
-		addressService.save(address);
+		Address addressBo = new Address();
+		BeanUtils.copyProperties(address, addressBo);
+		addressBo.setUID(ServletBox.getLoginUID(request));
+		addressService.save(addressBo);
 		return Result.ok("保存成功");
 	}
 
 	/**
 	 * 修改
-	 * @param addressVO
+	 * @param address
 	 * @return
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result refresh(@PathVariable String id ,@Valid AddressVO addressVO , BindingResult valid) throws Exception{
+	public Result refresh(@PathVariable String id ,@RequestBody @Valid AddressVO address , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -73,10 +74,10 @@ public class AddressController {
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		addressVO.setID(id);
-		Address address = getBoFromVo(addressVO);
+		address.setID(id);
+		Address addressBo = getBoFromVo(address);
 		//修改
-		if(addressService.refresh(address)){
+		if(addressService.refresh(addressBo)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");

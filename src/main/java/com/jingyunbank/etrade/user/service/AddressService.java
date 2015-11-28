@@ -32,6 +32,7 @@ public class AddressService implements IAddressService{
 		AddressEntity addressEntity=new AddressEntity();
 		BeanUtils.copyProperties(address, addressEntity);
 		addressEntity.setID(KeyGen.uuid());
+		addressEntity.setValid(true);
 		try {
 			result = addressDao.insert(addressEntity);
 		} catch (Exception e) {
