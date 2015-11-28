@@ -50,16 +50,28 @@
 			#{oid}
 		</foreach>
 	</select>
-	
+	<select id="countDone" resultType="int">
+		select count(id) from order_payment 
+		where done = 1 and id in 
+		<foreach collection="pids" item="pid" open="(" separator="," close=")">
+			#{pid}
+		</foreach>
+	</select>
 	<update id="updateMany">
-		<foreach collection="payments" item="p">
+		<foreach collection="payments" item="p" open="" close="" separator=";">
 			update order_payment
 			<set>
 				<if test="p.extransno != ''">
-					extransno = p.extransno,
+					extransno = #{p.extransno, jdbcType=BIGINT},
+				</if>
+				<if test="p.platformCode != ''">
+					platform_code = #{p.platformCode, jdbcType=VARCHAR},
+				</if>
+				<if test="p.platformName != ''">
+					platform_name = #{p.platformName, jdbcType=VARCHAR},
 				</if>
 			</set>
-			where id = p.ID
+			where id = #{p.ID}
 		</foreach>
 	</update>
 </mapper>

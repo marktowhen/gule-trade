@@ -79,7 +79,7 @@ public class PayService implements IPayService{
 	}
 
 	@Override
-	public void refreshExtransno(List<OrderPayment> payments)
+	public void refresh(List<OrderPayment> payments)
 			throws DataSavingException {
 		try {
 			payDao.updateMany(payments.stream().map(bo->{
@@ -90,6 +90,18 @@ public class PayService implements IPayService{
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
+	}
+
+	@Override
+	public boolean anyDone(List<String> orderpaymentids) {
+		int count = payDao.countDone(orderpaymentids);
+		return count > 0;
+	}
+
+	@Override
+	public boolean allDone(List<String> orderpaymentids) {
+		int count = payDao.countDone(orderpaymentids);
+		return count == orderpaymentids.size();
 	}
 
 }

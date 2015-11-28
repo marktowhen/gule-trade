@@ -101,7 +101,7 @@ public class EmailController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/user-email",method=RequestMethod.GET)
 	public Result sendCodeToEmail(HttpServletRequest request) throws Exception {
-		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", EtradeUtil.getRandomCode(), request);
 	}
 	
@@ -123,7 +123,7 @@ public class EmailController {
 		if(!p.matcher(email).matches()){
 			return Result.fail("邮箱格式错误");
 		}
-		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		if(userService.getByEmail(email).isPresent()){
 			return Result.fail("该邮箱已被使用");
 		}
