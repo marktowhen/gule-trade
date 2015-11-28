@@ -2,8 +2,10 @@ package com.jingyunbank.etrade.pay.service.context;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +58,20 @@ public class PayContextService implements IPayContextService{
 
 	@Override
 	@Transactional
-	public Map<String, String> buildPayInfo(List<OrderPayment> payments, String platformCode)
+	public Map<String, String> refreshAndComposite(List<OrderPayment> payments, String platformCode, String platformName)
 			throws Exception {
-		payments.forEach(x->x.setExtransno(UniqueSequence.next18()));
-		payService.refreshExtransno(payments);
+		if(payService.anyDone(payments.stream().map(x->x.getID()).collect(Collectors.toList()))){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("error", "订单信息已过期！");
+			return map;
+		}
+		long newExtransno = UniqueSequence.next18();
+		payments.forEach(x->{
+			x.setExtransno(newExtransno);
+			x.setPlatformCode(platformCode);
+			x.setPlatformName(platformName);
+		});
+		payService.refresh(payments);
 		PayHandler handler = payHandlerResolver.resolve(platformCode);
 		return handler.handle(payments);
 	}

@@ -51,10 +51,10 @@ public class UserController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/select/user",method=RequestMethod.GET)
+	@RequestMapping(value="/selectbyid/user",method=RequestMethod.GET)
 	public Result selectPhone(UserVO userVO,HttpServletRequest request){
 		String id = ServletBox.getLoginUID(request);
-		Users users=userService.getByUid(id).get();
+		Users users=userService.getByUID(id).get();
 		BeanUtils.copyProperties(users, userVO);
 		return Result.ok(userVO);
 	}
@@ -69,7 +69,7 @@ public class UserController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/send/message",method=RequestMethod.POST)
+	@RequestMapping(value="/checkcode/message",method=RequestMethod.POST)
 	public Result chenckPhoneCode(@RequestBody UserVO userVO,HttpServletRequest request, HttpSession session) throws Exception{
 		Result	checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
 			if(checkResult.isOk()){
@@ -88,7 +88,7 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update/phone",method=RequestMethod.POST)
+	@RequestMapping(value="/phone",method=RequestMethod.PUT)
 	public Result checkCodeUpdatePhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
 			Users users=new Users();
@@ -111,7 +111,7 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update/password",method=RequestMethod.PUT)
+	@RequestMapping(value="/password",method=RequestMethod.PUT)
 	public Result updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 	
 		//验证登录密码有效性
@@ -136,8 +136,8 @@ public class UserController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update/tradepwd",method=RequestMethod.POST)
-	public Result updateTradePassword(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/tradepwd",method=RequestMethod.PUT)
+	public Result updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
 		if(userVO.getTradepwd()!=null){
 			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
@@ -163,8 +163,8 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/install/tradepwd",method=RequestMethod.POST)
-	public Result installTradepwd(UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
+	public Result installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		
 		if(userVO.getTradepwd()!=null){
 			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
@@ -172,7 +172,7 @@ public class UserController {
 			}
 		}
 		String uid = ServletBox.getLoginUID(request);
-		Optional<Users> optional=userService.getByUid(uid);
+		Optional<Users> optional=userService.getByUID(uid);
 		Users users=optional.get();
 		if(StringUtils.isEmpty(users.getTradepwd())){
 				userVO.setID(uid);
@@ -181,7 +181,7 @@ public class UserController {
 					return Result.ok(userVO);
 				}
 		}
-		return Result.fail("设置交易密码失败");
+		return Result.fail("交易密码已经存在");
 	}
 	
 	
@@ -224,7 +224,7 @@ public class UserController {
 	public Result getLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
-			Optional<Users> users = userService.getByUid(id);
+			Optional<Users> users = userService.getByUID(id);
 			if(users.isPresent()){
 				return Result.ok(getUserVoFromBo(users.get()));
 			}
@@ -270,7 +270,7 @@ public class UserController {
 	@RequestMapping(value="/ckemail-link",method=RequestMethod.GET)
 	public ModelAndView checkEmailLink(HttpServletRequest request,
 			String m, String u, String d) throws DataRefreshingException{
-		Optional<Users> userOption = userService.getByUid(d);
+		Optional<Users> userOption = userService.getByUID(d);
 		Users users = userOption.get();
 		int result = 1;
 		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
@@ -369,6 +369,35 @@ public class UserController {
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
   
+	/**
+	 * 安全等级
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月27日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
+	public Result getSafetyLevel(@PathVariable String uid) throws Exception {
+		int level = 0;
+		Optional<Users> userOption = userService.getByUID(uid);
+		if(userOption.isPresent()){
+			Users users = userOption.get();
+			//已验证邮箱
+			if(!StringUtils.isEmpty(users.getEmail())){
+				level += 33;
+			}
+			//已验证手机
+			if(!StringUtils.isEmpty(users.getMobile())){
+				level += 33;
+			}
+			//支付密码与登录密码不同
+			if(!users.getPassword().equals(users.getTradepwd())){
+				level += 33;
+			}
+		}
+		return Result.ok(level);
+	}
 	
 	
 	/**

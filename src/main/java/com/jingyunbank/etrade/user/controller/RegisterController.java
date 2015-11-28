@@ -27,6 +27,7 @@ import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -37,43 +38,7 @@ public class RegisterController {
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 	
-/**
- * 用户注册信息及其发送手机或邮箱验证码
- * @param userVO
- * @param valid
- * @param request
- * @param session
- * @return
- * @throws Exception
- */
-	@RequestMapping(value="/api/user/register/send",method=RequestMethod.PUT)
-	public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
-		//验证邮箱是否存在
-		if(!StringUtils.isEmpty(userVO.getMobile())){
-			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-			if(!p.matcher(userVO.getMobile()).matches()){
-				return Result.fail("手机格式不正确");
-			}
-			if(userService.phoneExists(userVO.getMobile())){
-				return Result.fail("该手机号已存在。");
-			}
-			return sendCodeToMobile(userVO.getMobile(), getCheckCode(), request);
-			
-		}
-		//验证邮箱是否存在
-		if(!StringUtils.isEmpty(userVO.getEmail())){
-			Pattern p1 = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
-			if(!p1.matcher(userVO.getEmail()).matches()){
-				return Result.fail("手机格式不正确");
-			}
-			if(userService.emailExists(userVO.getEmail())){
-				return Result.fail("该邮箱已存在");
-			}
-			return sendCodeToEmail(userVO.getEmail(), "验证码", getCheckCode(), request);
-			
-		}
-		return Result.fail("发送验证码失败");
-	}
+
 	/**
 	 * 判断验证码是否输入正确
 	 * @param userVO
@@ -84,7 +49,7 @@ public class RegisterController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/user/register/checkcode",method=RequestMethod.POST)
+	@RequestMapping(value="/api/register",method=RequestMethod.PUT)
 	public Result registerCheckCode(@Valid @RequestBody UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -126,56 +91,9 @@ public class RegisterController {
 		}
 		return Result.fail("验证失败或是保存失败");
 	}
-	/**
-	 * 获取4位随机数
-	 * @return
-	 * 2015年11月7日 qxs
-	 */
-	private String getCheckCode(){
-		return String.valueOf(Math.abs(new Random().nextInt()%10000));
-	}
 	
 	
-	
-	/**
-	 * 发送邮箱验证码,将code放入session  EMAIL_MESSAGE
-	 * @param email
-	 * @param subTitle
-	 * @param code
-	 * @param request
-	 * @return
-	 * 2015年11月10日 qxs
-	 * @throws Exception 
-	 */
-	private Result sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
-		request.getSession().setAttribute(EMAIL_MESSAGE, code);
-		Message message = new Message();
-		message.setTitle(subTitle);
-		message.setContent("您的验证码是:"+code);
-		message.getReceiveUser().setEmail(email);
-		System.out.println("-----------------"+"您的验证码是:"+code);
-		//emailService.inform(message);
-		return Result.ok();
-	}
-	/**
-	 * 发送手机验证码 将code放入session  SMS_MESSAGE
-	 * @param mobile
-	 * @param code
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 * 2015年11月10日 qxs
-	 */
-	private Result sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
-		request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
-		Message message = new Message();
-		message.setContent("您的验证码是:"+code);
-		message.getReceiveUser().setMobile(mobile);
-		message.setTitle("");
-		System.out.println("-----------------"+"您的验证码是:"+code);
-		//smsService.inform(message);
-		return Result.ok();
-	}
+
 	/**
 	 * 验证验证码,成功后清除session
 	 * @param code

@@ -45,7 +45,7 @@
 	insert into footprint
 	(id,uid,gid,visit_time)
 	values
-	(#{ID},#{GID},#{UID},#{visitTime})
+	(#{ID},#{UID},#{GID},#{visitTime})
 	</insert>
 	<!-- 检验当前商品或者店家是否已收藏 -->
 	<select id="isFavoritesExists" resultType="int" parameterType="map">

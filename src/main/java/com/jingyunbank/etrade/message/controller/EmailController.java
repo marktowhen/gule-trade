@@ -26,6 +26,7 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.base.util.SystemConfigProperties;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 
 @RestController
@@ -41,6 +42,53 @@ public class EmailController {
 	 */
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
+	
+	
+	/**
+	 * 用户注册信息及其发送邮箱验证码
+	 * @param userVO
+	 * @param valid
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/register/sendcode",method=RequestMethod.PUT)
+	public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
+		//验证邮箱是否存在
+				if(!StringUtils.isEmpty(userVO.getEmail())){
+					Pattern p1 = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
+					if(!p1.matcher(userVO.getEmail()).matches()){
+						return Result.fail("手机格式不正确");
+					}
+					if(userService.emailExists(userVO.getEmail())){
+						return Result.fail("该邮箱已存在");
+					}
+					return sendCodeToEmail(userVO.getEmail(), "验证码", EtradeUtil.getRandomCode(), request);
+					
+				}
+				return Result.fail("发送验证码失败");
+	}
+	//忘记密码
+	/**
+	 * 1为输入的邮箱或手机号发送验证码
+	 * @param request
+	 * @param session
+	 * @param loginfo
+	 * @return
+	 */
+	@RequestMapping(value="/forgetpwd/code",method=RequestMethod.GET)
+	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String loginfo) throws Exception{
+		if(StringUtils.isEmpty(loginfo)){
+			return Result.fail("手机/邮箱");
+		}
+		Optional<Users> usersOptional = userService.getByKey(loginfo);
+		Users users=usersOptional.get();
+		if(users.getEmail()!=null){
+			return sendCodeToEmail(loginfo, "验证码", EtradeUtil.getRandomCode(), request);
+		}
+		return Result.fail("发送验证码失败");
+	}
 	/**
 	 * 发送验证码到注册邮箱
 	 * @param request
@@ -53,7 +101,7 @@ public class EmailController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/user-email",method=RequestMethod.GET)
 	public Result sendCodeToEmail(HttpServletRequest request) throws Exception {
-		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", EtradeUtil.getRandomCode(), request);
 	}
 	
@@ -75,7 +123,7 @@ public class EmailController {
 		if(!p.matcher(email).matches()){
 			return Result.fail("邮箱格式错误");
 		}
-		Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		if(userService.getByEmail(email).isPresent()){
 			return Result.fail("该邮箱已被使用");
 		}

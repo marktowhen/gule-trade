@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.pay.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,6 +18,9 @@ public class OrderPaymentRequestVO {
 	
 	@NotBlank
 	private String platformCode;
+	@NotBlank
+	private String platformName;
+	@Valid
 	@NotBlank
 	@Size(min=6)
 	private String tradepwd;
@@ -42,5 +46,11 @@ public class OrderPaymentRequestVO {
 	}
 	public void setTradepwd(String tradepwd) {
 		this.tradepwd = tradepwd;
+	}
+	public String getPlatformName() {
+		return platformName;
+	}
+	public void setPlatformName(String platformName) {
+		this.platformName = platformName;
 	}
 }

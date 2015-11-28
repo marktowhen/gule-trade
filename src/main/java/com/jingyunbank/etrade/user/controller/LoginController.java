@@ -90,7 +90,6 @@ public class LoginController {
 		//将uid写入cookie
 		Cookie cookie = new Cookie(ServletBox.LOGIN_ID, users.getID());
 		cookie.setPath("/");
-		cookie.setMaxAge(ServletBox.DEFAULT_COOKIE_EXPIRATION_IN_SECONDS);
 		response.addCookie(cookie);
 		
 		return Result.ok("成功");

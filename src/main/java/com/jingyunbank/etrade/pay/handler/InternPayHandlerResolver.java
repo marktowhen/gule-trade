@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.pay.handler.PayHandler;
 import com.jingyunbank.etrade.api.pay.handler.PayHandlerResolver;
 import com.jingyunbank.etrade.pay.handler.alipay.AlipayHandler;
+import com.jingyunbank.etrade.pay.handler.jdpay.JDPayHandler;
 import com.jingyunbank.etrade.pay.handler.llpay.LianlianPayHandler;
 
 @Service("payHandlerResolver")
@@ -17,6 +18,7 @@ public class InternPayHandlerResolver implements PayHandlerResolver {
 	static{
 		handlers.put("LLPAY", new LianlianPayHandler());
 		handlers.put("ALIPAY", new AlipayHandler());
+		handlers.put("JDPAY", new JDPayHandler());
 	}
 	
 	@Override

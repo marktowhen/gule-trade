@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
@@ -47,7 +48,7 @@ public class PayController {
 	 * 初始化订单支付接口。<p>
 	 * 查询出制定订单的支付状态信息
 	 * <p>
-	 * uri: put /api/pay/init[oid, oid, oid]
+	 * uri: get /api/payments?oid=xxx&oid=yyyy&oid=zxx
 	 * <p>
 	 * <b>调用时机：</b><p>
 	 * <ul>
@@ -61,13 +62,12 @@ public class PayController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/pay/init", method=RequestMethod.POST,
-					consumes="application/json;charset=UTF-8",
+	@RequestMapping(value="/api/payments", method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
 	@AuthBeforeOperation
-	public Result init(@Valid @RequestBody List<String> oids, BindingResult valid, HttpSession session) throws Exception{
+	public Result init(@RequestParam(value="oid", required=true) List<String> oids, HttpSession session) throws Exception{
 		
-		if(valid.hasErrors()|| oids.size() == 0){
+		if(oids.size() == 0){
 			return Result.fail("您提交的订单信息有误，请核实后进行支付。");
 		}
 		
@@ -88,14 +88,14 @@ public class PayController {
 	}
 	
 	/**
-	 * 构建用户指定的支付平台的支付信息<p>
+	 * 更新支付信息的平台，交易号信息，并构建用户指定的支付平台的支付信息<p>
 	 * @param payvo
 	 * @param valid
 	 * @param session
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/pay/build", method=RequestMethod.POST)
+	@RequestMapping(value="/api/payments/info", method=RequestMethod.PUT)
 	@AuthBeforeOperation
 	public Result build(
 				@Valid @RequestBody OrderPaymentRequestVO payvo, 
@@ -105,20 +105,21 @@ public class PayController {
 			return Result.fail("您提交的订单数据有误，请校验！");
 		}
 		String platformCode = payvo.getPlatformCode();
+		String platformName = payvo.getPlatformName();
 		String tradepwd = payvo.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
-		Optional<Users> ou = userService.getByUid(ServletBox.getLoginUID(session));
-		if(!ou.isPresent() || tradepwdmd5.equals(ou.get().getTradepwd())){
+		Optional<Users> ou = userService.getByUID(ServletBox.getLoginUID(session));
+		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 			return Result.fail("支付密码错误！");
 		}
-		Map<String, String> payinfo = payContextService.buildPayInfo(
+		Map<String, String> payinfo = payContextService.refreshAndComposite(
 				payvo.getPayments()
 				.stream().map(x->{
 					OrderPayment op = new OrderPayment();
 					BeanUtils.copyProperties(x, op);
 					return op;
 				})
-				.collect(Collectors.toList()), platformCode
+				.collect(Collectors.toList()), platformCode, platformName
 		);
 		
 		return Result.ok(payinfo);
