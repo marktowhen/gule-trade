@@ -25,7 +25,6 @@
 	<select id="selectFootprintGoods"  resultMap="selectFootprintGoods">
 	SELECT 
 	*
-	<![CDATA[
 			 from (
 		select uid,gid,MAX(visit_time) as visit_time 
 		from footprint
@@ -37,8 +36,9 @@
 		and v.gid = x.id
 		left join goods_img i
 	    on v.gid = i.gid 
-	    limit #{from},#{to}
-		 ]]>
+	    <if test="to > 0">
+			limit #{from},#{to}
+		</if>
 	</select>
 	<!-- 插入一条我的足迹 　 -->
 	<insert id="insertFootprint" parameterType="com.jingyunbank.etrade.track.entity.FootprintEntity">
@@ -63,7 +63,7 @@
 		id="favoritesGoodsVEntity">
 		<!-- 商品概要信息 -->
 		<result column="gid" property="GID" />
-		<result column="goodsname" property="goodsName" />
+		<result column="name" property="goodsName" />
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="price" property="price" />
@@ -82,7 +82,7 @@
 	<sql id="merchantFavoritesField">
 		g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
 		g.price,g.now_price now_price , g.count count, g.volume volume
-		,g.addtime addtime,g.collect_time,
+		,g.addtime addtime,g.collect_time,g.promotion_price,g.pro_flag,d.specifications,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
@@ -107,6 +107,8 @@
 		LEFT JOIN goods_brand b ON b.id=g.bid
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
-		limit #{from},#{to}
+		<if test="to > 0">
+			limit #{from},#{to}
+		</if>
 	</select>
 </mapper>

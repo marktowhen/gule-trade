@@ -69,7 +69,7 @@ public class SMSController {
 	public Result currentPhone(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		
-		Users users=userService.getByUid(id).get();
+		Users users=userService.getByUID(id).get();
 		if(users.getMobile()!=null){
 			return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
 		}
@@ -136,7 +136,7 @@ public class SMSController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/user-mobile",method=RequestMethod.GET)
 	public Result sendCodeToRegistMobile(HttpServletRequest request) throws Exception{
-		 Optional<Users> userOption = userService.getByUid(ServletBox.getLoginUID(request));
+		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		 return sendCodeToMobile(userOption.get().getMobile(), EtradeUtil.getRandomCode(), request);
 	}
 	
@@ -156,7 +156,7 @@ public class SMSController {
 			return Result.fail("请输入手机号");
 		}
 		String id = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(userService.getByUid(id).get().getMobile())){
+		if(!StringUtils.isEmpty(userService.getByUID(id).get().getMobile())){
 			return Result.fail("您已经绑定过手机了");
 		}
 		if(userService.getByPhone(mobile).isPresent()){

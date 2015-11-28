@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
@@ -79,7 +80,7 @@ public class PayService implements IPayService{
 	}
 
 	@Override
-	public void refreshExtransno(List<OrderPayment> payments)
+	public void refresh(List<OrderPayment> payments)
 			throws DataSavingException {
 		try {
 			payDao.updateMany(payments.stream().map(bo->{
@@ -89,6 +90,36 @@ public class PayService implements IPayService{
 			}).collect(Collectors.toList()));
 		} catch (Exception e) {
 			throw new DataSavingException(e);
+		}
+	}
+
+	@Override
+	public boolean anyDone(List<String> orderpaymentids) {
+		int count = payDao.countDone(orderpaymentids);
+		return count > 0;
+	}
+
+	@Override
+	public boolean allDone(List<String> orderpaymentids) {
+		int count = payDao.countDone(orderpaymentids);
+		return count == orderpaymentids.size();
+	}
+
+	@Override
+	public void finish(String extransno) throws DataRefreshingException {
+		try {
+			payDao.updateStatus(extransno, true);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
+	@Override
+	public void fail(String extransno) throws DataRefreshingException {
+		try {
+			payDao.updateStatus(extransno, false);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
 		}
 	}
 

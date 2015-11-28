@@ -54,7 +54,7 @@ public class UserController {
 	@RequestMapping(value="/selectbyid/user",method=RequestMethod.GET)
 	public Result selectPhone(UserVO userVO,HttpServletRequest request){
 		String id = ServletBox.getLoginUID(request);
-		Users users=userService.getByUid(id).get();
+		Users users=userService.getByUID(id).get();
 		BeanUtils.copyProperties(users, userVO);
 		return Result.ok(userVO);
 	}
@@ -172,7 +172,7 @@ public class UserController {
 			}
 		}
 		String uid = ServletBox.getLoginUID(request);
-		Optional<Users> optional=userService.getByUid(uid);
+		Optional<Users> optional=userService.getByUID(uid);
 		Users users=optional.get();
 		if(StringUtils.isEmpty(users.getTradepwd())){
 				userVO.setID(uid);
@@ -224,7 +224,7 @@ public class UserController {
 	public Result getLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
 		String id = ServletBox.getLoginUID(request);
 		if(!StringUtils.isEmpty(id)){
-			Optional<Users> users = userService.getByUid(id);
+			Optional<Users> users = userService.getByUID(id);
 			if(users.isPresent()){
 				return Result.ok(getUserVoFromBo(users.get()));
 			}
@@ -270,7 +270,7 @@ public class UserController {
 	@RequestMapping(value="/ckemail-link",method=RequestMethod.GET)
 	public ModelAndView checkEmailLink(HttpServletRequest request,
 			String m, String u, String d) throws DataRefreshingException{
-		Optional<Users> userOption = userService.getByUid(d);
+		Optional<Users> userOption = userService.getByUID(d);
 		Users users = userOption.get();
 		int result = 1;
 		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
@@ -380,7 +380,7 @@ public class UserController {
 	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
 	public Result getSafetyLevel(@PathVariable String uid) throws Exception {
 		int level = 0;
-		Optional<Users> userOption = userService.getByUid(uid);
+		Optional<Users> userOption = userService.getByUID(uid);
 		if(userOption.isPresent()){
 			Users users = userOption.get();
 			//已验证邮箱

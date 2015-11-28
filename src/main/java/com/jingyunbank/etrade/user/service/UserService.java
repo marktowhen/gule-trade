@@ -28,7 +28,7 @@ public class UserService implements IUserService{
 	@Autowired
 	private UserInfoDao userInfoDao;
 	@Override
-	public Optional<Users> getByUid(String id) {
+	public Optional<Users> getByUID(String id) {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setID(id);
 		userEntity = userDao.selectUser(userEntity);
