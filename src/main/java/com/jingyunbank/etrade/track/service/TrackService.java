@@ -36,7 +36,8 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	@Resource
 	private TrackDao trackDao;
 	@Override
-	public List<FootprintGoods> listFootprintGoods(int to) throws Exception {
+	public List<FootprintGoods> listFootprintGoods(int from,int to) throws Exception {
+		this.from = from;
 		this.to = to;
 		Map<String, Integer> params = new HashMap<String,Integer>();
 		params.put("from", this.from);
@@ -108,10 +109,11 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
-	public List<FavoritesGoods> listMerchantFavorites(String uid,String type,int to) throws Exception {
+	public List<FavoritesGoods> listMerchantFavorites(String uid,String type,int from,int to) throws Exception {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
 		map.put("type", type);
+		this.from = from;
 		this.to = to;
 		map.put("from", this.from);
 		map.put("to", this.to);

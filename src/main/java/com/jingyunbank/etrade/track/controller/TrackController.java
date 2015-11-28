@@ -37,40 +37,20 @@ public class TrackController {
 	protected ITrackService trackService;
 	 
 	/**
-	 * 我的足迹商品查询1(展示4条)
+	 * 我的足迹商品查询 传入条数和开始
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/footprint/list1", method = RequestMethod.GET)
-	public Result listFootprintGoods1() throws Exception {
-		try {
-			List<FootprintGoods> goodslist = trackService.listFootprintGoods(4);
+	@RequestMapping(value = "/footprint/list/{pcount}/{pfrom}", method = RequestMethod.GET)
+	public Result listFootprintGoods(@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+			//获取展示条数
+			int count = Integer.valueOf(pcount);
+			int from = Integer.valueOf(pfrom);
+			List<FootprintGoods> goodslist = trackService.listFootprintGoods(from,count);
 			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
 			footprintGoodsVO.init(goodslist);
 			return Result.ok(footprintGoodsVO);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-	}
-	/**
-	 * 我的足迹商品查询2(展示6条)
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/footprint/list2", method = RequestMethod.GET)
-	public Result listFootprintGoods2() throws Exception {
-		try {
-			List<FootprintGoods> goodslist = trackService.listFootprintGoods(6);
-			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
-			footprintGoodsVO.init(goodslist);
-			return Result.ok(footprintGoodsVO);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
 	}
 
 	/**
@@ -145,11 +125,14 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/listmerchantfavorites", method = RequestMethod.GET)
-	public Result listMerchantFavorites(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/favorites/listmerchantfavorites/{pcount}/{pfrom}", method = RequestMethod.GET)
+	public Result listMerchantFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
+		//获取展示条数
+		int count = Integer.valueOf(pcount);
+		int from = Integer.valueOf(pfrom);
 		List<FavoritesMerchantVO> rltlist = new ArrayList<FavoritesMerchantVO>();
-		List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "1",4);
+		List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid,"1",from,count);
 		List<FavoritesGoods> tmplist = new ArrayList<FavoritesGoods>();// 存放商家分组LIST
 		if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 			FavoritesMerchantVO cmvo = new FavoritesMerchantVO();
@@ -183,42 +166,21 @@ public class TrackController {
 		return Result.ok(rltlist);
 	}
 
-	/**
-	 * 查询我的收藏（商品）1(展示4条)
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/favorites/listgoodsfavorites1", method = RequestMethod.GET)
-	public Result listGoodsFavorites1(HttpServletRequest request) throws Exception {
-			String uid = ServletBox.getLoginUID(request);
-			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
-			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2" ,4);
-			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
-				rltlist = goodslist.stream().map(bo -> {
-					CommonGoodsVO vo = new CommonGoodsVO();
-					try {
-						BeanUtils.copyProperties(bo, vo);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return vo;
-				}).collect(Collectors.toList());
-			}
-			return Result.ok(rltlist);
-	}
 	
 	/**
-	 * 查询我的收藏（商品）2（展示6条）
+	 * 查询我的收藏（商品）根据传入的值进行展示
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/favorites/listgoodsfavorites2", method = RequestMethod.GET)
-	public Result listGoodsFavorites2(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/favorites/listgoodsfavorites/{pcount}/{pfrom}", method = RequestMethod.GET)
+	public Result listGoodsFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+			//获取展示条数
+			int count = Integer.valueOf(pcount);
+			int from = Integer.valueOf(pfrom);
 			String uid = ServletBox.getLoginUID(request);
 			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
-			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2", 6);
+			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2" ,from,count);
 			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 				rltlist = goodslist.stream().map(bo -> {
 					CommonGoodsVO vo = new CommonGoodsVO();
