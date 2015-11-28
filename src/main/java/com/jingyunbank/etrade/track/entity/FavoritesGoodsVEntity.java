@@ -15,12 +15,19 @@ public class FavoritesGoodsVEntity  extends BaseGoods{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private String ID;
 	private Date collectTime;
 	public Date getCollectTime() {
 		return collectTime;
 	}
 	public void setCollectTime(Date collectTime) {
 		this.collectTime = collectTime;
+	}
+	public String getID() {
+		return ID;
+	}
+	public void setID(String iD) {
+		ID = iD;
 	}
 	
 

@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
@@ -133,4 +134,14 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		return rltlist;
 	}
 
+	@Override
+	public boolean removeFavoritesById(String id) throws DataRemovingException {
+		boolean flag=false;
+		try {
+			flag = trackDao.deleteFavoritesById(id);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+		return flag;
+	}
 }

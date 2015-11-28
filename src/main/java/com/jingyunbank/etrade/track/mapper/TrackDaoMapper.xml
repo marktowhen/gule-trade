@@ -62,6 +62,7 @@
 	<resultMap type="com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity"
 		id="favoritesGoodsVEntity">
 		<!-- 商品概要信息 -->
+		<result column="id" property="ID" />
 		<result column="gid" property="GID" />
 		<result column="name" property="goodsName" />
 		<result column="weight" property="weight" />
@@ -80,7 +81,7 @@
 		<result column="collect_time" property="collectTime" />
 	</resultMap>
 	<sql id="merchantFavoritesField">
-		g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
+		cid as id,g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
 		g.price,g.now_price now_price , g.count count, g.volume volume
 		,g.addtime addtime,g.collect_time,g.promotion_price,g.pro_flag,d.specifications,
 		<include refid="imgAttr" />
@@ -90,7 +91,7 @@
 		SELECT
 		<include refid="merchantFavoritesField" />
 	FROM (
-		select c.collect_time,x.* from favorites c
+		select c.id as cid,c.collect_time,x.* from favorites c
 		inner join goods x
 		<if test="type =='1'.toString()">
 			<![CDATA[ on c.fid = x.mid  ]]>
@@ -111,4 +112,8 @@
 			limit #{from},#{to}
 		</if>
 	</select>
+	<!--删除我的收藏信息 -->
+	<delete id="deleteFavoritesById" parameterType="String">
+		delete from favorites where id = #{id}
+	</delete>
 </mapper>

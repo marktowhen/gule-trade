@@ -20,7 +20,7 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
-import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
+import com.jingyunbank.etrade.track.bean.FavoritesGoodsVO;
 import com.jingyunbank.etrade.track.bean.FavoritesMerchantVO;
 import com.jingyunbank.etrade.track.bean.FootprintGoodsVO;
 
@@ -179,11 +179,11 @@ public class TrackController {
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
 			String uid = ServletBox.getLoginUID(request);
-			List<CommonGoodsVO> rltlist = new ArrayList<CommonGoodsVO>();
+			List<FavoritesGoodsVO> rltlist = new ArrayList<FavoritesGoodsVO>();
 			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2" ,from,count);
 			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
 				rltlist = goodslist.stream().map(bo -> {
-					CommonGoodsVO vo = new CommonGoodsVO();
+					FavoritesGoodsVO vo = new FavoritesGoodsVO();
 					try {
 						BeanUtils.copyProperties(bo, vo);
 					} catch (Exception e) {
@@ -193,5 +193,17 @@ public class TrackController {
 				}).collect(Collectors.toList());
 			}
 			return Result.ok(rltlist);
+	}
+	/**
+	 * 删除我的收藏信息
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/favorites/remove/{id}", method=RequestMethod.DELETE)
+	public Result removeFavorites(@PathVariable String id) throws Exception{
+		trackService.removeFavoritesById(id);
+		return Result.ok(id);
 	}
 }
