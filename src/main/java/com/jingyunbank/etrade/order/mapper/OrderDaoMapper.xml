@@ -46,7 +46,10 @@
 		</foreach>
 	</insert>
 	<select id="selectByUID" parameterType="String" resultMap="OrderEntityResultMap">
-		select <include refid="orders_columns"/> from orders where uid = #{uid}
+		select <include refid="orders_columns"/> from orders where uid = #{uid} order by addtime desc
+	</select>
+	<select id="selectByUIDWithRange" resultMap="OrderEntityResultMap">
+		select <include refid="orders_columns"/> from orders where uid = #{uid} order by addtime desc limit #{from}, #{size}
 	</select>
 	<select id="selectBetween" resultMap="OrderEntityResultMap">
 		select <include refid="orders_columns"/> from orders where addtime between #{start} and #{end}

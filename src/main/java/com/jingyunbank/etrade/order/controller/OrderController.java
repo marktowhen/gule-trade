@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
@@ -44,20 +45,41 @@ public class OrderController {
 	@Autowired
 	private IOrderService orderService;
 	
-	@RequestMapping(value="/api/orders/list", method=RequestMethod.GET)
-	public Result listAll(HttpServletRequest request, HttpSession session){
-		return Result.ok(orderService.list()
+	/**
+	 * get /api/orders/xxxx/latest/10
+	 * 查询某用户的最新的几条订单数据
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/orders/{uid}/latest/{number}", method=RequestMethod.GET)
+	public Result listAll(@PathVariable("uid")String uid, @PathVariable("number") int number,
+								HttpServletRequest request) throws Exception{
+		String loginuid = ServletBox.getLoginUID(request);
+		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
+		
+		return Result.ok(orderService.list(uid, new Range(0, number))
 				.stream().map(bo-> {
 					OrderVO vo = new OrderVO();
 					BeanUtils.copyProperties(bo, vo);
 					return vo;
 				}).collect(Collectors.toList()));
 	}
-	
-	@RequestMapping(value="/api/orders/list/{uid}", method=RequestMethod.GET)
+	/**
+	 * get /api/orders/xxxx/10/10
+	 * @param uid
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/api/orders/{uid}/{from}/{size}", method=RequestMethod.GET)
 	@AuthBeforeOperation
-	public Result listUID(@PathVariable String uid, HttpSession session){
-		return Result.ok(orderService.list((String)session.getAttribute("LOGIN_ID"))
+	public Result listUID(@PathVariable("uid") String uid, @PathVariable("from") int from, @PathVariable("size") int size,
+			HttpSession session){
+		String loginuid = ServletBox.getLoginUID(session);
+		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
+		
+		return Result.ok(orderService.list(uid, new Range(from, size+from))
 				.stream().map(bo-> {
 					OrderVO vo = new OrderVO();
 					BeanUtils.copyProperties(bo, vo);
