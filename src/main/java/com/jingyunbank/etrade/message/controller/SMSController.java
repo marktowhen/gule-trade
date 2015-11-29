@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.message.controller;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -22,7 +23,6 @@ import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
-import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
 @RequestMapping("/api/sms")
@@ -32,93 +32,50 @@ public class SMSController {
 	private IUserService userService;
 	
 	
+	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
+	
 	/**
-	 * 用户注册信息及其发送手机验证码
-	 * @param userVO
-	 * @param valid
-	 * @param request
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-		@RequestMapping(value="register/sendcode",method=RequestMethod.PUT)
-		public Result register(@RequestBody UserVO userVO,HttpServletRequest request,HttpSession session) throws Exception{
-			//验证邮箱是否存在
-			if(!StringUtils.isEmpty(userVO.getMobile())){
-				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-				if(!p.matcher(userVO.getMobile()).matches()){
-					return Result.fail("手机格式不正确");
-				}
-				if(userService.phoneExists(userVO.getMobile())){
-					return Result.fail("该手机号已存在。");
-				}
-				return sendCodeToMobile(userVO.getMobile(), EtradeUtil.getRandomCode(), request);
-				
-			}
-			return Result.fail("发送验证码失败");
-		}
-	/**
-	 * 当前手机号发送验证
-	 * @param request
-	 * @param session
-	 * @param userVO
-	 * @return
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/sendcode/message",method=RequestMethod.GET)
-	public Result currentPhone(HttpServletRequest request, HttpSession session) throws Exception{
-		String id = ServletBox.getLoginUID(request);
-		
-		Users users=userService.getByUID(id).get();
-		if(users.getMobile()!=null){
-			return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
-		}
-		
-		return Result.fail("重试");
-	}
-	//修改手机号的操作
-	/**
-	 * 1更换手机发送验证码的过程操作
+	 * 1为输入的手机号发送验证码的过程
 	 * @param userVO
 	 * @param valid
 	 * @param session
 	 * @return
 	 * @throws Exception
 	 */
+	//get /api/sms/code?mobile=139888888888
 	@AuthBeforeOperation
-	@RequestMapping(value="/phone",method=RequestMethod.GET)
+	@RequestMapping(value="/code",method=RequestMethod.GET)
 	public Result sendUpdatePhone(@RequestParam("mobile") String mobile,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
 		if(mobile!=null){
-				Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
-				if(!p.matcher(mobile).matches()){
-					return Result.fail("手机格式不正确");
-				}
-				//检验手机号是否已经存在
-				if(userService.phoneExists(mobile)){
-					return Result.fail("该手机号已存在。");
-				}
+			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
+			if(!p.matcher(mobile).matches()){
+				return Result.fail("手机格式不正确");
 			}
+			//检验手机号是否已经存在
+			if(userService.phoneExists(mobile)){
+				return Result.fail("该手机号已存在。");
+			}
+			return sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
+		}
 
-			 return sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
-		
-		
+	 	return Result.fail("请重试");
 		
 	}
-	//忘记密码
+
 		/**
-		 * 1手机号发送验证码
+		 * 1通过key查询出来的手机或邮箱发送验证码
 		 * @param request
 		 * @param session
 		 * @param loginfo
 		 * @return
 		 */
 	@RequestMapping(value="/forgetpwd/code",method=RequestMethod.GET)
-	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String loginfo) throws Exception{
-		if(StringUtils.isEmpty(loginfo)){
+	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String key) throws Exception{
+		if(StringUtils.isEmpty(key)){
 			return Result.fail("手机/邮箱");
 		}
-		Optional<Users> usersOptional = userService.getByKey(loginfo);
+		Optional<Users> usersOptional = userService.getByKey(key);
 		Users users=usersOptional.get();
 		
 		if(users.getMobile()!=null){
@@ -127,51 +84,40 @@ public class SMSController {
 		return Result.fail("发送验证码失败");
 	}
 	/**
-	 * 发送验证码到注册手机 
+	 * 登录的手机号发送验证码
 	 * @param request
 	 * @return
 	 * @throws Exception
 	 * 2015年11月11日 qxs
 	 */
+	//api/sms/code/user
 	@AuthBeforeOperation
-	@RequestMapping(value="/user-mobile",method=RequestMethod.GET)
+	@RequestMapping(value="/code/user",method=RequestMethod.GET)
 	public Result sendCodeToRegistMobile(HttpServletRequest request) throws Exception{
 		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		 return sendCodeToMobile(userOption.get().getMobile(), EtradeUtil.getRandomCode(), request);
 	}
 	
-	/**
-	 * 发送手机验证码 
+	
+	/**验证
+	 * 
+	 * @param mobile
+	 * @param code
 	 * @param request
 	 * @param session
-	 * @param mobile 
 	 * @return
-	 * 2015年11月6日 qxs
-	 * @throws Exception 
 	 */
+	//get api/sms/code/check
 	@AuthBeforeOperation
-	@RequestMapping(value="/code",method=RequestMethod.GET)
-	public Result getMessage(HttpServletRequest request, HttpSession session,String mobile) throws Exception{
-		if(StringUtils.isEmpty(mobile)){
-			return Result.fail("请输入手机号");
+	@RequestMapping(value="/code/check",method=RequestMethod.GET)
+	public Result chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
+		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+		if(checkResult.isOk()){
+			session.setAttribute(MOBILE_CODE_CHECK_DATE, new Date());
+			return Result.ok("手机验证成功");
 		}
-		String id = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(userService.getByUID(id).get().getMobile())){
-			return Result.fail("您已经绑定过手机了");
-		}
-		if(userService.getByPhone(mobile).isPresent()){
-			return Result.fail("该手机号已被使用");
-		}
-		//如何设置验证码的有效期限--待解决
-		Result result = sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
-		if(result.isBad()){
-			return result;
-		}
-		session.setAttribute("UNCHECK_MOBILE", mobile);
-		return Result.ok("成功");
-		
+		return Result.fail("手机或验证码不一致");
 	}
-	
 	
 	/**
 	 * 发送手机验证码 将code放入session  SMS_MESSAGE
@@ -194,6 +140,27 @@ public class SMSController {
 	}
 	
 	
-	
+	/**
+	 * 验证验证码,成功后清除session
+	 * @param code
+	 * @param request
+	 * @param sessionKey 验证码在session中的name
+	 * @return
+	 * 2015年11月10日 qxs
+	 */
+	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+		if(StringUtils.isEmpty(code)){
+			return Result.fail("验证码不能为空");
+		}
+		String sessionCode = (String)request.getSession().getAttribute(sessionName);
+		if(StringUtils.isEmpty(sessionCode)){
+			return Result.fail("验证码未发送或已失效");
+		}
+		if(code.equals(sessionCode)){
+			request.getSession().setAttribute(sessionName, null);
+			return Result.ok();
+		}
+		return Result.fail("验证码错误");
+	}
 	
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +17,8 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
-import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
-import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
-import com.jingyunbank.etrade.user.bean.UserVO;
 
 /**
  * @author Administrator 
@@ -28,12 +26,11 @@ import com.jingyunbank.etrade.user.bean.UserVO;
 	@todo TODO
  */
 @RestController
-@RequestMapping("/api/userinfo")
+@RequestMapping("/api/users")
 public class UserInfoController {
 	@Autowired
 	private IUserInfoService userInfoService;
-	@Autowired
-	private IUserService userService;
+
 	
 	/**
 	 * 个人资料的添加
@@ -68,14 +65,7 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
 	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid) throws Exception{
-		/*Result checkResult = null;
-		
-	
-		Optional<Users> users=userService.getByUid(uid);
-		if(users.isPresent()){
-		Users userss=users.get();
-		UserVO userVO=new UserVO();
-		BeanUtils.copyProperties(userss, userVO);*/
+
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		if(userinfo.isPresent()){
 		UserInfo userInfo=userinfo.get();
@@ -95,8 +85,8 @@ public class UserInfoController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/update",method=RequestMethod.POST)
-	public Result updateUserInfo(HttpSession session,HttpServletRequest request,UserInfoVO userInfoVO) throws Exception {
+	@RequestMapping(value="/info",method=RequestMethod.PUT)
+	public Result updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
 		UserInfo userInfo=new UserInfo();
 		String id = ServletBox.getLoginUID(request);
 		userInfoVO.setUID(id);

@@ -1,11 +1,11 @@
 package com.jingyunbank.etrade.user.controller;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -26,32 +26,30 @@ import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.SystemConfigProperties;
+import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
   	@Autowired
 	private IUserService userService;
-	@Autowired 
-  	private IUserInfoService userInfoService;
 	@Resource
 	private ISyncNotifyService emailService;
 	@Resource
 	private ISyncNotifyService smsService;
   	
 	
-	
+	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 	/**
 	 * 通过id查出对应的对象
 	 * @param userVO
 	 * @param request
-	 * @return
+	 * @return// get /api/user/current
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/selectbyid/user",method=RequestMethod.GET)
+	@RequestMapping(value="/current",method=RequestMethod.GET)
 	public Result selectPhone(UserVO userVO,HttpServletRequest request){
 		String id = ServletBox.getLoginUID(request);
 		Users users=userService.getByUID(id).get();
@@ -60,23 +58,7 @@ public class UserController {
 	}
 
 
-	/**验证
-	 * 当前手机号检验手机号或验证码是否输入正确
-	 * @param mobile
-	 * @param code
-	 * @param request
-	 * @param session
-	 * @return
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/checkcode/message",method=RequestMethod.POST)
-	public Result chenckPhoneCode(@RequestBody UserVO userVO,HttpServletRequest request, HttpSession session) throws Exception{
-		Result	checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
-			if(checkResult.isOk()){
-				return Result.ok("手机验证成功");
-			}
-		return Result.fail("手机或验证码不一致");
-	}
+
 
 	//修改手机号的操作
 	/**验证
@@ -90,100 +72,22 @@ public class UserController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/phone",method=RequestMethod.PUT)
 	public Result checkCodeUpdatePhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
-		String uid = ServletBox.getLoginUID(request);
-			Users users=new Users();
-			UserVO userVO=new UserVO();
-			userVO.setMobile(mobile);
-			userVO.setID(uid);
-			BeanUtils.copyProperties(userVO, users);
-		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
-			if(checkResult.isOk() && userService.refresh(users)){
-				return Result.ok(userVO);
-			}
-		
-		return Result.fail("手机或验证码不一致,");
-	}
-	/**
-	 * 2修改登录密码
-	 * @param userVO
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/password",method=RequestMethod.PUT)
-	public Result updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-	
-		//验证登录密码有效性
-		if(userVO.getPassword()!=null){
-			if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
-				return Result.fail("密码必须是8-20位");
-			}
-		}
-		String uid = ServletBox.getLoginUID(request);
-		userVO.setID(uid);
-		Users users=new Users();
-		BeanUtils.copyProperties(userVO, users);
-		if(userService.refresh(users)){
-			return Result.ok(userVO);
-		}
-		return Result.fail("修改登录密码失败");
-	}
-	/**
-	 * 3修改交易密码
-	 * @param userVO
-	 * @param session
-	 * @return
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/tradepwd",method=RequestMethod.PUT)
-	public Result updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		//验证交易密码的有效性
-		if(userVO.getTradepwd()!=null){
-			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
-				return Result.fail("交易密码必须是8-20位");
-			}
-		}
-		String uid = ServletBox.getLoginUID(request);
-		userVO.setID(uid);
-		Users users=new Users();
-		BeanUtils.copyProperties(userVO, users);
-		if(userService.refresh(users)){
-			return Result.ok(userVO);
-		}
-		return Result.fail("修改交易密码失败");
-		
-	}
-	/**
-	 * 4设置交易密码(通过id查询出这个对象看看那有没有交易密码，没有的情况下进行添加)
-	 * @param userVO
-	 * @param session
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
-	public Result installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		
-		if(userVO.getTradepwd()!=null){
-			if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
-				return Result.fail("交易密码必须是8-20位");
-			}
-		}
-		String uid = ServletBox.getLoginUID(request);
-		Optional<Users> optional=userService.getByUID(uid);
-		Users users=optional.get();
-		if(StringUtils.isEmpty(users.getTradepwd())){
+			/*if(effectiveTime(session)){*/
+				String uid = ServletBox.getLoginUID(request);
+				Users users=new Users();
+				UserVO userVO=new UserVO();
+				userVO.setMobile(mobile);
 				userVO.setID(uid);
 				BeanUtils.copyProperties(userVO, users);
 				if(userService.refresh(users)){
 					return Result.ok(userVO);
 				}
-		}
-		return Result.fail("交易密码已经存在");
+			/*}*/
+			
+		return Result.fail("手机或验证码不一致,");
 	}
-	
+
+
 	
 	
 	/**
@@ -195,8 +99,10 @@ public class UserController {
 	 * @return
 	 * qxs
 	 */
-	@RequestMapping(value="/query",method=RequestMethod.GET)
-	public Result getUserByKey(HttpServletRequest request, HttpSession session,String key  ) throws Exception{
+	//get /api/user?key=139888888888
+	///get /api/user?key=email/phone/username
+	@RequestMapping(value="/",method=RequestMethod.GET)
+	public Result getUserByKey(HttpServletRequest request, HttpSession session,String key) throws Exception{
 		//1、参数校验
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("请输入用户名/手机/邮箱");
@@ -213,95 +119,9 @@ public class UserController {
 	}
 	
 	
-	/**
-	 * 获取已登录的用户
-	 * @param request
-	 * @param session
-	 * @return
-	 * 2015年11月6日 qxs
-	 */
-	@RequestMapping(value="/loginuser",method=RequestMethod.GET)
-	public Result getLoginUser(HttpServletRequest request, HttpSession session) throws Exception{
-		String id = ServletBox.getLoginUID(request);
-		if(!StringUtils.isEmpty(id)){
-			Optional<Users> users = userService.getByUID(id);
-			if(users.isPresent()){
-				return Result.ok(getUserVoFromBo(users.get()));
-			}
-		}
-		return Result.fail("未登录");
-	}
 	
 	
 	
-	//------------------------------qxs 验证/修改邮箱  start-----------------------------------------------
-	
-	//1、发送验证码到注册手机 
-	
-	
-	//2、
-	/**
-	 * 校验短信验证码
-	 * @param request
-	 * @param code
-	 * @return
-	 * 2015年11月11日 qxs
-	 */
-	@RequestMapping(value="/cksmsMessage",method=RequestMethod.GET)
-	public Result checkSmsMassage(HttpServletRequest request, String code){
-		return checkCode(code, request, ServletBox.SMS_MESSAGE);
-	}
-	//3、
-	
-	
-	
-	//4、验证邮箱链接，通过后绑定邮箱
-	/**
-	 * 验证绑定邮箱的链接
-	 * @param request
-	 * @param m uid+"_"+username MD5加密后字符串
-	 * @param u email+"~"+邮件发送时间 base64编码后字符
-	 * @param d uid
-	 * @return
-	 * 2015年11月10日 qxs
-	 * @throws DataRefreshingException 
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/ckemail-link",method=RequestMethod.GET)
-	public ModelAndView checkEmailLink(HttpServletRequest request,
-			String m, String u, String d) throws DataRefreshingException{
-		Optional<Users> userOption = userService.getByUID(d);
-		Users users = userOption.get();
-		int result = 1;
-		if(!MD5.digest(users.getID()+"_"+users.getUsername()).equals(m)){
-//			return Result.fail("链接格式错误");
-			result = 2;
-		}
-		//emial~time(long)
-		String[] emailTime = new String(Base64.decodeBase64(u)).split("~");
-		if(emailTime.length!=2){
-//			return Result.fail("链接格式错误");
-			result = 2;
-		}
-		String email = emailTime[0];
-		long sendtime = Long.valueOf(emailTime[1]);
-		if(new Date(sendtime+SystemConfigProperties.getLong(SystemConfigProperties.EMAIL_VERIFY_VALID_TIME)).before(new Date())){
-//			return Result.fail("链接已失效");
-			result = 3;
-		}
-		if(userService.getByEmail(email).isPresent()){
-//			return Result.fail("该邮箱已被使用");
-			result = 4;
-		}
-		if(result == 1 ){
-			//修改用户邮箱
-			Users userUpdate = new Users();
-			userUpdate.setID(users.getID());
-			userUpdate.setEmail(email);
-			userService.refresh(userUpdate);
-		}
-		return new ModelAndView( "redirect:"+SystemConfigProperties.getString(SystemConfigProperties.ROOT_WEB_URL)+"user-center/verify-email?rst="+result);
-	}
 	
 	
 	
@@ -311,19 +131,7 @@ public class UserController {
 	//------------------------------qxs 验证手机  start-----------------------------------------------
 	//1、发送邮箱验证码
 	
-	//2、验证邮箱验证码
-	/**
-	 * 验证邮箱验证码
-	 * @param request
-	 * @param resp
-	 * @param email
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	@RequestMapping(value="/email-message",method=RequestMethod.POST)
-	public Result checkEmailCode(HttpServletRequest request,@RequestBody String code) {
-		return  checkCode(code, request, EMAIL_MESSAGE);
-	}
+
 	//3、
 	
 	
@@ -369,35 +177,6 @@ public class UserController {
 	
 	//------------------------------qxs 验证手机  end-----------------------------------------------
   
-	/**
-	 * 安全等级
-	 * @param uid
-	 * @return
-	 * @throws Exception
-	 * 2015年11月27日 qxs
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
-	public Result getSafetyLevel(@PathVariable String uid) throws Exception {
-		int level = 0;
-		Optional<Users> userOption = userService.getByUID(uid);
-		if(userOption.isPresent()){
-			Users users = userOption.get();
-			//已验证邮箱
-			if(!StringUtils.isEmpty(users.getEmail())){
-				level += 33;
-			}
-			//已验证手机
-			if(!StringUtils.isEmpty(users.getMobile())){
-				level += 33;
-			}
-			//支付密码与登录密码不同
-			if(!users.getPassword().equals(users.getTradepwd())){
-				level += 33;
-			}
-		}
-		return Result.ok(level);
-	}
 	
 	
 	/**
@@ -440,6 +219,23 @@ public class UserController {
 		return Result.fail("验证码错误");
 	}
 	
+	private boolean effectiveTime(HttpSession session){
+		boolean flag=false;
+		Calendar now=Calendar.getInstance();
+		Object sessionDate=session.getAttribute(SMSController.MOBILE_CODE_CHECK_DATE);
+		if(sessionDate!=null && sessionDate instanceof Date ){
+			Calendar checkDate  = Calendar.getInstance();
+			checkDate.setTime((Date)sessionDate);
+			//+2
+			checkDate.add(2, Calendar.MINUTE);
+			if(checkDate.before(now)){
+				return flag=true;
+			}
+		}
+		return flag;
+		
+	}
+
 	
 	
 }
