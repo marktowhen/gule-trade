@@ -1,39 +1,41 @@
 package com.jingyunbank.etrade.order.bean;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-
-public class OrderVO {
+public class Order2ShowVO {
 
 	private String ID;
 	private String orderno;
-	@NotNull
 	private String receiver;//收货人
-	@NotNull
 	private String MID;
-	@Size(min=22, max=22, message="收货地址错误。")
-	@NotNull
 	private String addressID;//收货地址->address id
 	private String UID;//下单人
 	private Date addtime;//下单时间
-	@Size(min=22, max=22, message="支付类型错误。")
-	@NotNull
 	private String paytypeID;//支付方式 id
-	@NotNull
-	@Email(regexp="[0-9]")
 	private String paytypeName;
-	@NotNull
-	@DecimalMin(value="0", inclusive=true, message="订单总价不能小于0元。")
 	private BigDecimal price;//订单总价
-	@NotNull
-	@DecimalMin(value="0", inclusive=true, message="邮费不能小于0元。")
 	private BigDecimal postage;
+	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
+	
+	public static class OrderGoods2ShowVO{
+		private String GID;
+		private String imgpath;
+		public String getGID() {
+			return GID;
+		}
+		public void setGID(String gID) {
+			GID = gID;
+		}
+		public String getImgpath() {
+			return imgpath;
+		}
+		public void setImgpath(String imgpath) {
+			this.imgpath = imgpath;
+		}
+	}
 	
 	public String getID() {
 		return ID;
@@ -101,12 +103,10 @@ public class OrderVO {
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
 	}
-	@Override
-	public String toString() {
-		return "OrderVO [ID=" + ID + ", orderno=" + orderno + ", receiver="
-				+ receiver + ", MID=" + MID + ", addressID=" + addressID
-				+ ", UID=" + UID + ", addtime=" + addtime + ", paytypeID="
-				+ paytypeID + ", paytypeName=" + paytypeName + ", price="
-				+ price + ", postage=" + postage + "]";
+	public List<OrderGoods2ShowVO> getGoods() {
+		return goods;
+	}
+	public void setGoods(List<OrderGoods2ShowVO> goods) {
+		this.goods = goods;
 	}
 }

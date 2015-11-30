@@ -21,11 +21,20 @@
 		<result column="price" property="price" jdbcType="DECIMAL"/>
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
+		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.entity.OrderEntity$GoodsEntity">
+			<result column="gid" property="GID" javaType="String"/>
+			<result column="imgpath" property="imgpath" javaType="String"/>
+		</collection>
 	</resultMap>
 	<sql id="orders_columns">
 		id, orderno, receiver, uid, mid, mname, address_id, addtime, 
 		paytype_code, paytype_name, deliverytype_code, deliverytype_name, 
 		status_code, status_name, price, postage, note
+	</sql>
+	<sql id="goods_join_orders_columns">
+		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
+		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
+		o.status_code, o.status_name, o.price, o.postage, o.note, img.thumb_path_1 as imgpath, img.gid as gid
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders
@@ -46,16 +55,31 @@
 		</foreach>
 	</insert>
 	<select id="selectByUID" parameterType="String" resultMap="OrderEntityResultMap">
-		select <include refid="orders_columns"/> from orders where uid = #{uid} order by addtime desc
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where o.uid = #{uid} order by o.addtime desc
 	</select>
 	<select id="selectByUIDWithRange" resultMap="OrderEntityResultMap">
-		select <include refid="orders_columns"/> from orders where uid = #{uid} order by addtime desc limit #{from}, #{size}
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where o.uid = #{uid} order by o.addtime desc limit #{from}, #{size}
 	</select>
 	<select id="selectBetween" resultMap="OrderEntityResultMap">
-		select <include refid="orders_columns"/> from orders where addtime between #{start} and #{end}
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where o.addtime between #{start} and #{end}
 	</select>
 	<select id="select" resultMap="OrderEntityResultMap">
-		select <include refid="orders_columns"/> from orders
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
 	</select>
 	<delete id="delete" parameterType="String">
 		delete from orders where id = #{id}

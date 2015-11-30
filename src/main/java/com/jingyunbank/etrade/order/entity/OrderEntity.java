@@ -1,7 +1,9 @@
 package com.jingyunbank.etrade.order.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class OrderEntity {
 
@@ -22,6 +24,25 @@ public class OrderEntity {
 	private String statusName;
 	private BigDecimal postage;
 	private String note;
+	private List<GoodsEntity> goods = new ArrayList<GoodsEntity>();//商品图片路径
+	
+	public static class GoodsEntity {
+		private String GID;
+		private String imgpath;
+		
+		public String getGID() {
+			return GID;
+		}
+		public void setGID(String gID) {
+			GID = gID;
+		}
+		public String getImgpath() {
+			return imgpath;
+		}
+		public void setImgpath(String imgpath) {
+			this.imgpath = imgpath;
+		}
+	}
 	
 	public String getID() {
 		return ID;
@@ -124,6 +145,12 @@ public class OrderEntity {
 	}
 	public void setDeliveryTypeName(String deliveryTypeName) {
 		this.deliveryTypeName = deliveryTypeName;
+	}
+	public List<GoodsEntity> getGoods() {
+		return goods;
+	}
+	public void setGoods(List<GoodsEntity> goods) {
+		this.goods = goods;
 	}
 	
 }

@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +32,8 @@ import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
-import com.jingyunbank.etrade.order.bean.OrderVO;
+import com.jingyunbank.etrade.order.bean.Order2ShowVO;
+import com.jingyunbank.etrade.order.bean.Order2ShowVO.OrderGoods2ShowVO;
 import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
@@ -46,28 +47,9 @@ public class OrderController {
 	private IOrderService orderService;
 	
 	/**
-	 * get /api/orders/xxxx/latest/10
-	 * 查询某用户的最新的几条订单数据
-	 * @param request
-	 * @param session
-	 * @return
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/api/orders/{uid}/latest/{number}", method=RequestMethod.GET)
-	public Result listAll(@PathVariable("uid")String uid, @PathVariable("number") int number,
-								HttpServletRequest request) throws Exception{
-		String loginuid = ServletBox.getLoginUID(request);
-		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
-		
-		return Result.ok(orderService.list(uid, new Range(0, number))
-				.stream().map(bo-> {
-					OrderVO vo = new OrderVO();
-					BeanUtils.copyProperties(bo, vo);
-					return vo;
-				}).collect(Collectors.toList()));
-	}
-	/**
-	 * get /api/orders/xxxx/10/10
+	 * get /api/orders/xxxx/0/10
+	 *	
+	 * 查询某用户的最新的订单中的从from开始的size条
 	 * @param uid
 	 * @param session
 	 * @return
@@ -81,8 +63,14 @@ public class OrderController {
 		
 		return Result.ok(orderService.list(uid, new Range(from, size+from))
 				.stream().map(bo-> {
-					OrderVO vo = new OrderVO();
-					BeanUtils.copyProperties(bo, vo);
+					Order2ShowVO vo = new Order2ShowVO();
+					BeanUtils.copyProperties(bo, vo, "goods");
+					bo.getGoods().forEach(bg -> {
+						OrderGoods2ShowVO gvo = new OrderGoods2ShowVO();
+						gvo.setGID(bg.getGID());
+						gvo.setImgpath(bg.getImgpath());
+						vo.getGoods().add(gvo);
+					});
 					return vo;
 				}).collect(Collectors.toList()));
 	}
@@ -99,9 +87,9 @@ public class OrderController {
 	@AuthBeforeOperation
 	@RequestMapping(
 			value="/api/order",
-			method=RequestMethod.PUT,
-			consumes="application/json;charset=UTF-8",
-			produces="application/json;charset=UTF-8")
+			method=RequestMethod.POST,
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result submit(@Valid @RequestBody PurchaseRequestVO purchase,
 			BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){

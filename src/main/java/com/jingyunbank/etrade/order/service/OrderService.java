@@ -6,27 +6,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
-
-
-
-
-
-
-
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
-
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.Range;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.order.dao.OrderDao;
@@ -81,6 +70,12 @@ public class OrderService implements IOrderService{
 			.stream().map(entity -> {
 				Orders bo = new Orders();
 				BeanUtils.copyProperties(entity, bo);
+				entity.getGoods().forEach(ge -> {
+					OrderGoods og = new OrderGoods();
+					og.setGID(ge.getGID());
+					og.setImgpath(ge.getImgpath());
+					bo.getGoods().add(og);
+				});
 				return bo;
 			}).collect(Collectors.toList());
 	}
@@ -90,7 +85,13 @@ public class OrderService implements IOrderService{
 		return orderDao.selectByUIDWithRange(uid, range.getFrom(), range.getTo()-range.getFrom())
 				.stream().map(entity -> {
 					Orders bo = new Orders();
-					BeanUtils.copyProperties(entity, bo);
+					BeanUtils.copyProperties(entity, bo, "goods");
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						og.setGID(ge.getGID());
+						og.setImgpath(ge.getImgpath());
+						bo.getGoods().add(og);
+					});
 					return bo;
 				}).collect(Collectors.toList());
 	}
@@ -101,6 +102,12 @@ public class OrderService implements IOrderService{
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo);
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						og.setGID(ge.getGID());
+						og.setImgpath(ge.getImgpath());
+						bo.getGoods().add(og);
+					});
 					return bo;
 				}).collect(Collectors.toList());
 	}
@@ -111,6 +118,12 @@ public class OrderService implements IOrderService{
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo);
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						og.setGID(ge.getGID());
+						og.setImgpath(ge.getImgpath());
+						bo.getGoods().add(og);
+					});
 					return bo;
 				}).collect(Collectors.toList());
 	}
