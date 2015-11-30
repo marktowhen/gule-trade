@@ -20,7 +20,9 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
+import com.jingyunbank.etrade.track.bean.FavoritesGoodsFacadeVO;
 import com.jingyunbank.etrade.track.bean.FavoritesGoodsVO;
+import com.jingyunbank.etrade.track.bean.FavoritesMerchantFacadeVO;
 import com.jingyunbank.etrade.track.bean.FavoritesMerchantVO;
 import com.jingyunbank.etrade.track.bean.FootprintGoodsVO;
 
@@ -163,7 +165,10 @@ public class TrackController {
 
 			}
 		}
-		return Result.ok(rltlist);
+		FavoritesMerchantFacadeVO fvo = new FavoritesMerchantFacadeVO();
+		fvo.setCount(rltlist.size());
+		fvo.setMerchantlist(rltlist);
+		return Result.ok(fvo);
 	}
 
 	
@@ -192,7 +197,10 @@ public class TrackController {
 					return vo;
 				}).collect(Collectors.toList());
 			}
-			return Result.ok(rltlist);
+			FavoritesGoodsFacadeVO fvo = new FavoritesGoodsFacadeVO();
+			fvo.setCount(rltlist.size());
+			fvo.setGoodslist(rltlist);
+			return Result.ok(fvo);
 	}
 	/**
 	 * 删除我的收藏信息
