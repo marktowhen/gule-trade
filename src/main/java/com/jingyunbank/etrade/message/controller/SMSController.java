@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,56 +34,56 @@ public class SMSController {
 	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
 	
 	/**
-	 * 1为输入的手机号发送验证码的过程
-	 * @param userVO
-	 * @param valid
-	 * @param session
+	 * 为传入的手机号发送验证码
+	 * @param mobile
+	 * @param request
 	 * @return
 	 * @throws Exception
+	 * 2015年11月30日 qxs
 	 */
-	//get /api/sms/code?mobile=139888888888
 	@AuthBeforeOperation
 	@RequestMapping(value="/code",method=RequestMethod.GET)
-	public Result sendUpdatePhone(@RequestParam("mobile") String mobile,HttpSession session,HttpServletRequest request) throws Exception{
+	public Result sendCode(@RequestParam("mobile") String mobile, HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
-		if(mobile!=null){
+		if(!StringUtils.isEmpty(mobile)){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 			if(!p.matcher(mobile).matches()){
 				return Result.fail("手机格式不正确");
 			}
-			//检验手机号是否已经存在
-			if(userService.phoneExists(mobile)){
-				return Result.fail("该手机号已存在。");
-			}
 			return sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
 		}
 
-	 	return Result.fail("请重试");
+	 	return Result.fail("手机号为空");
 		
 	}
 
-		/**
-		 * 1通过key查询出来的手机或邮箱发送验证码
-		 * @param request
-		 * @param session
-		 * @param loginfo
-		 * @return
-		 */
-	@RequestMapping(value="/forgetpwd/code",method=RequestMethod.GET)
-	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String key) throws Exception{
+	/**
+	 * 通过key查询出来的手机发送验证码
+	 * @param request
+	 * @param key 手机/邮箱/用户名
+	 * @return
+	 * @throws Exception
+	 * 2015年11月30日 qxs
+	 */
+	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
+	public Result sendCodeByKey(HttpServletRequest request, String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
-			return Result.fail("手机/邮箱");
+			return Result.fail("参数缺失:手机/邮箱/用户名");
 		}
 		Optional<Users> usersOptional = userService.getByKey(key);
-		Users users=usersOptional.get();
-		
-		if(users.getMobile()!=null){
-			return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
+		if(usersOptional.isPresent()){
+			Users users=usersOptional.get();
+			if(!StringUtils.isEmpty(users.getMobile())){
+				return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
+			}else{
+				return Result.fail("用户未绑定手机");
+			}
+		}else{
+			return Result.fail("未找到用户");
 		}
-		return Result.fail("发送验证码失败");
 	}
 	/**
-	 * 登录的手机号发送验证码
+	 * 登录用户的手机号发送验证码
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -93,14 +92,14 @@ public class SMSController {
 	//api/sms/code/user
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/user",method=RequestMethod.GET)
-	public Result sendCodeToRegistMobile(HttpServletRequest request) throws Exception{
+	public Result sendCodeToUserMobile(HttpServletRequest request) throws Exception{
 		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
 		 return sendCodeToMobile(userOption.get().getMobile(), EtradeUtil.getRandomCode(), request);
 	}
 	
 	
-	/**验证
-	 * 
+	/**
+	 * 验证
 	 * @param mobile
 	 * @param code
 	 * @param request

@@ -11,12 +11,10 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
@@ -45,32 +43,24 @@ public class EmailController {
 	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
 
 	/**
-	 * 1为输入的邮箱发送验证码的过程
+	 * 为传入的邮箱发送验证码
 	 * @param userVO
 	 * @param valid
-	 * @param session
 	 * @return
 	 * @throws Exception
 	 */
 	//get /api/sms/code?mail=1234454@qq.com
 	@AuthBeforeOperation
 	@RequestMapping(value="/code",method=RequestMethod.GET)
-	public Result sendUpdatePhone(@RequestParam("email") String email,HttpSession session,HttpServletRequest request) throws Exception{
-		//验证手机号输入的准确性
-		if(email!=null){
-				Pattern p = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
+	public Result sendCodeToEmail(@RequestParam("email") String email,HttpServletRequest request) throws Exception{
+		if(!StringUtils.isEmpty(email)){
+			Pattern p = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
 			if(!p.matcher(email).matches()){
 				return Result.fail("邮箱格式不正确");
 			}
-			//检验手机号是否已经存在
-			if(userService.phoneExists(email)){
-				return Result.fail("该邮箱已存在。");
-			}
-			 return sendCodeToEmail(email,"验证码", EtradeUtil.getRandomCode(), request);
-			}
-
-			return Result.fail("重试");
-		
+			return sendCodeToEmail(email,"验证码", EtradeUtil.getRandomCode(), request);
+		}
+		return Result.fail("邮箱不能为空");
 	}
 
 	
@@ -78,15 +68,15 @@ public class EmailController {
 	 * 1通过key查询出来的邮箱发送验证码
 	 * @param request
 	 * @param session
-	 * @param loginfo
+	 * @param key
 	 * @return
 	 */
-	@RequestMapping(value="/forgetpwd/code",method=RequestMethod.GET)
-	public Result forgetpwdSend(HttpServletRequest request, HttpSession session,String loginfo) throws Exception{
-		if(StringUtils.isEmpty(loginfo)){
+	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
+	public Result sendCodeByKey(HttpServletRequest request, HttpSession session,String key) throws Exception{
+		if(StringUtils.isEmpty(key)){
 			return Result.fail("手机/邮箱");
 		}
-		Optional<Users> usersOptional = userService.getByKey(loginfo);
+		Optional<Users> usersOptional = userService.getByKey(key);
 		Users users=usersOptional.get();
 		if(users.getEmail()!=null){
 			return sendCodeToEmail(users.getEmail(), "验证码", EtradeUtil.getRandomCode(), request);
@@ -95,7 +85,7 @@ public class EmailController {
 	}
 	
 	/**
-	 * 为登录的邮箱发送验证码
+	 * 为用户绑定邮箱发送验证码
 	 * @param request
 	 * @param resp
 	 * @param email
@@ -111,7 +101,6 @@ public class EmailController {
 	}
 	
 
-	//2、验证邮箱验证码
 	/**
 	 * 验证邮箱验证码
 	 * @param request
