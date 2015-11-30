@@ -232,5 +232,18 @@ public class GoodsService implements IGoodsService {
 		System.out.println(showGoods);
 		return Optional.ofNullable(showGoods);
 	}
+
+	@Override
+	public List<ShowGoods> listAll(Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		List<ShowGoods> list = goodsDao.selectAllGoods(map).stream().map(dao -> {
+			ShowGoods goods = new ShowGoods();
+			BeanUtils.copyProperties(dao, goods);
+			return goods;
+		}).collect(Collectors.toList());
+		return list;
+	}
 	
 }
