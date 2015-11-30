@@ -136,6 +136,26 @@ public class GoodsController {
 		}
 		return goodshowBO;
 	}
+	
+	/**
+	 * 查询所有商品
+	 * @param request
+	 * @param range
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/all/list", method = RequestMethod.GET)
+	public Result queryAllgoods(HttpServletRequest request,Page page)throws Exception {
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getSize());
+		List<CommonGoodsVO> goodslist = goodsService.listAll(range).stream().map(bo -> {
+			CommonGoodsVO vo = new CommonGoodsVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(goodslist);
+	}
 
 	/**
 	 * 根据条件查询商品信息 (商品查询)

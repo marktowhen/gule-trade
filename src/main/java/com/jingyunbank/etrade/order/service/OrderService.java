@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 
 
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
@@ -84,6 +86,16 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
+	public List<Orders> list(String uid, Range range) {
+		return orderDao.selectByUIDWithRange(uid, range.getFrom(), range.getTo()-range.getFrom())
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
+	@Override
 	public List<Orders> list(Date start, Date end) {
 		return orderDao.selectBetween(start, end)
 				.stream().map(entity -> {
@@ -111,7 +123,5 @@ public class OrderService implements IOrderService{
 			throw new DataRemovingException(e);
 		}
 	}
-
-	
 
 }

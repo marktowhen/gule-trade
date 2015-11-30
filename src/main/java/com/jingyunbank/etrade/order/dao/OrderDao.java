@@ -22,6 +22,8 @@ public interface OrderDao{
 	public List<OrderEntity> selectBetween(@Param(value="start") Date start, @Param(value="end") Date end) ;
 
 	public List<OrderEntity> selectByUID(String uid);
+	
+	public List<OrderEntity> selectByUIDWithRange(String uid, @Param("from") long from, @Param("size") long size);
 
 	public void delete(String id) throws Exception;
 

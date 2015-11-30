@@ -43,6 +43,13 @@ public interface GoodsDao {
 	public List<GoodsDaoEntity> selectTypes() throws Exception;
 
 	/**
+	 * 查询所有商品
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsDaoEntity> selectAllGoods(Map<String, Object> map) throws Exception;
+	/**
 	 * 多条件查询商品
 	 * 
 	 * @param map
