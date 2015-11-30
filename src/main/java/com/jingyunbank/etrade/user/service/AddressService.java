@@ -40,7 +40,7 @@ public class AddressService implements IAddressService{
 		}
 		//如果新增的为默认 则把其他的设为非默认
 		if(addressEntity.isDefaulted()){
-			refreshDefualt(addressEntity.getID(), addressEntity.getUID());
+			refreshDefault(addressEntity.getID(), addressEntity.getUID(), true);
 		}
 		return result;
 	}
@@ -52,7 +52,7 @@ public class AddressService implements IAddressService{
 		try {
 			result = addressDao.update(getEntityFromBo(address));
 			if(address.isDefaulted()){
-				refreshDefualt(address.getID(), address.getUID());
+				refreshDefault(address.getID(), address.getUID(), true);
 			}
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
@@ -101,15 +101,17 @@ public class AddressService implements IAddressService{
 	 * @throws DataRefreshingException 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public void refreshDefualt(String id, String uid) throws DataRefreshingException{
+	public void refreshDefault(String id, String uid, boolean defaulted) throws DataRefreshingException{
 		AddressEntity entity = new AddressEntity();
 		entity.setUID(uid);
 		try {
-			//将用户所有的地址改为非默认
-			entity.setDefaulted(false);
-			addressDao.updateDefault(entity);
-			//将指定地址设为默认
-			entity.setDefaulted(true);
+			if(defaulted){
+				//将用户所有的地址改为非默认
+				entity.setDefaulted(false);
+				addressDao.updateDefault(entity);
+			}
+			//将指定地址设为指定状态
+			entity.setDefaulted(defaulted);
 			entity.setID(id);
 			addressDao.updateDefault(entity);
 			
