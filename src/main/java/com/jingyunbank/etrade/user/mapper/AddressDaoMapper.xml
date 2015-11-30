@@ -29,7 +29,7 @@
 		    and uid=#{entity.UID}
 		 </if>
 		 <if test="entity.ID!=null and entity.ID!=''">
-		 	and id=#{ID}
+		 	and id=#{entity.ID}
 		 </if>
 		 <if test="entity.name!=null and entity.name!=''">
 		 	and name=#{entity.name}
@@ -38,13 +38,13 @@
 		 	and country=#{entity.country}
 		 </if>
 		 <if test="entity.province!=null and entity.province!=''">
-		 	and province=#{province}
+		 	and province=#{entity.province}
 		 </if>
 		 <if test="entity.city!=null and entity.city!=''">
-		 	and city=#{city}
+		 	and city=#{entity.city}
 		 </if>
 		 <if test="entity.address!=null and entity.address!=''">
-		 	and address=#{address}
+		 	and address=#{entity.address}
 		 </if>
 		 <if test="entity.zipcode!=null and entity.zipcode!=''">
 		 	and zipcode=#{entity.zipcode}

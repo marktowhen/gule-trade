@@ -91,8 +91,8 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/default/{id}",method=RequestMethod.PUT)
-	public Result setDefualt(@PathVariable String id, HttpServletRequest request ) throws Exception{
-		addressService.refreshDefualt(id, ServletBox.getLoginUID(request));
+	public Result setDefualt(@PathVariable String id, HttpServletRequest request ,@RequestBody boolean defaulted) throws Exception{
+		addressService.refreshDefault(id, ServletBox.getLoginUID(request), defaulted);
 		return Result.ok("成功");
 	}
 
