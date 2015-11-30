@@ -26,6 +26,7 @@ import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
@@ -72,17 +73,18 @@ public class UserController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/phone",method=RequestMethod.PUT)
 	public Result checkCodeUpdatePhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
-			/*if(effectiveTime(session)){*/
+			if(effectiveTime(session)){
 				String uid = ServletBox.getLoginUID(request);
 				Users users=new Users();
 				UserVO userVO=new UserVO();
 				userVO.setMobile(mobile);
 				userVO.setID(uid);
 				BeanUtils.copyProperties(userVO, users);
-				if(userService.refresh(users)){
+				Result checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+				if(userService.refresh(users) && checkResult.isOk()){
 					return Result.ok(userVO);
 				}
-			/*}*/
+			}
 			
 		return Result.fail("手机或验证码不一致,");
 	}
@@ -220,19 +222,21 @@ public class UserController {
 	}
 	
 	private boolean effectiveTime(HttpSession session){
-		boolean flag=false;
 		Calendar now=Calendar.getInstance();
+		now.setTime(new Date());
 		Object sessionDate=session.getAttribute(SMSController.MOBILE_CODE_CHECK_DATE);
 		if(sessionDate!=null && sessionDate instanceof Date ){
 			Calendar checkDate  = Calendar.getInstance();
 			checkDate.setTime((Date)sessionDate);
 			//+2
-			checkDate.add(2, Calendar.MINUTE);
-			if(checkDate.before(now)){
-				return flag=true;
+			checkDate.add(Calendar.MINUTE, SystemConfigProperties.getInt("effective.time") );
+			checkDate.getTime();
+			now.getTime();
+			if(checkDate.after(now)){
+				return true;
 			}
 		}
-		return flag;
+		return false;
 		
 	}
 

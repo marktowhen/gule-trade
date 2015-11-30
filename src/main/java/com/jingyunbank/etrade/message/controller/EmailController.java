@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.message.controller;
 
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,8 @@ public class EmailController {
 	 */
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
-	
+	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
+
 	/**
 	 * 1为输入的邮箱发送验证码的过程
 	 * @param userVO
@@ -119,7 +121,8 @@ public class EmailController {
 	 * 2015年11月10日 qxs
 	 */
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
-	public Result checkEmailCode(HttpServletRequest request,@RequestParam String code) {
+	public Result checkEmailCode(HttpServletRequest request,@RequestParam String code,HttpSession session) {
+		session.setAttribute(MOBILE_CODE_CHECK_DATE, new Date());
 		return  checkCode(code, request, EMAIL_MESSAGE);
 	}
 	/**

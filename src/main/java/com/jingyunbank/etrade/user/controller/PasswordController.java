@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.user.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
@@ -19,6 +21,8 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.SystemConfigProperties;
+import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -40,23 +44,24 @@ public class PasswordController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/password",method=RequestMethod.PUT)
 	public Result updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-	
+		if(effectiveTime(session)){
 		//验证登录密码有效性
-		if(userVO.getPassword()!=null){
-			if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
-				return Result.fail("密码必须是8-20位");
+			if(userVO.getPassword()!=null){
+				if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
+					return Result.fail("密码必须是8-20位");
+				}
 			}
-		}
-		String uid = ServletBox.getLoginUID(request);
-		userVO.setID(uid);
-		Users users=new Users();
-		BeanUtils.copyProperties(userVO, users);
-		if(userService.refresh(users)){
-			return Result.ok(userVO);
+			String uid = ServletBox.getLoginUID(request);
+			userVO.setID(uid);
+			Users users=new Users();
+			BeanUtils.copyProperties(userVO, users);
+			if(userService.refresh(users)){
+				return Result.ok(userVO);
+			}
+			
 		}
 		return Result.fail("修改登录密码失败");
 	}
-	
 	
 		//忘记密码
 		/**
@@ -90,6 +95,24 @@ public class PasswordController {
 			}
 			
 			return Result.fail("验证码出现错误或是修改未成功");
+			
+		}
+		private boolean effectiveTime(HttpSession session){
+			Calendar now=Calendar.getInstance();
+			now.setTime(new Date());
+			Object sessionDate=session.getAttribute(SMSController.MOBILE_CODE_CHECK_DATE);
+			if(sessionDate!=null && sessionDate instanceof Date ){
+				Calendar checkDate  = Calendar.getInstance();
+				checkDate.setTime((Date)sessionDate);
+				//+2
+				checkDate.add(Calendar.MINUTE, SystemConfigProperties.getInt("effective.time") );
+				checkDate.getTime();
+				now.getTime();
+				if(checkDate.after(now)){
+					return true;
+				}
+			}
+			return false;
 			
 		}
 	

@@ -63,9 +63,9 @@ public class UserInfoController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
-	public Result selectUserInfo(HttpSession session,HttpServletRequest request,@PathVariable String uid) throws Exception{
-
+	@RequestMapping(value="/userinfo",method=RequestMethod.GET)
+	public Result selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
+		String uid = ServletBox.getLoginUID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		if(userinfo.isPresent()){
 		UserInfo userInfo=userinfo.get();

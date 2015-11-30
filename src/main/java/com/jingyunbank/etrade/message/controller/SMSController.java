@@ -111,6 +111,7 @@ public class SMSController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
 	public Result chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
+		
 		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
 		if(checkResult.isOk()){
 			session.setAttribute(MOBILE_CODE_CHECK_DATE, new Date());
