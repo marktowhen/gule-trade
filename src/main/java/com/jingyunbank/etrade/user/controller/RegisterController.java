@@ -2,8 +2,6 @@ package com.jingyunbank.etrade.user.controller;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.web.ServletBox;
-import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController

@@ -22,6 +22,7 @@ import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
+import com.jingyunbank.etrade.user.controller.UserController;
 
 @RestController
 @RequestMapping("/api/sms")
@@ -29,9 +30,6 @@ public class SMSController {
 
 	@Autowired
 	private IUserService userService;
-	
-	
-	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
 	
 	/**
 	 * 为传入的手机号发送验证码
@@ -113,7 +111,7 @@ public class SMSController {
 		
 		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
 		if(checkResult.isOk()){
-			session.setAttribute(MOBILE_CODE_CHECK_DATE, new Date());
+			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
 			return Result.ok("手机验证成功");
 		}
 		return Result.fail("手机或验证码不一致");

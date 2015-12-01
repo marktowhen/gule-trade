@@ -25,6 +25,7 @@ import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
+import com.jingyunbank.etrade.user.controller.UserController;
 
 
 @RestController
@@ -40,7 +41,6 @@ public class EmailController {
 	 */
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
-	public static final String MOBILE_CODE_CHECK_DATE="MOBILE_CODE_CHECK_DATE";
 
 	/**
 	 * 为传入的邮箱发送验证码
@@ -111,8 +111,12 @@ public class EmailController {
 	 */
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
 	public Result checkEmailCode(HttpServletRequest request,@RequestParam String code,HttpSession session) {
-		session.setAttribute(MOBILE_CODE_CHECK_DATE, new Date());
-		return  checkCode(code, request, EMAIL_MESSAGE);
+		
+		Result checkResul = checkCode(code, request, EMAIL_MESSAGE);
+		if(checkResul.isOk()){
+			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
+		}
+		return checkResul;
 	}
 	/**
 	 * 验证验证码,成功后清除session

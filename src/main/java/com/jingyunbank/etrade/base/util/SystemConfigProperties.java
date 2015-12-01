@@ -45,7 +45,9 @@ public final class SystemConfigProperties {
 	public final static String DEFAULT_1ST_LEVEL_RATE = "default.first.level.rate";
 	public final static String DEFAULT_2ND_LEVEL_RATE = "default.second.level.rate";
 	public final static String DEFAULT_3RD_LEVEL_RATE = "default.third.level.rate";
-	
+	/**
+	 * 邮箱/短信身份认证的超时时间 单位：分钟
+	 */
 	public final static String EFFECTIVE_TIME = "effective.time";
 	/**
 	 * 前台根目录 用于用户点击验证邮箱的链接时的跳转路径
