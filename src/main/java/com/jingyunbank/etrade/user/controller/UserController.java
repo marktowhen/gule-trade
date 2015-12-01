@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,7 +81,7 @@ public class UserController {
 	}
 	
 	/**
-	 * 验证通过后修改手机号
+	 * 验证通过后修改邮箱
 	 * @param userVO
 	 * @param valid
 	 * @param session
@@ -127,6 +128,36 @@ public class UserController {
 		}else{
 			return Result.fail("未找到该用户");
 		}
+	}
+	
+	/**
+	 * 安全等级
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月27日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
+	public Result getSafetyLevel(@PathVariable String uid) throws Exception {
+		int level = 0;
+		Optional<Users> userOption = userService.getByUID(uid);
+		if(userOption.isPresent()){
+			Users users = userOption.get();
+			//已验证邮箱
+			if(!StringUtils.isEmpty(users.getEmail())){
+				level += 33;
+			}
+			//已验证手机
+			if(!StringUtils.isEmpty(users.getMobile())){
+				level += 33;
+			}
+			//支付密码与登录密码不同
+			if(!users.getPassword().equals(users.getTradepwd())){
+				level += 33;
+			}
+		}
+		return Result.ok(level);
 	}
 	
 	/**
