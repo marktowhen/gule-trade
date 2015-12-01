@@ -64,7 +64,7 @@ public class SMSController {
 	 * 2015年11月30日 qxs
 	 */
 	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
-	public Result sendCodeByKey(HttpServletRequest request, String key) throws Exception{
+	public Result sendCodeByKey(HttpServletRequest request,@RequestParam("key") String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("参数缺失:手机/邮箱/用户名");
 		}
