@@ -114,7 +114,7 @@ public class SMSController {
 			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
 			return Result.ok("手机验证成功");
 		}
-		return Result.fail("手机或验证码不一致");
+		return checkResult;
 	}
 	
 	/**
