@@ -39,7 +39,6 @@ public class SMSController {
 	 * @throws Exception
 	 * 2015年11月30日 qxs
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value="/code",method=RequestMethod.GET)
 	public Result sendCode(@RequestParam("mobile") String mobile, HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
@@ -105,7 +104,6 @@ public class SMSController {
 	 * @return
 	 */
 	//get api/sms/code/check
-	@AuthBeforeOperation
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
 	public Result chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
 		

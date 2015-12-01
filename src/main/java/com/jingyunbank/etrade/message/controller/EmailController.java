@@ -50,7 +50,6 @@ public class EmailController {
 	 * @throws Exception
 	 */
 	//get /api/sms/code?mail=1234454@qq.com
-	@AuthBeforeOperation
 	@RequestMapping(value="/code",method=RequestMethod.GET)
 	public Result sendCodeToEmail(@RequestParam("email") String email,HttpServletRequest request) throws Exception{
 		if(!StringUtils.isEmpty(email)){
@@ -72,7 +71,7 @@ public class EmailController {
 	 * @return
 	 */
 	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
-	public Result sendCodeByKey(HttpServletRequest request, HttpSession session,String key) throws Exception{
+	public Result sendCodeByKey(HttpServletRequest request, HttpSession session,@RequestParam("key") String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("手机/邮箱");
 		}
