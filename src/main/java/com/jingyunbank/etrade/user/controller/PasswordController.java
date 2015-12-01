@@ -83,6 +83,7 @@ public class PasswordController {
 				}
 				Optional<Users> usersOptionals = userService.getByKey(key);
 				Users users=usersOptionals.get();
+				users.setPassword(password);
 				if(userService.refresh(users)){
 					return Result.ok("修改成功");
 				}
