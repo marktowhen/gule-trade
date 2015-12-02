@@ -28,7 +28,9 @@ public class OrderEntity {
 	
 	public static class GoodsEntity {
 		private String GID;
+		private String gname;
 		private String imgpath;
+		private int count;
 		
 		public String getGID() {
 			return GID;
@@ -41,6 +43,18 @@ public class OrderEntity {
 		}
 		public void setImgpath(String imgpath) {
 			this.imgpath = imgpath;
+		}
+		public String getGname() {
+			return gname;
+		}
+		public void setGname(String gname) {
+			this.gname = gname;
+		}
+		public int getCount() {
+			return count;
+		}
+		public void setCount(int count) {
+			this.count = count;
 		}
 	}
 	
