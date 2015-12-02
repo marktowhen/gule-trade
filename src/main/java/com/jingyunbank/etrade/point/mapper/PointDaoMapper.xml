@@ -4,11 +4,12 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.point.dao.PointDao">
 	<resultMap type="com.jingyunbank.etrade.point.entity.PointEntity" id="PointEntityResultMap">
-		<id column="id" property="ID" />
 		<result column="uid" property="UID" />
+		<result column="point" property="point" />
+		
 	</resultMap>
 	<sql id="base_column">
-		id , uid
+		 uid, point
 	</sql>
 	
 	<select id="select" resultMap="PointEntityResultMap">
@@ -17,7 +18,7 @@
 	
 	<insert id="insert">
 		insert into point(<include refid="base_column"/>) 
-		values(#{ID}, #{UID})
+		values( #{UID}, #{point})
 	</insert>
 	
 	<update id="update">

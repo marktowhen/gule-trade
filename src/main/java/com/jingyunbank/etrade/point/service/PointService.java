@@ -57,12 +57,23 @@ public class PointService implements IPointService {
 	}
 
 	@Override
-	public int get(String uid) {
+	public int getPoint(String uid) {
 		PointEntity entity = pointDao.select(uid);
 		if(entity!=null){
 			return entity.getPoint();
 		}
 		return 0;
+	}
+
+	@Override
+	public Point get(String uid) {
+		PointEntity entity = pointDao.select(uid);
+		if(entity != null){
+			Point bo = new Point();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}
+		return null;
 	}
 
 }

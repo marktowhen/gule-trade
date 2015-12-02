@@ -10,7 +10,7 @@ public interface PointLogDao {
 
 	public List<PointLogEntity> select(@Param(value="UID")String uid) ;
 
-	public List<PointLogEntity> select(@Param(value="UID")String uid, @Param(value="offset")long offset,@Param(value="size")long size) ;
+	public List<PointLogEntity> selectList(@Param(value="UID")String uid, @Param(value="offset")long offset,@Param(value="size")long size) ;
 	
 	public boolean insert(PointLogEntity entity) throws Exception;
 }

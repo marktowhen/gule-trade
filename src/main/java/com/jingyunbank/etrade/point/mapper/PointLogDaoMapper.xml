@@ -14,10 +14,17 @@
 		id ,uid ,point ,add_time ,remark
 	</sql>
 	
-	<select id="select" resultMap="PointLogEntityResultMap">
+	<select id="selectList" resultMap="PointLogEntityResultMap">
 		select <include refid="base_column"/> from point_log where uid=#{UID}
+		order by add_time desc
 		limit #{offset},#{size}
 	</select>
+	
+	<select id="select" resultMap="PointLogEntityResultMap">
+		select <include refid="base_column"/> from point_log where uid=#{UID}
+		order by add_time desc
+	</select>
+	
 	
 	<insert id="insert">
 		insert into point_log(<include refid="base_column"/>) 

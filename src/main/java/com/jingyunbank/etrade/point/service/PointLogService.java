@@ -39,7 +39,7 @@ public class PointLogService implements IPointLogService {
 
 	@Override
 	public List<PointLog> list(String uid, Range range) {
-		return pointLogDao.select(uid, range.getFrom(), range.getTo()-range.getFrom()).stream().map( entity ->{
+		return pointLogDao.selectList(uid, range.getFrom(), range.getTo()-range.getFrom()).stream().map( entity ->{
 			PointLog bo = new PointLog();
 			BeanUtils.copyProperties(entity, bo);
 			return bo;
@@ -47,7 +47,7 @@ public class PointLogService implements IPointLogService {
 	}
 
 	@Override
-	public boolean add(PointLog pointLog) throws DataSavingException {
+	public boolean save(PointLog pointLog) throws DataSavingException {
 		PointLogEntity entity = new PointLogEntity();
 		BeanUtils.copyProperties(pointLog, entity);
 		try {
