@@ -2,7 +2,6 @@ package com.jingyunbank.etrade.vip.bean;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class UserCashCouponVO implements Serializable{
 

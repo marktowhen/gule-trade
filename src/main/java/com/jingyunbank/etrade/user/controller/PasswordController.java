@@ -19,8 +19,6 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
-import com.jingyunbank.etrade.base.util.SystemConfigProperties;
-import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController

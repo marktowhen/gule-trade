@@ -7,7 +7,6 @@
  */
 package com.jingyunbank.etrade.user.dao;
 
-import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.UserInfoEntity;
 
