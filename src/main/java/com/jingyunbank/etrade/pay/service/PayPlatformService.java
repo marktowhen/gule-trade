@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+
 import com.jingyunbank.etrade.api.pay.bo.PayPlatform;
-import com.jingyunbank.etrade.api.pay.service.context.IPayPlatformService;
+import com.jingyunbank.etrade.api.pay.service.IPayPlatformService;
 import com.jingyunbank.etrade.pay.dao.PayPlatformDao;
 
 @Service("payPlatformService")

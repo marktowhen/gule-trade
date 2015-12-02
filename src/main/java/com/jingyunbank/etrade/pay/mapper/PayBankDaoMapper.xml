@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.pay.dao.PayBankDao">
+	
+	<resultMap type="com.jingyunbank.etrade.pay.entity.PayBankEntity" id="PayBankEntityResultMap">
+		<id column="id" property="ID" javaType="INTEGER"/>
+		<result column="code" property="code" javaType="String"/>
+		<result column="name" property="name" javaType="String"/>
+		<result column="description" property="description" javaType="String"/>
+		<result column="gateway_credit" property="gateCredit" javaType="Boolean"/>
+		<result column="gateway_debit" property="gateDebit" javaType="Boolean"/>
+		<result column="fastway_credit" property="fastCredit" javaType="Boolean"/>
+		<result column="fastway_debit" property="fastDebit" javaType="Boolean"/>
+	</resultMap>
+	
+	<sql id="pay_bank_columns">
+		id, name, code, description, gateway_credit, gateway_debit, fastway_credit, fastway_debit
+	</sql>
+	<select id="select" resultMap="PayBankEntityResultMap">
+		select <include refid="pay_bank_columns"/> 
+		from pay_bank
+		where gateway_credit = #{gc} and gateway_debit = #{gd}
+				and fastway_credit = #{fc} and fastway_debit = #{fd}
+	</select>
+	
+	<select id="selectRange" resultMap="PayBankEntityResultMap">
+		select <include refid="pay_bank_columns"/> 
+		from pay_bank
+		where gateway_credit = #{gc} and gateway_debit = #{gd}
+				and fastway_credit = #{fc} and fastway_debit = #{fd}
+		limit #{from}, #{size}
+	</select>
+	
+</mapper>

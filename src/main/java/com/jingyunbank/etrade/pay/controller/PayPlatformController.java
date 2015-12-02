@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.pay.bo.PayPlatform;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
+import com.jingyunbank.etrade.api.pay.service.IPayPlatformService;
 import com.jingyunbank.etrade.api.pay.service.IPayTypeService;
-import com.jingyunbank.etrade.api.pay.service.context.IPayPlatformService;
 import com.jingyunbank.etrade.pay.bean.PayPlatformVO;
 import com.jingyunbank.etrade.pay.bean.PayTypeVO;
 
@@ -26,7 +26,7 @@ public class PayPlatformController {
 	private IPayTypeService payTypeService;
 	
 	@RequestMapping(value="/api/pay/platform/list", method=RequestMethod.GET)
-	public Result list() throws Exception{
+	public Result<List<PayPlatformVO>> list() throws Exception{
 		List<PayPlatform> platforms = payPlatformService.list();
 		List<PayPlatformVO> vos = platforms.stream().map(bo->{
 			PayPlatformVO vo = new PayPlatformVO();
@@ -38,7 +38,7 @@ public class PayPlatformController {
 	}
 	
 	@RequestMapping(value="/api/pay/type/list", method=RequestMethod.GET)
-	public Result listType() throws Exception{
+	public Result<List<PayTypeVO>> listType() throws Exception{
 		List<PayType> types = payTypeService.list();
 		List<PayTypeVO> vos = types.stream().map(bo->{
 			PayTypeVO vo = new PayTypeVO();
