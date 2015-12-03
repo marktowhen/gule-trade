@@ -1,6 +1,12 @@
 package com.jingyunbank.etrade.comment.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
+import com.jingyunbank.etrade.user.bean.UserInfoVO;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 public class CommentsVO {
 	private String ID;
@@ -14,9 +20,31 @@ public class CommentsVO {
 	private String goodsService;//商品的服务
 	private int serviceGrade;//服务级别
 	private Date addtime;//添加评价的时间
-	private int commentStatus;//评价的是否的状态1:已读2：未读
+	private int commentStatus;//评价的是否的状态1:已评价2：未评价
 	private int orders;
+	private UserVO userVO; 
+	private UserInfoVO userInfoVO;
+	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
 	
+	
+	public List<CommentsImg> getImgs() {
+		return imgs;
+	}
+	public void setImgs(List<CommentsImg> imgs) {
+		this.imgs = imgs;
+	}
+	public UserInfoVO getUserInfoVO() {
+		return userInfoVO;
+	}
+	public void setUserInfoVO(UserInfoVO userInfoVO) {
+		this.userInfoVO = userInfoVO;
+	}
+	public UserVO getUserVO() {
+		return userVO;
+	}
+	public void setUserVO(UserVO userVO) {
+		this.userVO = userVO;
+	}
 	public String getID() {
 		return ID;
 	}

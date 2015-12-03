@@ -2,6 +2,8 @@ package com.jingyunbank.etrade.comment.entity;
 
 import java.util.Date;
 
+import com.jingyunbank.etrade.user.bean.UserVO;
+
 public class CommentsEntity {
 	private String ID;
 	private String UID;
@@ -16,8 +18,15 @@ public class CommentsEntity {
 	private Date addtime;//添加评价的时间
 	private int commentStatus;//评价的是否的状态
 	private int orders;
+	private UserVO userVO; 
 	
 	
+	public UserVO getUserVO() {
+		return userVO;
+	}
+	public void setUserVO(UserVO userVO) {
+		this.userVO = userVO;
+	}
 	public String getID() {
 		return ID;
 	}

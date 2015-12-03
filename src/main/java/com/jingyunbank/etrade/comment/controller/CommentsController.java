@@ -1,8 +1,9 @@
 package com.jingyunbank.etrade.comment.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.KeyGen;
@@ -24,8 +27,14 @@ import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentImgService;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
+import com.jingyunbank.etrade.api.user.bo.UserInfo;
+import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IUserInfoService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.comment.bean.CommentsImgVO;
 import com.jingyunbank.etrade.comment.bean.CommentsVO;
+import com.jingyunbank.etrade.user.bean.UserInfoVO;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 
 @Controller
@@ -34,6 +43,10 @@ public class CommentsController {
 	private ICommentService commentService;
 	@Autowired
 	private ICommentImgService commentImgService;
+	@Autowired
+	private IUserService userService;
+	@Autowired
+	private IUserInfoService userInfoService;
 	/**
 	 * 保存商品的评论信息和对应的多张图片
 	 * @param commentVO
@@ -44,12 +57,13 @@ public class CommentsController {
 	 * @throws Exception
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/comments/list",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/comments",method=RequestMethod.POST)
 	@ResponseBody
-	public Result saveComments(CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result saveComments(@RequestBody CommentsVO commentVO,@RequestBody CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
 		commentVO.setID(KeyGen.uuid());
 		String id = ServletBox.getLoginUID(request);
 		commentVO.setUID(id);
+		commentVO.setGID("15");
 		commentVO.setAddtime(new Date());
 		commentVO.setCommentStatus(2);
 		Comments comments=new Comments();
@@ -89,15 +103,55 @@ public class CommentsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/comments/getbyid/{gid}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/comments/getbygid",method=RequestMethod.GET)
 	@ResponseBody
-	public Result getComments(@PathVariable String gid,HttpServletRequest request,HttpSession session) throws Exception{
-		return Result.ok(commentService.getCommentsByGid(gid)
+	public Result getComments(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
+		List<Comments> comments=commentService.getCommentsByGid(gid);
+		List<CommentsVO> commentVOs=convert(comments);
+		return Result.ok(commentVOs);
+		/*return Result.ok(commentService.getCommentsByGid(gid)
 				.stream().map(bo-> {
 					CommentsVO vo= new CommentsVO();
 					BeanUtils.copyProperties(bo, vo);
 					return vo;
-				}).collect(Collectors.toList()));
+				}).collect(Collectors.toList()));*/
+		
+	}
+	private List<CommentsVO> convert(List<Comments> comments){
+	
+		List<CommentsVO> commentVOs=new ArrayList<CommentsVO>();
+		for(int i=0;i<comments.size();i++){
+			CommentsVO commentsVO=new CommentsVO();
+			UserVO userVO = new UserVO();
+			UserInfoVO userinfoVO = new UserInfoVO();
+			Users users=userService.getByUID(comments.get(i).getUID()).get();
+			UserInfo userInfo=userInfoService.getByUid(comments.get(i).getUID()).get();
+			BeanUtils.copyProperties(comments.get(i),commentsVO);
+			BeanUtils.copyProperties(users, userVO);
+			BeanUtils.copyProperties(userInfo, userinfoVO);
+			commentsVO.setUserVO(userVO);
+			commentsVO.setUserInfoVO(userinfoVO);
+		
+			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getImgID());
+			/*CommentsImgVO vo = new CommentsImgVO();
+			CommentsImg bo = new CommentsImg();
+			BeanUtils.copyProperties(bo, vo);*/
+			commentsVO.setImgs(commentsImgs);
+			/*for(int j=0;j<commentsImgs.size();j++){
+				CommentsImgVO vo = new CommentsImgVO();
+				BeanUtils.copyProperties(commentsImgs.get(j), vo);
+			}*/
+			
+			
+			
+			commentVOs.add(commentsVO);
+		}
+		
+		
+		return commentVOs;
+		
+		
+		
 	}
 	/**
 	 * 测试通过id删除自己添加的商品评价，别人的评论没有权限删除
