@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.handler.PayHandler;
 
+@Service("JDPAYHANDLER")
 public class JDPayHandler implements PayHandler {
 
 	@Override
