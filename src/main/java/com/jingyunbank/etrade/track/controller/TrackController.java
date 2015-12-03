@@ -45,7 +45,7 @@ public class TrackController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/footprint/list/{pcount}/{pfrom}", method = RequestMethod.GET)
-	public Result listFootprintGoods(@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+	public Result<FootprintGoodsVO> listFootprintGoods(@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
@@ -62,7 +62,7 @@ public class TrackController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/footprint/save/{gid}", method = RequestMethod.GET)
-	public Result saveFootprintGoods(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
+	public Result<?> saveFootprintGoods(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		if(uid == null || "".equals(uid)){
 			return null;
@@ -83,7 +83,7 @@ public class TrackController {
 	 */
 	@RequestMapping(value = "/favorites/savemerchant/{mid}", method = RequestMethod.GET)
 	@AuthBeforeOperation
-	public Result saveMerchantFavorites(HttpServletRequest request, HttpSession session, @PathVariable String mid) throws Exception {
+	public Result<?> saveMerchantFavorites(HttpServletRequest request, HttpSession session, @PathVariable String mid) throws Exception {
 		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
 		flag = trackService.isFavoritesExists(uid, mid, "1");
@@ -106,7 +106,7 @@ public class TrackController {
 	 */
 	@RequestMapping(value = "/favorites/savegoods/{gid}", method = RequestMethod.GET)
 	@AuthBeforeOperation
-	public Result saveGoodsFavorites(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
+	public Result<?> saveGoodsFavorites(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		boolean flag = false;
 		String uid = ServletBox.getLoginUID(request);
 		flag = trackService.isFavoritesExists(uid, gid, "2");
@@ -128,7 +128,7 @@ public class TrackController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/favorites/listmerchantfavorites/{pcount}/{pfrom}", method = RequestMethod.GET)
-	public Result listMerchantFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+	public Result<FavoritesMerchantFacadeVO> listMerchantFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
 		//获取展示条数
 		int count = Integer.valueOf(pcount);
@@ -179,7 +179,7 @@ public class TrackController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/favorites/listgoodsfavorites/{pcount}/{pfrom}", method = RequestMethod.GET)
-	public Result listGoodsFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+	public Result<FavoritesGoodsFacadeVO> listGoodsFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
@@ -210,7 +210,7 @@ public class TrackController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/favorites/remove/{id}", method=RequestMethod.DELETE)
-	public Result removeFavorites(@PathVariable String id) throws Exception{
+	public Result<String> removeFavorites(@PathVariable String id) throws Exception{
 		trackService.removeFavoritesById(id);
 		return Result.ok(id);
 	}

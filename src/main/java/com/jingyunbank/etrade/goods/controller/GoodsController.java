@@ -57,7 +57,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
-	public Result queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname, Page page)
+	public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname, Page page)
 			throws Exception {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
@@ -78,7 +78,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/brand/list", method = RequestMethod.GET)
-	public Result queryBrands(HttpServletRequest request) throws Exception {
+	public Result<List<GoodsBrandVO>> queryBrands(HttpServletRequest request) throws Exception {
 		List<GoodsBrandVO> list = goodsService.listBrands().stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -95,7 +95,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/type/list", method = RequestMethod.GET)
-	public Result queryTypes(HttpServletRequest request) throws Exception {
+	public Result<List<GoodsTypesVO>> queryTypes(HttpServletRequest request) throws Exception {
 		List<GoodsTypesVO> list = goodsService.listTypes().stream().map(bo -> {
 			GoodsTypesVO vo = new GoodsTypesVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -145,7 +145,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/all/list", method = RequestMethod.GET)
-	public Result queryAllgoods(HttpServletRequest request,Page page)throws Exception {
+	public Result<List<CommonGoodsVO>> queryAllgoods(HttpServletRequest request,Page page)throws Exception {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
@@ -166,7 +166,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Result queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
+	public Result<List<CommonGoodsVO>> queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -190,7 +190,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/recommend/list", method = RequestMethod.GET)
-	public Result queryGoodsByWhere(HttpServletRequest request) throws Exception {
+	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request) throws Exception {
 		List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
 			RecommendGoods vo = new RecommendGoods();
 			BeanUtils.copyProperties(bo, vo);
@@ -209,7 +209,7 @@ public class GoodsController {
 	 */
 	//@RequestMapping(value = "/goodsMerchantByWhere/list", method = RequestMethod.GET)
 	@RequestMapping(value = "/merchant/list", method = RequestMethod.GET)
-	public Result queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
+	public Result<List<GoodsMerchantVO>> queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -235,7 +235,7 @@ public class GoodsController {
 	 */
 	//@RequestMapping(value = "/merchantGoodsByWhere4/list", method = RequestMethod.GET)
 	@RequestMapping(value = "/merchantgoods4/list", method = RequestMethod.GET)
-	public Result queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
+	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -257,7 +257,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/merchantgoods/list", method = RequestMethod.GET)
-	public Result queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request, GoodsShowVO goodshowvo, Page page)
+	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request, GoodsShowVO goodshowvo, Page page)
 			throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
@@ -280,7 +280,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/hotgoods/list", method = RequestMethod.GET)
-	public Result listHotGoods() throws Exception {
+	public Result<List<HotGoodsVO>> listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		List<HotGoods> goodslist = goodsService.listHotGoods();
 		List<HotGoods> tmplist = new ArrayList<HotGoods>();// 存放商家分组LIST
@@ -339,7 +339,7 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/hot24goods/list", method = RequestMethod.GET)
-	public Result listHot24Goods() throws Exception {
+	public Result<Hot24GoodsVO> listHot24Goods() throws Exception {
 		List<Hot24Goods> goodslist = goodsService.listHot24Goods();
 		Hot24GoodsVO hot24GoodsVO = new Hot24GoodsVO();
 		hot24GoodsVO.init(goodslist);
@@ -352,7 +352,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping(value = "/expand/list", method = RequestMethod.GET)
-	public Result listGoodsExpand() throws Exception {
+	public Result<List<CommonGoodsVO>> listGoodsExpand() throws Exception {
 		List<CommonGoodsVO> list = goodsService.listGoodsExpand().stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -368,7 +368,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping(value = "/byresult/list", method = RequestMethod.GET)
-	public Result listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
+	public Result<List<CommonGoodsVO>> listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
 		// ----分页条件 [待修改]
 		Range range = new Range();
 		range.setFrom(page.getOffset());
@@ -392,7 +392,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping(value = "/byid/{gid}", method = RequestMethod.GET)
-	public Result queryGoodsById(@PathVariable String gid) throws Exception {
+	public Result<GoodsVO> queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsVO vo = null;
 		Optional<ShowGoods> showbo = goodsService.singleById(gid);
 		if (Objects.nonNull(showbo)) {

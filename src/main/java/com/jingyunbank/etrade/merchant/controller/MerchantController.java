@@ -49,7 +49,7 @@ public class MerchantController {
 	 * @throws IllegalAccessException 
 	 */
 	@RequestMapping("/recommend/list")
-	public Result recommend(HttpServletRequest request, HttpSession session) throws Exception{
+	public Result<List<MerchantVO>> recommend(HttpServletRequest request, HttpSession session) throws Exception{
 		//转成VO
 		List<Merchant> list = merchantService.listMerchants();
 		List<MerchantVO> rlist = new ArrayList<MerchantVO>();
@@ -59,8 +59,7 @@ public class MerchantController {
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}
-		Result r = Result.ok(rlist);
-		return r;
+		return Result.ok(rlist);
 	}
 	/**
 	 * 商家保存
@@ -69,7 +68,7 @@ public class MerchantController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/savemerchant", method = RequestMethod.POST)
-	public Result saveMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception {
+	public Result<MerchantVO> saveMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception {
 		//String uid = ServletBox.getLoginUID(request);
 		Merchant merchant=Merchant.getInstance();
 		merchantVO.setAdminSortNum(0);
@@ -90,7 +89,7 @@ public class MerchantController {
 	 * @throws InvocationTargetException
 	 */
 	@RequestMapping("/invoicetype/list")
-	public Result getInvoiceType(HttpServletRequest request, HttpSession session) throws Exception{
+	public Result<List<InvoiceTypeVO>> getInvoiceType(HttpServletRequest request, HttpSession session) throws Exception{
 		//转成VO
 		List<InvoiceType> list = merchantService.listInvoiceType();
 		List<InvoiceTypeVO> rlist = new ArrayList<InvoiceTypeVO>();
@@ -100,8 +99,7 @@ public class MerchantController {
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}
-		Result r = Result.ok(rlist);
-		return r;
+		return Result.ok(rlist);
 	}
 	/**
 	 * 商家修改
@@ -111,7 +109,7 @@ public class MerchantController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/updatemerchant", method = RequestMethod.POST)
-	public Result updateMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception{
+	public Result<MerchantVO> updateMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception{
 		Merchant merchant=Merchant.getInstance();
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型
@@ -130,7 +128,7 @@ public class MerchantController {
 	 * @throws InvocationTargetException
 	 */
 	@RequestMapping("/deliverytype/list")
-	public Result getDeliveryType(HttpServletRequest request, HttpSession session) throws Exception{
+	public Result<List<DeliveryTypeVO>> getDeliveryType(HttpServletRequest request, HttpSession session) throws Exception{
 		//转成VO
 		List<DeliveryType> list = merchantService.listDeliveryType();
 		List<DeliveryTypeVO> rlist = new ArrayList<DeliveryTypeVO>();
@@ -140,8 +138,7 @@ public class MerchantController {
 			BeanUtils.copyProperties(bo,vo);
 			rlist.add(vo);
 		}
-		Result r = Result.ok(rlist);
-		return r;
+		return Result.ok(rlist);
 	}
 	
 	/**
@@ -154,7 +151,7 @@ public class MerchantController {
 	 * @throws IllegalAccessException 
 	 */
 	@RequestMapping(value="/info/{mid}",method=RequestMethod.GET)
-	public Result getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws Exception{
+	public Result<?> getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws Exception{
 		Optional<Merchant> merchant= merchantContextService.getMerchantInfoByMid(mid);
 		if(merchant.isPresent()){
 			Merchant bo = merchant.get();
