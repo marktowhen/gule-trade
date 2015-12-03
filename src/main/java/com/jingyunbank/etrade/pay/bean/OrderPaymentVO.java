@@ -21,8 +21,8 @@ public class OrderPaymentVO{
 	private BigDecimal money;
 	private String note;
 	private boolean done;
-	private int platformCode;
-	private String platformName;
+	private int pipelineCode;
+	private String pipelineName;
 	private Date addtime;
 	private Date paidtime;
 	
@@ -80,18 +80,6 @@ public class OrderPaymentVO{
 	public void setDone(boolean done) {
 		this.done = done;
 	}
-	public int getPlatformCode() {
-		return platformCode;
-	}
-	public void setPlatformCode(int platformCode) {
-		this.platformCode = platformCode;
-	}
-	public String getPlatformName() {
-		return platformName;
-	}
-	public void setPlatformName(String platformName) {
-		this.platformName = platformName;
-	}
 	public Date getPaidtime() {
 		return paidtime;
 	}
@@ -109,5 +97,17 @@ public class OrderPaymentVO{
 	}
 	public void setExtransno(long extransno) {
 		this.extransno = extransno;
+	}
+	public int getPipelineCode() {
+		return pipelineCode;
+	}
+	public void setPipelineCode(int pipelineCode) {
+		this.pipelineCode = pipelineCode;
+	}
+	public String getPipelineName() {
+		return pipelineName;
+	}
+	public void setPipelineName(String pipelineName) {
+		this.pipelineName = pipelineName;
 	}
 }

@@ -2,13 +2,13 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.pay.dao.PayPlatformDao">
+<mapper namespace="com.jingyunbank.etrade.pay.dao.PayPipelineDao">
 	
 	<sql id="order_payment_columns">
 		id, name, code, thirdpaty
 	</sql>
-	<select id="selectAll" resultType="com.jingyunbank.etrade.pay.entity.PayPlatformEntity">
-		select id, name, code, thirdpaty from pay_platform
+	<select id="selectAll" resultType="com.jingyunbank.etrade.pay.entity.PayPipelineEntity">
+		select id, name, code, thirdpaty from pay_pipeline
 	</select>
 	
 </mapper>

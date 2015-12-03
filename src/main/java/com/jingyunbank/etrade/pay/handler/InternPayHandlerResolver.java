@@ -16,8 +16,8 @@ public class InternPayHandlerResolver implements PayHandlerResolver {
 	private Map<String, PayHandler> handlers = new HashMap<String, PayHandler>();
 	
 	@Override
-	public PayHandler resolve(String platformcode) throws IllegalArgumentException {
-		PayHandler handler = handlers.get((platformcode+"Handler").toUpperCase());
+	public PayHandler resolve(String pipelinecode) throws IllegalArgumentException {
+		PayHandler handler = handlers.get((pipelinecode+"Handler").toUpperCase());
 		if(handler == null) 
 			throw new IllegalArgumentException("不合法支付平台码！");
 		

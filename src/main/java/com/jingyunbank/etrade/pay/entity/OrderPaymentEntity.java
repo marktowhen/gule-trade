@@ -21,8 +21,8 @@ public class OrderPaymentEntity{
 	private BigDecimal money;
 	private String note;
 	private boolean done;
-	private String platformCode;
-	private String platformName;
+	private String pipelineCode;
+	private String pipelineName;
 	private Date addtime;
 	private Date paidtime;
 	
@@ -86,17 +86,17 @@ public class OrderPaymentEntity{
 	public void setDone(boolean done) {
 		this.done = done;
 	}
-	public String getPlatformCode() {
-		return platformCode;
+	public String getPipelineCode() {
+		return pipelineCode;
 	}
-	public void setPlatformCode(String platformCode) {
-		this.platformCode = platformCode;
+	public void setPipelineCode(String pipelineCode) {
+		this.pipelineCode = pipelineCode;
 	}
-	public String getPlatformName() {
-		return platformName;
+	public String getPipelineName() {
+		return pipelineName;
 	}
-	public void setPlatformName(String platformName) {
-		this.platformName = platformName;
+	public void setPipelineName(String pipelineName) {
+		this.pipelineName = pipelineName;
 	}
 	public Date getPaidtime() {
 		return paidtime;

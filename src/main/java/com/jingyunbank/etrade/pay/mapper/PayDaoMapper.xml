@@ -13,15 +13,15 @@
 		<result column="mname" property="mname" javaType="String"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="paidtime" property="paidtime" javaType="java.util.Date"/>
-		<result column="platform_code" property="platformCode" javaType="String"/>
-		<result column="platform_name" property="platformName" javaType="String"/>
+		<result column="pipeline_code" property="pipelineCode" javaType="String"/>
+		<result column="pipeline_name" property="pipelineName" javaType="String"/>
 		<result column="done" property="done" javaType="Boolean"/>
 		<result column="money" property="money" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
 	</resultMap>
 	<sql id="order_payment_columns">
 		id, transno, extransno, oid, uid, mid, mname, addtime, paidtime,
-		platform_code, platform_name, done,
+		pipeline_code, pipeline_name, done,
 		money, note
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity">
@@ -29,7 +29,7 @@
 			(<include refid="order_payment_columns"/>)
 		values
 			(#{ID}, #{transno}, #{extransno}, #{OID}, #{UID}, #{MID}, #{mname}, #{addtime}, #{paidtime}, 
-			#{platformCode}, #{platformName}, #{done},
+			#{pipelineCode}, #{pipelineName}, #{done},
 			#{money}, #{note})
 	</insert>
 	<insert id="insertMany">
@@ -38,7 +38,7 @@
 		values
 		<foreach collection="payments" item="p" index="i" open="" separator="," close="">
 			(#{p.ID}, #{p.transno}, #{p.extransno}, #{p.OID}, #{p.UID}, #{p.MID}, #{p.mname}, #{p.addtime}, #{p.paidtime},
-			#{p.platformCode}, #{p.platformName}, #{p.done},
+			#{p.pipelineCode}, #{p.pipelineName}, #{p.done},
 			#{p.money}, #{p.note})
 		</foreach>
 	</insert>
@@ -64,11 +64,11 @@
 				<if test="p.extransno != ''">
 					extransno = #{p.extransno, jdbcType=BIGINT},
 				</if>
-				<if test="p.platformCode != ''">
-					platform_code = #{p.platformCode, jdbcType=VARCHAR},
+				<if test="p.pipelineCode != ''">
+					pipeline_code = #{p.pipelineCode, jdbcType=VARCHAR},
 				</if>
-				<if test="p.platformName != ''">
-					platform_name = #{p.platformName, jdbcType=VARCHAR},
+				<if test="p.pipelineName != ''">
+					pipeline_name = #{p.pipelineName, jdbcType=VARCHAR},
 				</if>
 			</set>
 			where id = #{p.ID}

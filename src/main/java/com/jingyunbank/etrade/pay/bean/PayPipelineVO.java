@@ -1,6 +1,6 @@
 package com.jingyunbank.etrade.pay.bean;
 
-public class PayPlatformVO {
+public class PayPipelineVO {
 	
 	private String ID;
 	private String name;
