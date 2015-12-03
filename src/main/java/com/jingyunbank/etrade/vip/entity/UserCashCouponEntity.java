@@ -2,7 +2,6 @@ package com.jingyunbank.etrade.vip.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class UserCashCouponEntity implements Serializable{
 

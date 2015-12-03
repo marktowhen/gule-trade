@@ -22,7 +22,10 @@ public class HotGoodsVO {
 	private MerchantVO merchantVO;
 	/** 商品信息 */
 	private List<CommonGoodsVO> goodsList;
-	
+	/** 全图片list */
+	private List<String> fullImgList = new ArrayList<String>();
+	/** 空图片list */
+	private List<String> emptyImgList = new ArrayList<String>();
 	public String getMID() {
 		return MID;
 	}
@@ -79,5 +82,29 @@ public class HotGoodsVO {
 			}
 			return vo;
 		}).collect(Collectors.toList());
+		String levelstr = this.merchantVO.getLevel();
+		int level = 0;
+		if(levelstr!=null && !"".equals(levelstr)){
+			level = Integer.parseInt(levelstr);
+		}
+		for(int i =0;i<level;i++){
+			this.fullImgList.add("" + i);
+		}
+		for(int i =0;i<(5-level);i++){
+			this.emptyImgList.add("" + i);
+		}
 	}
+	public List<String> getFullImgList() {
+		return fullImgList;
+	}
+	public void setFullImgList(List<String> fullImgList) {
+		this.fullImgList = fullImgList;
+	}
+	public List<String> getEmptyImgList() {
+		return emptyImgList;
+	}
+	public void setEmptyImgList(List<String> emptyImgList) {
+		this.emptyImgList = emptyImgList;
+	}
+	
 }

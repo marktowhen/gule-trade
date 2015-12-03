@@ -8,21 +8,26 @@ import java.util.List;
 public class Order2ShowVO {
 
 	private String ID;
-	private String orderno;
+	private long orderno;
 	private String receiver;//收货人
 	private String MID;
+	private String mname;
 	private String addressID;//收货地址->address id
 	private String UID;//下单人
 	private Date addtime;//下单时间
-	private String paytypeID;//支付方式 id
+	private String paytypeCode;//支付方式 id
 	private String paytypeName;
 	private BigDecimal price;//订单总价
 	private BigDecimal postage;
+	private String statusName;
 	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
 	
 	public static class OrderGoods2ShowVO{
 		private String GID;
 		private String imgpath;
+		private String gname;
+		private int count;
+		
 		public String getGID() {
 			return GID;
 		}
@@ -35,6 +40,18 @@ public class Order2ShowVO {
 		public void setImgpath(String imgpath) {
 			this.imgpath = imgpath;
 		}
+		public String getGname() {
+			return gname;
+		}
+		public void setGname(String gname) {
+			this.gname = gname;
+		}
+		public int getCount() {
+			return count;
+		}
+		public void setCount(int count) {
+			this.count = count;
+		}
 	}
 	
 	public String getID() {
@@ -43,10 +60,10 @@ public class Order2ShowVO {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getOrderno() {
+	public long getOrderno() {
 		return orderno;
 	}
-	public void setOrderno(String orderno) {
+	public void setOrderno(long orderno) {
 		this.orderno = orderno;
 	}
 	public String getReceiver() {
@@ -79,11 +96,11 @@ public class Order2ShowVO {
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-	public String getPaytypeID() {
-		return paytypeID;
+	public String getPaytypeCode() {
+		return paytypeCode;
 	}
-	public void setPaytypeID(String paytypeID) {
-		this.paytypeID = paytypeID;
+	public void setPaytypeCode(String paytypeCode) {
+		this.paytypeCode = paytypeCode;
 	}
 	public String getPaytypeName() {
 		return paytypeName;
@@ -108,5 +125,17 @@ public class Order2ShowVO {
 	}
 	public void setGoods(List<OrderGoods2ShowVO> goods) {
 		this.goods = goods;
+	}
+	public String getMname() {
+		return mname;
+	}
+	public void setMname(String mname) {
+		this.mname = mname;
+	}
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 }

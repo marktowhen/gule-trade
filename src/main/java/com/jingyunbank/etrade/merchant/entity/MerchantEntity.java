@@ -43,7 +43,8 @@ public class MerchantEntity implements Serializable {
 	private String imgPath ;
 	/** 是否开具发票 0否1是  */
 	private String invoiceFlag;
-	
+	/** 商家的等级1-5  */
+	private String level;
 	public String getID() {
 		return ID;
 	}
@@ -142,6 +143,12 @@ public class MerchantEntity implements Serializable {
 	}
 	public void setInvoiceFlag(String invoiceFlag) {
 		this.invoiceFlag = invoiceFlag;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
 	}
 	
 }

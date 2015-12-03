@@ -23,7 +23,9 @@
 		<result column="note" property="note" javaType="String"/>
 		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.entity.OrderEntity$GoodsEntity">
 			<result column="gid" property="GID" javaType="String"/>
+			<result column="gname" property="gname" javaType="String"/>
 			<result column="imgpath" property="imgpath" javaType="String"/>
+			<result column="count" property="count" jdbcType="INTEGER"/>
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
@@ -34,7 +36,8 @@
 	<sql id="goods_join_orders_columns">
 		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
-		o.status_code, o.status_name, o.price, o.postage, o.note, img.thumb_path_1 as imgpath, img.gid as gid
+		o.status_code, o.status_name, o.price, o.postage, o.note, 
+		img.thumb_path_1 as imgpath, img.gid as gid, og.gname as gname, og.count as count
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders

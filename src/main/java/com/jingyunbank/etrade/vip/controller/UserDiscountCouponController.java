@@ -17,12 +17,10 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.vip.bo.DiscountCoupon;
-import com.jingyunbank.etrade.api.vip.bo.UserCashCoupon;
 import com.jingyunbank.etrade.api.vip.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
 import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
-import com.jingyunbank.etrade.vip.bean.UserCashCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserDiscountCouponVO;
 
 @RestController

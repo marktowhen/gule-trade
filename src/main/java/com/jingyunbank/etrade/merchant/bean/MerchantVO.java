@@ -55,6 +55,8 @@ public class MerchantVO implements Serializable {
 	private List<InvoiceType> invoiceList;
 	/**发票类型列表*/
 	private List<DeliveryType> deliverylist;
+	/** 商家的等级1-5  */
+	private String level;
 	public String getID() {
 		return ID;
 	}
@@ -180,5 +182,10 @@ public class MerchantVO implements Serializable {
 	public void setDeliverylist(List<DeliveryType> deliverylist) {
 		this.deliverylist = deliverylist;
 	}
-	
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
 }

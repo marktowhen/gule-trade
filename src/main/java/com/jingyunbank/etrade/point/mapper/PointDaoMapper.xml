@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.point.dao.PointDao">
+	<resultMap type="com.jingyunbank.etrade.point.entity.PointEntity" id="PointEntityResultMap">
+		<result column="uid" property="UID" />
+		<result column="point" property="point" />
+		
+	</resultMap>
+	<sql id="base_column">
+		 uid, point
+	</sql>
+	
+	<select id="select" resultMap="PointEntityResultMap">
+		select <include refid="base_column"/> from point where uid=#{UID}
+	</select>
+	
+	<insert id="insert">
+		insert into point(<include refid="base_column"/>) 
+		values( #{UID}, #{point})
+	</insert>
+	
+	<update id="update">
+		update point set point = #{point} where uid=#{UID}
+	</update>
+	
+	<update id="calculatePoint">
+		update point set point = point + #{point} where uid=#{UID}
+	</update>
+	
+	
+	
+</mapper>	

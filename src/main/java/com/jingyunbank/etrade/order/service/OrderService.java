@@ -89,6 +89,7 @@ public class OrderService implements IOrderService{
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
 						og.setGID(ge.getGID());
+						og.setGname(ge.getGname());
 						og.setImgpath(ge.getImgpath());
 						bo.getGoods().add(og);
 					});

@@ -69,6 +69,7 @@ public class OrderController {
 						OrderGoods2ShowVO gvo = new OrderGoods2ShowVO();
 						gvo.setGID(bg.getGID());
 						gvo.setImgpath(bg.getImgpath());
+						gvo.setGname(bg.getGname());
 						vo.getGoods().add(gvo);
 					});
 					return vo;
