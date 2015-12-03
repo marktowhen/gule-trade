@@ -23,7 +23,7 @@ public class RedisConfig {
 		config.setTestOnReturn(true);
 		config.setTestWhileIdle(true);
 		JedisConnectionFactory rcf = new JedisConnectionFactory(config);
-		rcf.setHostName("124.128.245.162");
+		rcf.setHostName("192.168.3.88");
 		rcf.setPort(6379);
 		return rcf;
 	}
