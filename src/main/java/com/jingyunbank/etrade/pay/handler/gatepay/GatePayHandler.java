@@ -50,6 +50,7 @@ public class GatePayHandler implements PayHandler {
 
 		//non required
 		result.put("bank_code", bankCode);
+		result.put("pay_type", "1");
 		result.put("url_return", return_url);
 		
 		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, key)));
