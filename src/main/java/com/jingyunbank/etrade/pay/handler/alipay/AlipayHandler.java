@@ -31,7 +31,7 @@ public class AlipayHandler implements PayHandler {
 		//合作身份者ID，以2088开头由16位纯数字组成的字符串
         result.put("partner", pipeline.getPartner());
         // 收款支付宝账号，一般情况下收款账号就是签约账号
-        result.put("seller_email", "devops@jingyunbank.com");
+        result.put("seller_email", "alipay-test01@alipay.com");
         result.put("_input_charset", "utf-8");
         //支付类型,1 商品购买
 		result.put("payment_type", "1");
@@ -47,7 +47,7 @@ public class AlipayHandler implements PayHandler {
 		//订单名称//必填
 		result.put("subject", payments.get(0).getMname());
 		//付款金额//必填
-		result.put("total_fee", String.valueOf(payments.get(0).getMoney()));
+		result.put("total_fee", "0.01");
 		//订单描述
 		//result.put("body", "");
 		//商品展示地址
@@ -57,15 +57,25 @@ public class AlipayHandler implements PayHandler {
 		//非局域网的外网IP地址，如：221.0.0.1
 		//result.put("exter_invoke_ip", "");
 		
-		result.put("sign_type", pipeline.getSigntype());
 		String signkey = pipeline.getSignkey();
-		result.put("sign", MD5.digest(""));
+		
+		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, signkey)));
+		result.put("sign_type", pipeline.getSigntype());
 		
 		result.put("payurl", pipeline.getPayUrl());
 		
 		return result;
 	}
-	
+
+	private String compositeGatewayKeyValuePaires(Map<String, String> result, String key) {
+		StringBuilder builder = new StringBuilder();
+		result.entrySet().stream().sorted((x, y)->x.getKey().compareToIgnoreCase(y.getKey())).forEach((x)->{
+			builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
+		});
+		builder.delete(builder.length()-1, builder.length());
+		return builder.toString();
+	}
+
 	@PostConstruct
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.ALIPAY);

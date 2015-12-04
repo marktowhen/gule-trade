@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.handler.PayHandler;
@@ -39,18 +40,19 @@ public class GatePayHandler implements PayHandler {
 		result.put("oid_partner", pipeline.getPartner());
 		result.put("user_id", payments.get(0).getUID());
 		result.put("timestamp", timestamp);
-		result.put("sign_type", pipeline.getSigntype());
-		result.put("sign", "");
-		result.put("busi_partner", "109001");//商户业务类型，实物：109001， 虚拟：101001
+		result.put("sign_type", pipeline.getSigntype().toUpperCase());
+		result.put("busi_partner", "101001");//商户业务类型，实物：109001， 虚拟：101001
 		result.put("no_order", orderno);//订单号
 		result.put("dt_order", timestamp);
 		result.put("name_goods", payments.get(0).getMname());
 		result.put("money_order", money);
 		result.put("notify_url", notify_url);
-		
+
 		//non required
 		result.put("bank_code", bankCode);
 		result.put("url_return", return_url);
+		
+		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, key)));
 		//result.put("userreq_ip", "192.168.1.1");
 		//result.put("valid_order", "10080");
 		//result.put("risk_item", "");
@@ -60,6 +62,15 @@ public class GatePayHandler implements PayHandler {
 		result.put("payurl", pipeline.getPayUrl());
 		
 		return result;
+	}
+
+	private String compositeGatewayKeyValuePaires(Map<String, String> result, String key) {
+		StringBuilder builder = new StringBuilder();
+		result.entrySet().stream().sorted((x, y)->x.getKey().compareToIgnoreCase(y.getKey())).forEach((x)->{
+			builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
+		});
+		builder.append("key=").append(key);
+		return builder.toString();
 	}
 
 	@PostConstruct
