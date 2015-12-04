@@ -12,7 +12,7 @@ import com.jingyunbank.etrade.api.pay.handler.PayHandler;
 public class FastPayHandler implements PayHandler {
 
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments)
+	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode)
 			throws Exception {
 		return null;
 	}

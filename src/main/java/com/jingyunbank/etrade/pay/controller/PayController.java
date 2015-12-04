@@ -103,6 +103,8 @@ public class PayController {
 		}
 		String pipelineCode = payvo.getPipelineCode();
 		String pipelineName = payvo.getPipelineName();
+		String bankCode = payvo.getBankCode();
+		
 		String tradepwd = payvo.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
 		Optional<Users> ou = userService.getByUID(ServletBox.getLoginUID(session));
@@ -116,7 +118,9 @@ public class PayController {
 					BeanUtils.copyProperties(x, op);
 					return op;
 				})
-				.collect(Collectors.toList()), pipelineCode, pipelineName
+				.collect(Collectors.toList()), 
+				pipelineCode, pipelineName,
+				bankCode
 		);
 		
 		return Result.ok(payinfo);

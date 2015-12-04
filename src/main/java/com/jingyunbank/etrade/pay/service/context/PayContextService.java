@@ -59,7 +59,9 @@ public class PayContextService implements IPayContextService{
 
 	@Override
 	@Transactional
-	public Map<String, String> refreshAndComposite(List<OrderPayment> payments, String pipelineCode, String pipelineName)
+	public Map<String, String> refreshAndComposite(
+						List<OrderPayment> payments, String pipelineCode, String pipelineName,
+						String bankCode)
 			throws Exception {
 		if(payService.anyDone(payments.stream().map(x->x.getID()).collect(Collectors.toList()))){
 			Map<String, String> map = new HashMap<String, String>();
@@ -74,7 +76,7 @@ public class PayContextService implements IPayContextService{
 		});
 		payService.refresh(payments);
 		PayHandler handler = payHandlerResolver.resolve(pipelineCode);
-		return handler.prepare(payments);
+		return handler.prepare(payments, bankCode);
 	}
 
 	@Override

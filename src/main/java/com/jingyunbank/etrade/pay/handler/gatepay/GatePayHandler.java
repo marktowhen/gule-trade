@@ -15,7 +15,7 @@ import com.jingyunbank.etrade.api.pay.handler.PayHandler;
 public class GatePayHandler implements PayHandler {
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments)
+	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode)
 			throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		String money = "0.01";//payments.stream().map(x->x.getMoney()).reduce(new BigDecimal(0), (a, b)->a.add(b)).toString();
@@ -42,6 +42,7 @@ public class GatePayHandler implements PayHandler {
 		result.put("notify_url", notify_url);
 		
 		//non required
+		result.put("bank_code", bankCode);
 		result.put("url_return", return_url);
 		result.put("userreq_ip", "192.168.1.1");
 		result.put("valid_order", "10080");

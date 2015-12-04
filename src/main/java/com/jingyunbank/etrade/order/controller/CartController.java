@@ -48,7 +48,7 @@ public class CartController {
 	@RequestMapping(value="/api/cart/goods/list",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
-	public Result list(HttpSession session) throws Exception{
+	public Result<CartVO> list(HttpSession session) throws Exception{
 		String uid = ServletBox.getLoginUID(session);
 		List<GoodsInCart> goodsincart = cartService.listGoods(uid);
 		CartVO cart = convert(goodsincart);
@@ -87,7 +87,7 @@ public class CartController {
 				method=RequestMethod.PUT, 
 				consumes="application/json;charset=UTF-8",
 				produces="application/json;charset=UTF-8")
-	public Result put(@Valid @RequestBody GoodsInCartVO goods,
+	public Result<GoodsInCartVO> put(@Valid @RequestBody GoodsInCartVO goods,
 						BindingResult valid,
 						HttpSession session) throws Exception{
 		if(valid.hasErrors()){
@@ -120,7 +120,7 @@ public class CartController {
 	@RequestMapping(value="/api/cart/goods", 
 					method=RequestMethod.DELETE,
 					produces="application/json;charset=UTF-8")
-	public Result delete(@RequestParam List<String> gids) throws Exception{
+	public Result<List<String>> delete(@RequestParam List<String> gids) throws Exception{
 		cartService.remove(gids);
 		return Result.ok(gids);
 	}
@@ -128,12 +128,12 @@ public class CartController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/goods/{uid}", method=RequestMethod.DELETE,
 					produces="application/json;charset=UTF-8")
-	public Result delete(@PathVariable("uid") String uid, HttpSession session) throws Exception{
+	public Result<String> delete(@PathVariable("uid") String uid, HttpSession session) throws Exception{
 		String loginuid = ServletBox.getLoginUID(session);
 		if(loginuid.equals(uid)){
 			cartService.clear(uid);
 		}
-		return Result.ok();
+		return Result.ok(uid);
 	}
 	
 	/**
@@ -146,13 +146,13 @@ public class CartController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/goods/{id}", method=RequestMethod.POST)
-	public Result update(@PathVariable("id")String id, 
+	public Result<Integer> update(@PathVariable("id")String id, 
 			@RequestParam(value="count", required=true) int count) throws Exception{
 		GoodsInCart gic = new GoodsInCart();
 		gic.setID(id);
 		gic.setCount(count);
 		cartService.refresh(gic);
-		return Result.ok();
+		return Result.ok(count);
 	}
 	
 	/**
@@ -165,11 +165,11 @@ public class CartController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
-	public Result clearing(@Valid @RequestBody CartVO cart,
+	public Result<CartVO> clearing(@Valid @RequestBody CartVO cart,
 					BindingResult valid, HttpSession session) throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		session.setAttribute(GOODS_IN_CART_TO_CLEARING, mapper.writeValueAsString(cart));
-		return Result.ok();
+		return Result.ok(cart);
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class CartController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing/list", method=RequestMethod.GET)
-	public Result listClearing(HttpSession session) throws Exception{
+	public Result<CartVO> listClearing(HttpSession session) throws Exception{
 		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);
 		CartVO cart = new CartVO();
 		if(Objects.nonNull(obj)){

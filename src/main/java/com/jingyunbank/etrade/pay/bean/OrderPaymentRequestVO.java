@@ -20,11 +20,13 @@ public class OrderPaymentRequestVO {
 	private String pipelineCode;
 	@NotBlank
 	private String pipelineName;
-	@Valid
+	@NotBlank
+	private String bankCode;
 	@NotBlank
 	@Size(min=6)
 	private String tradepwd;
 
+	@Valid
 	@NotNull
 	@Size(min=1)
 	private List<OrderPaymentVO> payments = new ArrayList<OrderPaymentVO>();
@@ -53,5 +55,10 @@ public class OrderPaymentRequestVO {
 	public void setPipelineName(String pipelineName) {
 		this.pipelineName = pipelineName;
 	}
-	
+	public String getBankCode() {
+		return bankCode;
+	}
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
+	}
 }

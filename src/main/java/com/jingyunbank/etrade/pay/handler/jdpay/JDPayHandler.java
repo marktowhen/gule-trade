@@ -14,7 +14,7 @@ import com.jingyunbank.etrade.api.pay.handler.PayHandler;
 public class JDPayHandler implements PayHandler {
 
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments)
+	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode)
 			throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		String vamount = "0.01";//payments.stream().map(x->x.getMoney()).reduce(new BigDecimal(0), (a, b)->a.add(b)).toString();
