@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
+import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.controller.UserController;
 
 
@@ -51,13 +51,14 @@ public class EmailController {
 	 */
 	//get /api/sms/code?mail=1234454@qq.com
 	@RequestMapping(value="/code",method=RequestMethod.GET)
-	public Result sendCodeToEmail(@RequestParam("email") String email,HttpServletRequest request) throws Exception{
+	public Result<String> sendCodeToEmail(@RequestParam("email") String email,HttpServletRequest request) throws Exception{
 		if(!StringUtils.isEmpty(email)){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_EMAIL_PATTERN);
 			if(!p.matcher(email).matches()){
 				return Result.fail("邮箱格式不正确");
 			}
-			return sendCodeToEmail(email,"验证码", EtradeUtil.getRandomCode(), request);
+			String code = new String(new RndBuilder().length(4).hasletter(false).next());
+			return sendCodeToEmail(email,"验证码", code, request);
 		}
 		return Result.fail("邮箱不能为空");
 	}
@@ -71,14 +72,15 @@ public class EmailController {
 	 * @return
 	 */
 	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
-	public Result sendCodeByKey(HttpServletRequest request, HttpSession session,@RequestParam("key") String key) throws Exception{
+	public Result<String> sendCodeByKey(HttpServletRequest request, HttpSession session,@RequestParam("key") String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("手机/邮箱");
 		}
 		Optional<Users> usersOptional = userService.getByKey(key);
 		Users users=usersOptional.get();
 		if(users.getEmail()!=null){
-			return sendCodeToEmail(users.getEmail(), "验证码", EtradeUtil.getRandomCode(), request);
+			String code = new String(new RndBuilder().length(4).hasletter(false).next());
+			return sendCodeToEmail(users.getEmail(), "验证码", code, request);
 		}
 		return Result.fail("发送验证码失败");
 	}
@@ -94,9 +96,10 @@ public class EmailController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/user",method=RequestMethod.GET)
-	public Result sendCodeToEmail(HttpServletRequest request) throws Exception {
-		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
-		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", EtradeUtil.getRandomCode(), request);
+	public Result<String> sendCodeToEmail(HttpServletRequest request) throws Exception {
+		Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
+		String code = new String(new RndBuilder().length(4).hasletter(false).next());
+		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", code, request);
 	}
 	
 
@@ -109,9 +112,9 @@ public class EmailController {
 	 * 2015年11月10日 qxs
 	 */
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
-	public Result checkEmailCode(HttpServletRequest request,@RequestParam String code,HttpSession session) {
+	public Result<String> checkEmailCode(HttpServletRequest request,@RequestParam String code,HttpSession session) {
 		
-		Result checkResul = checkCode(code, request, EMAIL_MESSAGE);
+		Result<String> checkResul = checkCode(code, request, EMAIL_MESSAGE);
 		if(checkResul.isOk()){
 			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
 		}
@@ -125,7 +128,7 @@ public class EmailController {
 	 * @return
 	 * 2015年11月10日 qxs
 	 */
-	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+	private Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
 		if(StringUtils.isEmpty(code)){
 			return Result.fail("验证码不能为空");
 		}
@@ -150,7 +153,7 @@ public class EmailController {
 	 * 2015年11月10日 qxs
 	 * @throws Exception 
 	 */
-	private Result sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
+	private Result<String> sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
 		request.getSession().setAttribute(EMAIL_MESSAGE, code);
 		Message message = new Message();
 		message.setTitle(subTitle);

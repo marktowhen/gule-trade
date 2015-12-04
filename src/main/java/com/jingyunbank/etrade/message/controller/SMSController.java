@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
+import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.controller.UserController;
 
 @RestController
@@ -40,14 +40,16 @@ public class SMSController {
 	 * 2015年11月30日 qxs
 	 */
 	@RequestMapping(value="/code",method=RequestMethod.GET)
-	public Result sendCode(@RequestParam("mobile") String mobile, HttpServletRequest request) throws Exception{
+	public Result<String> sendCode(@RequestParam("mobile") String mobile, HttpServletRequest request) throws Exception{
 		//验证手机号输入的准确性
 		if(!StringUtils.isEmpty(mobile)){
 			Pattern p = Pattern.compile(Patterns.INTERNAL_MOBILE_PATTERN);
 			if(!p.matcher(mobile).matches()){
 				return Result.fail("手机格式不正确");
 			}
-			return sendCodeToMobile(mobile, EtradeUtil.getRandomCode(), request);
+			//验证码
+			String code = new String(new RndBuilder().length(4).hasletter(false).next());
+			return sendCodeToMobile(mobile, code, request);
 		}
 
 	 	return Result.fail("手机号为空");
@@ -63,7 +65,7 @@ public class SMSController {
 	 * 2015年11月30日 qxs
 	 */
 	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
-	public Result sendCodeByKey(HttpServletRequest request,@RequestParam("key") String key) throws Exception{
+	public Result<String> sendCodeByKey(HttpServletRequest request,@RequestParam("key") String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("参数缺失:手机/邮箱/用户名");
 		}
@@ -71,7 +73,9 @@ public class SMSController {
 		if(usersOptional.isPresent()){
 			Users users=usersOptional.get();
 			if(!StringUtils.isEmpty(users.getMobile())){
-				return sendCodeToMobile(users.getMobile(), EtradeUtil.getRandomCode(), request);
+				//验证码
+				String code = new String(new RndBuilder().length(4).hasletter(false).next());
+				return sendCodeToMobile(users.getMobile(), code, request);
 			}else{
 				return Result.fail("用户未绑定手机");
 			}
@@ -89,9 +93,11 @@ public class SMSController {
 	//api/sms/code/user
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/user",method=RequestMethod.GET)
-	public Result sendCodeToUserMobile(HttpServletRequest request) throws Exception{
+	public Result<String> sendCodeToUserMobile(HttpServletRequest request) throws Exception{
 		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
-		 return sendCodeToMobile(userOption.get().getMobile(), EtradeUtil.getRandomCode(), request);
+		 //验证码
+		 String code = new String(new RndBuilder().length(4).hasletter(false).next());
+		 return sendCodeToMobile(userOption.get().getMobile(), code, request);
 	}
 	
 	
@@ -105,9 +111,9 @@ public class SMSController {
 	 */
 	//get api/sms/code/check
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
-	public Result chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
+	public Result<String> chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
 		
-		Result	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+		Result<String>	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
 		if(checkResult.isOk()){
 			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
 			return Result.ok("手机验证成功");
@@ -124,7 +130,7 @@ public class SMSController {
 	 * @throws Exception
 	 * 2015年11月10日 qxs
 	 */
-	private Result sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
+	private Result<String> sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
 		request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
 		Message message = new Message();
 		message.setContent("您的验证码是:"+code);
@@ -144,7 +150,7 @@ public class SMSController {
 	 * @return
 	 * 2015年11月10日 qxs
 	 */
-	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+	private Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
 		if(StringUtils.isEmpty(code)){
 			return Result.fail("验证码不能为空");
 		}

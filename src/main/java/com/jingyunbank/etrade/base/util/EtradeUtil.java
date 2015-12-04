@@ -40,14 +40,6 @@ public class EtradeUtil {
 		return new Date();
 	}
 	
-	/**
-	 * 获取4位随机数
-	 * @return
-	 * 2015年11月26日 qxs
-	 */
-	public static String getRandomCode(){
-		return String.valueOf(Math.abs(Math.round( Math.random()*9000+1000)));
-	}
 	
 	/**
 	 * 获取项目根目录 带 / 
