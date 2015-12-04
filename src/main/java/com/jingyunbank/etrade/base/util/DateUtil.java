@@ -5,17 +5,19 @@ import java.util.Date;
 
 public class DateUtil {
 	
-	public static final String DATE_FORMAT_DATE_TIME = "yyyy-MM-dd";
+	public static final String DATE_FORMAT_DATE = "yyyy-MM-dd";
+	
+	public static final String DATE_FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	
 	/**
-	 * 将date格式化为yyyy-MM-dd HH:mm:dd字符串
+	 * 将date格式化为yyyy-MM-dd字符串
 	 * @param date
 	 * @return
 	 * 2015年12月4日 qxs
 	 */
 	public static String formatDate(Date date){
 		if(date!=null){
-			return new SimpleDateFormat(DATE_FORMAT_DATE_TIME).format(date);
+			return new SimpleDateFormat(DATE_FORMAT_DATE).format(date);
 		}
 		return null;
 	}

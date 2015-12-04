@@ -157,6 +157,30 @@ public class InboxService implements IInboxService {
 		entity.setHasRead(false);
 		return messageDao.getAmount(entity);
 	}
+	
+	@Override
+	public int getAmountRead(String receiveUID) {
+		MessageEntity entity = new MessageEntity();
+		entity.setReceiveUID(receiveUID);
+		entity.setStatus(STATUS_SUC);
+		entity.setNeedReadStatus(true);
+		entity.setHasRead(true);
+		return messageDao.getAmount(entity);
+	}
+
+	@Override
+	public List<Message> listRead(String receiveUID, Range range) {
+		MessageEntity entity = new MessageEntity();
+		entity.setReceiveUID(receiveUID);
+		entity.setNeedReadStatus(true);
+		entity.setHasRead(true);
+		entity.setStatus(STATUS_SUC);
+		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
+					.stream().map( entityResul->{
+						return copyEntityToBo(entityResul, new Message());
+					}).collect(Collectors.toList());
+	}
+
 	@Override
 	public void refreshReadStatus(String id, boolean hasRead) throws DataRefreshingException  {
 		MessageEntity entity = new MessageEntity();
@@ -208,6 +232,7 @@ public class InboxService implements IInboxService {
 		this.save(msg);
 	}
 
+	
 	
 
 
