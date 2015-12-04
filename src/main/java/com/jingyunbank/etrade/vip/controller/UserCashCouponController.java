@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.controller;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
-import com.jingyunbank.etrade.api.vip.bo.CashCoupon;
 import com.jingyunbank.etrade.api.vip.bo.UserCashCoupon;
 import com.jingyunbank.etrade.api.vip.service.ICashCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserCashCouponService;
@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.vip.bean.CashCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserCashCouponVO;
 
 @RestController
-@RequestMapping("/api/user-cashcoupon")
+@RequestMapping("/api/user/cashcoupon")
 public class UserCashCouponController {
 	
 	@Autowired
@@ -33,48 +33,154 @@ public class UserCashCouponController {
 	private ICashCouponService cashCouponService;
 	
 	/**
-	 * 用户未使用的现金券
+	 * 用户未消费的现金券
 	 * @param uid
-	 * @param vo
 	 * @param page
 	 * @return
 	 * @throws Exception
 	 * 2015年11月19日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/{uid}",method=RequestMethod.GET)
-	public Result getUserCashCoupon(@PathVariable String uid,UserCashCouponVO vo, Page page)
+	@RequestMapping(value="/unused/{uid}",method=RequestMethod.GET)
+	public Result<List<UserCashCouponVO>> getUnusedCoupon(@PathVariable String uid , Page page)
 		throws Exception{
-		UserCashCoupon boFromVo = getBoFromVo(vo);
-		boFromVo.setUID(uid);
 		Range range = null;
 		if(page!=null){
 			range = new Range();
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(userCashCouponService.getUnusedCoupon(boFromVo, range)
+		return Result.ok(userCashCouponService.getUnusedCoupon(uid, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
 	}
 	
 	/**
-	 * 用户未使用的现金券数量
+	 * 用户未消费的现金券数量
 	 * @param uid
-	 * @param vo
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/unused/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getUnusedCouponAmount(HttpServletRequest request, @PathVariable String uid)
+		throws Exception{
+		return Result.ok(userCashCouponService.getUnusedCouponAmount(uid));
+	}
+	
+	/**
+	 * 用户已消费的现金券
+	 * @param uid
 	 * @param page
 	 * @return
 	 * @throws Exception
 	 * 2015年11月19日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/amount",method=RequestMethod.GET)
-	public Result getUserCashCouponAmount(HttpServletRequest request, UserCashCouponVO vo)
+	@RequestMapping(value="/consumed/{uid}",method=RequestMethod.GET)
+	public Result<List<UserCashCouponVO>> getConsumedCoupon(@PathVariable String uid , Page page)
 		throws Exception{
-		UserCashCoupon boFromVo = getBoFromVo(vo);
-		boFromVo.setUID(ServletBox.getLoginUID(request));
-		return Result.ok(userCashCouponService.getUnusedCouponAmount(boFromVo));
+		Range range = null;
+		if(page!=null){
+			range = new Range();
+			range.setFrom(page.getOffset());
+			range.setTo(page.getOffset()+page.getSize());
+		}
+		return Result.ok(userCashCouponService.getConsumedCoupon(uid, range)
+			.stream().map( bo ->{ return getVoFromBo(bo);})
+			.collect(Collectors.toList()));
 	}
+	
+	/**
+	 * 用户已消费的现金券数量
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/consumed/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getConsumedCouponAmount( @PathVariable String uid)
+		throws Exception{
+		return Result.ok(userCashCouponService.getConsumedCouponAmount(uid));
+	}
+	
+	/**
+	 * 用户已过期的现金券
+	 * @param uid
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/overdue/{uid}",method=RequestMethod.GET)
+	public Result<List<UserCashCouponVO>> getOverdueCoupon(@PathVariable String uid , Page page)
+		throws Exception{
+		Range range = null;
+		if(page!=null){
+			range = new Range();
+			range.setFrom(page.getOffset());
+			range.setTo(page.getOffset()+page.getSize());
+		}
+		return Result.ok(userCashCouponService.getOverdueCoupon(uid, range)
+			.stream().map( bo ->{ return getVoFromBo(bo);})
+			.collect(Collectors.toList()));
+	}
+	
+	/**
+	 * 用户已过期的现金券数量
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/overdue/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getOverdueCouponAmount(@PathVariable String uid)
+		throws Exception{
+		return Result.ok(userCashCouponService.getOverdueCouponAmount(uid));
+	}
+	
+	/**
+	 * 用户当前可用的现金券
+	 * @param uid
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/useable/{uid}",method=RequestMethod.GET)
+	public Result<List<UserCashCouponVO>> getUseableCoupon(@PathVariable String uid , Page page)
+		throws Exception{
+		Range range = null;
+		if(page!=null){
+			range = new Range();
+			range.setFrom(page.getOffset());
+			range.setTo(page.getOffset()+page.getSize());
+		}
+		return Result.ok(userCashCouponService.getUseableCoupon(uid, range)
+			.stream().map( bo ->{ return getVoFromBo(bo);})
+			.collect(Collectors.toList()));
+	}
+	
+	/**
+	 * 用户当前可用的现金券数量
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月19日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/useable/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getUseableCouponAmount( @PathVariable String uid)
+		throws Exception{
+		return Result.ok(userCashCouponService.getUseableCouponAmount(uid));
+	}
+	
+	
 	/**
 	 * 激活一张未使用的卡
 	 * @param code
@@ -84,35 +190,19 @@ public class UserCashCouponController {
 	 * 2015年11月17日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/", method=RequestMethod.PUT)
-	public Result active(String code, HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/{code}", method=RequestMethod.PUT)
+	public Result<String> active(@PathVariable String code, HttpServletRequest request) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
-		Result valid = cashCouponService.canActive(code);
+		Result<String> valid = cashCouponService.canActive(code);
 		if(valid.isBad()){
 			return valid;
 		}
 		if(userCashCouponService.active(code, uid)){
 			return Result.ok();
 		}
-		return Result.fail("系统繁忙,请稍后再试");
+		return  Result.fail("系统繁忙,请稍后再试");
 	}
 	
-	/**
-	 * 测试消费
-	 * @param couponId
-	 * @param oid
-	 * @return
-	 * @throws Exception
-	 * 2015年11月17日 qxs
-	 */
-	@RequestMapping(value="", method=RequestMethod.POST)
-	public Result testConsume(String couponId, String oid) throws Exception{
-		
-		if(userCashCouponService.consume(couponId, oid)){
-			return Result.ok();
-		}
-		return Result.fail("");
-	}
 	
 	private UserCashCouponVO getVoFromBo(UserCashCoupon bo){
 		if(bo!=null){
@@ -128,18 +218,4 @@ public class UserCashCouponController {
 		return null;
 	}
 	
-	private UserCashCoupon getBoFromVo(UserCashCouponVO vo){
-		if(vo!=null){
-			UserCashCoupon bo = new UserCashCoupon();
-			BeanUtils.copyProperties(vo, bo);
-			if(vo.getCashCoupon()!=null){
-				CashCoupon cBo = new CashCoupon();
-				BeanUtils.copyProperties(vo.getCashCoupon(), cBo);
-				bo.setCashCoupon(cBo);
-			}
-			return bo;
-		}
-		
-		return null;
-	}
 }

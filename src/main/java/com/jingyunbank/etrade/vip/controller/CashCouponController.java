@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,7 +68,7 @@ public class CashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/" ,method= RequestMethod.PUT)
-	public Result add(HttpServletRequest request, @Valid CashCouponVO vo,BindingResult valid) throws Exception{
+	public Result<String> add(HttpServletRequest request, @Valid CashCouponVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -94,8 +95,8 @@ public class CashCouponController {
 	 * @return
 	 * 2015年11月16日 qxs
 	 */
-	@RequestMapping(value="isvalid", method=RequestMethod.GET)
-	public Result isValid(String code) throws Exception{
+	@RequestMapping(value="/can/active/{code}", method=RequestMethod.GET)
+	public Result<String> canActive(@PathVariable String code) throws Exception{
 		
 		return cashCouponService.canActive(code);
 	}
@@ -109,7 +110,7 @@ public class CashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/", method=RequestMethod.DELETE)
-	public Result remove(String code, HttpServletRequest request) throws Exception{
+	public Result<String> remove(String code, HttpServletRequest request) throws Exception{
 		
 		CashCoupon cashCoupon = new CashCoupon();
 		cashCoupon.setCode(code);
@@ -130,7 +131,7 @@ public class CashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/list", method=RequestMethod.GET)
-	public Result getList(CashCouponVO vo, Page page){
+	public Result<List<CashCouponVO>> getList(CashCouponVO vo, Page page){
 		Range range = null;
 		if(page!=null){
 			range = new Range();
@@ -152,7 +153,7 @@ public class CashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount", method=RequestMethod.GET)
-	public Result getAmount(CashCouponVO vo){
+	public Result<Integer> getAmount(CashCouponVO vo){
 		return Result.ok(cashCouponService.getAmount(getBoFromVo(vo)));
 	}
 	

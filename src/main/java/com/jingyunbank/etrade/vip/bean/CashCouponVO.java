@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import com.jingyunbank.etrade.base.util.DateUtil;
+
 /**
  * 现金购物金（代金券）<br>
  * <strong>规则：</strong><br>
@@ -39,6 +41,31 @@ public class CashCouponVO extends BaseCouponVO implements Serializable {
 	@DecimalMin(value="0.00")
 	private BigDecimal threshhold;//使用门槛
 	
+	//增加
+	private String addtimeStr;
+	//有效时间
+	private String startStr;
+	//有效时间
+	private String endStr;
+	//使用时间
+	private String usedTimeStr;
+	
+	public String getAddtimeStr() {
+		addtimeStr = DateUtil.formatDate(addtime);
+		return addtimeStr;
+	}
+	public String getStartStr() {
+		startStr = DateUtil.formatDate(start);
+		return startStr;
+	}
+	public String getEndStr() {
+		endStr = DateUtil.formatDate(end);
+		return endStr;
+	}
+	public String getUsedTimeStr() {
+		usedTimeStr = DateUtil.formatDate(usedtime);
+		return usedTimeStr;
+	}
 	public String getID() {
 		return ID;
 	}

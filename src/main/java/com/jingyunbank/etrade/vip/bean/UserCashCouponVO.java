@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.vip.bean;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.jingyunbank.etrade.base.util.DateUtil;
+
 public class UserCashCouponVO implements Serializable{
 
 	/**
@@ -17,6 +19,20 @@ public class UserCashCouponVO implements Serializable{
 	private boolean consumed;
 	private Date addTime;//激活时间
 	private CashCouponVO cashCoupon;
+	
+	//消费使用时间
+	private String consumeTimeStr;
+	//激活时间
+	private String addTimeStr;
+	
+	public String getConsumeTimeStr() {
+		consumeTimeStr = DateUtil.formatDate(consumeTime);
+		return consumeTimeStr;
+	}
+	public String getAddTimeStr() {
+		addTimeStr = DateUtil.formatDate(addTime);
+		return addTimeStr;
+	}
 	public CashCouponVO getCashCoupon() {
 		return cashCoupon;
 	}

@@ -48,35 +48,30 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 		save(userDiscountCoupon);
 		//更改是体表状态
 		discountCouponService.active(code);
-		return false;
+		return true;
 	}
 	
 	@Override
-	public int getUnusedCouponAmount(UserDiscountCoupon bo) {
-		return userDiscountCouponDao.getUnusedCouponAmount(getEntityFromBo(bo));
+	public int getUnusedCouponAmount(String uid) {
+		return userDiscountCouponDao.getUnusedCouponAmount(uid);
 	}
+	
 	
 	@Override
 	public List<UserDiscountCoupon> getUnusedCoupon(String uid, Range range) {
-		UserDiscountCoupon bo = new UserDiscountCoupon();
-		bo.setUID(uid);
-		return this.getUnusedCoupon(bo, range);
-	}
-	@Override
-	public List<UserDiscountCoupon> getUnusedCoupon(UserDiscountCoupon bo,
-			Range range) {
-		UserDiscountCouponEntity entity = getEntityFromBo(bo);
+		long offset = 0L;
+		long size = 0L;
 		if(range!=null){
-			entity.setOffset(range.getFrom());
-			entity.setSize(range.getTo()-range.getFrom());
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
 		}
-		return userDiscountCouponDao.getUnusedCoupon(entity)
-				.stream().map(rEntity->{return getBoFromEntity(rEntity);})
-				.collect(Collectors.toList());
+		return userDiscountCouponDao.getUnusedCoupon(uid, offset, size )
+			.stream().map(rEntity->{return getBoFromEntity(rEntity);})
+			.collect(Collectors.toList());
 	}
 	
 	@Override
-	public Result canConsume(String couponId, String uid, BigDecimal orderPrice) {
+	public Result<String> canConsume(String couponId, String uid, BigDecimal orderPrice) {
 		UserDiscountCouponEntity entity =  userDiscountCouponDao.getUserDiscountCoupon(couponId,  uid);
 		if(entity==null){
 			return Result.fail("未找到");
@@ -152,6 +147,60 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 			return entity;
 		}
 		return null;
+	}
+
+	@Override
+	public int getConsumedCouponAmount(String uid) {
+		return userDiscountCouponDao.getConsumedCouponAmount(uid);
+	}
+
+	@Override
+	public List<UserDiscountCoupon> getConsumedCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userDiscountCouponDao.getConsumedCoupon(uid, offset, size )
+			.stream().map(rEntity->{return getBoFromEntity(rEntity);})
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public int getOverdueCouponAmount(String uid) {
+		return userDiscountCouponDao.getOverdueCouponAmount(uid);
+	}
+
+	@Override
+	public List<UserDiscountCoupon> getOverdueCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userDiscountCouponDao.getOverdueCoupon(uid, offset, size )
+			.stream().map(rEntity->{return getBoFromEntity(rEntity);})
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public int getUseableCouponAmount(String uid) {
+		return userDiscountCouponDao.getUseableCouponAmount(uid);
+	}
+
+	@Override
+	public List<UserDiscountCoupon> getUseableCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userDiscountCouponDao.getUseableCoupon(uid, offset, size )
+			.stream().map(rEntity->{return getBoFromEntity(rEntity);})
+			.collect(Collectors.toList());
 	}
 
 	
