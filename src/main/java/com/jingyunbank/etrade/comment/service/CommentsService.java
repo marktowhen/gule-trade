@@ -107,5 +107,13 @@ public class CommentsService implements ICommentService{
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public Optional<Comments> selectCommentByOid(String oid) {
+		// TODO Auto-generated method stub
+		CommentsEntity commentsEntity=commentsDao.selectCommentByOid(oid);
+		Comments comments=new Comments();
+		BeanUtils.copyProperties(commentsEntity, comments);
+		return Optional.of(comments);
+	}
 	
 }

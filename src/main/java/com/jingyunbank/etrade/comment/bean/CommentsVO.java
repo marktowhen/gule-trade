@@ -11,6 +11,7 @@ import com.jingyunbank.etrade.user.bean.UserVO;
 public class CommentsVO {
 	private String ID;
 	private String UID;
+	private String OID;
 	private String replyUID;//对于评论进行回复的人
 	private String GID;
 	private String ImgID;
@@ -30,6 +31,14 @@ public class CommentsVO {
 	public List<CommentsImg> getImgs() {
 		return imgs;
 	}
+	
+	public String getOID() {
+		return OID;
+	}
+	public void setOID(String oID) {
+		OID = oID;
+	}
+
 	public void setImgs(List<CommentsImg> imgs) {
 		this.imgs = imgs;
 	}

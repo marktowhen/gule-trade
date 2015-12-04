@@ -1,5 +1,8 @@
 package com.jingyunbank.etrade.user.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +45,7 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/",method=RequestMethod.PUT)
 	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO,HttpServletRequest request) throws Exception{
+		
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
 		String id = ServletBox.getLoginUID(request);
@@ -66,11 +71,18 @@ public class UserInfoController {
 	public Result selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
+		/*System.out.println(userinfo.get().getBirthday());*/
+		
 		if(userinfo.isPresent()){
-		UserInfo userInfo=userinfo.get();
-		UserInfoVO userInfoVO=new UserInfoVO();
-		BeanUtils.copyProperties(userInfo, userInfoVO);
-		return Result.ok(userInfoVO);
+			
+			UserInfo userInfo=userinfo.get();
+			UserInfoVO userInfoVO=new UserInfoVO();
+			BeanUtils.copyProperties(userInfo, userInfoVO);
+			if(!StringUtils.isEmpty(userinfo.get().getBirthday())){
+				String birthdayStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(userinfo.get().getBirthday());
+				userInfoVO.setBirthdayStr(birthdayStr);
+			}
+			return Result.ok(userInfoVO);
 		}
 		return Result.fail("重试");
 	}
@@ -86,6 +98,8 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/info",method=RequestMethod.PUT)
 	public Result updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
+		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
+		userInfoVO.setBirthday(date);
 		UserInfo userInfo=new UserInfo();
 		String id = ServletBox.getLoginUID(request);
 		userInfoVO.setUID(id);

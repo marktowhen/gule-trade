@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.user.bean;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -24,7 +25,16 @@ public class UserInfoVO {
 	private String regip;//注册ip
 	private Device regdevice;//注册设备
 	private String picture;//头像文件名
+	private String birthdayStr;
 	
+	
+	public String getBirthdayStr() {
+		
+		return birthdayStr;
+	}
+	public void setBirthdayStr(String birthdayStr) {
+		this.birthdayStr = birthdayStr;
+	}
 	public String getPicture() {
 		return picture;
 	}

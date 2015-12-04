@@ -7,6 +7,7 @@
 		<resultMap type="com.jingyunbank.etrade.comment.entity.CommentsEntity" id="ResultMap">
 			<id column="id" property="ID" jdbcType="CHAR"/>
 			<result column="uid" property="UID" jdbcType="CHAR"/>
+			<result column="oid" property="OID" jdbcType="CHAR"/>
 			<result column="reply_uid" property="replyUID"/>
 			<result column="gid" property="GID" jdbcType="CHAR"/>
 			<result column="imgid" property="ImgID" jdbcType="CHAR"/>
@@ -20,14 +21,14 @@
 			<result column="orders" property="orders" jdbcType="INTEGER"/>
 		</resultMap>
 		<sql id="comment_list">
-			id,uid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
+			id,uid,oid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
 		</sql>
 		<!-- 添加评价的信息 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.comment.entity.CommentsEntity">
 		insert into comment(
-			id,uid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
+			id,uid,oid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
 		)values(
-			#{ID},#{UID},#{replyUID},#{GID},#{ImgID},#{replyComment},#{goodsComment},#{commentGrade},#{goodsService},#{serviceGrade},#{addtime},#{commentStatus},#{orders}
+			#{ID},#{UID},#{OID},#{replyUID},#{GID},#{ImgID},#{replyComment},#{goodsComment},#{commentGrade},#{goodsService},#{serviceGrade},#{addtime},#{commentStatus},#{orders}
 		)
 		</insert>
 		<!-- 通过gid查询评论信息，多条 -->
@@ -51,4 +52,16 @@
 			update comment c set c.comment_status=#{commentStatus}
 			where id=#{ID}
 		</update>
+		<!-- 通过oid查出产品判断状态 -->
+		<select id="selectByOid" parameterType="String" resultMap="ResultMap">
+			select <include refid="comment_list"></include>
+			from comment where oid=#{OID}
+		</select>
+		<!-- <select id="selectByOid" parameterType="String" resultMap="ResultMap">
+			select <include refid="comment_list"></include>
+			from comment c
+			left join 
+			
+			where oid=#{OID}
+		</select> -->
 	</mapper>

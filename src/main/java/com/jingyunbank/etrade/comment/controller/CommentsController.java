@@ -27,6 +27,10 @@ import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentImgService;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
+import com.jingyunbank.etrade.api.goods.bo.Goods;
+import com.jingyunbank.etrade.api.order.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.bo.Orders;
+import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
@@ -47,6 +51,8 @@ public class CommentsController {
 	private IUserService userService;
 	@Autowired
 	private IUserInfoService userInfoService;
+	@Autowired
+	private IOrderService orderService;
 	/**
 	 * 保存商品的评论信息和对应的多张图片
 	 * @param commentVO
@@ -202,6 +208,36 @@ public class CommentsController {
 			return Result.ok(commentsVO);
 		}
 		return Result.fail("请重试");
+		
+	}
+	/**
+	 * 查出所有订单中没有评论的订单
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/order",method=RequestMethod.GET)
+	public Result<List<Orders>> selectCommentStatus(HttpServletRequest request,HttpSession session){
+		String uid = ServletBox.getLoginUID(request);
+		List<Orders> orders=null;
+		Comments comments=null;
+		for(int i=0;i<orders.size();i++){
+			orders=orderService.list(uid);
+			comments=commentService.selectCommentByOid(orders.get(i).getID()).get();
+			
+			//订单未评论(1 :未评论  ，2 :评论)
+			if(comments.getCommentStatus()==1){
+			List<OrderGoods> goods=orders.get(i).getGoods();
+				for(int j=0;j<goods.size();i++){
+					OrderGoods orderGoods=goods.get(j);
+					
+					orders.get(i).getGoods().add(orderGoods);
+				}
+				orders.add(orders.get(i));
+			}
+		}
+		return Result.ok(orders);
 		
 	}
 }

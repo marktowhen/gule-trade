@@ -20,5 +20,6 @@ public interface CommentsDao {
 	
 	public boolean refreshReadStatus(CommentsEntity commentsEntity) throws Exception;
 	
+	public CommentsEntity selectCommentByOid(String oid);
 	
 }
