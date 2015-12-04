@@ -10,26 +10,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.pay.bo.PayPlatform;
+import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
-import com.jingyunbank.etrade.api.pay.service.IPayPlatformService;
+import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
 import com.jingyunbank.etrade.api.pay.service.IPayTypeService;
-import com.jingyunbank.etrade.pay.bean.PayPlatformVO;
+import com.jingyunbank.etrade.pay.bean.PayPipelineVO;
 import com.jingyunbank.etrade.pay.bean.PayTypeVO;
 
 @RestController
-public class PayPlatformController {
+public class PayPipelineController {
 
 	@Autowired
-	private IPayPlatformService payPlatformService;
+	private IPayPipelineService payPipelineService;
 	@Autowired
 	private IPayTypeService payTypeService;
 	
-	@RequestMapping(value="/api/pay/platform/list", method=RequestMethod.GET)
-	public Result<List<PayPlatformVO>> list() throws Exception{
-		List<PayPlatform> platforms = payPlatformService.list();
-		List<PayPlatformVO> vos = platforms.stream().map(bo->{
-			PayPlatformVO vo = new PayPlatformVO();
+	@RequestMapping(value="/api/pay/pipeline/list", method=RequestMethod.GET)
+	public Result<List<PayPipelineVO>> list() throws Exception{
+		List<PayPipeline> pipelines = payPipelineService.list();
+		List<PayPipelineVO> vos = pipelines.stream().map(bo->{
+			PayPipelineVO vo = new PayPipelineVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());

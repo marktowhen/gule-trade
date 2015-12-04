@@ -17,24 +17,20 @@ import org.hibernate.validator.constraints.NotBlank;
 public class OrderPaymentRequestVO {
 	
 	@NotBlank
-	private String platformCode;
+	private String pipelineCode;
 	@NotBlank
-	private String platformName;
-	@Valid
+	private String pipelineName;
+	@NotBlank
+	private String bankCode;
 	@NotBlank
 	@Size(min=6)
 	private String tradepwd;
 
+	@Valid
 	@NotNull
 	@Size(min=1)
 	private List<OrderPaymentVO> payments = new ArrayList<OrderPaymentVO>();
 	
-	public String getPlatformCode() {
-		return platformCode;
-	}
-	public void setPlatformCode(String platformCode) {
-		this.platformCode = platformCode;
-	}
 	public List<OrderPaymentVO> getPayments() {
 		return payments;
 	}
@@ -47,10 +43,22 @@ public class OrderPaymentRequestVO {
 	public void setTradepwd(String tradepwd) {
 		this.tradepwd = tradepwd;
 	}
-	public String getPlatformName() {
-		return platformName;
+	public String getPipelineCode() {
+		return pipelineCode;
 	}
-	public void setPlatformName(String platformName) {
-		this.platformName = platformName;
+	public void setPipelineCode(String pipelineCode) {
+		this.pipelineCode = pipelineCode;
+	}
+	public String getPipelineName() {
+		return pipelineName;
+	}
+	public void setPipelineName(String pipelineName) {
+		this.pipelineName = pipelineName;
+	}
+	public String getBankCode() {
+		return bankCode;
+	}
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
 	}
 }

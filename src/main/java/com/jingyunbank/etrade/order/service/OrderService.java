@@ -16,6 +16,7 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.order.dao.OrderDao;
@@ -136,6 +137,16 @@ public class OrderService implements IOrderService{
 		} catch (Exception e) {
 			throw new DataRemovingException(e);
 		}
+	}
+
+	@Override
+	public List<Orders> listOrder(String uid, OrderStatusDesc status) {
+		return null;
+	}
+
+	@Override
+	public List<OrderGoods> listOrderGoods(String uid, OrderStatusDesc status) {
+		return null;
 	}
 
 }

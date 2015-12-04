@@ -6,7 +6,7 @@ package com.jingyunbank.etrade.pay.entity;
  * 该类实例描述可能的支付平台信息，如各家银行网关支付，支付宝，京东支付等等。<br>
  * 其中应当包括支付平台名称，平台代码，是否是第三方支付
  */
-public class PayPlatformEntity{
+public class PayPipelineEntity{
 
 	private String ID;
 	private String name;

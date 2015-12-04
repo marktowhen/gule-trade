@@ -24,7 +24,6 @@ import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
-import com.jingyunbank.etrade.api.pay.service.IPayPlatformService;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -37,8 +36,6 @@ public class PayController {
 
 	@Autowired
 	private IPayService payService;
-	@Autowired
-	private IPayPlatformService payPlatformService;
 	@Autowired
 	private IUserService userService;
 	@Autowired
@@ -65,7 +62,7 @@ public class PayController {
 	@RequestMapping(value="/api/payments", method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
 	@AuthBeforeOperation
-	public Result init(@RequestParam(value="oid", required=true) List<String> oids, HttpSession session) throws Exception{
+	public Result<List<OrderPaymentVO>> init(@RequestParam(value="oid", required=true) List<String> oids, HttpSession session) throws Exception{
 		
 		if(oids.size() == 0){
 			return Result.fail("您提交的订单信息有误，请核实后进行支付。");
@@ -97,15 +94,17 @@ public class PayController {
 	 */
 	@RequestMapping(value="/api/payments/info", method=RequestMethod.PUT)
 	@AuthBeforeOperation
-	public Result build(
+	public Result<Map<String, String>> build(
 				@Valid @RequestBody OrderPaymentRequestVO payvo, 
 				BindingResult valid,  
 				HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据有误，请校验！");
 		}
-		String platformCode = payvo.getPlatformCode();
-		String platformName = payvo.getPlatformName();
+		String pipelineCode = payvo.getPipelineCode();
+		String pipelineName = payvo.getPipelineName();
+		String bankCode = payvo.getBankCode();
+		
 		String tradepwd = payvo.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
 		Optional<Users> ou = userService.getByUID(ServletBox.getLoginUID(session));
@@ -119,7 +118,9 @@ public class PayController {
 					BeanUtils.copyProperties(x, op);
 					return op;
 				})
-				.collect(Collectors.toList()), platformCode, platformName
+				.collect(Collectors.toList()), 
+				pipelineCode, pipelineName,
+				bankCode
 		);
 		
 		return Result.ok(payinfo);
