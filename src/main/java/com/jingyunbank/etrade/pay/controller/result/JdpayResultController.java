@@ -12,7 +12,7 @@ import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
 @Controller
-public class JDResultController {
+public class JdpayResultController {
 	
 	@Autowired
 	private IPayContextService payContextService;
@@ -40,7 +40,7 @@ public class JDResultController {
 		{
 			response.getOutputStream().print("ok"); // 告诉服务器验证通过,停止发送
 			if ("20".equals(v_pstatus))
-			{ 
+			{
 				// 支付成功，商户 根据自己业务做相应逻辑处理
 				// 此处加入商户系统的逻辑处理（例如判断金额，判断支付状态(20成功,30失败)，更新订单状态等等）......
 				payContextService.paydone(v_oid);
