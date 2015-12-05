@@ -36,6 +36,6 @@
 		select <include refid="order_goods_column"/> 
 		from order_goods og
 		<!--  left join goods_img img on og.gid = img.gid -->  
-		where og.gid = #{GID}
+		where og.oid = #{OID}
 	</select>
 </mapper>

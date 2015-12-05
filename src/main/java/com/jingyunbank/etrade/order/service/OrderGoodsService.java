@@ -61,9 +61,9 @@ public class OrderGoodsService implements IOrderGoodsService {
 	 * @return
 	 */
 	@Override
-	public Optional<OrderGoods> getOrderGoods(String gid) {
+	public Optional<OrderGoods> getOrderGoods(String oid) {
 		OrderGoods orderGoods = new OrderGoods(); 
-		OrderGoodsEntity orderGoodsEntity =	orderGoodsDao.selectByGID(gid);
+		OrderGoodsEntity orderGoodsEntity =	orderGoodsDao.selectByGID(oid);
 		BeanUtils.copyProperties(orderGoodsEntity, orderGoods);
 		return Optional.of(orderGoods);
 	}
