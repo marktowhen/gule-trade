@@ -15,6 +15,7 @@ public class OrderGoodsEntity implements Serializable{
 	
 	private String ID;
 	private String OID;//订单id
+	private String UID;
 	private long orderno;
 	private String GID;//商品id
 	private String gname;
@@ -37,6 +38,13 @@ public class OrderGoodsEntity implements Serializable{
 	}
 	public void setOID(String oID) {
 		OID = oID;
+	}
+	
+	public String getUID() {
+		return UID;
+	}
+	public void setUID(String uID) {
+		UID = uID;
 	}
 	public String getGID() {
 		return GID;
