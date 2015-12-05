@@ -50,7 +50,7 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/",method=RequestMethod.POST)
-	public Result sendSysMessage(HttpServletRequest request,@Valid MessageVO messageVO, BindingResult valid) throws Exception{
+	public Result<String> sendSysMessage(HttpServletRequest request,@Valid MessageVO messageVO, BindingResult valid) throws Exception{
 		//验证vo信息
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -83,7 +83,7 @@ public class MessageController {
 	 * @throws DataRefreshingException 
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
+	public Result<MessageVO> getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
 		Optional<Message> messageOption = inboxService.getSingle(id);
 		if(messageOption.isPresent()){
 			//如果未读则置为已读
@@ -109,7 +109,7 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/list/{uid}",method=RequestMethod.GET)
-	public Result getList(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
+	public Result<List<MessageVO>> getList(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getOffset()+page.getSize());
@@ -130,7 +130,7 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount/{uid}",method=RequestMethod.GET)
-	public Result getAmountUID(@PathVariable String uid , HttpServletRequest request) throws Exception{
+	public Result<Integer> getAmountUID(@PathVariable String uid , HttpServletRequest request) throws Exception{
 		return Result.ok( inboxService.getAmount(uid));
 	}
 	
@@ -144,8 +144,8 @@ public class MessageController {
 	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/list/unread/{uid}",method=RequestMethod.GET)
-	public Result getListUnread(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
+	@RequestMapping(value="/unread/list/{uid}",method=RequestMethod.GET)
+	public Result<List<MessageVO>> getUnreadList(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getOffset()+page.getSize());
@@ -165,9 +165,45 @@ public class MessageController {
 	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/amount/unread/{uid}",method=RequestMethod.GET)
-	public Result getAmountUnread(@PathVariable String uid , HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/unread/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getUnreadAmount(@PathVariable String uid , HttpServletRequest request) throws Exception{
 		return Result.ok( inboxService.getAmountUnread(uid));
+	}
+	
+	/**
+	 * 查询用户已读的消息列表
+	 * @param uid
+	 * @param request
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 * 2015年11月20日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/read/list/{uid}",method=RequestMethod.GET)
+	public Result<List<MessageVO>> getReadList(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getOffset()+page.getSize());
+		return Result.ok( inboxService.listRead(uid, range)
+				.stream().map(bo ->{
+					return copyBoToVo(bo, new MessageVO());
+				}).collect(Collectors.toList()));
+	}
+	
+	
+	/**
+	 * 查询用户已读的消息列表数量
+	 * @param uid
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * 2015年11月20日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/read/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getReadAmount(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.getAmountRead(uid));
 	}
 	
 	/**
@@ -180,7 +216,7 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(@PathVariable String id, HttpServletRequest request) throws Exception{
+	public Result<String> remove(@PathVariable String id, HttpServletRequest request) throws Exception{
 		
 		inboxService.remove(id.split(","), ServletBox.getLoginUID(request));
 		return Result.ok();
@@ -196,7 +232,7 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result readMessage(@PathVariable String id, boolean hasRead, HttpServletRequest request) throws Exception{
+	public Result<String> readMessage(@PathVariable String id, boolean hasRead, HttpServletRequest request) throws Exception{
 		inboxService.refreshReadStatus(id.split(","), hasRead);
 		return Result.ok();
 	}

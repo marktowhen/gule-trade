@@ -8,6 +8,8 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import com.jingyunbank.etrade.base.util.DateUtil;
+
 /**
  * 折扣抵用券<br>
  * <strong>规则：</strong><br>
@@ -42,6 +44,32 @@ public class DiscountCouponVO extends BaseCouponVO implements Serializable{
 	@NotNull(message="金额不能为空")
 	@DecimalMin(value="0.01", message="价值不能低于1分")
 	private BigDecimal value;//面值 抵用的最高值
+	
+	//增加
+	private String addtimeStr;
+	//有效时间
+	private String startStr;
+	//有效时间
+	private String endStr;
+	//使用时间
+	private String usedTimeStr;
+	
+	public String getAddtimeStr() {
+		addtimeStr = DateUtil.formatDate(addtime);
+		return addtimeStr;
+	}
+	public String getStartStr() {
+		startStr = DateUtil.formatDate(start);
+		return startStr;
+	}
+	public String getEndStr() {
+		endStr = DateUtil.formatDate(end);
+		return endStr;
+	}
+	public String getUsedTimeStr() {
+		usedTimeStr = DateUtil.formatDate(usedtime);
+		return usedTimeStr;
+	}
 	
 	public BigDecimal getValue() {
 		return value;

@@ -65,7 +65,7 @@ public class LoginController {
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
 			//密码是否正确
-			if(!users.getPassword().equals(MD5.digest(user.getPassword()))){
+			if(!users.getPassword().equalsIgnoreCase(MD5.digest(user.getPassword()))){
 				//记录错误次数
 				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
 				return Result.fail("密码错误");

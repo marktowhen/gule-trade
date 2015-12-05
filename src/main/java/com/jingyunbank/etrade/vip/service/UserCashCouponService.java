@@ -55,21 +55,21 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	}
 
 	@Override
-	public List<UserCashCoupon> getUnusedCoupon(UserCashCoupon userCoupon, Range range) {
-		UserCashCouponEntity entity = getEntityFromBo(userCoupon);
+	public List<UserCashCoupon> getUnusedCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
 		if(range!=null){
-			entity.setOffset(range.getFrom());
-			entity.setSize(range.getTo()-range.getFrom());
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
 		}
-		return userCashCouponDao.getUnusedCoupon(entity)
+		return userCashCouponDao.getUnusedCoupon(uid, offset, size)
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}
 	
 	@Override
-	public int getUnusedCouponAmount(UserCashCoupon bo) {
-		
-		return userCashCouponDao.getUnusedCouponAmount(getEntityFromBo(bo));
+	public int getUnusedCouponAmount(String uid) {
+		return userCashCouponDao.getUnusedCouponAmount(uid);
 	}
 	
 	private boolean save(UserCashCoupon userCashCoupon) throws DataSavingException{
@@ -93,20 +93,6 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		}
 	}
 	
-	private UserCashCouponEntity getEntityFromBo(UserCashCoupon userCoupon){
-		if(userCoupon!=null){
-			UserCashCouponEntity entity = new UserCashCouponEntity();
-			BeanUtils.copyProperties(userCoupon, entity);
-			if(userCoupon.getCashCoupon()!=null){
-				CashCouponEntity cEntity = new CashCouponEntity();
-				BeanUtils.copyProperties(userCoupon.getCashCoupon(), cEntity);
-				entity.setCashCoupon(cEntity);
-			}
-			return entity;
-		}
-		return null;
-		
-	}
 	
 	private UserCashCoupon getBoFromEntity(UserCashCouponEntity entity){
 		if(entity!=null){
@@ -122,15 +108,9 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		return null;
 	}
 
-	@Override
-	public List<UserCashCoupon> getUnusedCoupon(String uid, Range range) {
-		UserCashCoupon userCoupon = new UserCashCoupon();
-		userCoupon.setUID(uid);
-		return this.getUnusedCoupon(userCoupon, range);
-	}
 
 	@Override
-	public Result canConsume(String couponId, String uid, BigDecimal orderPrice) {
+	public Result<String> canConsume(String couponId, String uid, BigDecimal orderPrice) {
 		UserCashCouponEntity entity =  userCashCouponDao.getUserCashCoupon(couponId,  uid);
 		if(entity==null){
 			return Result.fail("未找到");
@@ -157,6 +137,60 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		}
 		
 		return Result.ok();
+	}
+
+	@Override
+	public int getConsumedCouponAmount(String uid) {
+		return userCashCouponDao.getConsumedCouponAmount(uid);
+	}
+
+	@Override
+	public List<UserCashCoupon> getConsumedCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userCashCouponDao.getConsumedCoupon(uid, offset, size)
+			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public int getOverdueCouponAmount(String uid) {
+		return userCashCouponDao.getOverdueCouponAmount(uid);
+	}
+
+	@Override
+	public List<UserCashCoupon> getOverdueCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userCashCouponDao.getOverdueCoupon(uid, offset, size)
+			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public int getUseableCouponAmount(String uid) {
+		return userCashCouponDao.getUseableCouponAmount(uid);
+	}
+
+	@Override
+	public List<UserCashCoupon> getUseableCoupon(String uid, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userCashCouponDao.getUseableCoupon(uid, offset, size)
+			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
+			.collect(Collectors.toList());
 	}
 
 	

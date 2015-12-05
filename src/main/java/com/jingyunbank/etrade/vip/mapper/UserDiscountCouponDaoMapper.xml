@@ -28,50 +28,112 @@
 		insert into user_discount_coupon (<include refid="column_list"/>)
 		values(#{ID},#{UID},#{couponID},#{OID},now(),#{consumeTime},#{consumed})
 	</insert>
-	<!-- 用户未消费且未过期的 -->
+	<!-- 用户未消费且未过期的券 -->
 	<select id="getUnusedCoupon" resultMap="UserDiscountCouponEntityResultMap">
 		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold ,c.discount
 			from 
 				user_discount_coupon u , discount_coupon c
-			where u.coupon_id = c.id
-				and u.uid=#{UID}
-				and c.del=false
-				and c.used=true
-				and u.consumed=false
-				and now() &lt;= c.`end`
-				<if test="discountCouponEntity != null">
-					<if test="discountCouponEntity.threshholdHigh!=null">
-					and c.threshhold &lt;=#{discountCouponEntity.threshholdHigh}
-					</if>
-					<if test="discountCouponEntity.threshholdLow!=null">
-					and c.threshhold &gt;=#{discountCouponEntity.threshholdLow}
-					</if>
-				</if>
+			where <include refid="getUnusedCoupon_condition"/>
 				order by u.add_time DESC
 				<if test="size!=null and size!=0">
 				LIMIT offset,size
 				</if>
 	</select>
-	
-	<!-- 用户未消费且未过期的数量 -->
+	<!-- 用户未消费且未过期的券的券数量 -->
 	<select id="getUnusedCouponAmount" resultType="int">
-		select count(1) from
-			 user_discount_coupon u , discount_coupon c
-			where u.coupon_id = c.id
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getUnusedCoupon_condition"/>
+	</select>
+	
+	<!-- 未消费且未过期的券查询条件 -->
+	<sql id="getUnusedCoupon_condition">
+		 		u.coupon_id = c.id
 				and u.uid=#{UID}
 				and c.del=false
-				and c.used=true
 				and u.consumed=false
 				and now() &lt;= c.`end`
-				<if test="discountCouponEntity != null">
-					<if test="discountCouponEntity.threshholdHigh!=null">
-					and c.threshhold &lt;=#{discountCouponEntity.threshholdHigh}
-					</if>
-					<if test="discountCouponEntity.threshholdLow!=null">
-					and c.threshhold &gt;=#{discountCouponEntity.threshholdLow}
-					</if>
+	</sql>
+	
+	<!-- 用户已消费的券 -->
+	<select id="getConsumedCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold ,c.discount
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getConsumedCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT offset,size
 				</if>
 	</select>
+	<!-- 用户已消费的券 数量 -->
+	<select id="getConsumedCouponAmount" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getConsumedCoupon_condition"/>
+	</select>
+	<!-- 已消费券查询条件 -->
+	<sql id="getConsumedCoupon_condition">
+		 		u.coupon_id = c.id
+				and u.uid=#{UID}
+				and u.consumed=true
+	</sql>
+	
+	<!-- 用户已过期的券 -->
+	<select id="getOverdueCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold ,c.discount
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getOverdueCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT offset,size
+				</if>
+	</select>
+	<!-- 用户已过期的券 数量 -->
+	<select id="getOverdueCouponAmount" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getOverdueCoupon_condition"/>
+	</select>
+	<!-- 已过期券查询条件 -->
+	<sql id="getOverdueCoupon_condition">
+		 		u.coupon_id = c.id
+		 		and c.del=false
+				and u.uid=#{UID}
+				and u.consumed=false
+				and now() &gt;= c.`end`
+	</sql>
+	
+	
+	
+	<!-- 用户当前可用的券 -->
+	<select id="getUseableCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold ,c.discount
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getUseableCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT offset,size
+				</if>
+	</select>
+	<!-- 用户当前可用 数量 -->
+	<select id="getUseableCouponAmount" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="getUseableCoupon_condition"/>
+	</select>
+	<!-- 用户当前可用查询条件 -->
+	<sql id="getUseableCoupon_condition">
+		 		u.coupon_id = c.id
+		 		and c.del=false
+				and u.uid=#{UID}
+				and u.consumed=false
+				and now() between c.start and c.`end`
+	</sql>
+	
+	
 	
 	<update id="updateConsumeStatus">
 		update user_discount_coupon 

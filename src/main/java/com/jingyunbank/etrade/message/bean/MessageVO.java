@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.jingyunbank.etrade.base.util.DateUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 public class MessageVO implements Serializable{
@@ -30,6 +31,12 @@ public class MessageVO implements Serializable{
 	private UserVO sendUser = new UserVO();//发送者
 	private UserVO receiveUser = new UserVO();//接收者
 	
+	private String addtimeStr;
+	
+	public String getAddtimeStr() {
+		addtimeStr = DateUtil.formatDate(addtime, "yyyy-MM-dd HH:mm");
+		return addtimeStr;
+	}
 	public UserVO getSendUser() {
 		return sendUser;
 	}

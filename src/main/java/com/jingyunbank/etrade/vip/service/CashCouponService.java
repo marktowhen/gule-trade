@@ -49,7 +49,7 @@ public class CashCouponService implements ICashCouponService{
 	}
 
 	@Override
-	public Result canActive(String code) {
+	public Result<String> canActive(String code) {
 		CashCouponEntity entity = cashCouponDao.selectSingle(code);
 		if(entity==null){
 			return Result.fail("卡号错误");

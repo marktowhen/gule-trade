@@ -47,7 +47,7 @@ public class DiscountCouponService implements IDiscountCouponService{
 	}
 
 	@Override
-	public Result canActive(String code) {
+	public Result<String> canActive(String code) {
 		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(code);
 		if(entity==null){
 			return Result.fail("卡号错误");
