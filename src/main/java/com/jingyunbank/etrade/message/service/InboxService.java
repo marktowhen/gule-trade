@@ -102,13 +102,11 @@ public class InboxService implements IInboxService {
 
 	@Override
 	public Optional<Message> getSingle(String ID) {
-		MessageEntity entity = new MessageEntity();
-		entity.setID(ID);
-		List<MessageEntity> list = messageDao.selectList(entity, 0 ,1);
-		if(list==null || list.isEmpty()){
-			return Optional.empty();
+		MessageEntity entity = messageDao.selectSingle(ID);
+		if(entity!=null){
+			return Optional.of(copyEntityToBo(entity, new Message()));
 		}
-		return Optional.of(copyEntityToBo(list.get(0), new Message()));
+		return null;
 	}
 
 	@Override

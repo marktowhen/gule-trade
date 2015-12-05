@@ -28,7 +28,22 @@ public interface MessageDao {
 	 */
 	public boolean updateReadStatus(MessageEntity m) throws Exception;
 	
+	/**
+	 * 列表查询
+	 * @param m
+	 * @param offset
+	 * @param size
+	 * @return
+	 * 2015年12月5日 qxs
+	 */
 	public List<MessageEntity> selectList(@Param(value="entity") MessageEntity m, @Param(value="offset")long offset, @Param(value="size")long size);
+	/**
+	 * 单个查询
+	 * @param id
+	 * @return
+	 * 2015年12月5日 qxs
+	 */
+	public MessageEntity selectSingle(@Param(value="ID")String id);
 
 	/**
 	 * 查询数量

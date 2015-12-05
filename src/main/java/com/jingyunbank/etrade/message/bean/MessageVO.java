@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.jingyunbank.etrade.base.util.DateUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 public class MessageVO implements Serializable{
@@ -24,6 +24,7 @@ public class MessageVO implements Serializable{
 	private String content;//内容
 	private String type;//类型
 	private int status;//状态 1:成功 2:失败 3:删除
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;//添加时间
 	private String addip;//添加人的ip
 	private boolean hasRead;//是否已读
@@ -31,12 +32,6 @@ public class MessageVO implements Serializable{
 	private UserVO sendUser = new UserVO();//发送者
 	private UserVO receiveUser = new UserVO();//接收者
 	
-	private String addtimeStr;
-	
-	public String getAddtimeStr() {
-		addtimeStr = DateUtil.formatDate(addtime, "yyyy-MM-dd HH:mm");
-		return addtimeStr;
-	}
 	public UserVO getSendUser() {
 		return sendUser;
 	}

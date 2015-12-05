@@ -3,7 +3,7 @@ package com.jingyunbank.etrade.vip.bean;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.jingyunbank.etrade.base.util.DateUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class UserDiscountCouponVO implements Serializable{
 	
@@ -15,24 +15,15 @@ public class UserDiscountCouponVO implements Serializable{
 	private String UID;
 	private String couponID;
 	private String OID;
+	
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date consumeTime;//消费使用时间
 	private boolean consumed;
+	
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addTime;//激活时间
 	private DiscountCouponVO discountCoupon;
 	
-	//消费使用时间
-	private String consumeTimeStr;
-	//激活时间
-	private String addTimeStr;
-	
-	public String getConsumeTimeStr() {
-		consumeTimeStr = DateUtil.formatDate(consumeTime);
-		return consumeTimeStr;
-	}
-	public String getAddTimeStr() {
-		addTimeStr = DateUtil.formatDate(addTime);
-		return addTimeStr;
-	}
 	public DiscountCouponVO getDiscountCoupon() {
 		return discountCoupon;
 	}
