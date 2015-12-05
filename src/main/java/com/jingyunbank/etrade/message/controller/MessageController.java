@@ -16,6 +16,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
@@ -232,8 +233,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result<String> readMessage(@PathVariable String id, boolean hasRead, HttpServletRequest request) throws Exception{
-		inboxService.refreshReadStatus(id.split(","), hasRead);
+	public Result<String> readMessage(@PathVariable String id,@RequestParam(value="read") boolean read, HttpServletRequest request) throws Exception{
+		inboxService.refreshReadStatus(id.split(","), read);
 		return Result.ok();
 	}
 	
