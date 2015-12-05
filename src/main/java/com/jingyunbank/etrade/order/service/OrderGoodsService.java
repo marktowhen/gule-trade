@@ -2,8 +2,8 @@ package com.jingyunbank.etrade.order.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
 import com.jingyunbank.etrade.order.dao.OrderGoodsDao;
 import com.jingyunbank.etrade.order.entity.OrderGoodsEntity;
@@ -39,5 +42,34 @@ public class OrderGoodsService implements IOrderGoodsService {
 			throw new DataSavingException(e);
 		}
 	}
+	
+	/**
+	 * 产品某条件下的订单信息
+	 */
+	@Override
+	public List<OrderGoods> listOrderGoods(String uid,OrderStatusDesc status) { /*OrderStatusDesc status*/
+		return orderGoodsDao.selectByUID(uid,status)
+				.stream().map(entity -> {
+					OrderGoods orderGoods = new OrderGoods();
+					BeanUtils.copyProperties(entity, orderGoods);
+					return orderGoods;
+				}).collect(Collectors.toList());
+	}
+	/**
+	 * 通过gid查出单个的对象
+	 * @param gid
+	 * @return
+	 */
+	@Override
+	public Optional<OrderGoods> getOrderGoods(String gid) {
+		OrderGoods orderGoods = new OrderGoods(); 
+		OrderGoodsEntity orderGoodsEntity =	orderGoodsDao.selectByGID(gid);
+		BeanUtils.copyProperties(orderGoodsEntity, orderGoods);
+		return Optional.of(orderGoods);
+	}
+
+
+
+	
 
 }

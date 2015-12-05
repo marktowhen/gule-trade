@@ -144,9 +144,6 @@ public class OrderService implements IOrderService{
 		return null;
 	}
 
-	@Override
-	public List<OrderGoods> listOrderGoods(String uid, OrderStatusDesc status) {
-		return null;
-	}
+	
 
 }

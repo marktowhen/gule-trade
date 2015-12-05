@@ -215,7 +215,7 @@ public class CommentsController {
 	 * @param request
 	 * @param session
 	 * @return
-	 */
+	 *//*
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order",method=RequestMethod.GET)
 	public Result<List<Orders>> selectCommentStatus(HttpServletRequest request,HttpSession session){
@@ -239,5 +239,5 @@ public class CommentsController {
 		}
 		return Result.ok(orders);
 		
-	}
+	}*/
 }
