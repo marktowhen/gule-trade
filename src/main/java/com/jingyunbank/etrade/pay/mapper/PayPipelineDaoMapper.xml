@@ -4,11 +4,29 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.pay.dao.PayPipelineDao">
 	
-	<sql id="order_payment_columns">
-		id, name, code, thirdpaty
+	<resultMap type="com.jingyunbank.etrade.pay.entity.PayPipelineEntity" id="PayPipelineEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="name" property="name" javaType="String"/>
+		<result column="code" property="code" javaType="String"/>
+		<result column="thirdpaty" property="thirdpaty" javaType="Boolean"/>
+		<result column="pay_url" property="payUrl" javaType="String"/>
+		<result column="return_url" property="returnUrl" javaType="String"/>
+		<result column="notice_url" property="noticeUrl" javaType="String"/>
+		<result column="signkey" property="signkey" javaType="String"/>
+		<result column="partner" property="partner" javaType="String"/>
+		<result column="signtype" property="signtype" javaType="String"/>
+	</resultMap>
+	
+	<sql id="pay_pipeline_columns">
+		id, name, code, thirdpaty, pay_url, return_url, notice_url, partner, signkey, signtype
 	</sql>
-	<select id="selectAll" resultType="com.jingyunbank.etrade.pay.entity.PayPipelineEntity">
-		select id, name, code, thirdpaty from pay_pipeline
+	<select id="selectAll" resultMap="PayPipelineEntityResultMap">
+		select <include refid="pay_pipeline_columns"/> from pay_pipeline
+	</select>
+	
+	<select id="selectOne" resultMap="PayPipelineEntityResultMap" parameterType="String">
+		select <include refid="pay_pipeline_columns"/> from pay_pipeline
+		where code = #{pipelineCode} limit 0, 1
 	</select>
 	
 </mapper>
