@@ -8,7 +8,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import com.jingyunbank.etrade.base.util.DateUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 折扣抵用券<br>
@@ -27,49 +27,36 @@ public class DiscountCouponVO extends BaseCouponVO implements Serializable{
 	private static final long serialVersionUID = -3034128223623799548L;
 	private String ID;
 	private String code;//充值码
+	
 	@NotNull(message="折扣不能为空")
 	@DecimalMin(value="0.01", message="折扣须在0.01到0.99之间")
 	@DecimalMax(value="0.99", message="折扣须在0.01到0.99之间")
 	private BigDecimal discount;//折扣
+	
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
+	
 	@NotNull(message="开始时间不能为空")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date start;
+	
 	@NotNull(message="结束时间不能为空")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date end;
+	
 	private boolean used;//是否充值到某用户账户中
+	
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date usedtime;//充值时间
+	
 	@NotNull(message="使用门槛不能为空")
 	@DecimalMin(value="0.00")
 	private BigDecimal threshhold;//使用门槛
+	
 	@NotNull(message="金额不能为空")
 	@DecimalMin(value="0.01", message="价值不能低于1分")
 	private BigDecimal value;//面值 抵用的最高值
 	
-	//增加
-	private String addtimeStr;
-	//有效时间
-	private String startStr;
-	//有效时间
-	private String endStr;
-	//使用时间
-	private String usedTimeStr;
-	
-	public String getAddtimeStr() {
-		addtimeStr = DateUtil.formatDate(addtime);
-		return addtimeStr;
-	}
-	public String getStartStr() {
-		startStr = DateUtil.formatDate(start);
-		return startStr;
-	}
-	public String getEndStr() {
-		endStr = DateUtil.formatDate(end);
-		return endStr;
-	}
-	public String getUsedTimeStr() {
-		usedTimeStr = DateUtil.formatDate(usedtime);
-		return usedTimeStr;
-	}
 	
 	public BigDecimal getValue() {
 		return value;

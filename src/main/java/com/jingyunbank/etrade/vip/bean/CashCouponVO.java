@@ -7,7 +7,7 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import com.jingyunbank.etrade.base.util.DateUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 现金购物金（代金券）<br>
@@ -27,45 +27,31 @@ public class CashCouponVO extends BaseCouponVO implements Serializable {
 	private static final long serialVersionUID = 1413508875776533336L;
 	private String ID;
 	private String code;//充值码
+	
 	@NotNull(message="金额不能为空")
 	@DecimalMin(value="0.01", message="价值不能低于1分")
 	private BigDecimal value;//
+	
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
+	
 	@NotNull(message="开始时间不能为空")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date start;
+	
 	@NotNull(message="结束时间不能为空")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date end;
+	
 	private boolean used;
+	
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date usedtime;
+	
 	@NotNull(message="使用门槛不能为空")
 	@DecimalMin(value="0.00")
 	private BigDecimal threshhold;//使用门槛
 	
-	//增加
-	private String addtimeStr;
-	//有效时间
-	private String startStr;
-	//有效时间
-	private String endStr;
-	//使用时间
-	private String usedTimeStr;
-	
-	public String getAddtimeStr() {
-		addtimeStr = DateUtil.formatDate(addtime);
-		return addtimeStr;
-	}
-	public String getStartStr() {
-		startStr = DateUtil.formatDate(start);
-		return startStr;
-	}
-	public String getEndStr() {
-		endStr = DateUtil.formatDate(end);
-		return endStr;
-	}
-	public String getUsedTimeStr() {
-		usedTimeStr = DateUtil.formatDate(usedtime);
-		return usedTimeStr;
-	}
 	public String getID() {
 		return ID;
 	}
