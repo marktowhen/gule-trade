@@ -8,12 +8,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.comment.bo.Comments;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
@@ -68,8 +65,13 @@ public class OrderGoodsService implements IOrderGoodsService {
 		return Optional.of(orderGoods);
 	}
 
-
-
-	
+	@Override
+	public void refreshStatus(List<String> oids, OrderStatusDesc status) throws DataRefreshingException{
+		try {
+			orderGoodsDao.updateStatus(oids, status);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
 
 }
