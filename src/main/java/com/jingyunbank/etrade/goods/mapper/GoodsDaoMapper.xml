@@ -448,8 +448,8 @@
 	<!-- 查询商品详情页的宝贝排行  -->
 	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity">
 	<![CDATA[	
-		SELECT g.id gid,g.name goodsname,g.price,g.promotion_price,g.now_price,
-		g.volume as volume, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
+		SELECT g.id gid,g.name goodsname,g.price,g.promotion_price as promotionPrice,g.now_price,
+		g.volume as volume, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1,g.pro_flag
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
 		LEFT JOIN goods_img i ON i.gid = g.id
