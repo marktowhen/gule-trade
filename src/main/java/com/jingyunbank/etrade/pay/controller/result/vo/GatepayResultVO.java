@@ -1,6 +1,8 @@
 package com.jingyunbank.etrade.pay.controller.result.vo;
 
+
 //网银支付的相应结果
+@Deprecated
 public class GatepayResultVO {
 	
 	private String oid_partner;

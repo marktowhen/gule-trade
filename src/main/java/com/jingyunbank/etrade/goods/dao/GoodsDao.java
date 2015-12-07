@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity;
+import com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
@@ -128,4 +129,12 @@ public interface GoodsDao {
 	 * @return
 	 */
 	public GoodsDaoEntity selectOne(String gid);
+	/**
+	 * 阿胶详情页  宝贝排行列表
+	 * 
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public List<HoneyGoodsEntity> selectHoneyGoods() throws Exception;
 }
