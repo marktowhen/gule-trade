@@ -33,6 +33,11 @@
 		paytype_code, paytype_name, deliverytype_code, deliverytype_name, 
 		status_code, status_name, price, postage, note
 	</sql>
+	<sql id="payments_join_orders_columns">
+		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
+		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
+		o.status_code, o.status_name, o.price, o.postage, o.note
+	</sql>
 	<sql id="goods_join_orders_columns">
 		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
@@ -87,4 +92,18 @@
 	<delete id="delete" parameterType="String">
 		delete from orders where id = #{id}
 	</delete>
+	<update id="updateStatus">
+		update orders
+		set status_code = #{status.code}, status_name = #{status.name}
+		where id in 
+		<foreach collection="oids" item="oid" open="(" separator="," close=")">
+			#{oid}
+		</foreach>
+	</update>
+	<select id="selectByExtranso" parameterType="String"  resultMap="OrderEntityResultMap">
+		select <include refid="payments_join_orders_columns"/>
+		from order_payment p
+		left join orders o on p.oid = o.id
+		where p.extransno = #{extransno}
+	</select>
 </mapper>
