@@ -1,5 +1,8 @@
 package com.jingyunbank.etrade.pay.controller.result;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -10,12 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
@@ -33,12 +35,13 @@ public class GatepayResultController {
 	
 	@RequestMapping(value="/api/payments/result/gateway/async", method={RequestMethod.POST})
 	@ResponseBody
-	public Map<String, String> payresult (@RequestBody Map<String, String> payresult,
-			HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public Map<String, String> payresult (HttpServletRequest request, HttpServletResponse response) throws Exception{
 		response.setCharacterEncoding("UTF-8");
+		InputStream payresultstream = request.getInputStream();
+		Map<String, String> payresult = resolve(payresultstream);
 		Map<String, String> result = new HashMap<String, String>();
         if (Objects.isNull(payresult)
-        		|| Objects.isNull(payresult.get("result_pay")) 
+        		|| Objects.isNull(payresult.get("result_pay"))
         		|| !"SUCCESS".equals(payresult.get("result_pay"))
         		|| Objects.isNull(payresult.get("sign"))
         		|| Objects.isNull(payresult.get("no_order")))
@@ -74,9 +77,27 @@ public class GatepayResultController {
         
 	}
 
+	@SuppressWarnings("unchecked")
+	private Map<String, String> resolve(InputStream payresultstream) throws Exception {
+		Map<String, String> result = new HashMap<String, String>();
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(payresultstream, "utf-8")))
+        {
+        	ObjectMapper mapper = new ObjectMapper();
+            result = mapper.readValue(reader, Map.class);
+            
+        }catch (Exception e){
+        	throw e;
+		}
+        
+        return result;
+	}
+
 	private String compositeGatewayKeyValuePaires(Map<String, String> result, String key) {
 		StringBuilder builder = new StringBuilder();
-		result.entrySet().stream().sorted((x, y)->x.getKey().compareToIgnoreCase(y.getKey())).forEach((x)->{
+		result.entrySet().stream()
+			.filter(x->! "sign".equals(x.getKey()))
+			.sorted((x, y)->x.getKey().compareToIgnoreCase(y.getKey()))
+			.forEach((x)->{
 			builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
 		});
 		builder.append("key=").append(key);
