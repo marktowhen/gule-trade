@@ -27,6 +27,7 @@ public class OrderGoodsController {
 	
 	@Autowired
 	private IOrderGoodsService orderGoodsService;
+	
 	/**
 	 * 查询某状态的订单产品
 	 * @param session
@@ -34,7 +35,7 @@ public class OrderGoodsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/ordergoods",method=RequestMethod.GET)
+	@RequestMapping(value="/api/order/goods",method=RequestMethod.GET)
 	public Result<List<OrderGoodsVO>> listOrderGoods(HttpSession session,HttpServletRequest request){
 		String uid = ServletBox.getLoginUID(request);
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED)/*OrderStatusDesc.RECEIVED*/
@@ -45,8 +46,13 @@ public class OrderGoodsController {
 			return orderGoodsVO;
 		}).collect(Collectors.toList()));
 	}
+	/**
+	 * 通过oid查出订单产品
+	 * @param oid
+	 * @return
+	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/bygid/ordergoods",method=RequestMethod.GET)
+	@RequestMapping(value="/api/bygid/order/goods",method=RequestMethod.GET)
 	public Result getOrderGoods(@RequestParam(value="oid") String oid){
 			Optional<OrderGoods> optional	=orderGoodsService.getOrderGoods(oid);
 			OrderGoods	orderGoods =optional.get();

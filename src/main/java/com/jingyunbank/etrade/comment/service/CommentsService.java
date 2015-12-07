@@ -102,6 +102,7 @@ public class CommentsService implements ICommentService{
 		}
 		
 	}
+	
 	@Override
 	public void refreshStatus(String[] ids, Comments comments) throws DataRefreshingException {
 		// TODO Auto-generated method stub
@@ -114,6 +115,17 @@ public class CommentsService implements ICommentService{
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentsEntity, comments);
 		return Optional.of(comments);
+	}
+	/**
+	 * 通过gid查出总共的评论条数
+	 */
+	@Override
+	public int commentCount(String gid) {
+		int count = 0;
+		if(commentsDao.commentCount(gid)!=0){
+			count++;
+		}
+		return count;
 	}
 	
 }

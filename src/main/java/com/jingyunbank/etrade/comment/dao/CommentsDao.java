@@ -16,10 +16,9 @@ public interface CommentsDao {
 	
 	public boolean updateStatus(CommentsEntity commentsEntity) throws Exception;
 	
-/*	public List<CommentsEntity> selectList();*/
-	
 	public boolean refreshReadStatus(CommentsEntity commentsEntity) throws Exception;
 	
 	public CommentsEntity selectCommentByOid(String oid);
 	
+	public int commentCount(String gid);
 }

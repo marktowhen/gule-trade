@@ -18,6 +18,9 @@
 	<select id="selectById" resultMap="ResultMap" parameterType="String">
 		select id,imgid,picture from comment_img where imgid=#{ImgID}
 	</select>
+	<select id="selectImg" resultMap="ResultMap">
+	select id,imgid,picture from comment_img
+	</select>
 	<delete id="delete" parameterType="String">
 		delete from comment_img where imgid=#{ImgID}
 	</delete>

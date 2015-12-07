@@ -30,6 +30,7 @@ import com.jingyunbank.etrade.api.comment.service.ICommentService;
 import com.jingyunbank.etrade.api.goods.bo.Goods;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.Orders;
+import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -52,7 +53,7 @@ public class CommentsController {
 	@Autowired
 	private IUserInfoService userInfoService;
 	@Autowired
-	private IOrderService orderService;
+	private IOrderGoodsService orderGoodsService;
 	/**
 	 * 保存商品的评论信息和对应的多张图片
 	 * @param commentVO
@@ -65,11 +66,15 @@ public class CommentsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments",method=RequestMethod.POST)
 	@ResponseBody
-	public Result saveComments(@RequestBody CommentsVO commentVO,@RequestBody CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result saveComments(@RequestParam("oid") String oid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
 		commentVO.setID(KeyGen.uuid());
+		commentVO.setImgID(KeyGen.uuid());
+		Optional<OrderGoods> optional	=orderGoodsService.getOrderGoods(oid);
+		OrderGoods	orderGoods =optional.get();
+		commentVO.setGID(orderGoods.getGID());
+		commentVO.setOID(oid);
 		String id = ServletBox.getLoginUID(request);
 		commentVO.setUID(id);
-		commentVO.setGID("15");
 		commentVO.setAddtime(new Date());
 		commentVO.setCommentStatus(2);
 		Comments comments=new Comments();
@@ -111,18 +116,12 @@ public class CommentsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/getbygid",method=RequestMethod.GET)
 	@ResponseBody
-	public Result getComments(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<List<CommentsVO>> getComments(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
 		List<Comments> comments=commentService.getCommentsByGid(gid);
 		List<CommentsVO> commentVOs=convert(comments);
 		return Result.ok(commentVOs);
-		/*return Result.ok(commentService.getCommentsByGid(gid)
-				.stream().map(bo-> {
-					CommentsVO vo= new CommentsVO();
-					BeanUtils.copyProperties(bo, vo);
-					return vo;
-				}).collect(Collectors.toList()));*/
 		
-	}
+		}
 	private List<CommentsVO> convert(List<Comments> comments){
 	
 		List<CommentsVO> commentVOs=new ArrayList<CommentsVO>();
@@ -137,27 +136,49 @@ public class CommentsController {
 			BeanUtils.copyProperties(userInfo, userinfoVO);
 			commentsVO.setUserVO(userVO);
 			commentsVO.setUserInfoVO(userinfoVO);
-		
 			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getImgID());
-			/*CommentsImgVO vo = new CommentsImgVO();
-			CommentsImg bo = new CommentsImg();
-			BeanUtils.copyProperties(bo, vo);*/
 			commentsVO.setImgs(commentsImgs);
 			/*for(int j=0;j<commentsImgs.size();j++){
 				CommentsImgVO vo = new CommentsImgVO();
 				BeanUtils.copyProperties(commentsImgs.get(j), vo);
 			}*/
-			
-			
-			
 			commentVOs.add(commentsVO);
 		}
-		
-		
 		return commentVOs;
+	}
+	
+	/**
+	 * 通过gid查出所有的图片信息
+	 * @param gid
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/commentImgs/getbygid",method=RequestMethod.GET)
+	@ResponseBody
+	public Result<List<CommentsVO>> getCommentImgs(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
+		List<Comments> comments=commentService.getCommentsByGid(gid);
+		List<CommentsVO> commentVOs=convertImg(comments);
+		return Result.ok(commentVOs);
 		
-		
-		
+		}
+	private List<CommentsVO> convertImg(List<Comments> comments){
+	
+		List<CommentsVO> commentVOs=new ArrayList<CommentsVO>();
+		for(int i=0;i<comments.size();i++){
+			CommentsVO commentsVO=new CommentsVO();
+			BeanUtils.copyProperties(comments.get(i),commentsVO);
+			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getImgID());
+			commentsVO.setImgs(commentsImgs);
+			/*for(int j=0;j<commentsImgs.size();j++){
+				CommentsImgVO vo = new CommentsImgVO();
+				BeanUtils.copyProperties(commentsImgs.get(j), vo);
+			}*/
+			commentVOs.add(commentsVO);
+		}
+		return commentVOs;
 	}
 	/**
 	 * 测试通过id删除自己添加的商品评价，别人的评论没有权限删除
@@ -210,34 +231,5 @@ public class CommentsController {
 		return Result.fail("请重试");
 		
 	}
-	/**
-	 * 查出所有订单中没有评论的订单
-	 * @param request
-	 * @param session
-	 * @return
-	 *//*
-	@AuthBeforeOperation
-	@RequestMapping(value="/api/order",method=RequestMethod.GET)
-	public Result<List<Orders>> selectCommentStatus(HttpServletRequest request,HttpSession session){
-		String uid = ServletBox.getLoginUID(request);
-		List<Orders> orders=null;
-		Comments comments=null;
-		for(int i=0;i<orders.size();i++){
-			orders=orderService.list(uid);
-			comments=commentService.selectCommentByOid(orders.get(i).getID()).get();
-			
-			//订单未评论(1 :未评论  ，2 :评论)
-			if(comments.getCommentStatus()==1){
-			List<OrderGoods> goods=orders.get(i).getGoods();
-				for(int j=0;j<goods.size();i++){
-					OrderGoods orderGoods=goods.get(j);
-					
-					orders.get(i).getGoods().add(orderGoods);
-				}
-				orders.add(orders.get(i));
-			}
-		}
-		return Result.ok(orders);
-		
-	}*/
+	
 }
