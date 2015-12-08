@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.pay.dao.PayDao;
@@ -51,20 +50,20 @@ public class PayService implements IPayService{
 		}
 	}
 
-	@Override
-	public OrderPayment singlePayment(Orders order) {
-		return null;
-	}
-
-	@Override
-	public OrderPayment singlePayment(String oid) {
-		return null;
-	}
-
-	@Override
-	public OrderPayment singlePayment(long orderno) {
-		return null;
-	}
+//	@Override
+//	public OrderPayment singlePayment(Orders order) {
+//		return null;
+//	}
+//
+//	@Override
+//	public OrderPayment singlePayment(String oid) {
+//		return null;
+//	}
+//
+//	@Override
+//	public OrderPayment singlePayment(long orderno) {
+//		return null;
+//	}
 
 	@Override
 	public List<OrderPayment> listPayments(List<String> oids) {
@@ -80,7 +79,7 @@ public class PayService implements IPayService{
 	}
 
 	@Override
-	public void refresh(List<OrderPayment> payments)
+	public void refreshNOAndPipeline(List<OrderPayment> payments)
 			throws DataSavingException {
 		try {
 			payDao.updateMany(payments.stream().map(bo->{
@@ -106,21 +105,11 @@ public class PayService implements IPayService{
 	}
 
 	@Override
-	public void finish(String extransno) throws DataRefreshingException {
+	public void refreshStatus(String extransno, boolean done) throws DataRefreshingException {
 		try {
-			payDao.updateStatus(extransno, true);
+			payDao.updateStatus(extransno, done);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
 	}
-
-	@Override
-	public void fail(String extransno) throws DataRefreshingException {
-		try {
-			payDao.updateStatus(extransno, false);
-		} catch (Exception e) {
-			throw new DataRefreshingException(e);
-		}
-	}
-
 }

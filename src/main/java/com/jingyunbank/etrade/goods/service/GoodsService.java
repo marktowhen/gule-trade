@@ -16,12 +16,14 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
+import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
+import com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 
@@ -257,4 +259,17 @@ public class GoodsService implements IGoodsService {
 		return list;
 	}
 	
+	@Override
+	public List<HoneyGoods> listHoneyGoods() throws Exception {
+		List<HoneyGoods> rltlist = new ArrayList<HoneyGoods>();
+		List<HoneyGoodsEntity> goodslist = goodsDao.selectHoneyGoods();
+		if (goodslist != null) {
+			rltlist = goodslist.stream().map(eo -> {
+				HoneyGoods bo = new HoneyGoods();
+					BeanUtils.copyProperties(eo, bo);
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return rltlist;
+	}
 }

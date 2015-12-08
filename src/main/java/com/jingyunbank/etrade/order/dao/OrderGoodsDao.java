@@ -15,4 +15,6 @@ public interface OrderGoodsDao {
 	public List<OrderGoodsEntity> selectByUID(@Param(value="UID") String uid,@Param("status") OrderStatusDesc status);/*,@Param("status") OrderStatusDesc status*/
 		
 	public OrderGoodsEntity selectByGID(@Param(value="OID") String oid);
+
+	public void updateStatus(@Param("oids") List<String> oids, @Param("status") OrderStatusDesc status) throws Exception;
 }

@@ -24,6 +24,7 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
+import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
@@ -34,6 +35,7 @@ import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
 import com.jingyunbank.etrade.goods.bean.GoodsVO;
+import com.jingyunbank.etrade.goods.bean.HoneyGoodsVO;
 import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
@@ -411,6 +413,23 @@ public class GoodsController {
 		}
 		System.out.println(vo);
 		return Result.ok(vo);
+	}
+	
+	/**
+	 * 阿胶详情页 宝贝推荐排行
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/honeygoods/list", method = RequestMethod.GET)
+	public Result<List<HoneyGoodsVO>> listHoneyGoods() throws Exception {
+		List<HoneyGoods> goodslist = goodsService.listHoneyGoods();
+		List<HoneyGoodsVO> list = goodslist.stream().map(bo -> {
+			HoneyGoodsVO vo = new HoneyGoodsVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 
 

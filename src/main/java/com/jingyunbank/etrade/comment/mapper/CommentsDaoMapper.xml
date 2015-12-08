@@ -57,11 +57,9 @@
 			select <include refid="comment_list"></include>
 			from comment where oid=#{OID}
 		</select>
-		<!-- <select id="selectByOid" parameterType="String" resultMap="ResultMap">
-			select <include refid="comment_list"></include>
-			from comment c
-			left join 
-			
-			where oid=#{OID}
-		</select> -->
+		<!-- 通过gid查出该商品的总条数 -->
+		<select id="commentCount" resultType="int" parameterType="string">
+		select count(id) from users where gid=#{GID}
+	</select>
+		
 	</mapper>

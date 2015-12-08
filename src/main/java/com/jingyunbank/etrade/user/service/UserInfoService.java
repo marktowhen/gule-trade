@@ -26,43 +26,26 @@ public class UserInfoService implements IUserInfoService{
 	
 	@Override
 	public boolean save(UserInfo uinfo) throws DataSavingException {
-		boolean flag=false;
-		
 		UserInfoEntity userInfoEntity=new UserInfoEntity();
 		BeanUtils.copyProperties(uinfo, userInfoEntity);
 		
 		try {
-			if(userInfoDao.insert(userInfoEntity)){
-				flag=true;
-			}else{
-				flag=false;
-			}
+			return userInfoDao.insert(userInfoEntity);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
-		return flag;
-		
 	}
 
 	
 	@Override
 	public boolean refresh(UserInfo uinfo) throws DataRefreshingException{
-		boolean flag=false;
-		
 		UserInfoEntity userInfoEntity=new UserInfoEntity();
 		BeanUtils.copyProperties(uinfo, userInfoEntity);
-		
 		try {
-			if(userInfoDao.update(userInfoEntity)){
-				flag=true;
-			}else{
-				flag=false;
-			}
+			return userInfoDao.update(userInfoEntity);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
-		
-		return flag;
 	}
 
 	

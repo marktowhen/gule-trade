@@ -57,10 +57,6 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public void refresh(Orders order) throws DataRefreshingException {
-	}
-
-	@Override
 	public Optional<Orders> singleByOrderNo(String orderno) {
 		return null;
 	}
@@ -74,6 +70,7 @@ public class OrderService implements IOrderService{
 				entity.getGoods().forEach(ge -> {
 					OrderGoods og = new OrderGoods();
 					og.setGID(ge.getGID());
+					og.setGname(ge.getGname());
 					og.setImgpath(ge.getImgpath());
 					bo.getGoods().add(og);
 				});
@@ -107,6 +104,7 @@ public class OrderService implements IOrderService{
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
 						og.setGID(ge.getGID());
+						og.setGname(ge.getGname());
 						og.setImgpath(ge.getImgpath());
 						bo.getGoods().add(og);
 					});
@@ -123,6 +121,7 @@ public class OrderService implements IOrderService{
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
 						og.setGID(ge.getGID());
+						og.setGname(ge.getGname());
 						og.setImgpath(ge.getImgpath());
 						bo.getGoods().add(og);
 					});
@@ -142,6 +141,27 @@ public class OrderService implements IOrderService{
 	@Override
 	public List<Orders> listOrder(String uid, OrderStatusDesc status) {
 		return null;
+	}
+
+	@Override
+	public void refreshStatus(List<String> oids, OrderStatusDesc status)
+			throws DataRefreshingException {
+		try {
+			orderDao.updateStatus(oids, status);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
+	@Override
+	public List<Orders> listByExtransno(String extransno) {
+		
+		return orderDao.selectByExtranso(extransno)
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
 	}
 
 	

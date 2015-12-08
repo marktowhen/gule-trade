@@ -73,13 +73,13 @@ public class TradePasswordController {
 			String uid = ServletBox.getLoginUID(request);
 			Optional<Users> optional=userService.getByUID(uid);
 			Users users=optional.get();
-			if(StringUtils.isEmpty(users.getTradepwd())){
+			/*if(StringUtils.isEmpty(users.getTradepwd())){*/
 					userVO.setID(uid);
 					BeanUtils.copyProperties(userVO, users);
 					if(userService.refresh(users)){
 						return Result.ok(userVO);
 					}
-			}
+			/*}*/
 		}
 		return Result.fail("交易密码已经存在");
 	}

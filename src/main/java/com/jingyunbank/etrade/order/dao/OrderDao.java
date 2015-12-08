@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.order.entity.OrderEntity;
 
 public interface OrderDao{
@@ -26,5 +27,9 @@ public interface OrderDao{
 	public List<OrderEntity> selectByUIDWithRange(@Param(value="uid") String uid, @Param("from") long from, @Param("size") long size);
 
 	public void delete(String id) throws Exception;
+
+	public void updateStatus(@Param("oids") List<String> oids, @Param("status") OrderStatusDesc status) throws Exception;
+
+	public List<OrderEntity> selectByExtranso(String extransno);
 
 }
