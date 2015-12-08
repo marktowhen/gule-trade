@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.user.controller;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
@@ -98,8 +97,10 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/info",method=RequestMethod.PUT)
 	public Result updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
-		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
-		userInfoVO.setBirthday(date);
+		if(!StringUtils.isEmpty(userInfoVO.getBirthdayStr())){
+			Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
+			userInfoVO.setBirthday(date);
+		}
 		UserInfo userInfo=new UserInfo();
 		String id = ServletBox.getLoginUID(request);
 		userInfoVO.setUID(id);
