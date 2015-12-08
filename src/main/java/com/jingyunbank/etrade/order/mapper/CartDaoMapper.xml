@@ -41,6 +41,13 @@
 			uid = #{uid}
 		limit #{offset}, #{size}
 	</select>
+	<select id="selectOneGoods" resultMap="GoodsInCartEntityResultMap">
+		select <include refid="goods_in_cart_columns"/>
+		from goods_in_cart
+		where
+			uid = #{uid} and gid = #{gid}
+		limit 1
+	</select>
 	<insert id="insertCart" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
 		insert into cart
 			(<include refid="cart_columns"/>)

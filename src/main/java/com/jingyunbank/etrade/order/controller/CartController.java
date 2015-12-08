@@ -84,7 +84,7 @@ public class CartController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart",
-				method=RequestMethod.PUT, 
+				method=RequestMethod.POST, 
 				consumes="application/json;charset=UTF-8",
 				produces="application/json;charset=UTF-8")
 	public Result<GoodsInCartVO> put(@Valid @RequestBody GoodsInCartVO goods,
@@ -104,8 +104,9 @@ public class CartController {
 		goods.setAddtime(new Date());
 		GoodsInCart gcart = new GoodsInCart();
 		BeanUtils.copyProperties(goods, gcart);
-		cartService.save(gcart);
-		return Result.ok(goods);
+		if(cartService.save(gcart))
+			return Result.ok(goods);
+		return Result.fail("该商品已添加至购物车。");
 	}
 	
 	/**
