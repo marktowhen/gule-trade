@@ -40,7 +40,7 @@ public class CountryController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result save(@Valid CountryVO vo, BindingResult valid) throws Exception{
+	public Result<String> save(@Valid CountryVO vo, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -64,7 +64,7 @@ public class CountryController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(HttpServletRequest request,@PathVariable int id) throws Exception{
+	public Result<String> remove(HttpServletRequest request,@PathVariable int id) throws Exception{
 		if(countryService.remove(id)){
 			return Result.ok("成功");
 		}
@@ -81,7 +81,7 @@ public class CountryController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result refresh(@PathVariable int id ,@Valid CountryVO countryVO , BindingResult valid) throws Exception{
+	public Result<String> refresh(@PathVariable int id ,@Valid CountryVO countryVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -106,7 +106,7 @@ public class CountryController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getDetail(@PathVariable int id) throws Exception{
+	public Result<CountryVO> getDetail(@PathVariable int id) throws Exception{
 		Country country = countryService.single(id);
 		if(country!=null){
 			CountryVO vo = new CountryVO();
@@ -123,7 +123,7 @@ public class CountryController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result getList(CountryVO vo) throws Exception{
+	public Result<List<CountryVO>> getList(CountryVO vo) throws Exception{
 		Country country = new Country();
 		BeanUtils.copyProperties(vo, country);
 		return Result.ok(countryService.list(country)

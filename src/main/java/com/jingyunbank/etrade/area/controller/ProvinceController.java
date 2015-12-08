@@ -40,7 +40,7 @@ public class ProvinceController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result save(@Valid ProvinceVO vo, BindingResult valid) throws Exception{
+	public Result<String> save(@Valid ProvinceVO vo, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -64,7 +64,7 @@ public class ProvinceController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(HttpServletRequest request,@PathVariable int id) throws Exception{
+	public Result<String> remove(HttpServletRequest request,@PathVariable int id) throws Exception{
 		if(provinceService.remove(id)){
 			return Result.ok("成功");
 		}
@@ -81,7 +81,7 @@ public class ProvinceController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result refresh(@PathVariable int id ,@Valid ProvinceVO provinceVO , BindingResult valid) throws Exception{
+	public Result<String> refresh(@PathVariable int id ,@Valid ProvinceVO provinceVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -106,7 +106,7 @@ public class ProvinceController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getDetail(@PathVariable int id) throws Exception{
+	public Result<ProvinceVO> getDetail(@PathVariable int id) throws Exception{
 		Province province = provinceService.single(id);
 		if(province!=null){
 			ProvinceVO vo = new ProvinceVO();
@@ -123,7 +123,7 @@ public class ProvinceController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result getList(ProvinceVO vo) throws Exception{
+	public Result<List<ProvinceVO>> getList(ProvinceVO vo) throws Exception{
 		Province province = new Province();
 		BeanUtils.copyProperties(vo, province);
 		return Result.ok(provinceService.list(province)
@@ -142,7 +142,7 @@ public class ProvinceController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list/{countryID}",method=RequestMethod.GET)
-	public Result getListByCountry(@PathVariable int countryID) throws Exception{
+	public Result<List<ProvinceVO>> getListByCountry(@PathVariable int countryID) throws Exception{
 		return Result.ok(provinceService.listByCountry(countryID)
 				.stream().map( bo->{ 
 					ProvinceVO c = new ProvinceVO();

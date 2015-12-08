@@ -66,7 +66,7 @@ public class DiscountCouponController {
 	 * @throws DataSavingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value = "/" ,method= RequestMethod.PUT)
+	@RequestMapping(value = "/" ,method= RequestMethod.POST)
 	public Result<String> add(HttpServletRequest request, @Valid DiscountCouponVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();

@@ -2,14 +2,11 @@ package com.jingyunbank.etrade.vip.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -28,7 +25,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testSave() throws Exception{
 			getMockMvc().perform(
-					 put("/api/cashcoupon/")
+					 post("/api/cashcoupon/")
 					//.param("code", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()))
 					.param("value", "1")
 					.param("start", "2015-11-16 01:02:03")

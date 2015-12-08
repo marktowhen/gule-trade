@@ -20,6 +20,8 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.api.vip.service.IUserCashCouponService;
+import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
@@ -31,6 +33,10 @@ public class UserController {
 	private ISyncNotifyService emailService;
 	@Resource
 	private ISyncNotifyService smsService;
+	@Autowired
+	private IUserCashCouponService userCashCouponService;
+	@Autowired
+	private IUserDiscountCouponService userDiscountCouponService;
 	/**
 	 * 邮箱/短信 成功验证身份的时间
 	 */
@@ -160,6 +166,19 @@ public class UserController {
 			}
 		}
 		return Result.ok(level);
+	}
+	
+	/**
+	 * 用户未使用的券总数
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月27日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/coupon/amount/{uid}",method=RequestMethod.GET)
+	public Result<Integer> getUnusedCouponAmount(@PathVariable String uid) throws Exception {
+		return Result.ok(userCashCouponService.getUnusedCouponAmount(uid)+userDiscountCouponService.getUnusedCouponAmount(uid));
 	}
 	
 	/**

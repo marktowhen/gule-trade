@@ -21,7 +21,7 @@ public class PointController {
 	 * 2015年12月2日 qxs
 	 */
 	@RequestMapping(value="/point/{uid}", method=RequestMethod.GET)
-	public Result getPiont(@PathVariable String uid){
+	public Result<Integer> getPiont(@PathVariable String uid){
 		return Result.ok(pointService.getPoint(uid));
 	}
 
