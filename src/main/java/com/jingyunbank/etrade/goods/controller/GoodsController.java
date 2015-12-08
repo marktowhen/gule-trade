@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.goods.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baidu.ueditor.ActionEnter;
+
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
@@ -434,10 +433,13 @@ public class GoodsController {
 
 
 
-	@RequestMapping(value = "/ueUpload", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/ueUpload", method = RequestMethod.GET)
 	public void config(HttpServletRequest request, HttpServletResponse response, String action) {
 		response.setContentType("application/json");
-		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		//String rootPath = request.getRealPath("/");
+		//String rootPath ="E:\\etrade-ui\\jingyun-etrade-back-ui\\bower_components\\ueditor";
+		String rootPath = "D:/image/";
+		System.out.println("rootPath:"+rootPath);
 		try {
 			String exec = new ActionEnter(request, rootPath).exec();
 			PrintWriter writer = response.getWriter();
@@ -448,6 +450,6 @@ public class GoodsController {
 			e.printStackTrace();
 		}
 
-	}
+	}*/
 
 }
