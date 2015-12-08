@@ -38,7 +38,7 @@ public class PasswordController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/password",method=RequestMethod.PUT)
-	public Result updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	public Result<UserVO> updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		if(EtradeUtil.effectiveTime(request.getSession())){
 		//验证登录密码有效性
 			if(userVO.getPassword()!=null){
@@ -50,9 +50,8 @@ public class PasswordController {
 			userVO.setID(uid);
 			Users users=new Users();
 			BeanUtils.copyProperties(userVO, users);
-			if(userService.refresh(users)){
-				return Result.ok(userVO);
-			}
+			userService.refresh(users);
+			return Result.ok(userVO);
 			
 		}
 		return Result.fail("修改登录密码失败");
@@ -70,7 +69,7 @@ public class PasswordController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value="/forgetpwd/checkcode",method=RequestMethod.PUT)
-		public Result forgetpwdCheck(HttpServletRequest request, HttpSession session,@RequestParam("key") String key, @RequestParam("password") String password) throws Exception{
+		public Result<String> forgetpwdCheck(HttpServletRequest request, HttpSession session,@RequestParam("key") String key, @RequestParam("password") String password) throws Exception{
 			if(EtradeUtil.effectiveTime(request.getSession())){
 				if(password.length()<7||password.length()>20){
 					return Result.fail("登录密码必须是8-20位");
@@ -78,9 +77,8 @@ public class PasswordController {
 				Optional<Users> usersOptionals = userService.getByKey(key);
 				Users users=usersOptionals.get();
 				users.setPassword(password);
-				if(userService.refresh(users)){
-					return Result.ok("修改成功");
-				}
+				userService.refresh(users);
+				return Result.ok("修改成功");
 			
 			}
 			return Result.fail("修改未成功");

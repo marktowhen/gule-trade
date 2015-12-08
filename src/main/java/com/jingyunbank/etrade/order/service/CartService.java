@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
@@ -26,6 +27,7 @@ public class CartService implements ICartService {
 	private CartDao cartDao;
 	
 	@Override
+	@Transactional
 	public void save(Cart cart) throws DataSavingException {
 		CartEntity entity = new CartEntity();
 		BeanUtils.copyProperties(cart, entity);
