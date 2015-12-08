@@ -9,9 +9,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
@@ -52,8 +52,8 @@ public class OrderGoodsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/bygid/order/goods",method=RequestMethod.GET)
-	public Result getOrderGoods(@RequestParam(value="oid") String oid){
+	@RequestMapping(value="/api/orders/{oid}/goods",method=RequestMethod.GET)
+	public Result<OrderGoodsVO> getOrderGoods(@PathVariable(value="oid") String oid){
 			Optional<OrderGoods> optional	=orderGoodsService.getOrderGoods(oid);
 			OrderGoods	orderGoods =optional.get();
 			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
