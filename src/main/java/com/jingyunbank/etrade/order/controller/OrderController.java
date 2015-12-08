@@ -56,7 +56,7 @@ public class OrderController {
 	 */
 	@RequestMapping(value="/api/orders/{uid}/{from}/{size}", method=RequestMethod.GET)
 	@AuthBeforeOperation
-	public Result listUID(@PathVariable("uid") String uid, @PathVariable("from") int from, @PathVariable("size") int size,
+	public Result<List<Order2ShowVO>> listUID(@PathVariable("uid") String uid, @PathVariable("from") int from, @PathVariable("size") int size,
 			HttpSession session){
 		String loginuid = ServletBox.getLoginUID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
@@ -91,7 +91,7 @@ public class OrderController {
 			method=RequestMethod.POST,
 			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Result submit(@Valid @RequestBody PurchaseRequestVO purchase,
+	public Result<PurchaseRequestVO> submit(@Valid @RequestBody PurchaseRequestVO purchase,
 			BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -142,7 +142,7 @@ public class OrderController {
 	
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
-	public Result remove(@PathVariable String id) throws Exception{
+	public Result<String> remove(@PathVariable String id) throws Exception{
 		
 		orderContextService.remove(id);
 		

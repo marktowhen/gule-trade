@@ -111,7 +111,7 @@ public class PayController {
 		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 			return Result.fail("支付密码错误！");
 		}
-		Map<String, String> payinfo = payContextService.refreshAndComposite(
+		Map<String, String> payinfo = payContextService.refreshAndResolvePipeline(
 				payvo.getPayments()
 				.stream().map(x->{
 					OrderPayment op = new OrderPayment();
