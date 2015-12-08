@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.message.controller;
 
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -154,15 +155,40 @@ public class EmailController {
 	 * @throws Exception 
 	 */
 	private Result<String> sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
-		request.getSession().setAttribute(EMAIL_MESSAGE, code);
-		Message message = new Message();
-		message.setTitle(subTitle);
-		message.setContent("您的验证码是:"+code);
-		message.getReceiveUser().setEmail(email);
-		System.out.println("-----------------"+"您的验证码是:"+code);
-		//emailService.inform(message);
-		return Result.ok();
+		//距离上次发送时间是否超过1分钟
+		if(checkSendTime(request.getSession(), email)){
+			request.getSession().setAttribute(EMAIL_MESSAGE, code);
+			Message message = new Message();
+			message.setTitle(subTitle);
+			message.setContent("您的验证码是:"+code);
+			message.getReceiveUser().setEmail(email);
+			System.out.println("-----------------"+"您的验证码是:"+code);
+			//emailService.inform(message);
+			return Result.ok();
+		}
+		return Result.fail("发送过于频繁,请稍后再试");
 	}
+	
+	/**
+	 * 验证发送间隔是否超过1分钟
+	 * @param session
+	 * @return
+	 * 2015年12月8日 qxs
+	 */
+	private boolean checkSendTime(HttpSession session, String email){
+		Object objLastTime = session.getAttribute(email);
+		if(objLastTime!=null && objLastTime instanceof Date){
+			Date lastTime = (Date)objLastTime;
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(lastTime);
+			calendar.add(Calendar.MINUTE, 1);
+			if(calendar.after(Calendar.getInstance())){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	/**
 	 * 发送验证链接到用户输入的邮箱
