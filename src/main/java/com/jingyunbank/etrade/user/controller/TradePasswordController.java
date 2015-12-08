@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +33,7 @@ public class TradePasswordController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/",method=RequestMethod.PUT)
-	public Result updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	public Result<UserVO> updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
 		if(EtradeUtil.effectiveTime(session)){
 			if(userVO.getTradepwd()!=null){
@@ -46,9 +45,8 @@ public class TradePasswordController {
 			userVO.setID(uid);
 			Users users=new Users();
 			BeanUtils.copyProperties(userVO, users);
-			if(userService.refresh(users)){
-				return Result.ok(userVO);
-			}
+			userService.refresh(users);
+			return Result.ok(userVO);
 		}
 		return Result.fail("修改交易密码失败");
 		
@@ -63,7 +61,7 @@ public class TradePasswordController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
-	public Result installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
+	public Result<UserVO> installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		if(EtradeUtil.effectiveTime(session)){
 			if(userVO.getTradepwd()!=null){
 				if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
@@ -76,9 +74,8 @@ public class TradePasswordController {
 			/*if(StringUtils.isEmpty(users.getTradepwd())){*/
 					userVO.setID(uid);
 					BeanUtils.copyProperties(userVO, users);
-					if(userService.refresh(users)){
-						return Result.ok(userVO);
-					}
+					userService.refresh(users);
+					return Result.ok(userVO);
 			/*}*/
 		}
 		return Result.fail("交易密码已经存在");

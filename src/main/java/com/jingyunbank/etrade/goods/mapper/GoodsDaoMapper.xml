@@ -348,8 +348,43 @@
 				LEFT JOIN goods_type t ON t.id=g.tid
 				LEFT JOIN COMMENT c ON c.gid=g.id
 				WHERE 1=1 AND g.state=1  AND m.id = #{mid}
-		<include refid="where" />
-		GROUP BY g.id
+				<if test="brandArr !='' and brandArr !=null ">
+					AND g.bid IN
+					<foreach collection="brandArr" index="index" item="item"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="typeArr !='' and typeArr !=null ">
+					AND g.tid IN
+					<foreach collection="typeArr" index="index" item="item" open="("
+						separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="beginprice !='' and beginprice !=null">
+					<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) >= #{beginprice} ]]>
+				</if>
+				<if test="endprice !='' and endprice !=null">
+					<![CDATA[ AND (CASE g.pro_flag WHEN '1' THEN g.promotion_price WHEN '0'  THEN g.price ELSE g.price END) <= #{endprice} ]]>
+				</if>
+			GROUP BY g.id
+			<!-- 销量排序 -->
+			<if test="order ==1 ">
+				ORDER BY g.volume DESC
+			</if>
+			<!-- 价格排序 -->
+			<if test="order ==2 ">
+				ORDER BY nowprice 
+			</if>
+			<!-- 评论数排序 -->
+			<if test="order ==3 ">
+				ORDER BY COMMENT DESC
+			</if>
+			<!-- 新品排序 -->
+			<if test="order ==4 ">
+				ORDER BY g.addtime DESC
+			</if>
 		LIMIT #{from}, #{size}
 	</select>
 	<!-- -->

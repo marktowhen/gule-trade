@@ -170,6 +170,17 @@ public class GoodsService implements IGoodsService {
 		map.put("beginprice", show.getBeginPrice());
 		map.put("endprice", show.getEndPrice());
 		map.put("mid", show.getMID());
+		
+		if (show.getOrder() == 1) {
+			map.put("order", "1");
+		} else if (show.getOrder() == 2) {
+			map.put("order", "2");
+		} else if (show.getOrder() == 3) {
+			map.put("order", "3");
+		} else if (show.getOrder() == 4) {
+			map.put("order", "4");
+		}
+		
 		map.put("from", (int)range.getFrom());
 		map.put("size", (int)range.getTo());
 		List<ShowGoods> list = goodsDao.selectMerchantByWhereGoodsMax(map).stream().map(dao -> {

@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.goods.controller;
 
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,13 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
@@ -59,8 +62,8 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname, Page page)
-			throws Exception {
+	public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname,
+			Page page) throws Exception {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
@@ -138,16 +141,17 @@ public class GoodsController {
 		}
 		return goodshowBO;
 	}
-	
+
 	/**
 	 * 查询所有商品
+	 * 
 	 * @param request
 	 * @param range
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/all/list", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryAllgoods(HttpServletRequest request,Page page)throws Exception {
+	public Result<List<CommonGoodsVO>> queryAllgoods(HttpServletRequest request, Page page) throws Exception {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
@@ -168,7 +172,8 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
+	public Result<List<CommonGoodsVO>> queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page)
+			throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -209,9 +214,11 @@ public class GoodsController {
 	 * @param page
 	 * @return @throws Exception @throws
 	 */
-	//@RequestMapping(value = "/goodsMerchantByWhere/list", method = RequestMethod.GET)
+	// @RequestMapping(value = "/goodsMerchantByWhere/list", method =
+	// RequestMethod.GET)
 	@RequestMapping(value = "/merchant/list", method = RequestMethod.GET)
-	public Result<List<GoodsMerchantVO>> queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page) throws Exception {
+	public Result<List<GoodsMerchantVO>> queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo,
+			Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -235,9 +242,11 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@RequestMapping(value = "/merchantGoodsByWhere4/list", method = RequestMethod.GET)
+	// @RequestMapping(value = "/merchantGoodsByWhere4/list", method =
+	// RequestMethod.GET)
 	@RequestMapping(value = "/merchantgoods4/list", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoods(HttpServletRequest request, GoodsShowVO goodshowvo) throws Exception {
+	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoods(HttpServletRequest request,
+			GoodsShowVO goodshowvo) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -259,8 +268,8 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/merchantgoods/list", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request, GoodsShowVO goodshowvo, Page page)
-			throws Exception {
+	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request,
+			GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
@@ -421,5 +430,26 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+
+
+
+/*	@RequestMapping(value = "/ueUpload", method = RequestMethod.GET)
+	public void config(HttpServletRequest request, HttpServletResponse response, String action) {
+		response.setContentType("application/json");
+		//String rootPath = request.getRealPath("/");
+		//String rootPath ="E:\\etrade-ui\\jingyun-etrade-back-ui\\bower_components\\ueditor";
+		String rootPath = "D:/image/";
+		System.out.println("rootPath:"+rootPath);
+		try {
+			String exec = new ActionEnter(request, rootPath).exec();
+			PrintWriter writer = response.getWriter();
+			writer.write(exec);
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}*/
 
 }
