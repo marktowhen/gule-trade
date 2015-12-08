@@ -41,14 +41,14 @@ public class UserController {
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 	/**
-	 * 通过id查出对应的对象
+	 * 获得已登录的user
 	 * @param userVO
 	 * @param request
 	 * @return// get /api/user/current
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/current",method=RequestMethod.GET)
-	public Result selectPhone(UserVO userVO,HttpServletRequest request){
+	public Result getCurrentUser(UserVO userVO,HttpServletRequest request){
 		String id = ServletBox.getLoginUID(request);
 		Users users=userService.getByUID(id).get();
 		BeanUtils.copyProperties(users, userVO);
