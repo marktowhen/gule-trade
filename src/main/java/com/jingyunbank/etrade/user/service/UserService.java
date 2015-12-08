@@ -7,12 +7,15 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.order.bo.Cart;
+import com.jingyunbank.etrade.api.order.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
@@ -27,6 +30,10 @@ public class UserService implements IUserService{
 	private UserDao userDao;
 	@Autowired
 	private UserInfoDao userInfoDao;
+	@Autowired
+	private ICartService cartService;
+	
+	
 	@Override
 	public Optional<Users> getByUID(String id) {
 		UserEntity userEntity = new UserEntity();
@@ -72,50 +79,46 @@ public class UserService implements IUserService{
 
 	//保存用户的信息
 	@Override
-	public boolean save(Users user,UserInfo userInfo) throws DataSavingException {
+	@Transactional
+	public void save(Users user,UserInfo userInfo) throws DataSavingException {
 		UserEntity userEntity=new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
 		
 		/*info.getRegip();*/
-			int result=0;
-			boolean flag=false;
-			//密码加密
-			userEntity.setPassword(MD5.digest(user.getPassword()));
-			userEntity.setTradepwd(MD5.digest(user.getTradepwd()));
-			userEntity.setID(KeyGen.uuid());
-			try {
-				result=userDao.insert(userEntity);
-			} catch (Exception e) {
-				throw new DataSavingException(e);
-			}
-			
-			UserInfoEntity userInfoEntity=new UserInfoEntity();
-			userInfoEntity.setUID(userEntity.getID());
-			userInfoEntity.setRegip(userInfo.getRegip());
-			Date date=new Date();
-			userInfoEntity.setRegtime(date);
-			try {
-				if(result>0 && userInfoDao.insert(userInfoEntity)){
-				flag=true;
-				}else{
-				flag=false;
-				}
-			} catch (Exception e) {
-				throw new DataSavingException(e);
-				}
-			return flag;
+		//密码加密
+		userEntity.setPassword(MD5.digest(user.getPassword()));
+		userEntity.setTradepwd(MD5.digest(user.getTradepwd()));
+		try {
+			userDao.insert(userEntity);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+		
+		UserInfoEntity userInfoEntity=new UserInfoEntity();
+		userInfoEntity.setUID(userEntity.getID());
+		userInfoEntity.setRegip(userInfo.getRegip());
+		Date date=new Date();
+		userInfoEntity.setRegtime(date);
+		try {
+			userInfoDao.insert(userInfoEntity);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+		
+		//保存用户购物车
+		cartService.save(new Cart(KeyGen.uuid(), user.getID()));
 			
 	}
 	
 
 	@Override
-	public boolean refresh(Users user) throws DataRefreshingException {
+	public void refresh(Users user) throws DataRefreshingException {
 		UserEntity entity  =  new UserEntity();
 		BeanUtils.copyProperties(user, entity);
 		entity.setPassword(MD5.digest(user.getPassword()));
 		entity.setTradepwd(MD5.digest(user.getTradepwd()));
 		try {
-			return userDao.update(entity);
+			userDao.update(entity);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}

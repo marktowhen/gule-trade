@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.order.bo.Cart;
+import com.jingyunbank.etrade.api.order.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
@@ -27,6 +29,8 @@ public class LoginController {
 
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private ICartService cartService;
 	
 	/**
 	 * 登录
@@ -40,7 +44,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result login(@Valid @RequestBody LoginUserVO user, 
+	public Result<String> login(@Valid @RequestBody LoginUserVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -81,6 +85,11 @@ public class LoginController {
 		//3、成功之后
 		//用户信息放入session
 		Users users = usersOptional.get();
+		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
+		candidatecart.ifPresent(cart->{
+			ServletBox.setLoginCartID(session, cart.getID());
+		});
+		
 		ServletBox.setLoginUID(session, users.getID());
 		ServletBox.setLoginUname(session, users.getUsername());
 		//清空错误次数
@@ -101,7 +110,7 @@ public class LoginController {
 	 * 2015年11月11日 qxs
 	 */
 	@RequestMapping(value="/logout",method=RequestMethod.GET)
-	public Result logout(HttpSession session) throws Exception{
+	public Result<String> logout(HttpSession session) throws Exception{
 		session.invalidate();
 		return Result.ok("成功");
 	}

@@ -56,6 +56,6 @@ public interface UserDao {
 	 * @return
 	 * 2015年11月7日 qxs
 	 */
-	public boolean update(UserEntity userEntity) throws Exception;
+	public void update(UserEntity userEntity) throws Exception;
 	
 }

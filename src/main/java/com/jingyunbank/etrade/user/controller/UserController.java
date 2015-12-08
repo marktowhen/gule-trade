@@ -41,14 +41,14 @@ public class UserController {
 	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 	/**
-	 * 通过id查出对应的对象
+	 * 获得已登录的user
 	 * @param userVO
 	 * @param request
 	 * @return// get /api/user/current
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/current",method=RequestMethod.GET)
-	public Result selectPhone(UserVO userVO,HttpServletRequest request){
+	public Result<UserVO> getCurrentUser(UserVO userVO,HttpServletRequest request){
 		String id = ServletBox.getLoginUID(request);
 		Users users=userService.getByUID(id).get();
 		BeanUtils.copyProperties(users, userVO);
@@ -64,15 +64,16 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/phone",method=RequestMethod.PUT)
-	public Result refreshPhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
+	public Result<String> refreshPhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
 		if(EtradeUtil.effectiveTime(request.getSession())){
 			Users users=new Users();
 			users.setMobile(mobile);
 			users.setID(ServletBox.getLoginUID(request));
 			//手机验证码
-			Result checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
-			if(checkResult.isOk() && userService.refresh(users) ){
+			Result<String> checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			if(checkResult.isOk()){
+				userService.refresh(users);
 				return Result.ok();
 			}
 			return Result.fail("验证码错误");
@@ -90,15 +91,16 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/email",method=RequestMethod.PUT)
-	public Result refreshEmail(@RequestParam("email") String email, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
+	public Result<String> refreshEmail(@RequestParam("email") String email, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
 		if(EtradeUtil.effectiveTime(request.getSession())){
 			Users users=new Users();
 			users.setEmail(email);
 			users.setID(ServletBox.getLoginUID(request));
 			//邮箱验证码
-			Result checkResult = checkCode(code, request, UserController.EMAIL_MESSAGE);
-			if(checkResult.isOk() && userService.refresh(users) ){
+			Result<String> checkResult = checkCode(code, request, UserController.EMAIL_MESSAGE);
+			if(checkResult.isOk()){
+				userService.refresh(users); 
 				return Result.ok();
 			}
 			return Result.fail("验证码错误");
@@ -116,7 +118,7 @@ public class UserController {
 	 */
 	///get /api/user?key=email/phone/username
 	@RequestMapping(value="/",method=RequestMethod.GET)
-	public Result getUserByKey(HttpServletRequest request, HttpSession session,String key) throws Exception{
+	public Result<UserVO> getUserByKey(HttpServletRequest request, HttpSession session,String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("请输入用户名/手机/邮箱");
 		}
@@ -139,7 +141,7 @@ public class UserController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
-	public Result getSafetyLevel(@PathVariable String uid) throws Exception {
+	public Result<Integer> getSafetyLevel(@PathVariable String uid) throws Exception {
 		int level = 0;
 		Optional<Users> userOption = userService.getByUID(uid);
 		if(userOption.isPresent()){
@@ -185,7 +187,7 @@ public class UserController {
 	 * @return
 	 * 2015年11月10日 qxs
 	 */
-	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+	private Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
 		if(StringUtils.isEmpty(code)){
 			return Result.fail("验证码不能为空");
 		}

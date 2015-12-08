@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.order.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -9,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
@@ -27,6 +27,7 @@ public class CartService implements ICartService {
 	private CartDao cartDao;
 	
 	@Override
+	@Transactional
 	public void save(Cart cart) throws DataSavingException {
 		CartEntity entity = new CartEntity();
 		BeanUtils.copyProperties(cart, entity);
@@ -58,7 +59,10 @@ public class CartService implements ICartService {
 	}
 
 	@Override
-	public void save(GoodsInCart goods) throws DataSavingException {
+	public boolean save(GoodsInCart goods) throws DataSavingException {
+		GoodsInCartEntity gicentity = cartDao.selectOneGoods(goods.getUID(), goods.getGID());
+		if(Objects.nonNull(gicentity)) return false;
+		
 		GoodsInCartEntity entity = new GoodsInCartEntity();
 		BeanUtils.copyProperties(goods, entity);
 		try {
@@ -66,22 +70,23 @@ public class CartService implements ICartService {
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		};
+		return true;
 	}
 
-	@Override
-	public void save(List<GoodsInCart> goods) throws DataSavingException {
-		List<GoodsInCartEntity> entities = new ArrayList<GoodsInCartEntity>();
-		for (GoodsInCart gs : goods) {
-			GoodsInCartEntity gice = new GoodsInCartEntity();
-			BeanUtils.copyProperties(gs, gice);
-			entities.add(gice);
-		}
-		try {
-			cartDao.insertManyGoods(entities);
-		} catch (Exception e) {
-			throw new DataSavingException(e);
-		};
-	}
+//	@Override
+//	public void save(List<GoodsInCart> goods) throws DataSavingException {
+//		List<GoodsInCartEntity> entities = new ArrayList<GoodsInCartEntity>();
+//		for (GoodsInCart gs : goods) {
+//			GoodsInCartEntity gice = new GoodsInCartEntity();
+//			BeanUtils.copyProperties(gs, gice);
+//			entities.add(gice);
+//		}
+//		try {
+//			cartDao.insertManyGoods(entities);
+//		} catch (Exception e) {
+//			throw new DataSavingException(e);
+//		};
+//	}
 
 	@Override
 	public void remove(List<String> gidsInCart) throws DataRemovingException {

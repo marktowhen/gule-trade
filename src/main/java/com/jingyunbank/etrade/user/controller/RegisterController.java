@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
@@ -45,7 +46,7 @@ public class RegisterController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/register",method=RequestMethod.PUT)
-	public Result registerCheckCode(@Valid @RequestBody UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session) throws Exception{
+	public Result<String> registerCheckCode(@Valid @RequestBody UserVO userVO,BindingResult valid,HttpServletRequest request, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -56,7 +57,7 @@ public class RegisterController {
 		if(userService.unameExists(userVO.getUsername())){
 			return Result.fail("该用户名已存在。");
 		}
-		Result checkResult = null;
+		Result<String> checkResult = null;
 		if(StringUtils.isEmpty(userVO.getMobile())&&StringUtils.isEmpty(userVO.getEmail())){
 			return Result.fail("邮箱和手机号至少有一个不为空");
 		}
@@ -76,13 +77,14 @@ public class RegisterController {
 		}
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
+		user.setID(KeyGen.uuid());//generate uid here to make view visible
+		
 		UserInfo userInfo=new UserInfo();
 		userInfo.setRegip(request.getRemoteAddr());
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
-			if(userService.save(user, userInfo)){
+			userService.save(user, userInfo);
 			return	Result.ok("注册信息成功");
-			}
 		}
 		return Result.fail("验证失败或是保存失败");
 	}
@@ -97,7 +99,7 @@ public class RegisterController {
 	 * @return
 	 * 2015年11月10日 qxs
 	 */
-	private Result checkCode(String code, HttpServletRequest request, String sessionName){
+	private Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
 		if(StringUtils.isEmpty(code)){
 			return Result.fail("验证码不能为空");
 		}
