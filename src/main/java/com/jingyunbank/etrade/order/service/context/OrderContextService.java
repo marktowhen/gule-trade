@@ -17,6 +17,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
@@ -51,6 +52,8 @@ public class OrderContextService implements IOrderContextService {
 	private ICartService cartService;
 	@Autowired
 	private IOrderLogisticService orderLogisticService;
+	@Autowired
+	private IGoodsOperationService goodsOperationService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -131,6 +134,8 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAID);
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
+		//更新库存
+		//goodsOperationService.refreshGoodsVolume(gid, count);
 	}
 
 	@Override

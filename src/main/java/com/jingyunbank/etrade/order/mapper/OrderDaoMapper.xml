@@ -129,9 +129,6 @@
 		left join goods_img img on og.gid = img.gid 
 		left join orders o on og.oid = o.id 
 	</select>
-	<delete id="delete" parameterType="String">
-		delete from orders where id = #{id}
-	</delete>
 	<update id="updateStatus">
 		update orders
 		set status_code = #{status.code}, status_name = #{status.name}
