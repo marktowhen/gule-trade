@@ -196,9 +196,9 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/recommend/list", method = RequestMethod.GET)
-	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request) throws Exception {
-		List<RecommendGoods> list = goodsService.listRecommend().stream().map(bo -> {
+	@RequestMapping(value = "/recommend/list/{from}/{size}", method = RequestMethod.GET)
+	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request,@PathVariable String from,@PathVariable String size) throws Exception {
+		List<RecommendGoods> list = goodsService.listRecommend(from,size).stream().map(bo -> {
 			RecommendGoods vo = new RecommendGoods();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
