@@ -129,7 +129,10 @@
 		</if>
 	</select>
 	<!--删除我的收藏信息 -->
-	<delete id="deleteFavoritesById" parameterType="String">
-		delete from favorites where id = #{id}
+	<delete id="deleteFavoritesById">
+		delete from favorites where id in 
+		<foreach collection="id" item="rid" open="(" separator="," close=")">
+			#{rid}
+		</foreach>
 	</delete>
 </mapper>
