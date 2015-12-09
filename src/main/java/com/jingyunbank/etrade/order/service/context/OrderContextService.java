@@ -16,10 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.OrderTrace;
 import com.jingyunbank.etrade.api.order.bo.Orders;
@@ -115,6 +114,9 @@ public class OrderContextService implements IOrderContextService {
 	@Transactional
 	public void paysuccess(String extransno) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.listByExtransno(extransno);
+		if(orders.size() == 0){
+			return;
+		}
 		List<String> oids = orders.stream().map(x->x.getID()).collect(Collectors.toList());
 		//刷新订单状态
 		orderService.refreshStatus(oids, OrderStatusDesc.PAID);
@@ -132,8 +134,12 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
+	@Transactional
 	public void payfail(String extransno) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.listByExtransno(extransno);
+		if(orders.size() == 0){
+			return;
+		}
 		List<String> oids = orders.stream().map(x->x.getID()).collect(Collectors.toList());
 		//刷新订单状态
 		orderService.refreshStatus(oids, OrderStatusDesc.PAYFAIL);
@@ -151,8 +157,12 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
+	@Transactional
 	public boolean accept(List<String> oids) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.list(oids);
+		if(orders.size() == 0){
+			return false;
+		}
 		if(orders.stream().anyMatch(order -> !OrderStatusDesc.PAID_CODE.equals(order.getStatusCode()))){
 			return false;
 		}
@@ -169,6 +179,7 @@ public class OrderContextService implements IOrderContextService {
 	}
 	
 	@Override
+	@Transactional
 	public boolean dispatch(OrderLogistic logistic) throws DataRefreshingException, DataSavingException {
 		String oid = logistic.getOID();
 		Optional<Orders> candidateorder = orderService.single(oid);
@@ -191,18 +202,71 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
-	public void received(String orderno) {
-
+	@Transactional
+	public boolean received(List<String> oids) throws DataRefreshingException, DataSavingException{
+		List<Orders> orders = orderService.list(oids);
+		if(orders.size() == 0){
+			return false;
+		}
+		if(orders.stream().anyMatch(order -> !OrderStatusDesc.DELIVERED_CODE.equals(order.getStatusCode()))){
+			return false;
+		}
+		orderService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		for (Orders order : orders) {
+			createOrderTrace(order, OrderStatusDesc.RECEIVED);
+			traces.addAll(order.getTraces());
+		}
+		orderTraceService.save(traces);
+		//刷新订单商品的状态
+		orderGoodsService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
+		return true;
 	}
 
 	@Override
-	public void cancel(String orderno, String reason) {
-
+	@Transactional
+	public boolean cancel(String oid, String reason) throws DataRefreshingException, DataSavingException{
+		Optional<Orders> candidateorder = orderService.single(oid);
+		if(!candidateorder.isPresent()){
+			return false;
+		}
+		Orders order = candidateorder.get();
+		if(!OrderStatusDesc.NEW_CODE.equals(order.getStatusCode())){
+			return false;
+		}
+		
+		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CANCELED);
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		createOrderTrace(order, OrderStatusDesc.CANCELED);
+		traces.addAll(order.getTraces());
+		//set note reason
+		traces.forEach(trace->trace.setNote(reason));
+		orderTraceService.save(traces);
+		//刷新订单商品的状态
+		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CANCELED);
+		return true;
 	}
 
 	@Override
-	public void remove(String id) throws DataRemovingException {
-		orderService.remove(id);
+	public boolean remove(String oid) throws DataRefreshingException, DataSavingException {
+		Optional<Orders> candidateorder = orderService.single(oid);
+		if(!candidateorder.isPresent()){
+			return false;
+		}
+		Orders order = candidateorder.get();
+		if(!OrderStatusDesc.CANCELED_CODE.equals(order.getStatusCode())){
+			return false;
+		}
+		
+		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		createOrderTrace(order, OrderStatusDesc.REMOVED);
+		traces.addAll(order.getTraces());
+		//set note reason
+		orderTraceService.save(traces);
+		//刷新订单商品的状态
+		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
+		return true;
 	}
 
 	@Override

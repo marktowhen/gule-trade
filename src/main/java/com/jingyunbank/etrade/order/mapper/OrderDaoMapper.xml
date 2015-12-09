@@ -75,12 +75,12 @@
 		left join orders o on og.oid = o.id 
 		where o.uid = #{uid} order by o.addtime desc
 	</select>
-	<select id="selectByOIDs">
+	<select id="selectByOIDs" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
 		from order_goods og
 		left join goods_img img on og.gid = img.gid 
 		left join orders o on og.oid = o.id 
-		where o.oid in 
+		where o.id in 
 			<foreach collection="oids" item="oid" open="(" separator="," close=")">
 				#{oid}
 			</foreach>

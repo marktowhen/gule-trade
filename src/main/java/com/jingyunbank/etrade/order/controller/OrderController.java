@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +103,44 @@ public class OrderController {
 		}
 		orderContextService.save(orders);
 		return Result.ok(purchase);
+	}
+	
+	@AuthBeforeOperation
+	@RequestMapping(
+			value="/api/orders/cancellation",
+			method=RequestMethod.PUT,
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public Result<String> cancel(@Valid @RequestBody OIDWithNoteVO cancellation,
+			BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的订单信息有误！");
+		}
+		if(!orderContextService.cancel(cancellation.getOid(), cancellation.getNote())){
+			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
+		}
+		return Result.ok();
+	}
+	
+	private static class OIDWithNoteVO{
+		@NotNull
+		private String oid;
+		@NotNull
+		private String note;
+		public String getOid() {
+			return oid;
+		}
+		@SuppressWarnings("unused")
+		public void setOid(String oid) {
+			this.oid = oid;
+		}
+		public String getNote() {
+			return note;
+		}
+		@SuppressWarnings("unused")
+		public void setNote(String note) {
+			this.note = note;
+		}
 	}
 	
 	@AuthBeforeOperation
