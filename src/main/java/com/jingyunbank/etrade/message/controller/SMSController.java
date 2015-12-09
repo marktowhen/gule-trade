@@ -139,8 +139,9 @@ public class SMSController {
 			message.setContent("您的验证码是:"+code);
 			message.getReceiveUser().setMobile(mobile);
 			message.setTitle("");
-			System.out.println("-----------------"+"您的验证码是:"+code);
 			//smsService.inform(message);
+			request.getSession().setAttribute(mobile, new Date());
+			System.out.println("-----------------"+"您的验证码是:"+code);
 			return Result.ok();
 		}
 		return Result.fail("发送过于频繁,请稍后再试");

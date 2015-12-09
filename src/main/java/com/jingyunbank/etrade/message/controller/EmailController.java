@@ -162,8 +162,9 @@ public class EmailController {
 			message.setTitle(subTitle);
 			message.setContent("您的验证码是:"+code);
 			message.getReceiveUser().setEmail(email);
-			System.out.println("-----------------"+"您的验证码是:"+code);
 			//emailService.inform(message);
+			request.getSession().setAttribute(email, new Date());
+			System.out.println("-----------------"+"您的验证码是:"+code);
 			return Result.ok();
 		}
 		return Result.fail("发送过于频繁,请稍后再试");
