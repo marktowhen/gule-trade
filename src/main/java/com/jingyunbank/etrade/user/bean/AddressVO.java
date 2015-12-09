@@ -35,6 +35,8 @@ public class AddressVO extends BaseAddress {
 	@NotEmpty(message="详细地址不能为空")
 	@Size(max=80, message="详细地址错误")
 	private String address;//详细地址
+	@NotEmpty(message="邮编不能为空")
+	@Pattern(regexp="\\d{6}",message="请输入6位邮编")
 	private String zipcode;//邮编
 	@NotEmpty(message="接收人不能为空")
 	private String receiver;//接收人
