@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.order.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -17,6 +18,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO.OrderGoods2ShowVO;
@@ -52,6 +54,7 @@ public class OrderQueryController {
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "goods");
+					vo.setOrderno(String.valueOf(bo.getOrderno()));
 					bo.getGoods().forEach(bg -> {
 						OrderGoods2ShowVO gvo = new OrderGoods2ShowVO();
 						BeanUtils.copyProperties(bg, gvo);
@@ -59,5 +62,24 @@ public class OrderQueryController {
 					});
 					return vo;
 				}).collect(Collectors.toList()));
+	}
+	
+	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
+	@AuthBeforeOperation
+	public Result<Order2ShowVO> singleOrder(@PathVariable("oid") String oid){
+		Order2ShowVO vo = new Order2ShowVO();
+		Optional<Orders> order = orderService.single(oid);
+		
+		order.ifPresent(bo -> {
+			BeanUtils.copyProperties(bo, vo, "goods");
+			vo.setOrderno(String.valueOf(bo.getOrderno()));
+			bo.getGoods().forEach(bg -> {
+				OrderGoods2ShowVO gvo = new OrderGoods2ShowVO();
+				BeanUtils.copyProperties(bg, gvo);
+				vo.getGoods().add(gvo);
+			});
+		});
+		
+		return Result.ok(vo);
 	}
 }

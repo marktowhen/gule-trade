@@ -9,4 +9,6 @@ import com.jingyunbank.etrade.order.entity.OrderTraceEntity;
 public interface OrderTraceDao {
 
 	public void insertMany(@Param("traces") List<OrderTraceEntity> traces) throws Exception;
+
+	public List<OrderTraceEntity> selectMany(String oid);
 }

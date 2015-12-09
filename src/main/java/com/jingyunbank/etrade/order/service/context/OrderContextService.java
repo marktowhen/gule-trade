@@ -21,6 +21,7 @@ import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.OrderTrace;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.bo.Refund;
+import com.jingyunbank.etrade.api.order.service.ICartService;
 import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.IOrderTraceService;
@@ -43,6 +44,8 @@ public class OrderContextService implements IOrderContextService {
 	private IPayContextService payContextService;
 	@Autowired
 	private IPayService payService;
+	@Autowired
+	private ICartService cartService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -62,6 +65,8 @@ public class OrderContextService implements IOrderContextService {
 			createOrderTrace(order, OrderStatusDesc.NEW);
 			//保存订单状态追踪信息
 			orderTraceService.save(order.getTraces());
+			//将下订单的商品从购物车中删除掉
+			cartService.remove(order.getGoods().stream().map(x->x.getGID()).collect(Collectors.toList()), order.getUID());
 		}catch(Exception e){
 			throw new DataSavingException(e);
 		}
@@ -89,7 +94,8 @@ public class OrderContextService implements IOrderContextService {
 			orderTraceService.save(traces);
 			//保存订单的支付信息
 			payService.save(payments);
-			
+			//将下订单的商品从购物车中删除掉
+			cartService.remove(goods.stream().map(x->x.getGID()).collect(Collectors.toList()), orders.get(0).getUID());
 		}catch(Exception e){
 			throw new DataSavingException(e);
 		}

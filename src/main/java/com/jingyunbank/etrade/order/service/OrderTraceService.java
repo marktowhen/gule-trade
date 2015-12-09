@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.order.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,16 @@ public class OrderTraceService implements IOrderTraceService {
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
+	}
+
+	@Override
+	public List<OrderTrace> list(String oid) {
+		return orderTraceDao.selectMany(oid)
+				.stream().map(entity -> {
+					OrderTrace bo = new OrderTrace();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
 	}
 
 }
