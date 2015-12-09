@@ -69,9 +69,7 @@ public class OrderService implements IOrderService{
 				BeanUtils.copyProperties(entity, bo);
 				entity.getGoods().forEach(ge -> {
 					OrderGoods og = new OrderGoods();
-					og.setGID(ge.getGID());
-					og.setGname(ge.getGname());
-					og.setImgpath(ge.getImgpath());
+					BeanUtils.copyProperties(ge, og);
 					bo.getGoods().add(og);
 				});
 				return bo;
@@ -80,15 +78,13 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public List<Orders> list(String uid, Range range) {
-		return orderDao.selectByUIDWithRange(uid, range.getFrom(), range.getTo()-range.getFrom())
+		return orderDao.selectWithCondition(uid, "", "", "", range.getFrom(), (int)(range.getTo()-range.getFrom()))
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo, "goods");
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
-						og.setGID(ge.getGID());
-						og.setGname(ge.getGname());
-						og.setImgpath(ge.getImgpath());
+						BeanUtils.copyProperties(ge, og);
 						bo.getGoods().add(og);
 					});
 					return bo;
@@ -103,9 +99,7 @@ public class OrderService implements IOrderService{
 					BeanUtils.copyProperties(entity, bo);
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
-						og.setGID(ge.getGID());
-						og.setGname(ge.getGname());
-						og.setImgpath(ge.getImgpath());
+						BeanUtils.copyProperties(ge, og);
 						bo.getGoods().add(og);
 					});
 					return bo;
@@ -120,9 +114,7 @@ public class OrderService implements IOrderService{
 					BeanUtils.copyProperties(entity, bo);
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
-						og.setGID(ge.getGID());
-						og.setGname(ge.getGname());
-						og.setImgpath(ge.getImgpath());
+						BeanUtils.copyProperties(ge, og);
 						bo.getGoods().add(og);
 					});
 					return bo;
@@ -160,6 +152,22 @@ public class OrderService implements IOrderService{
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Orders> list(String uid, String statuscode, String fromdate,
+			String keywords, Range range) {
+		return orderDao.selectWithCondition(uid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo, "goods");
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						BeanUtils.copyProperties(ge, og);
+						bo.getGoods().add(og);
+					});
 					return bo;
 				}).collect(Collectors.toList());
 	}

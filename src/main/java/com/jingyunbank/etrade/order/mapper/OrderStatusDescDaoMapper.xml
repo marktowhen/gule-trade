@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.dao.OrderStatusDescDao">
+	<resultMap type="com.jingyunbank.etrade.order.entity.OrderStatusDescEntity" id="OrderStatusDescEntityResultMap">
+		<id column="code" property="code" javaType="String"/>
+		<result column="name" property="name" javaType="String"/>
+		<result column="description" property="description" javaType="String"/>
+		<result column="orders" property="orders" jdbcType="INTEGER"/>
+		<result column="visible" property="visible" javaType="Boolean"/>
+	</resultMap>
+	<sql id="order_status_desc_column">
+		code, name, description, orders, visible
+	</sql>
+	<select id="selectVisible" resultMap="OrderStatusDescEntityResultMap">
+		select <include refid="order_status_desc_column"/>
+		from order_status_desc
+		where visible = 1
+		order by orders
+	</select>
+</mapper>

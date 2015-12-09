@@ -195,7 +195,7 @@ public class OrderContextService implements IOrderContextService {
 		trace.setOperator(order.getUID());
 		trace.setStatusCode(status.getCode());
 		trace.setStatusName(status.getName());
-		trace.setNote(status.getDesc());
+		trace.setNote(status.getDescription());
 		order.getTraces().add(trace);
 	}
 	private void createPayment(Orders order, List<OrderPayment> payments){
