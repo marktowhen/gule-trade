@@ -69,7 +69,7 @@ public class CommentsController {
 	public Result saveComments(@RequestParam("oid") String oid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
 		commentVO.setID(KeyGen.uuid());
 		commentVO.setImgID(KeyGen.uuid());
-		Optional<OrderGoods> optional	=orderGoodsService.getOrderGoods(oid);
+		Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 		OrderGoods	orderGoods =optional.get();
 		commentVO.setGID(orderGoods.getGID());
 		commentVO.setOID(oid);
