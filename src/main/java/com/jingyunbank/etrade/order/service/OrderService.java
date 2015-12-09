@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
@@ -146,15 +145,6 @@ public class OrderService implements IOrderService{
 					});
 					return bo;
 				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public void remove(String id) throws DataRemovingException {
-		try {
-			orderDao.delete(id);
-		} catch (Exception e) {
-			throw new DataRemovingException(e);
-		}
 	}
 
 	@Override
