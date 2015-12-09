@@ -8,15 +8,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
 
 public class DiscountCouponControllerTest extends TestCaseBase{
 	
@@ -27,14 +29,48 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		 */
 		@Test
 		public void testSave() throws Exception{
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DiscountCouponVO vo = new DiscountCouponVO();
+			vo.setValue(new BigDecimal(50));
+			vo.setStart(format.parse("2015-01-01 00:00:00"));
+			vo.setEnd(format.parse("2025-1-1 00:00:00"));
+			vo.setThreshhold(new BigDecimal(100));
+			vo.setDiscount(new BigDecimal(0.5));
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
 					 post("/api/discountcoupon/")
-					.param("code", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()))
-					.param("value", "1")
-					.param("discount", "0.99")
-					.param("start", "2015-11-16 01:02:03")
-					.param("end", "2016-11-18 13:10:90")
-					.param("threshhold", "1.111")
+					 .content(json)
+					.sessionAttr(ServletBox.LOGIN_ID, "1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
+		
+		
+		/**
+		 * 新增多个
+		 * @throws Exception
+		 * 2015年11月16日 qxs
+		 */
+		@Test
+		public void testSaveMuti() throws Exception{
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DiscountCouponVO vo = new DiscountCouponVO();
+			vo.setValue(new BigDecimal(50));
+			vo.setStart(format.parse("2015-01-01 00:00:00"));
+			vo.setEnd(format.parse("2025-1-1 00:00:00"));
+			vo.setThreshhold(new BigDecimal(100));
+			vo.setDiscount(new BigDecimal(0.5));
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(vo);
+			getMockMvc().perform(
+					 post("/api/discountcoupon/10")
+					 .content(json)
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
