@@ -13,7 +13,9 @@ public class OrderEntity {
 	private String MID;
 	private String mname;
 	private String receiver;//收货人
-	private String addressID;//收货地址->address id
+	private String address;//收货地址
+	private String mobile ;//收货人电话
+	private String zipcode;
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 code
 	private String paytypeName;
@@ -89,17 +91,29 @@ public class OrderEntity {
 	public void setMID(String mID) {
 		MID = mID;
 	}
-	public String getAddressID() {
-		return addressID;
-	}
 	public String getMname() {
 		return mname;
 	}
 	public void setMname(String mname) {
 		this.mname = mname;
 	}
-	public void setAddressID(String addressID) {
-		this.addressID = addressID;
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 	public String getUID() {
 		return UID;

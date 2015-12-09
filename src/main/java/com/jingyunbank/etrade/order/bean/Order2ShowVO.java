@@ -12,7 +12,9 @@ public class Order2ShowVO {
 	private String receiver;//收货人
 	private String MID;
 	private String mname;
-	private String addressID;//收货地址->address id
+	private String address;//收货地址
+	private String mobile ;//收货人电话
+	private String zipcode;
 	private String UID;//下单人
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 id
@@ -21,6 +23,7 @@ public class Order2ShowVO {
 	private BigDecimal postage;
 	private String statusCode;
 	private String statusName;
+	private String note;
 	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
 	
 	public static class OrderGoods2ShowVO{
@@ -86,11 +89,23 @@ public class Order2ShowVO {
 	public void setMID(String mID) {
 		MID = mID;
 	}
-	public String getAddressID() {
-		return addressID;
+	public String getAddress() {
+		return address;
 	}
-	public void setAddressID(String addressID) {
-		this.addressID = addressID;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 	public String getUID() {
 		return UID;
@@ -151,5 +166,11 @@ public class Order2ShowVO {
 	}
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
 	}
 }

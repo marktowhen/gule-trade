@@ -10,7 +10,9 @@
 		<result column="mid" property="MID" javaType="String"/>
 		<result column="mname" property="mname" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
-		<result column="address_id" property="addressID" javaType="String"/>
+		<result column="address" property="address" javaType="String"/>
+		<result column="mobile" property="mobile" javaType="String"/>
+		<result column="zipcode" property="zipcode" javaType="String"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="paytype_code" property="paytypeCode" javaType="String"/>
 		<result column="paytype_name" property="paytypeName" javaType="String"/>
@@ -30,17 +32,17 @@
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
-		id, orderno, receiver, uid, mid, mname, address_id, addtime, 
+		id, orderno, receiver, uid, mid, mname, address, mobile, zipcode, addtime, 
 		paytype_code, paytype_name, deliverytype_code, deliverytype_name, 
 		status_code, status_name, price, postage, note
 	</sql>
 	<sql id="payments_join_orders_columns">
-		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
+		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
 		o.status_code, o.status_name, o.price, o.postage, o.note
 	</sql>
 	<sql id="goods_join_orders_columns">
-		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
+		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
 		o.status_code, o.status_name, o.price, o.postage, o.note, 
 		img.thumb_path_1 as imgpath, img.gid as gid, 
@@ -50,7 +52,8 @@
 		insert into orders
 			(<include refid="orders_columns"/>)
 		values
-			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{mname}, #{addressID}, #{addtime},
+			(#{ID}, #{orderno}, #{receiver}, #{UID}, #{MID}, #{mname}, #{address},
+			 #{mobile}, #{zipcode}, #{addtime},
 			 #{paytypeCode}, #{paytypeName}, #{deliveryTypeCode}, #{deliveryTypeName},
 			 #{statusCode}, #{statusName}, #{price}, #{postage}, #{note})
 	</insert>
@@ -59,7 +62,8 @@
 			(<include refid="orders_columns"/>)
 		values
 		<foreach collection="orders" item="o" index="i" open="" separator="," close="">
-			(#{o.ID}, #{o.orderno}, #{o.receiver}, #{o.UID}, #{o.MID}, #{o.mname}, #{o.addressID}, #{o.addtime},
+			(#{o.ID}, #{o.orderno}, #{o.receiver}, #{o.UID}, #{o.MID}, #{o.mname}, #{o.address},
+			 #{o.mobile}, #{o.zipcode}, #{o.addtime},
 			 #{o.paytypeCode}, #{o.paytypeName}, #{o.deliveryTypeCode}, #{o.deliveryTypeName},
 			 #{o.statusCode}, #{o.statusName}, #{o.price}, #{o.postage}, #{o.note})
 		</foreach>

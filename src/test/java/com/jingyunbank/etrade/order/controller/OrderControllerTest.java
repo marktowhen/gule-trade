@@ -56,7 +56,9 @@ public class OrderControllerTest extends TestCaseBase {
 	public void testSuccess() throws Exception{
 		PurchaseRequestVO vo = new PurchaseRequestVO();
 		
-		vo.setAddressID("1111111111111111111111");
+		vo.setMobile("18688888888");
+		vo.setZipcode("678922");
+		vo.setAddress("1111111111111111111111");
 		vo.setPaytypeCode("ONLINE");
 		vo.setPaytypeName("线上支付");
 		vo.setReceiver("XXXX");

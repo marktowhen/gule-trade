@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import com.jingyunbank.core.lang.Patterns;
 
 /**
  * 用户购买商品的请求VO<br>
@@ -24,9 +27,14 @@ public class PurchaseRequestVO {
 
 	@NotNull
 	private String receiver;//收货人姓名
-	@Size(min=22, max=22, message="收货地址错误。")
 	@NotNull
-	private String addressID;//收货地址->address id
+	private String address;//收货地址
+	@NotNull
+	@Pattern(regexp=Patterns.INTERNAL_MOBILE_PATTERN)
+	private String mobile ;//收货人电话
+	@NotNull
+	@Pattern(regexp="[0-9]{6}")
+	private String zipcode;
 	private String UID;//下单人
 	@Size(min=1, max=12, message="支付类型错误。")
 	@NotNull
@@ -49,11 +57,23 @@ public class PurchaseRequestVO {
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
 	}
-	public String getAddressID() {
-		return addressID;
+	public String getAddress() {
+		return address;
 	}
-	public void setAddressID(String addressID) {
-		this.addressID = addressID;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 	public String getUID() {
 		return UID;
