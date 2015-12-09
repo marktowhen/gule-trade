@@ -31,6 +31,7 @@ public class OrderEntity {
 		private String gname;
 		private String imgpath;
 		private int count;
+		private BigDecimal price;
 		
 		public String getGID() {
 			return GID;
@@ -55,6 +56,12 @@ public class OrderEntity {
 		}
 		public void setCount(int count) {
 			this.count = count;
+		}
+		public BigDecimal getPrice() {
+			return price;
+		}
+		public void setPrice(BigDecimal price) {
+			this.price = price;
 		}
 	}
 	

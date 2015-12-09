@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.user.bean;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**

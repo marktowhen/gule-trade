@@ -53,7 +53,7 @@ public class JingYunTradeApplication
 		for (int i = 0; i < stack.size(); i++) {
 			File file = stack.pop();
     		System.out.println(file.toString());
-			Files.delete(file.toPath());
+			Files.delete(file.toPath()); 
 			System.out.println(file.exists());
 		}
 	}

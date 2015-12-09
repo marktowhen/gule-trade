@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,8 +68,8 @@ public class CashCouponController {
 	 * @throws DataSavingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value = "/" ,method= RequestMethod.PUT)
-	public Result<String> add(HttpServletRequest request, @Valid CashCouponVO vo,BindingResult valid) throws Exception{
+	@RequestMapping(value = "/" ,method= RequestMethod.POST)
+	public Result<String> add(HttpServletRequest request,@RequestBody @Valid CashCouponVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -88,6 +89,37 @@ public class CashCouponController {
 		return Result.ok();
 	}
 	
+	
+	/**
+	 * 新增多张券
+	 * @param request
+	 * @param vo
+	 * @param valid
+	 * @return
+	 * 2015年11月16日 qxs
+	 * @throws DataSavingException 
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value = "/{amount}" ,method= RequestMethod.POST)
+	public Result<String> addMuti(HttpServletRequest request,@RequestBody @Valid CashCouponVO vo,BindingResult valid,@PathVariable int amount) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
+		}
+		if(vo.getStart().after(vo.getEnd())
+				|| vo.getEnd().before(new Date())){
+			return Result.fail("有效期限设置错误");
+		}
+		if(amount<=0){
+			return Result.fail("请设置正确数量");
+		}
+		Users manager = new Users();
+		manager.setID(ServletBox.getLoginUID(request));
+		cashCouponService.saveMuti(getBoFromVo(vo), manager, amount);
+		return Result.ok();
+	}
 	/**
 	 * 判断卡号是否可以被激活
 	 * 校验1、卡号2、有效期3、删除状态 4、是否已被使用

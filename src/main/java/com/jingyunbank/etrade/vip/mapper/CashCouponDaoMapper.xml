@@ -22,8 +22,20 @@
 	</sql>
 	<insert id="insert" >
 		insert into cash_coupon(<include refid="column_list"/>) 
-		values(#{ID},#{code},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},#{del},#{remark})
+		values(#{ID},#{code},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},false,#{remark})
 	</insert>
+	
+	<insert id="insertMuti" >
+		insert into cash_coupon(<include refid="column_list"/>) 
+		values
+			<foreach collection="list" item="item"   open="" close="" separator=",">
+				(
+					#{item.ID},#{item.code},#{item.value},now(),#{item.start},#{item.end},#{item.used},#{item.usedtime},#{item.threshhold},false,#{item.remark}
+				)	
+			</foreach>
+		
+	</insert>
+	
 	
 	<select id="selectList" resultMap="CashCouponEntityResultMap">
 		select 

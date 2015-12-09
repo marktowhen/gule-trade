@@ -26,6 +26,7 @@
 			<result column="gname" property="gname" javaType="String"/>
 			<result column="imgpath" property="imgpath" javaType="String"/>
 			<result column="count" property="count" jdbcType="INTEGER"/>
+			<result column="price" property="price" jdbcType="DECIMAL"/>
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
@@ -42,7 +43,8 @@
 		o.id, o.orderno, o.receiver, o.uid, o.mid, o.mname, o.address_id, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
 		o.status_code, o.status_name, o.price, o.postage, o.note, 
-		img.thumb_path_1 as imgpath, img.gid as gid, og.gname as gname, og.count as count
+		img.thumb_path_1 as imgpath, img.gid as gid, 
+		og.gname as gname, og.count as count, og.price as price
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders
@@ -69,12 +71,35 @@
 		left join orders o on og.oid = o.id 
 		where o.uid = #{uid} order by o.addtime desc
 	</select>
-	<select id="selectByUIDWithRange" resultMap="OrderEntityResultMap">
+	<select id="selectOne" parameterType="String" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
 		from order_goods og
 		left join goods_img img on og.gid = img.gid 
 		left join orders o on og.oid = o.id 
-		where o.uid = #{uid} order by o.addtime desc limit #{from}, #{size}
+		where o.id = #{oid}
+	</select>
+	<select id="selectWithCondition" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where 
+			o.uid = #{uid}
+			<if test="statuscode != null and !''.equals(statuscode)">
+				and o.status_code = #{statuscode}
+			</if>
+			<if test="fromdate != null and !''.equals(fromdate)">
+				and o.addtime &gt;= #{fromdate}
+			</if>
+			<if test="keywords != null and !''.equals(keywords)">
+				and (
+						og.gname like CONCAT('%','${keywords}','%') 
+						or 
+						o.orderno like CONCAT('%','${keywords}','%')
+					)
+			</if>
+		order by o.addtime desc 
+		limit #{from}, #{size}
 	</select>
 	<select id="selectBetween" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 

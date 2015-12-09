@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,8 +8,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -29,6 +32,23 @@ public class DiscountCouponService implements IDiscountCouponService{
 	public boolean save(DiscountCoupon discountCoupon, Users manager) throws DataSavingException {
 		try {
 			return discountCouponDao.insert(getEntityFromBo(discountCoupon));
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+	}
+	
+	@Override
+	public boolean saveMuti(DiscountCoupon discountCoupon, Users manager,
+			int amount) throws DataSavingException {
+		try {
+			List<DiscountCouponEntity> list = new ArrayList<DiscountCouponEntity>();
+			for (int i = 0; i < amount; i++) {
+				DiscountCouponEntity entity = getEntityFromBo(discountCoupon);
+				entity.setID(KeyGen.uuid());
+				entity.setCode(String.valueOf(UniqueSequence.next18()));
+				list.add(entity);
+			}
+			return discountCouponDao.insertMuti(list);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
@@ -156,6 +176,8 @@ public class DiscountCouponService implements IDiscountCouponService{
 	public int getAmount(DiscountCoupon cashCoupon) {
 		return discountCouponDao.selectAmount(getEntityFromBo(cashCoupon));
 	}
+
+	
 	
 
 }

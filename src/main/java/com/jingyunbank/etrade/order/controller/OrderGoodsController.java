@@ -54,7 +54,7 @@ public class OrderGoodsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/{oid}/goods",method=RequestMethod.GET)
 	public Result<OrderGoodsVO> getOrderGoods(@PathVariable(value="oid") String oid){
-			Optional<OrderGoods> optional	=orderGoodsService.getOrderGoods(oid);
+			Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 			OrderGoods	orderGoods =optional.get();
 			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
 			BeanUtils.copyProperties(orderGoods, orderGoodsVO);

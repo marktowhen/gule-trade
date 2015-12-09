@@ -1,12 +1,19 @@
 package com.jingyunbank.etrade.goods.bean;
+
+import com.jingyunbank.etrade.api.goods.bo.BaseGoods;
+
 /**
  * 
 * Title: 宝贝推荐VO
 * @author    duanxf
 * @date      2015年11月10日
  */
-public class RecommendGoods {
+public class RecommendGoods extends BaseGoods{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String GID; //商品id
 	private String goodsName; //商品名称
 	private String merchantName; //商家名称

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
-import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
@@ -30,10 +29,7 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
-import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
-import com.jingyunbank.etrade.order.bean.Order2ShowVO;
-import com.jingyunbank.etrade.order.bean.Order2ShowVO.OrderGoods2ShowVO;
 import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
@@ -43,38 +39,6 @@ public class OrderController {
 
 	@Autowired
 	private IOrderContextService orderContextService;
-	@Autowired
-	private IOrderService orderService;
-	
-	/**
-	 * get /api/orders/xxxx/0/10
-	 *	
-	 * 查询某用户的最新的订单中的从from开始的size条
-	 * @param uid
-	 * @param session
-	 * @return
-	 */
-	@RequestMapping(value="/api/orders/{uid}/{from}/{size}", method=RequestMethod.GET)
-	@AuthBeforeOperation
-	public Result<List<Order2ShowVO>> listUID(@PathVariable("uid") String uid, @PathVariable("from") int from, @PathVariable("size") int size,
-			HttpSession session){
-		String loginuid = ServletBox.getLoginUID(session);
-		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
-		
-		return Result.ok(orderService.list(uid, new Range(from, size+from))
-				.stream().map(bo-> {
-					Order2ShowVO vo = new Order2ShowVO();
-					BeanUtils.copyProperties(bo, vo, "goods");
-					bo.getGoods().forEach(bg -> {
-						OrderGoods2ShowVO gvo = new OrderGoods2ShowVO();
-						gvo.setGID(bg.getGID());
-						gvo.setImgpath(bg.getImgpath());
-						gvo.setGname(bg.getGname());
-						vo.getGoods().add(gvo);
-					});
-					return vo;
-				}).collect(Collectors.toList()));
-	}
 	
 	/**
 	 * 订单确认并提交<br>

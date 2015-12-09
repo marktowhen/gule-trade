@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.track.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -211,7 +212,10 @@ public class TrackController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/favorites/remove/{id}", method=RequestMethod.DELETE)
 	public Result<String> removeFavorites(@PathVariable String id) throws Exception{
-		trackService.removeFavoritesById(id);
+		List<String> ids = new ArrayList<String>();
+		String tmpstr[] = id.split(",");
+		ids = Arrays.asList(tmpstr);
+		trackService.removeFavoritesById(ids);
 		return Result.ok(id);
 	}
 }

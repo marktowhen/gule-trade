@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,8 +67,8 @@ public class DiscountCouponController {
 	 * @throws DataSavingException 
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value = "/" ,method= RequestMethod.PUT)
-	public Result<String> add(HttpServletRequest request, @Valid DiscountCouponVO vo,BindingResult valid) throws Exception{
+	@RequestMapping(value = "/" ,method= RequestMethod.POST)
+	public Result<String> add(HttpServletRequest request, @RequestBody @Valid DiscountCouponVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -80,10 +81,45 @@ public class DiscountCouponController {
 			return Result.fail("有效期限设置错误");
 		}
 		vo.setID(KeyGen.uuid());
+		vo.setCode(String.valueOf(UniqueSequence.next18()));
 		Users manager = new Users();
 		manager.setID(ServletBox.getLoginUID(request));
-		vo.setCode(String.valueOf(UniqueSequence.next18()));
 		discountCouponService.save(getBoFromVo(vo), manager);
+		return Result.ok();
+	}
+	
+	/**
+	 * 新增多张券
+	 * @param request
+	 * @param vo
+	 * @param valid
+	 * @param amount
+	 * @return
+	 * @throws Exception
+	 * 2015年12月9日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value = "/{amount}" ,method= RequestMethod.POST)
+	public Result<String> addMuti(HttpServletRequest request
+			,@RequestBody @Valid DiscountCouponVO vo
+			,BindingResult valid
+			,@PathVariable int amount) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
+		}
+		if(vo.getStart().after(vo.getEnd())
+				|| vo.getEnd().before(new Date())){
+			return Result.fail("有效期限设置错误");
+		}
+		if(amount<=0){
+			return Result.fail("请设置正确数量");
+		}
+		Users manager = new Users();
+		manager.setID(ServletBox.getLoginUID(request));
+		discountCouponService.saveMuti(getBoFromVo(vo), manager, amount);
 		return Result.ok();
 	}
 	

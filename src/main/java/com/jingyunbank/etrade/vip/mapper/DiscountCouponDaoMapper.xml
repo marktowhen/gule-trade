@@ -25,6 +25,15 @@
 		values(#{ID},#{code},#{discount},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},#{del},#{remark})
 	</insert>
 	
+	<insert id="insertMuti" >
+		insert into discount_coupon(<include refid="column_list"/>) 
+		values
+			<foreach collection="list" item="item"   open="" close="" separator=",">
+				(#{item.ID},#{item.code},#{item.discount},#{item.value},now(),#{item.start},#{item.end},#{item.used},#{item.usedtime},#{item.threshhold},#{item.del},#{item.remark})
+			</foreach>
+		
+	</insert>
+	
 	<select id="selectList" resultMap="DiscountCouponEntityResultMap"
 		parameterType="com.jingyunbank.etrade.vip.entity.DiscountCouponEntity" >
 		select 

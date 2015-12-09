@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -134,6 +135,25 @@ public class CartService implements ICartService {
 	public void clear(String uid) throws DataRemovingException {
 		try {
 			cartDao.deleteByUID(uid);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+	}
+
+	@Override
+	public void remove(String gid, String uid) throws DataRemovingException {
+		try {
+			cartDao.deleteUserGoods(uid, Arrays.asList(new String[]{gid}));
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+	}
+
+	@Override
+	public void remove(List<String> gids, String uid)
+			throws DataRemovingException {
+		try {
+			cartDao.deleteUserGoods(uid, gids);
 		} catch (Exception e) {
 			throw new DataRemovingException(e);
 		}

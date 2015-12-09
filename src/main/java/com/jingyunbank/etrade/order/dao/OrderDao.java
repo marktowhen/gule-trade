@@ -14,22 +14,26 @@ public interface OrderDao{
 	
 	public void insertOne(OrderEntity order) throws Exception ;
 
-	//public boolean update(OrderEntity order) throws DataUpdatingException ;
-
-	//public Optional<OrderEntity> selectByOrderNo(String orderno) ;
-
-	public List<OrderEntity> select();
+	public List<OrderEntity> selectAll();
 
 	public List<OrderEntity> selectBetween(@Param(value="start") Date start, @Param(value="end") Date end) ;
 
 	public List<OrderEntity> selectByUID(String uid);
 	
-	public List<OrderEntity> selectByUIDWithRange(@Param(value="uid") String uid, @Param("from") long from, @Param("size") long size);
-
+	public List<OrderEntity> selectWithCondition(
+			@Param("uid") String uid, 
+			@Param("statuscode") String statuscode,
+			@Param("fromdate") String fromdate,
+			@Param("keywords") String keywords,
+			@Param("from") long from, 
+			@Param("size") int size);
+	
 	public void delete(String id) throws Exception;
 
 	public void updateStatus(@Param("oids") List<String> oids, @Param("status") OrderStatusDesc status) throws Exception;
 
 	public List<OrderEntity> selectByExtranso(String extransno);
+
+	public OrderEntity selectOne(String oid);
 
 }

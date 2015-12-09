@@ -8,7 +8,7 @@ import java.util.List;
 public class Order2ShowVO {
 
 	private String ID;
-	private long orderno;
+	private String orderno;
 	private String receiver;//收货人
 	private String MID;
 	private String mname;
@@ -19,6 +19,7 @@ public class Order2ShowVO {
 	private String paytypeName;
 	private BigDecimal price;//订单总价
 	private BigDecimal postage;
+	private String statusCode;
 	private String statusName;
 	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
 	
@@ -27,6 +28,7 @@ public class Order2ShowVO {
 		private String imgpath;
 		private String gname;
 		private int count;
+		private BigDecimal price;
 		
 		public String getGID() {
 			return GID;
@@ -52,6 +54,12 @@ public class Order2ShowVO {
 		public void setCount(int count) {
 			this.count = count;
 		}
+		public BigDecimal getPrice() {
+			return price;
+		}
+		public void setPrice(BigDecimal price) {
+			this.price = price;
+		}
 	}
 	
 	public String getID() {
@@ -60,10 +68,10 @@ public class Order2ShowVO {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public long getOrderno() {
+	public String getOrderno() {
 		return orderno;
 	}
-	public void setOrderno(long orderno) {
+	public void setOrderno(String orderno) {
 		this.orderno = orderno;
 	}
 	public String getReceiver() {
@@ -137,5 +145,11 @@ public class Order2ShowVO {
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
 	}
 }

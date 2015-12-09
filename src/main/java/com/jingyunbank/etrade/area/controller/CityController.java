@@ -40,7 +40,7 @@ public class CityController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result save(@Valid CityVO vo, BindingResult valid) throws Exception{
+	public Result<String> save(@Valid CityVO vo, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -64,7 +64,7 @@ public class CityController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(HttpServletRequest request,@PathVariable int id) throws Exception{
+	public Result<String> remove(HttpServletRequest request,@PathVariable int id) throws Exception{
 		if(cityService.remove(id)){
 			return Result.ok("成功");
 		}
@@ -81,7 +81,7 @@ public class CityController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result refresh(@PathVariable int id ,@Valid CityVO cityVO , BindingResult valid) throws Exception{
+	public Result<String> refresh(@PathVariable int id ,@Valid CityVO cityVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -106,7 +106,7 @@ public class CityController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getDetail(@PathVariable int id) throws Exception{
+	public Result<CityVO> getDetail(@PathVariable int id) throws Exception{
 		City city = cityService.single(id);
 		if(city!=null){
 			CityVO vo = new CityVO();
@@ -123,7 +123,7 @@ public class CityController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result getList(CityVO vo) throws Exception{
+	public Result<List<CityVO>> getList(CityVO vo) throws Exception{
 		City city = new City();
 		BeanUtils.copyProperties(vo, city);
 		return Result.ok(cityService.list(city)
@@ -142,7 +142,7 @@ public class CityController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list/{provinceID}",method=RequestMethod.GET)
-	public Result getList(@PathVariable int provinceID) throws Exception{
+	public Result<List<CityVO>> getList(@PathVariable int provinceID) throws Exception{
 		return Result.ok(cityService.listByProvince(provinceID)
 				.stream().map( bo->{ 
 					CityVO c = new CityVO();

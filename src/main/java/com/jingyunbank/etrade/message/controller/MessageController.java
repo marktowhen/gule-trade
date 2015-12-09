@@ -102,18 +102,17 @@ public class MessageController {
 	/**
 	 * 查询用户的消息列表
 	 * @param uid
-	 * @param request
 	 * @param page
 	 * @return
 	 * @throws Exception
 	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/list/{uid}",method=RequestMethod.GET)
-	public Result<List<MessageVO>> getList(@PathVariable String uid , HttpServletRequest request, Page page) throws Exception{
+	@RequestMapping(value="/list/{uid}/{from}/{size}",method=RequestMethod.GET)
+	public Result<List<MessageVO>> getList(@PathVariable String uid ,@PathVariable int from, @PathVariable int size) throws Exception{
 		Range range = new Range();
-		range.setFrom(page.getOffset());
-		range.setTo(page.getOffset()+page.getSize());
+		range.setFrom(from);
+		range.setTo(from+size);
 		return Result.ok( inboxService.list(uid, range)
 				.stream().map(bo ->{
 					return copyBoToVo(bo, new MessageVO());
