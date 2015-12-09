@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
@@ -81,25 +82,13 @@ public class CommentsController {
 		BeanUtils.copyProperties(commentVO, comments);
 
 		if(commentService.save(comments)){
-			
-			/*	String filePath=request.getSession().getServletContext().getRealPath("/") + "upload";
-			File uploadDest=new File(filePath);
-			String[] fileNames=uploadDest.list();
-			for(int i=0;i<fileNames.length;i++){
-				commentsImgVO.setId(KeyGen.uuid());
-				commentsImgVO.setPicture("a.jpg");
-				commentsImgVO.setImgid(commentVO.getImgid());
-				CommentsImg commentsImg=new CommentsImg();
-				BeanUtils.copyProperties(commentsImgVO, commentsImg);
-				commentImgService.save(commentsImg);
-			}*/
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
-			for(int i=0;i<3;i++){
-				commentsImgVO.setID(KeyGen.uuid());
-				commentsImgVO.setPicture("a.jpg");
-				commentsImgVO.setImgID(commentVO.getImgID());
+			for (int i=0;i<commentVO.getPicture().size();i++){
 				CommentsImg commentsImg=new CommentsImg();
-				BeanUtils.copyProperties(commentsImgVO, commentsImg);
+				commentsImg.setID(KeyGen.uuid());
+				commentsImg.setPicture(commentVO.getPicture().get(i));
+				commentsImg.setImgID(commentVO.getImgID());
+				
 				commentImgService.save(commentsImg);
 				}
 			return Result.ok("保存成功");
@@ -229,6 +218,13 @@ public class CommentsController {
 			return Result.ok(commentsVO);
 		}
 		return Result.fail("请重试");
+		
+	}
+	@RequestMapping(value="",method=RequestMethod.GET)
+	public Result commentsGrade(){
+		/*commentService.getById(id);*/
+		return null;
+		
 		
 	}
 	

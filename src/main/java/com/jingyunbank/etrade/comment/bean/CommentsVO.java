@@ -28,8 +28,16 @@ public class CommentsVO {
 	private UserVO userVO; 
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
+	private List<String> picture;
 	
 	
+	public List<String> getPicture() {
+		return picture;
+	}
+	public void setPicture(List<String> picture) {
+		this.picture = picture;
+	}
+
 	public List<CommentsImg> getImgs() {
 		return imgs;
 	}
