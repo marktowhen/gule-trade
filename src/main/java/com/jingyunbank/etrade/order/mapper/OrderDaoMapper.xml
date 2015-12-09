@@ -75,12 +75,23 @@
 		left join orders o on og.oid = o.id 
 		where o.uid = #{uid} order by o.addtime desc
 	</select>
+	<select id="selectByOIDs">
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where o.oid in 
+			<foreach collection="oids" item="oid" open="(" separator="," close=")">
+				#{oid}
+			</foreach>
+	</select>
 	<select id="selectOne" parameterType="String" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
 		from order_goods og
 		left join goods_img img on og.gid = img.gid 
 		left join orders o on og.oid = o.id 
 		where o.id = #{oid}
+		limit 1
 	</select>
 	<select id="selectWithCondition" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 

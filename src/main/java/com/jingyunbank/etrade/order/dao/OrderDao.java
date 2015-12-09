@@ -36,4 +36,6 @@ public interface OrderDao{
 
 	public OrderEntity selectOne(String oid);
 
+	public List<OrderEntity> selectByOIDs(@Param("oids") List<String> oids);
+
 }

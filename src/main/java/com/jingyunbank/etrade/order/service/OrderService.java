@@ -87,6 +87,21 @@ public class OrderService implements IOrderService{
 				return bo;
 			}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<Orders> list(List<String> oids) {
+		return orderDao.selectByOIDs(oids)
+			.stream().map(entity -> {
+				Orders bo = new Orders();
+				BeanUtils.copyProperties(entity, bo, "goods");
+				entity.getGoods().forEach(ge -> {
+					OrderGoods og = new OrderGoods();
+					BeanUtils.copyProperties(ge, og);
+					bo.getGoods().add(og);
+				});
+				return bo;
+			}).collect(Collectors.toList());
+	}
 
 	@Override
 	public List<Orders> list(String uid, Range range) {

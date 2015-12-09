@@ -1,8 +1,10 @@
 package com.jingyunbank.etrade.order.service.context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -16,6 +18,7 @@ import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.OrderTrace;
@@ -23,6 +26,7 @@ import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.bo.Refund;
 import com.jingyunbank.etrade.api.order.service.ICartService;
 import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
+import com.jingyunbank.etrade.api.order.service.IOrderLogisticService;
 import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.order.service.IOrderTraceService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
@@ -46,6 +50,8 @@ public class OrderContextService implements IOrderContextService {
 	private IPayService payService;
 	@Autowired
 	private ICartService cartService;
+	@Autowired
+	private IOrderLogisticService orderLogisticService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -145,13 +151,43 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
-	public void delivering(String orderno) throws DataSavingException {
-
+	public boolean accept(List<String> oids) throws DataRefreshingException, DataSavingException {
+		List<Orders> orders = orderService.list(oids);
+		if(orders.stream().anyMatch(order -> !OrderStatusDesc.PAID_CODE.equals(order.getStatusCode()))){
+			return false;
+		}
+		orderService.refreshStatus(oids, OrderStatusDesc.ACCEPT);
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		for (Orders order : orders) {
+			createOrderTrace(order, OrderStatusDesc.ACCEPT);
+			traces.addAll(order.getTraces());
+		}
+		orderTraceService.save(traces);
+		//刷新订单商品的状态
+		orderGoodsService.refreshStatus(oids, OrderStatusDesc.ACCEPT);
+		return true;
 	}
-
+	
 	@Override
-	public void delivered(String orderno) {
-
+	public boolean dispatch(OrderLogistic logistic) throws DataRefreshingException, DataSavingException {
+		String oid = logistic.getOID();
+		Optional<Orders> candidateorder = orderService.single(oid);
+		if(!candidateorder.isPresent()){
+			return false;
+		}
+		Orders order = candidateorder.get();
+		if(!OrderStatusDesc.ACCEPT_CODE.equals(order.getStatusCode())){
+			return false;
+		}
+		orderLogisticService.save(logistic);
+		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.DELIVERED);
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		createOrderTrace(order, OrderStatusDesc.ACCEPT);
+		traces.addAll(order.getTraces());
+		orderTraceService.save(traces);
+		//刷新订单商品的状态
+		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.ACCEPT);
+		return true;
 	}
 
 	@Override
@@ -217,5 +253,5 @@ public class OrderContextService implements IOrderContextService {
 			payments.add(op);
 		}
 	}
-	
+
 }
