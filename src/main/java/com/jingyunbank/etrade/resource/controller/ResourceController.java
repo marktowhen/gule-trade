@@ -13,7 +13,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.FileStorageException;
 import com.jingyunbank.etrade.api.resource.service.IStoreService;
@@ -104,7 +103,11 @@ public class ResourceController {
 			// 忽略
 		}
 		String configContent = this.filter( builder.toString() );
-		JSONObject jsonConfig = new JSONObject( configContent );
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Object jsonConfig = mapper.readValue(configContent, Object.class);
+
+		//JSONObject jsonConfig = new JSONObject( configContent );
 		System.err.println(jsonConfig);
 		String exec = callbackName+"("+jsonConfig.toString()+");";
 		PrintWriter writer = response.getWriter();
