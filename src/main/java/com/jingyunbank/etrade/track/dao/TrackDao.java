@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.track.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
@@ -53,5 +55,5 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean deleteFavoritesById(String id) throws Exception;
+	public boolean deleteFavoritesById(@Param("id") List<String> id) throws Exception;
 }

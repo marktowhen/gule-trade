@@ -2,7 +2,7 @@ package com.jingyunbank.etrade.vip.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,7 +28,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testSave() throws Exception{
 			getMockMvc().perform(
-					 put("/api/discountcoupon/")
+					 post("/api/discountcoupon/")
 					.param("code", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()))
 					.param("value", "1")
 					.param("discount", "0.99")

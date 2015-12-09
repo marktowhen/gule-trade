@@ -135,7 +135,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 
 	@Override
-	public boolean removeFavoritesById(String id) throws DataRemovingException {
+	public boolean removeFavoritesById(List<String> id) throws DataRemovingException {
 		boolean flag=false;
 		try {
 			flag = trackDao.deleteFavoritesById(id);

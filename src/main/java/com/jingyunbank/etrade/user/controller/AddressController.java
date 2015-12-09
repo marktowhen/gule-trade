@@ -43,7 +43,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result add(HttpServletRequest request,@RequestBody @Valid AddressVO address, BindingResult valid) throws Exception {
+	public Result<String> add(HttpServletRequest request,@RequestBody @Valid AddressVO address, BindingResult valid) throws Exception {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -66,7 +66,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result refresh(@PathVariable String id ,@RequestBody @Valid AddressVO address , BindingResult valid) throws Exception{
+	public Result<String> refresh(@PathVariable String id ,@RequestBody @Valid AddressVO address , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -91,7 +91,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/default/{id}",method=RequestMethod.PUT)
-	public Result setDefualt(@PathVariable String id, HttpServletRequest request ,@RequestBody boolean defaulted) throws Exception{
+	public Result<String> setDefualt(@PathVariable String id, HttpServletRequest request ,@RequestBody boolean defaulted) throws Exception{
 		addressService.refreshDefault(id, ServletBox.getLoginUID(request), defaulted);
 		return Result.ok("成功");
 	}
@@ -107,7 +107,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public Result remove(HttpServletRequest request,@PathVariable String id) throws Exception{
+	public Result<String> remove(HttpServletRequest request,@PathVariable String id) throws Exception{
 		if(addressService.remove(id.split(","), ServletBox.getLoginUID(request))){
 			return Result.ok("成功");
 		}
@@ -123,10 +123,10 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result getDetail(@PathVariable String id) throws Exception{
+	public Result<AddressVO> getDetail(@PathVariable String id) throws Exception{
 		Optional<Address> optional = addressService.singleById(id);
 		if(optional.isPresent()){
-			return Result.ok(optional.get());
+			return Result.ok(getVoFrombo(optional.get()));
 		}
 		return Result.fail("地址不存在");
 	}
@@ -141,13 +141,13 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/default",method=RequestMethod.GET)
-	public Result getDefaultAddress(HttpServletRequest request)throws Exception{
+	public Result<AddressVO> getDefaultAddress(HttpServletRequest request)throws Exception{
 		
 		Optional<Address> optional = addressService.getDefaultAddress(ServletBox.getLoginUID(request));
 		if(optional.isPresent()){
-			return Result.ok(optional.get());
+			return Result.ok(getVoFrombo(optional.get()));
 		}
-		return Result.ok("地址不存在");
+		return Result.fail("未设置默认地址");
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/all",method=RequestMethod.GET)
-	public Result queryAll(HttpServletRequest request) throws Exception{
+	public Result<List<AddressVO>> queryAll(HttpServletRequest request) throws Exception{
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		String uid = ServletBox.getLoginUID(request);
 		List<Address> list = addressService.list(uid);
@@ -183,7 +183,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result queryPage( String uid,Page page )throws Exception{
+	public Result<List<AddressVO>> queryPage( String uid,Page page )throws Exception{
 		Range range = new Range();
 		range.setFrom((page.getOffset()));
 		range.setTo(page.getOffset()+page.getSize());
@@ -203,7 +203,7 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount",method=RequestMethod.GET)
-	public Result getAmount(HttpServletRequest request,AddressVO addressVO  )throws Exception{
+	public Result<Integer> getAmount(HttpServletRequest request,AddressVO addressVO  )throws Exception{
 		return Result.ok(addressService.getAmount(ServletBox.getLoginUID(request)));
 	}
 	

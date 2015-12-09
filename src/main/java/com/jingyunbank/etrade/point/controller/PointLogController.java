@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.point.controller;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -28,7 +29,7 @@ public class PointLogController {
 	 * 2015年12月2日 qxs
 	 */
 	@RequestMapping(value="/point/log/{uid}", method=RequestMethod.GET)
-	public Result getUserLog(@PathVariable String uid){
+	public Result<List<PointLogVO>> getUserLog(@PathVariable String uid){
 		
 		return Result.ok(pointLogService.list(uid).stream().map(bo -> {
 			PointLogVO vo = new PointLogVO();
@@ -44,7 +45,7 @@ public class PointLogController {
 	 * 2015年12月2日 qxs
 	 */
 	@RequestMapping(value="/point/log/list/{uid}", method=RequestMethod.GET)
-	public Result getUserLogList(@PathVariable String uid, Page page){
+	public Result<List<PointLogVO>> getUserLogList(@PathVariable String uid, Page page){
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getOffset()+page.getSize());

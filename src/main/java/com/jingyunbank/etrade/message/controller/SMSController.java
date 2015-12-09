@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.message.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -131,16 +132,39 @@ public class SMSController {
 	 * 2015年11月10日 qxs
 	 */
 	private Result<String> sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
-		request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
-		Message message = new Message();
-		message.setContent("您的验证码是:"+code);
-		message.getReceiveUser().setMobile(mobile);
-		message.setTitle("");
-		System.out.println("-----------------"+"您的验证码是:"+code);
-		//smsService.inform(message);
-		return Result.ok();
+		//距离上次发送时间是否超过1分钟
+		if(checkSendTime(request.getSession(), mobile)){
+			request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
+			Message message = new Message();
+			message.setContent("您的验证码是:"+code);
+			message.getReceiveUser().setMobile(mobile);
+			message.setTitle("");
+			//smsService.inform(message);
+			request.getSession().setAttribute(mobile, new Date());
+			System.out.println("-----------------"+"您的验证码是:"+code);
+			return Result.ok();
+		}
+		return Result.fail("发送过于频繁,请稍后再试");
 	}
-	
+	/**
+	 * 验证发送间隔是否超过1分钟
+	 * @param session
+	 * @return
+	 * 2015年12月8日 qxs
+	 */
+	private boolean checkSendTime(HttpSession session, String mobile){
+		Object objLastTime = session.getAttribute(mobile);
+		if(objLastTime!=null && objLastTime instanceof Date){
+			Date lastTime = (Date)objLastTime;
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(lastTime);
+			calendar.add(Calendar.MINUTE, 1);
+			if(calendar.after(Calendar.getInstance())){
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	/**
 	 * 验证验证码,成功后清除session

@@ -43,7 +43,7 @@ public class UserInfoController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/",method=RequestMethod.PUT)
-	public Result addUserInfo(HttpSession session,UserInfoVO userInfoVO,HttpServletRequest request) throws Exception{
+	public Result<UserInfoVO> addUserInfo(HttpSession session,UserInfoVO userInfoVO,HttpServletRequest request) throws Exception{
 		
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
@@ -67,7 +67,7 @@ public class UserInfoController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/userinfo",method=RequestMethod.GET)
-	public Result selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
+	public Result<UserInfoVO> selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		/*System.out.println(userinfo.get().getBirthday());*/
@@ -96,7 +96,7 @@ public class UserInfoController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/info",method=RequestMethod.PUT)
-	public Result updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
+	public Result<UserInfoVO> updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
 		if(!StringUtils.isEmpty(userInfoVO.getBirthdayStr())){
 			Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
 			userInfoVO.setBirthday(date);
