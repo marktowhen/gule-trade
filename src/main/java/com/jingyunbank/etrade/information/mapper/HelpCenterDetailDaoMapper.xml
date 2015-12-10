@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.information.dao.HelpCenterDetailDao">
+		<resultMap type="com.jingyunbank.etrade.information.entity.HelpCenterDetailEntity" id="HelpCenterDetailResultMap">
+			<id column="id" property="ID"/>
+			<result column="parent_id" property="parentID"/>
+			<result column="name" property="name"/>
+			<result column="content" property="content"/>
+			<result column="valid" property="valid"/>
+			<result column="sort" property="sort"/>
+			<result column="add_time" property="addTime"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="update_uid" property="updateUID"/>
+		</resultMap>
+		<sql id="detail_column_list">
+			id,parent_id,name,content,valid,sort,add_time,update_time,update_uid
+		</sql>
+		<sql id="list_column">
+			id,parent_id,name,valid,sort,add_time,update_time,update_uid
+		</sql>
+		
+		<insert id="insert">
+			insert into help_center_detail(<include refid="detail_column_list"/>)
+			values(#{ID},#{parentID},#{name},#{content},#{valid},#{sort},now(),now(),#{updateUID})
+		</insert>
+		
+		<update id="update">
+			update  help_center_detail set
+				<if test="name!=null and !''.equals(name)">
+					name=#{name},
+				</if>
+				<if test="sort!=null and !''.equals(sort) and sort!=0">
+					sort=#{sort},
+				</if>
+				id = #{ID}
+			where id=#{ID}
+		</update>
+		
+		<update id="updateValid">
+			update help_center_detail set valid=#{valid}
+				where id=#{ID}		
+		</update>
+		
+		<select id="selectValidList">
+			select <include refid="list_column"/> from help_center_detail where valid=true order by sort
+		</select>
+		
+		<select id="selectSingle">
+			select <include refid="detail_column_list"/> from help_center_detail where id=#{ID}
+		</select>
+		
+		
+	</mapper>
