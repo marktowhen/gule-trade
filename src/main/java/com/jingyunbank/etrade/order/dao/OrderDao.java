@@ -27,6 +27,13 @@ public interface OrderDao{
 			@Param("keywords") String keywords,
 			@Param("from") long from, 
 			@Param("size") int size);
+	public List<OrderEntity> selectmWithCondition(
+			@Param("mid") String mid, 
+			@Param("statuscode") String statuscode,
+			@Param("fromdate") String fromdate,
+			@Param("keywords") String keywords,
+			@Param("from") long from, 
+			@Param("size") int size);
 	
 	public void delete(String id) throws Exception;
 
@@ -37,5 +44,11 @@ public interface OrderDao{
 	public OrderEntity selectOne(String oid);
 
 	public List<OrderEntity> selectByOIDs(@Param("oids") List<String> oids);
+	
+	public int selectCount(
+			@Param("uid") String uid, 
+			@Param("statuscode") String statuscode,
+			@Param("fromdate") String fromdate,
+			@Param("keywords") String keywords);
 
 }

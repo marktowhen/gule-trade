@@ -111,11 +111,64 @@
 						og.gname like CONCAT('%','${keywords}','%') 
 						or 
 						o.orderno like CONCAT('%','${keywords}','%')
+						or
+						o.mid like CONCAT('%','${keywords}','%')
+						or
+						o.mname like CONCAT('%','${keywords}','%')
 					)
 			</if>
 		order by o.addtime desc 
 		limit #{from}, #{size}
 	</select>
+	
+	<select id="selectCount" resultType="int">
+		select count(1) 
+		from order_goods og
+		left join orders o on og.oid = o.id 
+		where 
+			o.uid = #{uid}
+			<if test="statuscode != null and !''.equals(statuscode)">
+				and o.status_code = #{statuscode}
+			</if>
+			<if test="fromdate != null and !''.equals(fromdate)">
+				and o.addtime &gt;= #{fromdate}
+			</if>
+			<if test="keywords != null and !''.equals(keywords)">
+				and (
+						og.gname like CONCAT('%','${keywords}','%') 
+						or 
+						o.orderno like CONCAT('%','${keywords}','%')
+					)
+			</if>
+	</select>
+	<select id="selectmWithCondition" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where 
+			o.mid = #{mid}
+			<if test="statuscode != null and !''.equals(statuscode)">
+				and o.status_code = #{statuscode}
+			</if>
+			<if test="fromdate != null and !''.equals(fromdate)">
+				and o.addtime &gt;= #{fromdate}
+			</if>
+			<if test="keywords != null and !''.equals(keywords)">
+				and (
+						og.gname like CONCAT('%','${keywords}','%') 
+						or 
+						o.orderno like CONCAT('%','${keywords}','%')
+						or
+						o.mid like CONCAT('%','${keywords}','%')
+						or
+						o.mname like CONCAT('%','${keywords}','%')
+					)
+			</if>
+		order by o.addtime desc 
+		limit #{from}, #{size}
+	</select>
+	
 	<select id="selectBetween" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
 		from order_goods og

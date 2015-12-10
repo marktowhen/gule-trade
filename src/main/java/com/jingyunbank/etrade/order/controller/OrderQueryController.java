@@ -64,8 +64,30 @@ public class OrderQueryController {
 				}).collect(Collectors.toList()));
 	}
 	
-	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
+	/**
+	 * get /api/orders/amount/xxxx?keywords=东阿&status=PAID&fromdate=2015-11-09
+	 *	
+	 * 查询某用户的订单数量
+	 * @param uid
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/api/orders/amount/{uid}", method=RequestMethod.GET)
 	@AuthBeforeOperation
+	public Result<Integer> getAmount(
+			@PathVariable("uid") String uid, 
+			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
+			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
+			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
+			HttpSession session){
+		String loginuid = ServletBox.getLoginUID(session);
+		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
+		
+		return Result.ok(orderService.getAmount(uid, statuscode, fromdate, keywords));
+	}
+	
+	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
+	//@AuthBeforeOperation
 	public Result<Order2ShowVO> singleOrder(@PathVariable("oid") String oid){
 		Order2ShowVO vo = new Order2ShowVO();
 		Optional<Orders> order = orderService.single(oid);

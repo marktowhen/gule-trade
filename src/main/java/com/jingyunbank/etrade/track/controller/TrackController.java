@@ -143,6 +143,11 @@ public class TrackController {
 				// 第一条处理
 				if (i == 0) {
 					tmplist.add(goodslist.get(i));
+					if (i == (goodslist.size() - 1)) {// 最后一条
+						cmvo = new FavoritesMerchantVO();
+						cmvo.init(tmplist);
+						rltlist.add(cmvo);
+					}
 				} else if (!goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家不是一家
 					cmvo.init(tmplist);
 					rltlist.add(cmvo);
@@ -166,8 +171,9 @@ public class TrackController {
 
 			}
 		}
+		int tmpcount = trackService.countMerchantFavorites(uid, "1");
 		FavoritesMerchantFacadeVO fvo = new FavoritesMerchantFacadeVO();
-		fvo.setCount(rltlist.size());
+		fvo.setCount(tmpcount);
 		fvo.setMerchantlist(rltlist);
 		return Result.ok(fvo);
 	}
@@ -199,7 +205,8 @@ public class TrackController {
 				}).collect(Collectors.toList());
 			}
 			FavoritesGoodsFacadeVO fvo = new FavoritesGoodsFacadeVO();
-			fvo.setCount(rltlist.size());
+			int tmpcount = trackService.countMerchantFavorites(uid, "2");
+			fvo.setCount(tmpcount);
 			fvo.setGoodslist(rltlist);
 			return Result.ok(fvo);
 	}

@@ -16,6 +16,7 @@ public class OrderLogisticVO {
 	@Size(min=22, max=22)
 	private String OID;
 	@NotNull
+	@Size(max=20)
 	private String expressno;
 	@NotNull
 	private String expressName;

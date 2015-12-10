@@ -107,13 +107,17 @@
 		</if>
 		 and c.type = #{type} 
 		 and uid = #{uid} 
-		 and x.state=1
 		<if test="type =='1'.toString()">
 			 <![CDATA[ 
 			and (select count(*) 
 		     from goods t
 		     where x.mid = t.mid and x.up_time > t.up_time and t.state=1 ) < 3
 			  ]]>
+		</if>
+		<if test="type =='1'.toString()">
+			<![CDATA[ 
+			and c.fid in ( select n.fid from (select fid from favorites where type = '1' and uid = #{uid}  order by collect_time desc limit #{from},#{to}) n)
+			]]>
 		</if>
 		 order by c.fid 
 		) g
@@ -124,9 +128,16 @@
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN merchant m ON g.mid=m.id
 		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
-		<if test="to > 0">
+		<if test="type =='2'.toString()">
 			limit #{from},#{to}
 		</if>
+	</select>
+	<!-- 查询我的收藏数量 -->
+	<select id="selectMerchantFavoritesCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from 
+		favorites c
+		where c.type = #{type} 
+		 and uid = #{uid} 
 	</select>
 	<!--删除我的收藏信息 -->
 	<delete id="deleteFavoritesById">

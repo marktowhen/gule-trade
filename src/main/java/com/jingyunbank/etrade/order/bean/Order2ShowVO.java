@@ -19,6 +19,8 @@ public class Order2ShowVO {
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 id
 	private String paytypeName;
+	private String deliveryTypeCode;
+	private String deliveryTypeName;
 	private BigDecimal price;//订单总价
 	private BigDecimal postage;
 	private String statusCode;
@@ -172,5 +174,17 @@ public class Order2ShowVO {
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+	public String getDeliveryTypeCode() {
+		return deliveryTypeCode;
+	}
+	public void setDeliveryTypeCode(String deliveryTypeCode) {
+		this.deliveryTypeCode = deliveryTypeCode;
+	}
+	public String getDeliveryTypeName() {
+		return deliveryTypeName;
+	}
+	public void setDeliveryTypeName(String deliveryTypeName) {
+		this.deliveryTypeName = deliveryTypeName;
 	}
 }
