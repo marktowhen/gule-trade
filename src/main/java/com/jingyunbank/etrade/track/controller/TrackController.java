@@ -143,6 +143,11 @@ public class TrackController {
 				// 第一条处理
 				if (i == 0) {
 					tmplist.add(goodslist.get(i));
+					if (i == (goodslist.size() - 1)) {// 最后一条
+						cmvo = new FavoritesMerchantVO();
+						cmvo.init(tmplist);
+						rltlist.add(cmvo);
+					}
 				} else if (!goodslist.get(i - 1).getMID().equals(goodslist.get(i).getMID())) {// 与上一家不是一家
 					cmvo.init(tmplist);
 					rltlist.add(cmvo);
