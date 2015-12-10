@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.user.entity;
 
 import java.util.Date;
 
+import com.jingyunbank.etrade.api.user.bo.UserInfo.Device;
+
 /**
  * @author Administrator 
  * @date 2015年11月6日
@@ -13,7 +15,7 @@ public class UserInfoEntity {
 	private String UID;
 	private Date birthday;//生日
 	private boolean marriage;//婚否
-	private Gender gender;//性别
+	private boolean gender;//性别
 	private int country;//国家
 	private int province;//省份
 	private int city;//城市
@@ -45,17 +47,19 @@ public class UserInfoEntity {
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
+
+	public boolean isGender() {
+		return gender;
+	}
+
+	public void setGender(boolean gender) {
+		this.gender = gender;
+	}
 	public boolean isMarriage() {
 		return marriage;
 	}
 	public void setMarriage(boolean marriage) {
 		this.marriage = marriage;
-	}
-	public Gender getGender() {
-		return gender;
-	}
-	public void setGender(Gender gender) {
-		this.gender = gender;
 	}
 	public int getCountry() {
 		return country;
@@ -123,10 +127,5 @@ public class UserInfoEntity {
 	public void setRegdevice(Device regdevice) {
 		this.regdevice = regdevice;
 	}
-	public enum Gender{
-		MAIL, FEMALE, NONE
-	}
-	public enum Device{
-		PC, WAP, ANDROID, IPHONE, WINPHONE
-	}
+	
 }

@@ -25,12 +25,35 @@ public class CommentsVO {
 	private Date addtime;//添加评价的时间
 	private int commentStatus;//评价的是否的状态1:已评价2：未评价
 	private int orders;
+	private float zongjibie;
+	private int personCount;
+	private int allLevel;
 	private UserVO userVO; 
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
 	private List<String> picture;
 	
 	
+	
+	
+	public int getAllLevel() {
+		return allLevel;
+	}
+	public void setAllLevel(int allLevel) {
+		this.allLevel = allLevel;
+	}
+	public int getPersonCount() {
+		return personCount;
+	}
+	public void setPersonCount(int personCount) {
+		this.personCount = personCount;
+	}
+	public float getZongjibie() {
+		return zongjibie;
+	}
+	public void setZongjibie(float zongjibie) {
+		this.zongjibie = zongjibie;
+	}
 	public List<String> getPicture() {
 		return picture;
 	}

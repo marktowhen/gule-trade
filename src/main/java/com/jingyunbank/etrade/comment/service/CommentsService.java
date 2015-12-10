@@ -121,11 +121,19 @@ public class CommentsService implements ICommentService{
 	 */
 	@Override
 	public int commentCount(String gid) {
-		int count = 0;
-		if(commentsDao.commentCount(gid)!=0){
-			count++;
-		}
-		return count;
+		return commentsDao.commentCount(gid);
+	}
+	/**
+	 * 通过gid和评论的级别查询好评或中评或差评
+	 */
+	@Override
+	public List<Comments> selectCommentGradeByGid(String gid, int commentGrade) {
+		return commentsDao.selectCommentGradeByGid(gid,commentGrade)
+				.stream().map(entity -> {
+					Comments bo=new Comments();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
 	}
 	
 }

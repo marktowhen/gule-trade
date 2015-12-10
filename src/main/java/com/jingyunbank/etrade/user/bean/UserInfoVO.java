@@ -2,6 +2,9 @@ package com.jingyunbank.etrade.user.bean;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.jingyunbank.etrade.api.user.bo.UserInfo.Device;
+
 /**
  * @author Administrator 
  * @date 2015年11月6日
@@ -9,9 +12,10 @@ import java.util.Date;
  */
 public class UserInfoVO {
 	private String UID;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date birthday;//生日
 	private boolean marriage;//婚否
-	private Gender gender;//性别
+	private boolean gender;//性别
 	private int country;//国家
 	private int province;//省份
 	private int city;//城市
@@ -58,10 +62,11 @@ public class UserInfoVO {
 	public void setMarriage(boolean marriage) {
 		this.marriage = marriage;
 	}
-	public Gender getGender() {
+
+	public boolean isGender() {
 		return gender;
 	}
-	public void setGender(Gender gender) {
+	public void setGender(boolean gender) {
 		this.gender = gender;
 	}
 	public int getCountry() {
@@ -130,10 +135,5 @@ public class UserInfoVO {
 	public void setRegdevice(Device regdevice) {
 		this.regdevice = regdevice;
 	}
-	public enum Gender{
-		MAIL, FEMALE, NONE
-	}
-	public enum Device{
-		PC, WAP, ANDROID, IPHONE, WINPHONE
-	}
+	
 }
