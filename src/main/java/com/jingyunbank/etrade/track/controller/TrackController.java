@@ -166,8 +166,9 @@ public class TrackController {
 
 			}
 		}
+		int tmpcount = trackService.countMerchantFavorites(uid, "1");
 		FavoritesMerchantFacadeVO fvo = new FavoritesMerchantFacadeVO();
-		fvo.setCount(rltlist.size());
+		fvo.setCount(tmpcount);
 		fvo.setMerchantlist(rltlist);
 		return Result.ok(fvo);
 	}
@@ -199,7 +200,8 @@ public class TrackController {
 				}).collect(Collectors.toList());
 			}
 			FavoritesGoodsFacadeVO fvo = new FavoritesGoodsFacadeVO();
-			fvo.setCount(rltlist.size());
+			int tmpcount = trackService.countMerchantFavorites(uid, "2");
+			fvo.setCount(tmpcount);
 			fvo.setGoodslist(rltlist);
 			return Result.ok(fvo);
 	}
