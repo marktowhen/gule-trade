@@ -13,7 +13,7 @@
 			<result column="imgid" property="ImgID" jdbcType="CHAR"/>
 			<result column="reply_comment" property="replyComment"/>
 			<result column="goods_comment" property="goodsComment" javaType="String" />
-			<result column="comment_grade" property="commentGrade" jdbcType="INTEGER"/>
+			<result column="comment_grade" property="commentGrade"/>
 			<result column="goods_service" property="goodsService" jdbcType="VARCHAR"/>
 			<result column="service_grade" property="serviceGrade" jdbcType="INTEGER"/>
 			<result column="addtime" property="addtime" javaType="java.util.Date"/>
@@ -32,10 +32,27 @@
 		)
 		</insert>
 		<!-- 通过gid查询评论信息，多条 -->
-		<select id="selectCommentByGid" parameterType="String" resultMap="ResultMap">
+		<select id="selectCommentByGid" resultMap="ResultMap">
 		   select 
 		   <include refid="comment_list"></include>
 		   from comment where gid=#{GID}
+		   order by addtime desc,orders desc
+		</select>
+		<!-- 通过gid和评论级别查询评论信息，多条 -->
+		<select id="selectCommentGradeByGid" resultMap="ResultMap">
+		   select 
+		   <include refid="comment_list"></include>
+		   from comment where gid=#{GID}
+		   		<if test="commentGrade >=8">
+		   			and comment_grade  &gt;8
+		   		</if>
+		   		<if test="commentGrade &lt;8  &amp; commentGrade &gt;5">
+		   			and comment_grade &lt;8 &amp;&amp; comment_grade &gt;5
+		   		</if> 
+		   		<if test="commentGrade &lt;6">
+		   			and comment_grade &lt;6
+		   		</if>
+		   
 		   order by addtime desc,orders desc
 		</select>
 		<!-- 通过id查询出评论信息 -->
@@ -53,13 +70,13 @@
 			where id=#{ID}
 		</update>
 		<!-- 通过oid查出产品判断状态 -->
-		<select id="selectByOid" parameterType="String" resultMap="ResultMap">
+		<select id="selectCommentByOid" parameterType="String" resultMap="ResultMap">
 			select <include refid="comment_list"></include>
 			from comment where oid=#{OID}
 		</select>
 		<!-- 通过gid查出该商品的总条数 -->
 		<select id="commentCount" resultType="int" parameterType="string">
-		select count(id) from users where gid=#{GID}
+		select count(id) from comment where gid=#{GID}
 	</select>
 		
 	</mapper>

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
@@ -28,11 +28,8 @@ import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentImgService;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
-import com.jingyunbank.etrade.api.goods.bo.Goods;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
-import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
-import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
@@ -43,7 +40,7 @@ import com.jingyunbank.etrade.user.bean.UserInfoVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 
-@Controller
+@RestController
 public class CommentsController {
 	@Autowired
 	private ICommentService commentService;
@@ -111,6 +108,25 @@ public class CommentsController {
 		return Result.ok(commentVOs);
 		
 		}
+	/**
+	 * 得到评论信息的级别
+	 * @param gid
+	 * @param commentGrade
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/comments/grades",method=RequestMethod.GET)
+	@ResponseBody
+	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,HttpServletRequest request,HttpSession session) throws Exception{
+		List<Comments> comments=commentService.selectCommentGradeByGid(gid,commentGrade);
+		List<CommentsVO> commentVOs=convert(comments);
+		return Result.ok(commentVOs);
+		
+		}
+	
 	private List<CommentsVO> convert(List<Comments> comments){
 	
 		List<CommentsVO> commentVOs=new ArrayList<CommentsVO>();
@@ -127,10 +143,6 @@ public class CommentsController {
 			commentsVO.setUserInfoVO(userinfoVO);
 			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getImgID());
 			commentsVO.setImgs(commentsImgs);
-			/*for(int j=0;j<commentsImgs.size();j++){
-				CommentsImgVO vo = new CommentsImgVO();
-				BeanUtils.copyProperties(commentsImgs.get(j), vo);
-			}*/
 			commentVOs.add(commentsVO);
 		}
 		return commentVOs;
@@ -203,7 +215,7 @@ public class CommentsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/update/status",method=RequestMethod.POST)
 	@ResponseBody
-	public Result updateStatus(CommentsVO commentsVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<CommentsVO> updateStatus(CommentsVO commentsVO,HttpServletRequest request,HttpSession session) throws Exception{
 		
 		Optional<Comments> optionComments=commentService.getById(commentsVO.getID());
 		Comments comments=	optionComments.get();
@@ -220,10 +232,27 @@ public class CommentsController {
 		return Result.fail("请重试");
 		
 	}
-	@RequestMapping(value="",method=RequestMethod.GET)
-	public Result commentsGrade(){
-		/*commentService.getById(id);*/
-		return null;
+	/**
+	 * 通过gid查出评论的总级别
+	 * @param gid
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/comments/goods/grade",method=RequestMethod.GET)
+	public Result<CommentsVO> getGoodsGrade(@RequestParam(value="gid") String gid){
+		int gradeCount=0;
+		List<Comments> comments=commentService.getCommentsByGid(gid);
+		int personCount=commentService.commentCount(gid);
+		for(int i=0;i<comments.size();i++){
+			gradeCount+=comments.get(i).getCommentGrade();
+		}
+		float zongjibie=gradeCount/personCount;
+		CommentsVO commentsVO=new CommentsVO();
+		int allLevel=(int)zongjibie*10;
+		commentsVO.setAllLevel(allLevel);
+		commentsVO.setPersonCount(personCount);
+		commentsVO.setZongjibie(zongjibie);
+		return Result.ok(commentsVO);
 		
 		
 	}

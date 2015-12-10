@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,11 +43,49 @@ public class OrderGoodsController {
 			.stream().map(bo ->{
 			
 			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
+			String addtimeStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(bo.getAddtime());
+			orderGoodsVO.setAddtimeStr(addtimeStr);
+			
 			BeanUtils.copyProperties(bo, orderGoodsVO);
 			return orderGoodsVO;
 		}).collect(Collectors.toList()));
 	}
+	
 	/**
+	 * 查出该用户未评价商品的个数
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/order/goods/nocomment/count",method=RequestMethod.GET)
+	public Result<OrderGoodsVO> getNoCommentCount(HttpSession session,HttpServletRequest request){
+		int noCommentCount=0;
+		String uid = ServletBox.getLoginUID(request);
+		noCommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED).size();
+		OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
+		orderGoodsVO.setNoCommentCount(noCommentCount);
+		return Result.ok(orderGoodsVO);
+		
+	}
+	/**
+	 * 查出该用户已经评价商品的个数
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/order/goods/comment/count",method=RequestMethod.GET)
+	public Result<OrderGoodsVO> getCommentCount(HttpSession session,HttpServletRequest request){
+		String uid = ServletBox.getLoginUID(request);
+		int CommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED).size();
+		OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
+		orderGoodsVO.setCommentCount(CommentCount);
+		return Result.ok(orderGoodsVO);
+		
+	}
+	
+	/**COMMENTED
 	 * 通过oid查出订单产品
 	 * @param oid
 	 * @return
@@ -57,6 +96,9 @@ public class OrderGoodsController {
 			Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 			OrderGoods	orderGoods =optional.get();
 			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
+			String addtimeStrs= new SimpleDateFormat("yyyy-MM-dd").format(orderGoods.getAddtime());
+			orderGoodsVO.setAddtimeStr(addtimeStrs);
+			
 			BeanUtils.copyProperties(orderGoods, orderGoodsVO);
 			
 			return Result.ok(orderGoodsVO);

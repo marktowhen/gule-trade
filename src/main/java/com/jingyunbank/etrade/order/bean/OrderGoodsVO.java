@@ -17,7 +17,31 @@ public class OrderGoodsVO {
 	private BigDecimal payout;//实际付款
 	private BigDecimal reduce;//优惠减免价格
 	private Date addtime;
+	private String addtimeStr;
+	private int noCommentCount;
+	private int commentCount;
 	
+	
+	
+	public int getCommentCount() {
+		return commentCount;
+	}
+	
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
+	}
+	public int getNoCommentCount() {
+		return noCommentCount;
+	}
+	public void setNoCommentCount(int noCommentCount) {
+		this.noCommentCount = noCommentCount;
+	}
+	public String getAddtimeStr() {
+		return addtimeStr;
+	}
+	public void setAddtimeStr(String addtimeStr) {
+		this.addtimeStr = addtimeStr;
+	}
 	public String getID() {
 		return ID;
 	}

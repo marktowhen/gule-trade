@@ -6,8 +6,8 @@
 		<resultMap type="com.jingyunbank.etrade.user.entity.UserInfoEntity" id="resultMap">
 			<result column="uid" property="UID"/>
 			<result column="birthday" property="birthday"/>
-			<result column="marriage" property="marriage"/>
-			<result column="gender" property="gender"/>
+			<result column="marriage" property="marriage" javaType="BOOLEAN"/>
+			<result column="gender" property="gender" javaType="BOOLEAN"/>
 			<result column="country" property="country"/>
 			<result column="province" property="province"/>
 			<result column="city" property="city"/>
