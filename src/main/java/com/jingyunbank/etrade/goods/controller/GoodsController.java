@@ -197,8 +197,8 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/recommend/list/{from}/{size}", method = RequestMethod.GET)
-	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request,@PathVariable String from,@PathVariable String size) throws Exception {
-		List<RecommendGoods> list = goodsService.listRecommend(from,size).stream().map(bo -> {
+	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request,Page page) throws Exception {
+		List<RecommendGoods> list = goodsService.listRecommend(page.getOffset()+"",page.getSize()+"").stream().map(bo -> {
 			RecommendGoods vo = new RecommendGoods();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -433,23 +433,5 @@ public class GoodsController {
 
 
 
-/*	@RequestMapping(value = "/ueUpload", method = RequestMethod.GET)
-	public void config(HttpServletRequest request, HttpServletResponse response, String action) {
-		response.setContentType("application/json");
-		//String rootPath = request.getRealPath("/");
-		//String rootPath ="E:\\etrade-ui\\jingyun-etrade-back-ui\\bower_components\\ueditor";
-		String rootPath = "D:/image/";
-		System.out.println("rootPath:"+rootPath);
-		try {
-			String exec = new ActionEnter(request, rootPath).exec();
-			PrintWriter writer = response.getWriter();
-			writer.write(exec);
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}*/
 
 }
