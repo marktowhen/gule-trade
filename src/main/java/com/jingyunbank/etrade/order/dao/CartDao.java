@@ -35,4 +35,6 @@ public interface CartDao{
 	
 	public List<GoodsInCartEntity> selectAllByCartID(String cartID);
 
+	public int count(String uid);
+
 }

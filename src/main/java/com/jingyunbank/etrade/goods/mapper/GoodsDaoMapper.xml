@@ -267,7 +267,7 @@
 		LEFT JOIN goods_type p ON p.id = g.tid 
 		left join merchant mt on g.mid = mt.id
 		where 1=1 AND g.state=1
-		ORDER BY mt.admin_sort_num desc, g.volume DESC 
+		ORDER BY mt.admin_sort_num asc,mid, g.volume DESC 
 		 ]]>
 	</select>
 	<!-- 根据商品 推荐序号 查询 宝贝推荐的商品 -->

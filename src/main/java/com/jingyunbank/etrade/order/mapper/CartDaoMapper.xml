@@ -48,6 +48,10 @@
 			uid = #{uid} and gid = #{gid}
 		limit 1
 	</select>
+	<select id="count" parameterType="String" resultType="Integer">
+		select count(id) from goods_in_cart 
+		where uid = #{uid}
+	</select>
 	<insert id="insertCart" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
 		insert into cart
 			(<include refid="cart_columns"/>)

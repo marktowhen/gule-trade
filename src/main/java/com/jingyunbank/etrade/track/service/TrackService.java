@@ -133,6 +133,15 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return rltlist;
 	}
+	
+	@Override
+	public int countMerchantFavorites(String uid,String type) throws Exception {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("uid", uid);
+		map.put("type", type);
+		int count = trackDao.selectMerchantFavoritesCount(map);
+		return count;
+	}
 
 	@Override
 	public boolean removeFavoritesById(List<String> id) throws DataRemovingException {

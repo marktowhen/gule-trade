@@ -87,7 +87,7 @@ public class OrderQueryController {
 	}
 	
 	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	public Result<Order2ShowVO> singleOrder(@PathVariable("oid") String oid){
 		Order2ShowVO vo = new Order2ShowVO();
 		Optional<Orders> order = orderService.single(oid);

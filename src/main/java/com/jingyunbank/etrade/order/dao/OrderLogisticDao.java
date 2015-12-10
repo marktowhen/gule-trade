@@ -5,5 +5,7 @@ import com.jingyunbank.etrade.order.entity.OrderLogisticEntity;
 public interface OrderLogisticDao {
 
 	public void insertOne(OrderLogisticEntity logistic) throws Exception;
+
+	public OrderLogisticEntity selectOID(String oid);
 	
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.order.service.IOrderTraceService;
 import com.jingyunbank.etrade.order.bean.OrderTraceVO;
 
@@ -24,7 +23,7 @@ public class OrderTraceController {
 	private IOrderTraceService orderTraceService;
 	
 	@RequestMapping(value="/api/orders/{oid}/traces", method=RequestMethod.GET)
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	public Result<List<OrderTraceVO>> listTraces(@PathVariable("oid") String oid, HttpSession session){
 		
 		return Result.ok(orderTraceService.list(oid)

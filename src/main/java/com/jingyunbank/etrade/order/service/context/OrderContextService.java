@@ -198,11 +198,11 @@ public class OrderContextService implements IOrderContextService {
 		orderLogisticService.save(logistic);
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.DELIVERED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
-		createOrderTrace(order, OrderStatusDesc.ACCEPT);
+		createOrderTrace(order, OrderStatusDesc.DELIVERED);
 		traces.addAll(order.getTraces());
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
-		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.ACCEPT);
+		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.DELIVERED);
 		return true;
 	}
 

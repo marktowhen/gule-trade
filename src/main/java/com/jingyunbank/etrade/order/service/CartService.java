@@ -159,4 +159,9 @@ public class CartService implements ICartService {
 		}
 	}
 
+	@Override
+	public int count(String uid) {
+		return cartDao.count(uid);
+	}
+
 }
