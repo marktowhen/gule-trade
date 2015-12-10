@@ -73,7 +73,7 @@ public interface GoodsDao {
 	 * 
 	 * @return
 	 */
-	public List<GoodsDaoEntity> selectRecommend() throws Exception;
+	public List<GoodsDaoEntity> selectRecommend(Map<String,Object> map) throws Exception;
 
 	/**
 	 * 根据商品条件查询关联店铺

@@ -8,6 +8,8 @@ public interface DiscountCouponDao {
 	
 	public boolean insert(DiscountCouponEntity entity) throws Exception;
 	
+	public boolean insertMuti(List<DiscountCouponEntity> list) throws Exception;
+	
 	
 	public List<DiscountCouponEntity> selectList(DiscountCouponEntity entity); 
 	

@@ -1,6 +1,7 @@
-package com.jingyunbank.etrade.order.bean;
+package com.jingyunbank.etrade.order.entity;
 
-public class OrderStatusDescVO {
+
+public final class OrderStatusDescEntity{
 
 	private String name;
 	private String code;
@@ -8,11 +9,11 @@ public class OrderStatusDescVO {
 	private String description;
 	private boolean visible;//该状态下的订单买家是否可见
 	
-	public OrderStatusDescVO() {
+	public OrderStatusDescEntity() {
 		super();
 	}
 
-	public OrderStatusDescVO(String code, String name, int orders,
+	public OrderStatusDescEntity(String code, String name, int orders,
 			String desc, boolean visible) {
 		super();
 		this.name = name;
@@ -34,17 +35,16 @@ public class OrderStatusDescVO {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
+	public int getOrders() {
+		return orders;
+	}
+
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public int getOrders() {
-		return orders;
 	}
 
 	public void setOrders(int orders) {

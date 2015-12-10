@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.dao.OrderLogisticDao">
+	<resultMap type="com.jingyunbank.etrade.order.entity.OrderLogisticEntity" id="OrderLogisticEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="oid" property="OID" javaType="String"/>
+		<result column="expressno" property="expressno" javaType="String"/>
+		<result column="express_name" property="expressName" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="type_code" property="typeCode" javaType="String"/>
+		<result column="type_name" property="typeName" javaType="String"/>
+	</resultMap>
+	<sql id="order_logistic_column">
+		id, oid, expressno, express_name, addtime, type_code, type_name
+	</sql>
+	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderLogisticEntity">
+		insert into order_logistic 
+			(<include refid="order_logistic_column"/>)
+		values (#{ID}, #{OID}, #{expressno}, #{expressName}, #{addtime}, #{typeCode}, #{typeName})
+	</insert>
+	<select id="selectOID" parameterType="String" resultMap="OrderLogisticEntityResultMap">
+		select <include refid="order_logistic_column"/>
+		from order_logistic
+		where oid = #{oid}
+		limit 1
+	</select>
+</mapper>

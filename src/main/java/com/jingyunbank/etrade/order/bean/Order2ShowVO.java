@@ -8,18 +8,24 @@ import java.util.List;
 public class Order2ShowVO {
 
 	private String ID;
-	private long orderno;
+	private String orderno;
 	private String receiver;//收货人
 	private String MID;
 	private String mname;
-	private String addressID;//收货地址->address id
+	private String address;//收货地址
+	private String mobile ;//收货人电话
+	private String zipcode;
 	private String UID;//下单人
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 id
 	private String paytypeName;
+	private String deliveryTypeCode;
+	private String deliveryTypeName;
 	private BigDecimal price;//订单总价
 	private BigDecimal postage;
+	private String statusCode;
 	private String statusName;
+	private String note;
 	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
 	
 	public static class OrderGoods2ShowVO{
@@ -27,6 +33,7 @@ public class Order2ShowVO {
 		private String imgpath;
 		private String gname;
 		private int count;
+		private BigDecimal price;
 		
 		public String getGID() {
 			return GID;
@@ -52,6 +59,12 @@ public class Order2ShowVO {
 		public void setCount(int count) {
 			this.count = count;
 		}
+		public BigDecimal getPrice() {
+			return price;
+		}
+		public void setPrice(BigDecimal price) {
+			this.price = price;
+		}
 	}
 	
 	public String getID() {
@@ -60,10 +73,10 @@ public class Order2ShowVO {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public long getOrderno() {
+	public String getOrderno() {
 		return orderno;
 	}
-	public void setOrderno(long orderno) {
+	public void setOrderno(String orderno) {
 		this.orderno = orderno;
 	}
 	public String getReceiver() {
@@ -78,11 +91,23 @@ public class Order2ShowVO {
 	public void setMID(String mID) {
 		MID = mID;
 	}
-	public String getAddressID() {
-		return addressID;
+	public String getAddress() {
+		return address;
 	}
-	public void setAddressID(String addressID) {
-		this.addressID = addressID;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 	public String getUID() {
 		return UID;
@@ -137,5 +162,29 @@ public class Order2ShowVO {
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	public String getDeliveryTypeCode() {
+		return deliveryTypeCode;
+	}
+	public void setDeliveryTypeCode(String deliveryTypeCode) {
+		this.deliveryTypeCode = deliveryTypeCode;
+	}
+	public String getDeliveryTypeName() {
+		return deliveryTypeName;
+	}
+	public void setDeliveryTypeName(String deliveryTypeName) {
+		this.deliveryTypeName = deliveryTypeName;
 	}
 }

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
@@ -182,11 +181,11 @@ public class AddressController {
 	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result<List<AddressVO>> queryPage( String uid,Page page )throws Exception{
+	@RequestMapping(value="/list/{uid}/{offset}/{size}",method=RequestMethod.GET)
+	public Result<List<AddressVO>> queryPage(@PathVariable String uid,@PathVariable int offset, @PathVariable int size )throws Exception{
 		Range range = new Range();
-		range.setFrom((page.getOffset()));
-		range.setTo(page.getOffset()+page.getSize());
+		range.setFrom(offset);
+		range.setTo(offset + size);
 		return Result.ok(addressService.list(uid, range).stream().map( bo->{
 			return getVoFrombo(bo);
 		}).collect(Collectors.toList()));

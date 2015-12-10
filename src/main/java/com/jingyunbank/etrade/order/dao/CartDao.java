@@ -23,6 +23,8 @@ public interface CartDao{
 	
 	public void deleteByUID(String uid) throws Exception;
 	
+	public void deleteUserGoods(@Param(value="uid") String uid, @Param(value="gids") List<String> gids) throws Exception;
+	
 	public void update(GoodsInCartEntity goods) throws Exception ;
 
 	public GoodsInCartEntity selectOneGoods(@Param(value="uid") String uid, @Param(value="gid") String gid);
@@ -32,5 +34,7 @@ public interface CartDao{
 	public List<GoodsInCartEntity> selectAllByUID(String uid);
 	
 	public List<GoodsInCartEntity> selectAllByCartID(String cartID);
+
+	public int count(String uid);
 
 }

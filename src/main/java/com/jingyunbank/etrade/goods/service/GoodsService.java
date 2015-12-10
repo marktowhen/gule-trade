@@ -118,8 +118,11 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<ShowGoods> listRecommend() throws Exception {
-		List<ShowGoods> recommendlist = goodsDao.selectRecommend().stream().map(dao -> {
+	public List<ShowGoods> listRecommend(String from, String to) throws Exception {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("from", Integer.parseInt(from));
+		map.put("to", Integer.parseInt(to));
+		List<ShowGoods> recommendlist = goodsDao.selectRecommend(map).stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;

@@ -54,6 +54,16 @@ public class CartController {
 		CartVO cart = convert(goodsincart);
 		return Result.ok(cart);
 	}
+	
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/cart/goods/count",
+					method=RequestMethod.GET,
+					produces="application/json;charset=UTF-8")
+	public Result<Integer> count(HttpSession session) throws Exception{
+		String uid = ServletBox.getLoginUID(session);
+		int count = cartService.count(uid);
+		return Result.ok(count);
+	}
 
 	private CartVO convert(List<GoodsInCart> goodsincart) {
 		CartVO cart = new CartVO();

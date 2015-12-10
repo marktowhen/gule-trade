@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,8 +8,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -30,6 +33,24 @@ public class CashCouponService implements ICashCouponService{
 		
 		try {
 			return cashCouponDao.insert(getEntityFromBo(cashCoupon));
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
+		
+	}
+	
+	@Override
+	public boolean saveMuti(CashCoupon cashCoupon, Users manager, int amount) throws DataSavingException {
+		
+		try {
+			List<CashCouponEntity> list = new ArrayList<CashCouponEntity>();
+			for (int i = 0; i < amount; i++) {
+				CashCouponEntity entity = getEntityFromBo(cashCoupon);
+				entity.setID(KeyGen.uuid());
+				entity.setCode(String.valueOf(UniqueSequence.next18()));
+				list.add(entity);
+			}
+			return cashCouponDao.insertMuti(list);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}

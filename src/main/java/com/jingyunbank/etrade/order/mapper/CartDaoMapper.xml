@@ -48,6 +48,10 @@
 			uid = #{uid} and gid = #{gid}
 		limit 1
 	</select>
+	<select id="count" parameterType="String" resultType="Integer">
+		select count(id) from goods_in_cart 
+		where uid = #{uid}
+	</select>
 	<insert id="insertCart" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
 		insert into cart
 			(<include refid="cart_columns"/>)
@@ -86,5 +90,13 @@
 	</delete>
 	<delete id="deleteByUID" parameterType="String">
 		delete from goods_in_cart where uid = #{uid}
+	</delete>
+	<delete id="deleteUserGoods">
+		delete from goods_in_cart 
+		where uid = #{uid} 
+			and
+			gid in <foreach collection="gids" item="gid" open="(" separator="," close=")">
+				#{gid}
+			</foreach>
 	</delete>
 </mapper>

@@ -2,13 +2,35 @@ package com.jingyunbank.etrade.vip.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.vip.entity.CashCouponEntity;
 
 public interface CashCouponDao {
 
+	/**
+	 * 新增
+	 * @param CashCouponEntity entity
+	 * @return
+	 * @throws Exception
+	 * 2015年12月9日 qxs
+	 */
 	public boolean insert(CashCouponEntity entity) throws Exception;
 	
+	/**
+	 * 多个新增
+	 * @param List<CashCouponEntity> list
+	 * @return
+	 * 2015年12月9日 qxs
+	 */
+	public boolean insertMuti(@Param(value="list") List<CashCouponEntity> list);
 	
+	/**
+	 * 查询
+	 * @param entity
+	 * @return
+	 * 2015年12月9日 qxs
+	 */
 	public List<CashCouponEntity> selectList(CashCouponEntity entity); 
 	
 	
@@ -45,4 +67,7 @@ public interface CashCouponDao {
 	 * 2015年11月20日 qxs
 	 */
 	public CashCouponEntity selectSingle(String key);
+
+
+	
 }

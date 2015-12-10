@@ -267,17 +267,20 @@
 		LEFT JOIN goods_type p ON p.id = g.tid 
 		left join merchant mt on g.mid = mt.id
 		where 1=1 AND g.state=1
-		ORDER BY mt.admin_sort_num desc, g.volume DESC 
+		ORDER BY mt.admin_sort_num asc,mid, g.volume DESC 
 		 ]]>
 	</select>
 	<!-- 根据商品 推荐序号 查询 宝贝推荐的商品 -->
-	<select id="selectRecommend" resultMap="baseGoodsMap">
+	<select id="selectRecommend" parameterType="java.util.Map" resultMap="baseGoodsMap">
 	<![CDATA[	
 		SELECT g.id gid,g.name goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
+		,g.price,g.pro_flag,g.promotion_price,d.specifications
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
 		LEFT JOIN goods_img i ON i.gid = g.id
+		left join goods_detail d on g.id = d.gid
 		 WHERE g.record_sort <> 0 ORDER BY g.record_sort 
+		 limit #{from},#{to}
 		]]>
 	</select>
 	<!-- 判断sql -->

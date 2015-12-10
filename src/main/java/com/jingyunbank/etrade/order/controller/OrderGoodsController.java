@@ -90,7 +90,7 @@ public class OrderGoodsController {
 	 * @param oid
 	 * @return
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/{oid}/goods",method=RequestMethod.GET)
 	public Result<OrderGoodsVO> getOrderGoods(@PathVariable(value="oid") String oid){
 			Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);

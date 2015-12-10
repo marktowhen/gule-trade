@@ -23,6 +23,8 @@ public class FavoritesMerchantVO {
 	private MerchantVO merchantVO;
 	/** 商品信息 */
 	private List<CommonGoodsVO> goodsList;
+	/** id */
+	private String ID;
 	
 	public String getMID() {
 		return MID;
@@ -70,6 +72,7 @@ public class FavoritesMerchantVO {
 		this.goodsList = new ArrayList<CommonGoodsVO>();
 		FavoritesGoods goods = goodslist.get(0);
 		this.MID = goods.getMID();
+		this.ID = goods.getID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
 		this.goodsList = goodslist.stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
@@ -81,4 +84,11 @@ public class FavoritesMerchantVO {
 			return vo;
 		}).collect(Collectors.toList());
 	}
+	public String getID() {
+		return ID;
+	}
+	public void setID(String iD) {
+		ID = iD;
+	}
+	
 }

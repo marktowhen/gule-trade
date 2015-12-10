@@ -50,10 +50,17 @@ public interface TrackDao {
 	 */
 	public List<FavoritesGoodsVEntity> selectMerchantFavorites(Map<String,Object> map) throws Exception;
 	/**
+	 * 查询我的收藏数量
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectMerchantFavoritesCount(Map<String,Object> map) throws Exception;
+	/**
 	 * 删除我的收藏
 	 * @param id
 	 * @return
 	 * @throws Exception
 	 */
 	public boolean deleteFavoritesById(@Param("id") List<String> id) throws Exception;
+	
 }
