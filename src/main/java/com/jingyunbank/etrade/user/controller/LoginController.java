@@ -72,7 +72,7 @@ public class LoginController {
 			if(!users.getPassword().equalsIgnoreCase(MD5.digest(user.getPassword()))){
 				//记录错误次数
 				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
-				//return Result.fail("密码错误");
+				return Result.fail("密码错误");
 			}
 			//用户被锁
 			if(users.isLocked()){
