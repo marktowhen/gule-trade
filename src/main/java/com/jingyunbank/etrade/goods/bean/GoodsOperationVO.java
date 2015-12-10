@@ -72,6 +72,7 @@ public class GoodsOperationVO implements Serializable {
 	private String foodAdditives;//食品添加剂
 	private String specifications;//具体规格
 	private String functions;//功能及功效
+	private String ingredient; //成分含量
 	private String note;//注意事项
 	private String storageMethods;//储藏方法
 	private String isGiftBox;//是否礼盒装
@@ -387,6 +388,12 @@ public class GoodsOperationVO implements Serializable {
 	}
 	public void setRecordSort(int recordSort) {
 		this.recordSort = recordSort;
+	}
+	public String getIngredient() {
+		return ingredient;
+	}
+	public void setIngredient(String ingredient) {
+		this.ingredient = ingredient;
 	}
 	
 	

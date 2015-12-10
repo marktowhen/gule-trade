@@ -223,7 +223,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/merchant/list", method = RequestMethod.GET)
-	public Result getmerchants() throws Exception{
+	public Result<List<GoodsMerchantVO>> getmerchants() throws Exception{
 		List<GoodsMerchantVO> list =goodsOperationService.listMerchant().stream().map(bo -> {
 			GoodsMerchantVO vo = new GoodsMerchantVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -239,7 +239,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/brands/{mid}", method = RequestMethod.GET)
-	public Result getBrandByMid(@PathVariable String mid) throws Exception{
+	public Result<List<GoodsBrandVO>> getBrandByMid(@PathVariable String mid) throws Exception{
 		List<GoodsBrandVO> list = goodsOperationService.listBrandsByMid(mid).stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
 			BeanUtils.copyProperties(bo, vo);
