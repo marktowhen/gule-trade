@@ -1,5 +1,8 @@
 package com.jingyunbank.etrade.order.service;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,17 @@ public class OrderLogisticService implements IOrderLogisticService {
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
+	}
+
+	@Override
+	public Optional<OrderLogistic> single(String oid) {
+		OrderLogisticEntity entity = orderLogisticDao.selectOID(oid);
+		if(Objects.isNull(entity)){
+			return Optional.ofNullable(null);
+		}
+		OrderLogistic bo = new OrderLogistic();
+		BeanUtils.copyProperties(entity, bo);
+		return Optional.of(bo);
 	}
 
 }

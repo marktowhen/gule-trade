@@ -20,4 +20,10 @@
 			(<include refid="order_logistic_column"/>)
 		values (#{ID}, #{OID}, #{expressno}, #{expressName}, #{addtime}, #{typeCode}, #{typeName})
 	</insert>
+	<select id="selectOID" parameterType="String" resultMap="OrderLogisticEntityResultMap">
+		select <include refid="order_logistic_column"/>
+		from order_logistic
+		where oid = #{oid}
+		limit 1
+	</select>
 </mapper>

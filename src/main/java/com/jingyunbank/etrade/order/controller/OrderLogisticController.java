@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,7 @@ import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
+import com.jingyunbank.etrade.api.order.service.IOrderLogisticService;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
@@ -35,6 +37,8 @@ public class OrderLogisticController {
 	private IOrderContextService orderContextService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private IOrderLogisticService orderLogisticService;
 	
 	/**
 	 * 接受用户成功支付后的订单信息
@@ -42,7 +46,6 @@ public class OrderLogisticController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/accept", method=RequestMethod.PUT)
 	public Result<String> accept(@NotNull @Size(min=1) @RequestBody List<String> oids, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -61,7 +64,6 @@ public class OrderLogisticController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/logistic", method=RequestMethod.PUT)
 	public Result<String> dispatch(@Valid @RequestBody OrderLogisticVO logisticvo, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -103,6 +105,18 @@ public class OrderLogisticController {
 		}
 		return Result.ok();
 	}
+	
+	@RequestMapping(value="/api/orders/{oid}/logistic", method=RequestMethod.GET)
+	public Result<OrderLogisticVO> logistic(@PathVariable String oid) throws Exception{
+		Optional<OrderLogistic> candidateBo = orderLogisticService.single(oid);
+		if(!candidateBo.isPresent()){
+			return Result.ok();
+		}
+		OrderLogisticVO vo = new OrderLogisticVO();
+		BeanUtils.copyProperties(candidateBo.get(), vo);
+		return Result.ok(vo);
+	}
+	
 	private static class OIDsWithTradePWDVO{
 		@NotNull @Size(min=1) 
 		private List<String> oids;

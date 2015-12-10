@@ -27,6 +27,13 @@ public interface OrderDao{
 			@Param("keywords") String keywords,
 			@Param("from") long from, 
 			@Param("size") int size);
+	public List<OrderEntity> selectmWithCondition(
+			@Param("mid") String mid, 
+			@Param("statuscode") String statuscode,
+			@Param("fromdate") String fromdate,
+			@Param("keywords") String keywords,
+			@Param("from") long from, 
+			@Param("size") int size);
 	
 	public void delete(String id) throws Exception;
 

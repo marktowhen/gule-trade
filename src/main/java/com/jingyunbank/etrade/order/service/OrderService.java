@@ -189,6 +189,20 @@ public class OrderService implements IOrderService{
 				}).collect(Collectors.toList());
 	}
 
-	
+	@Override
+	public List<Orders> listm(String mid, String statuscode, String fromdate,
+			String keywords, Range range) {
+		return orderDao.selectmWithCondition(mid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo, "goods");
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						BeanUtils.copyProperties(ge, og);
+						bo.getGoods().add(og);
+					});
+					return bo;
+				}).collect(Collectors.toList());
+	}
 
 }
