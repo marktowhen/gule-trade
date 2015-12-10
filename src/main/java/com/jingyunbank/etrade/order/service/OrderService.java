@@ -189,6 +189,11 @@ public class OrderService implements IOrderService{
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public Integer getAmount(String uid, String statuscode, String fromdate, String keywords) {
+		return orderDao.selectCount(uid, statuscode, fromdate, keywords);
+	}
+
 	
 
 }
