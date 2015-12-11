@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.FileStorageException;
 import com.jingyunbank.etrade.api.resource.service.IStoreService;
+import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.resource.entity.UeditorImg;
 
 @RestController
@@ -64,7 +67,6 @@ public class ResourceController {
 		String url = storeService.store(fname, contents);
 		
 		System.out.println(url);
-		
 		/*
 		 * 上传返回格式
 		 * "{'original':'1.jpg','state':'SUCCESS','title':'1.jpg','url':'D:/img/1.jpg'}";
@@ -87,9 +89,9 @@ public class ResourceController {
 		response.setContentType("application/json");      
 		response.setHeader("Content-Type" , "text/html");
 		//config.json 文件位置~
-		String rootPath = "E:\\etrade-ui\\jingyun-etrade-back-ui\\bower_components\\config.json";
+		String rootPath =Class.class.getClass().getResource("/com/jingyunbank/etrade/resource/controller/config.json").getPath();
+		//System.err.println(rootPath);
 		String callbackName = request.getParameter("callback");
-		rootPath= rootPath.replace("\\", "/");
 		StringBuilder builder = new StringBuilder();
 		try {
 			InputStreamReader reader = new InputStreamReader( new FileInputStream(rootPath), "UTF-8" );
@@ -104,12 +106,9 @@ public class ResourceController {
 		}
 		String configContent = this.filter( builder.toString() );
 		
-		ObjectMapper mapper = new ObjectMapper();
-		Object jsonConfig = mapper.readValue(configContent, Object.class);
-
-		//JSONObject jsonConfig = new JSONObject( configContent );
-		System.err.println(jsonConfig);
-		String exec = callbackName+"("+jsonConfig.toString()+");";
+		configContent = configContent.replaceAll(" ", "");
+		//System.err.println(configContent);
+		String exec = callbackName+"("+configContent.toString()+");";
 		PrintWriter writer = response.getWriter();
 		writer.write(exec);
         writer.flush();
