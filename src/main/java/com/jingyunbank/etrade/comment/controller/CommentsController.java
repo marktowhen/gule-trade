@@ -101,7 +101,7 @@ public class CommentsController {
 	 * @param session
 	 * @return
 	 */
-	@AuthBeforeOperation
+	
 	@RequestMapping(value="/api/comments/getbygid",method=RequestMethod.GET)
 	@ResponseBody
 	public Result<List<CommentsVO>> getComments(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
@@ -119,7 +119,7 @@ public class CommentsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
+
 	@RequestMapping(value="/api/comments/grades",method=RequestMethod.GET)
 	@ResponseBody
 	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,HttpServletRequest request,HttpSession session) throws Exception{
