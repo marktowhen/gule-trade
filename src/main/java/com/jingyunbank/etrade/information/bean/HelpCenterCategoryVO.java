@@ -2,6 +2,11 @@ package com.jingyunbank.etrade.information.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 /**
  * 帮助中心 类别
  * 
@@ -15,10 +20,13 @@ public class HelpCenterCategoryVO implements Serializable {
 	
 	private String ID;
 	//名称
+	@NotEmpty
+	@Size(min=1,max=40)
 	private String name;
 	//是否有效
 	private boolean valid;
 	//排序
+	@Min(value=1)
 	private int sort;
 	//添加时间
 	private Date addTime;

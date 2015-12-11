@@ -42,11 +42,11 @@
 				where id=#{ID}		
 		</update>
 		
-		<select id="selectValidList">
+		<select id="selectValidList" resultMap="HelpCenterCategoryResultMap">
 			select <include refid="base_column_list"/> from help_center_category where valid=true order by sort
 		</select>
 		
-		<select id="selectSingle">
+		<select id="selectSingle" resultMap="HelpCenterCategoryResultMap">
 			select <include refid="base_column_list"/> from help_center_category where id=#{ID}
 		</select>
 		

@@ -31,7 +31,7 @@ public interface HelpCenterCategoryDao {
 	 * @return
 	 * 2015年12月10日 qxs
 	 */
-	public boolean updateValid(@Param(value="ID")String ID, boolean valid) throws Exception;
+	public boolean updateValid(@Param(value="ID")String ID,@Param(value="valid") boolean valid) throws Exception;
 	
 	/**
 	 * 查询有效的

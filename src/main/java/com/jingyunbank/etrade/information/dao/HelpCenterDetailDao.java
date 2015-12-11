@@ -31,14 +31,14 @@ public interface HelpCenterDetailDao {
 	 * @return
 	 * 2015年12月10日 qxs
 	 */
-	public boolean updateValid(@Param(value="ID")String ID, boolean valid) throws Exception;
+	public boolean updateValid(@Param(value="ID")String ID, @Param(value="valid") boolean valid) throws Exception;
 	
 	/**
 	 * 查询有效的
 	 * @return
 	 * 2015年12月10日 qxs
 	 */
-	public List<HelpCenterDetailEntity> selectValidList() ;
+	public List<HelpCenterDetailEntity> selectValidList(String categoryID) ;
 	
 	/**
 	 * 查询单个

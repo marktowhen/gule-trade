@@ -43,11 +43,11 @@
 				where id=#{ID}		
 		</update>
 		
-		<select id="selectValidList">
-			select <include refid="list_column"/> from help_center_detail where valid=true order by sort
+		<select id="selectValidList" resultMap="HelpCenterDetailResultMap">
+			select <include refid="list_column"/> from help_center_detail where parent_id =#{categoryID} and valid=true  order by sort
 		</select>
 		
-		<select id="selectSingle">
+		<select id="selectSingle" resultMap="HelpCenterDetailResultMap">
 			select <include refid="detail_column_list"/> from help_center_detail where id=#{ID}
 		</select>
 		

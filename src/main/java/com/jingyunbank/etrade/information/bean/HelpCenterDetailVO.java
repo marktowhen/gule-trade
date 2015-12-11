@@ -3,6 +3,11 @@ package com.jingyunbank.etrade.information.bean;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class HelpCenterDetailVO implements Serializable {
 
 	
@@ -12,14 +17,19 @@ public class HelpCenterDetailVO implements Serializable {
 	private static final long serialVersionUID = 4165205781518992976L;
 	private String ID;
 	//父级菜单id
+	@NotEmpty
 	private String parentID;
 	//名称
+	@NotEmpty
+	@Size(min=1, max=40)
 	private String name;
 	//内容
+	@NotEmpty
 	private String content;
 	//是否有效
 	private boolean valid;
 	//排序
+	@Min(value=1)
 	private int sort;
 	//添加时间
 	private Date addTime;

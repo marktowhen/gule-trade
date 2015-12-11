@@ -32,8 +32,8 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 
 	@Override
-	public List<HelpCenterDetail> listAllValid() {
-		return helpCenterDetailDao.selectValidList().stream()
+	public List<HelpCenterDetail> listAllValid(String categoryID) {
+		return helpCenterDetailDao.selectValidList(categoryID).stream()
 			.map( entity->{
 						return getBoFromEntity(entity);
 					}).collect(Collectors.toList());
