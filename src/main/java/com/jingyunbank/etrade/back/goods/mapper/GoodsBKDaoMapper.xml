@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.back.goods.dao.GoodsBKDao">
+	<!-- 封装商品信息Map -->
+	<resultMap type="com.jingyunbank.etrade.back.goods.entity.GoodsListEntity"
+		id="baseGoodsMap">
+		<!-- 商品概要信息 -->
+		<result column="gid" property="GID" />
+		<result column="goodsname" property="goodsName" />
+		<result column="CODE" property="goodsCode" />
+		<result column="price" property="price" />
+		<result column="promotion_price" property="promotionPrice" />
+		<result column="nowprice" property="nowPrice" />
+		<result column="counts" property="count" />
+		<result column="volume" property="volume" />
+		<result column="addtime" property="addTime" />
+		<result column="pro_flag" property="pro_flag" />
+		<result column="pro_start" property="pro_start" />
+		<result column="pro_end" property="pro_end" />
+		<result column="up_time" property="upTime" />
+		<result column="down_time" property="downTime" />
+		<result column="postage" property="postage" />
+		<result column="subvolumeType" property="subVolumeType" />
+		<result column="barvode" property="barCode" />
+		<result column="goodsdesc" property="goodsDesc" />
+		<result column="goodstitle" property="goodsTitle" />
+		<result column="state" property="state" />
+		<result column="comment" property="comment" />
+		<!-- 详细信息 -->
+		<result column="standard_no" property="standardNo" />
+		<result column="shelf_life" property="shelfLife" />
+		<result column="approve_no" property="approveNo" />
+		<result column="usages" property="usage" />
+		<result column="commended_user" property="commendedUser" />
+		<result column="not_commended_user" property="notCommendedUser" />
+		<result column="ingredients" property="ingredients" />
+		<result column="food_additives" property="foodAdditives" />
+		<result column="specifications" property="specifications" />
+		<result column="ingredient" property="ingredient" />
+		<result column="functions" property="functions" />
+		<result column="note" property="note" />
+		<result column="storage_methods" property="storageMethods" />
+		<result column="is_gift_box" property="isGiftBox" />
+		<result column="production_date" property="productionDate" />
+		<result column="weight" property="weight" />
+		<result column="unit" property="unit" />
+		<result column="factoryname" property="factoryName" />
+		<result column="factoryaddr" property="factoryAddr" />
+		<result column="factorytel" property="factoryTel" />
+		<!-- 商品图片信息 -->
+		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_2" property="thumb_path_2" />
+		<result column="thumb_path_3" property="thumb_path_3" />
+		<result column="thumb_path_4" property="thumb_path_4" />
+		<result column="thumb_path_5" property="thumb_path_5" />
+		<result column="content" property="content" />
+		<!-- 店铺信息 -->
+		<result column="mid" property="MID" />
+		<result column="merchantname" property="merchantName" />
+		<result column="merchantdesc" property="merchantDesc" />
+		<result column="merchantimg" property="merchantImg" />
+		<!-- 品牌信息 -->
+		<result column="bid" property="BID" />
+		<result column="brandname" property="brandName" />
+		<result column="branddesc" property="brandDesc" />
+		<!--类型信息 -->
+		<result column="tid" property="TID" />
+		<result column="typename" property="typeName" />
+	</resultMap>
+	<!-- 根据名称like查询商品 -->
+	<!-- 商品概要信息查询字段 用于多条件搜索和商品展示 -->
+	<sql id="commentGoods">
+		g.id gid, g.name goodsname,g.title goodstitle,d.weight weight,d.unit unit,g.price price ,
+		g.promotion_price promotion_price,
+		g.price,
+		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
+		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end
+	</sql>
+	<select id="selectGoodsByCondition" parameterType="java.util.Map"
+		resultMap="baseGoodsMap">
+		SELECT
+		<include refid="commentGoods" />
+		FROM GOODS g
+		LEFT JOIN goods_detail d ON g.id=d.gid
+		LEFT JOIN goods_img i ON g.id = i.gid
+		WHERE 1 = 1 AND g.state=#{state}  
+		AND g.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		LIMIT #{from} , #{size}
+	</select>
+</mapper>
