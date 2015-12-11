@@ -10,15 +10,15 @@ public class CommentsEntity {
 	private String OID;
 	private String replyUID;//对于评论进行回复的人
 	private String GID;
-	private String ImgID;
 	private String replyComment;//回复人回复的内容
 	private String goodsComment;//商品的评价
 	private int commentGrade;//商品评价的等级
 	private String goodsService;//商品的服务
 	private int serviceGrade;//服务级别
+	private int logisticsGrade;//服务级别
 	private Date addtime;//添加评价的时间
 	private int commentStatus;//评价的是否的状态
-	private int orders;
+	private int sort;
 	private UserVO userVO; 
 	
 	
@@ -54,12 +54,6 @@ public class CommentsEntity {
 		this.replyUID = replyUID;
 	}
 	
-	public String getImgID() {
-		return ImgID;
-	}
-	public void setImgID(String imgID) {
-		ImgID = imgID;
-	}
 	public Date getAddtime() {
 		return addtime;
 	}
@@ -97,12 +91,6 @@ public class CommentsEntity {
 	public void setCommentStatus(int commentStatus) {
 		this.commentStatus = commentStatus;
 	}
-	public int getOrders() {
-		return orders;
-	}
-	public void setOrders(int orders) {
-		this.orders = orders;
-	}
 	public String getGID() {
 		return GID;
 	}
@@ -114,6 +102,18 @@ public class CommentsEntity {
 	}
 	public void setReplyComment(String replyComment) {
 		this.replyComment = replyComment;
+	}
+	public int getLogisticsGrade() {
+		return logisticsGrade;
+	}
+	public void setLogisticsGrade(int logisticsGrade) {
+		this.logisticsGrade = logisticsGrade;
+	}
+	public int getSort() {
+		return sort;
+	}
+	public void setSort(int sort) {
+		this.sort = sort;
 	}
 	
 	

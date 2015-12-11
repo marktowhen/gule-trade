@@ -46,4 +46,10 @@
 			#{oid}
 		</foreach>
 	</update>
+	<!-- <update id="updateGoodStatus">
+		update order_goods og
+		set og.status_code = #{status.code}
+		where og.oid = #{OID}
+		
+	</update> -->
 </mapper>

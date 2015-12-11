@@ -10,25 +10,25 @@
 			<result column="oid" property="OID" jdbcType="CHAR"/>
 			<result column="reply_uid" property="replyUID"/>
 			<result column="gid" property="GID" jdbcType="CHAR"/>
-			<result column="imgid" property="ImgID" jdbcType="CHAR"/>
 			<result column="reply_comment" property="replyComment"/>
 			<result column="goods_comment" property="goodsComment" javaType="String" />
 			<result column="comment_grade" property="commentGrade"/>
 			<result column="goods_service" property="goodsService" jdbcType="VARCHAR"/>
 			<result column="service_grade" property="serviceGrade" jdbcType="INTEGER"/>
+			<result column="logistics_grade" property="logisticsGrade" />
 			<result column="addtime" property="addtime" javaType="java.util.Date"/>
-			<result column="comment_status" property="commentStatus" jdbcType="INTEGER"/>
-			<result column="orders" property="orders" jdbcType="INTEGER"/>
+			<result column="status" property="commentStatus" jdbcType="INTEGER"/>
+			<result column="sort" property="sort" jdbcType="INTEGER"/>
 		</resultMap>
 		<sql id="comment_list">
-			id,uid,oid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
+			id,uid,oid,reply_uid,gid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,logistics_grade,addtime,status,sort
 		</sql>
 		<!-- 添加评价的信息 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.comment.entity.CommentsEntity">
 		insert into comment(
-			id,uid,oid,reply_uid,gid,imgid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,addtime,comment_status,orders
+			id,uid,oid,reply_uid,gid,reply_comment,goods_comment,comment_grade,goods_service,service_grade,logistics_grade,addtime,status,sort
 		)values(
-			#{ID},#{UID},#{OID},#{replyUID},#{GID},#{ImgID},#{replyComment},#{goodsComment},#{commentGrade},#{goodsService},#{serviceGrade},#{addtime},#{commentStatus},#{orders}
+			#{ID},#{UID},#{OID},#{replyUID},#{GID},#{replyComment},#{goodsComment},#{commentGrade},#{goodsService},#{serviceGrade},#{logisticsGrade},#{addtime},#{commentStatus},#{sort}
 		)
 		</insert>
 		<!-- 通过gid查询评论信息，多条 -->
@@ -36,7 +36,7 @@
 		   select 
 		   <include refid="comment_list"></include>
 		   from comment where gid=#{GID}
-		   order by addtime desc,orders desc
+		   order by addtime desc,sort desc
 		</select>
 		<!-- 通过gid和评论级别查询评论信息，多条 -->
 		<select id="selectCommentGradeByGid" resultMap="ResultMap">
@@ -53,7 +53,7 @@
 		   			and comment_grade &lt;6
 		   		</if>
 		   
-		   order by addtime desc,orders desc
+		   order by addtime desc,sort desc
 		</select>
 		<!-- 通过id查询出评论信息 -->
 		<select id="selectById" parameterType="String" resultMap="ResultMap">
@@ -66,7 +66,7 @@
 		</delete>
 		<!-- 修改评价的状态 -->
 		<update id="updateStatus" parameterType="com.jingyunbank.etrade.comment.entity.CommentsEntity">
-			update comment c set c.comment_status=#{commentStatus}
+			update comment c set c.status=#{commentStatus}
 			where id=#{ID}
 		</update>
 		<!-- 通过oid查出产品判断状态 -->

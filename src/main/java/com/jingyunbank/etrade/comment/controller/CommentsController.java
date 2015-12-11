@@ -29,6 +29,7 @@ import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentImgService;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -66,7 +67,6 @@ public class CommentsController {
 	@ResponseBody
 	public Result saveComments(@RequestParam("oid") String oid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
 		commentVO.setID(KeyGen.uuid());
-		commentVO.setImgID(KeyGen.uuid());
 		Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 		OrderGoods	orderGoods =optional.get();
 		commentVO.setGID(orderGoods.getGID());
@@ -80,14 +80,16 @@ public class CommentsController {
 
 		if(commentService.save(comments)){
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
-			for (int i=0;i<commentVO.getPicture().size();i++){
+			/*for (int i=0;i<commentVO.getPicture().size();i++){
 				CommentsImg commentsImg=new CommentsImg();
 				commentsImg.setID(KeyGen.uuid());
 				commentsImg.setPicture(commentVO.getPicture().get(i));
-				commentsImg.setImgID(commentVO.getImgID());
+				commentsImg.setCommentID(commentVO.getID());;
 				
 				commentImgService.save(commentsImg);
-				}
+				}*/
+			/*orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);*/
+			
 			return Result.ok("保存成功");
 			}
 		return Result.fail("保存失败！");
@@ -141,7 +143,7 @@ public class CommentsController {
 			BeanUtils.copyProperties(userInfo, userinfoVO);
 			commentsVO.setUserVO(userVO);
 			commentsVO.setUserInfoVO(userinfoVO);
-			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getImgID());
+			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getID());
 			commentsVO.setImgs(commentsImgs);
 			commentVOs.add(commentsVO);
 		}
@@ -171,7 +173,7 @@ public class CommentsController {
 		for(int i=0;i<comments.size();i++){
 			CommentsVO commentsVO=new CommentsVO();
 			BeanUtils.copyProperties(comments.get(i),commentsVO);
-			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getImgID());
+			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getID());
 			commentsVO.setImgs(commentsImgs);
 			/*for(int j=0;j<commentsImgs.size();j++){
 				CommentsImgVO vo = new CommentsImgVO();
@@ -198,7 +200,7 @@ public class CommentsController {
 		CommentsVO commentsVO=new CommentsVO();
 		BeanUtils.copyProperties(comments.get(), commentsVO);
 		if(commentsVO.getUID().equals(uid)){
-			commentImgService.remove(commentsVO.getImgID());
+			commentImgService.remove(commentsVO.getID());
 			commentService.remove(id);
 			return Result.ok("删除成功");
 		}
@@ -237,7 +239,6 @@ public class CommentsController {
 	 * @param gid
 	 * @return
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/goods/grade",method=RequestMethod.GET)
 	public Result<CommentsVO> getGoodsGrade(@RequestParam(value="gid") String gid){
 		int gradeCount=0;
@@ -252,8 +253,7 @@ public class CommentsController {
 		commentsVO.setAllLevel(allLevel);
 		commentsVO.setPersonCount(personCount);
 		commentsVO.setZongjibie(zongjibie);
-		return Result.ok(commentsVO);
-		
+		return Result.ok(commentsVO);	
 		
 	}
 	

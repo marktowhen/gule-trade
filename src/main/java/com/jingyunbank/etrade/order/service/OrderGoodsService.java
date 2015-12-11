@@ -73,5 +73,13 @@ public class OrderGoodsService implements IOrderGoodsService {
 			throw new DataRefreshingException(e);
 		}
 	}
+	/*@Override
+	public void refreshGoodStatus(String oid, OrderStatusDesc status) throws DataRefreshingException{
+		try {
+			orderGoodsDao.updateGoodStatus(oid, status);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}*/
 
 }
