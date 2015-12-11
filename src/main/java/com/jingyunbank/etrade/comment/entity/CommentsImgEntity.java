@@ -2,7 +2,7 @@ package com.jingyunbank.etrade.comment.entity;
 
 public class CommentsImgEntity {
 	private String ID;
-	private String ImgID;
+	private String commentID;
 	private String picture;
 	
 	public String getID() {
@@ -11,11 +11,11 @@ public class CommentsImgEntity {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getImgID() {
-		return ImgID;
+	public String getCommentID() {
+		return commentID;
 	}
-	public void setImgID(String imgID) {
-		ImgID = imgID;
+	public void setCommentID(String commentID) {
+		this.commentID = commentID;
 	}
 	public String getPicture() {
 		return picture;

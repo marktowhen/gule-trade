@@ -17,4 +17,7 @@ public interface OrderGoodsDao {
 	public OrderGoodsEntity selectByGID(@Param(value="OID") String oid);
 
 	public void updateStatus(@Param("oids") List<String> oids, @Param("status") OrderStatusDesc status) throws Exception;
+	
+	/*public void updateGoodStatus(@Param("OID") String oids, @Param("status") OrderStatusDesc status) throws Exception;*/
+
 }

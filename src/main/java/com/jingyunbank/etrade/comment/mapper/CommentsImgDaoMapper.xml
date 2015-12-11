@@ -5,23 +5,23 @@
 	<mapper namespace="com.jingyunbank.etrade.comment.dao.CommentsImgDao">
 	<resultMap type="com.jingyunbank.etrade.comment.entity.CommentsImgEntity" id="ResultMap">
 		<id column="id" property="ID"/>
-		<result column="imgid" property="ImgID"/>
+		<result column="comment_id" property="commentID"/>
 		<result column="picture" property="picture"/>
 	</resultMap>
 	<insert id="insert" parameterType="com.jingyunbank.etrade.comment.entity.CommentsImgEntity">
 		insert into comment_img(
-		id,imgid,picture
+		id,comment_id,picture
 		)values(
-		#{ID},#{ImgID},#{picture}
+		#{ID},#{commentID},#{picture}
 		)
 	</insert>
 	<select id="selectById" resultMap="ResultMap" parameterType="String">
-		select id,imgid,picture from comment_img where imgid=#{ImgID}
+		select id,comment_id,picture from comment_img where comment_id=#{commentID}
 	</select>
 	<select id="selectImg" resultMap="ResultMap">
-	select id,imgid,picture from comment_img
+	select id,comment_id,picture from comment_img
 	</select>
 	<delete id="delete" parameterType="String">
-		delete from comment_img where imgid=#{ImgID}
+		delete from comment_img where comment_id=#{comment_id}
 	</delete>
 	</mapper>
