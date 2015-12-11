@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.information.bo.HelpCenterCategory;
 import com.jingyunbank.etrade.api.information.service.IHelpCenterCategoryService;
 import com.jingyunbank.etrade.information.bean.HelpCenterCategoryVO;
@@ -41,7 +40,7 @@ public class HelpCenterCategoryController {
 	 * @throws Exception
 	 * 2015年12月11日 qxs
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/" , method=RequestMethod.POST)
 	public Result<String> save(HttpServletRequest request, @RequestBody @Valid HelpCenterCategoryVO vo , BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -67,7 +66,7 @@ public class HelpCenterCategoryController {
 	 * @throws Exception
 	 * 2015年12月11日 qxs
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/{id}" , method=RequestMethod.PUT)
 	public Result<String> refresh(HttpServletRequest request,@PathVariable String id,@RequestBody @Valid HelpCenterCategoryVO vo , BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -89,7 +88,7 @@ public class HelpCenterCategoryController {
 	 * @throws Exception
 	 * 2015年12月11日 qxs
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/{id}" , method=RequestMethod.DELETE)
 	public Result<String> remove(HttpServletRequest request,@PathVariable String id) throws Exception{
 		helpCenterCategoryService.remove(id);
