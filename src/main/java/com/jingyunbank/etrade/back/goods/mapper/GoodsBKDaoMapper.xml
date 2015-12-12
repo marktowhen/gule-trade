@@ -74,9 +74,9 @@
 	<sql id="commentGoods">
 		g.id gid, g.name goodsname,g.title goodstitle,d.weight weight,d.unit unit,g.price price ,
 		g.promotion_price promotion_price,
-		g.price,
+		g.price,g.state as state,
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
-		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end
+		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,b.name as brandname,mt.merchant_name as merchantname
 	</sql>
 	<select id="selectGoodsByCondition" parameterType="java.util.Map"
 		resultMap="baseGoodsMap">
@@ -85,6 +85,8 @@
 		FROM GOODS g
 		LEFT JOIN goods_detail d ON g.id=d.gid
 		LEFT JOIN goods_img i ON g.id = i.gid
+		LEFT JOIN goods_brand b ON b.id=g.bid
+		left join merchant mt on g.mid = mt.id
 		WHERE 1 = 1 AND g.state=#{state}  
 		AND g.name LIKE CONCAT(CONCAT('%', #{name}), '%')
 		LIMIT #{from} , #{size}
