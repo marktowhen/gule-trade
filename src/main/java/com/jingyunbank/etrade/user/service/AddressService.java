@@ -12,9 +12,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.Range;
-import com.jingyunbank.core.KeyGen;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.user.dao.AddressDao;
@@ -31,7 +30,7 @@ public class AddressService implements IAddressService{
 		boolean result = false;
 		AddressEntity addressEntity=new AddressEntity();
 		BeanUtils.copyProperties(address, addressEntity);
-		addressEntity.setID(KeyGen.uuid());
+		
 		addressEntity.setValid(true);
 		try {
 			result = addressDao.insert(addressEntity);
