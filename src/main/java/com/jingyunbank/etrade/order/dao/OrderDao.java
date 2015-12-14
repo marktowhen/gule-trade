@@ -45,6 +45,8 @@ public interface OrderDao{
 
 	public List<OrderEntity> selectByOIDs(@Param("oids") List<String> oids);
 	
+	public void updateOrderStatus(@Param("ID") String id,@Param("status") OrderStatusDesc status) throws Exception;
+	
 	public int selectCount(
 			@Param("uid") String uid, 
 			@Param("statuscode") String statuscode,

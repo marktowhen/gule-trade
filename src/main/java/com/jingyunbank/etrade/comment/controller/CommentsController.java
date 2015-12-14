@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
@@ -31,6 +32,7 @@ import com.jingyunbank.etrade.api.comment.service.ICommentService;
 import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
+import com.jingyunbank.etrade.api.order.service.IOrderService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
@@ -53,6 +55,8 @@ public class CommentsController {
 	private IUserInfoService userInfoService;
 	@Autowired
 	private IOrderGoodsService orderGoodsService;
+	@Autowired
+	private IOrderService orderService;
 	/**
 	 * 保存商品的评论信息和对应的多张图片
 	 * @param commentVO
@@ -70,7 +74,7 @@ public class CommentsController {
 		Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 		OrderGoods	orderGoods =optional.get();
 		commentVO.setGID(orderGoods.getGID());
-		commentVO.setOID(oid);
+		commentVO.setOID(orderGoods.getOID());
 		String id = ServletBox.getLoginUID(request);
 		commentVO.setUID(id);
 		commentVO.setAddtime(new Date());
@@ -80,38 +84,28 @@ public class CommentsController {
 
 		if(commentService.save(comments)){
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
-			/*for (int i=0;i<commentVO.getPicture().size();i++){
+			/*for (int i=0;i<commentVO.getPicture().size();i++){*/
 				CommentsImg commentsImg=new CommentsImg();
 				commentsImg.setID(KeyGen.uuid());
-				commentsImg.setPicture(commentVO.getPicture().get(i));
+				commentsImg.setPicture(commentVO.getImgPath());
 				commentsImg.setCommentID(commentVO.getID());;
 				
 				commentImgService.save(commentsImg);
-				}*/
-			/*orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);*/
-			
+			/*	}*/
+				//修改订单商品的状态
+				orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);
+			//修改订单的状态
+			if(orderGoodsService.getByOID(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
+				orderService.refreshOrderStatus(orderGoods.getOID(), OrderStatusDesc.COMMENTED);
+			}
 			return Result.ok("保存成功");
 			}
 		return Result.fail("保存失败！");
 	}
-	/**
-	 * 测试通过产品的id查出所有的评论信息
-	 * @param gid
-	 * @param request
-	 * @param session
-	 * @return
-	 */
 	
-	@RequestMapping(value="/api/comments/getbygid",method=RequestMethod.GET)
-	@ResponseBody
-	public Result<List<CommentsVO>> getComments(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
-		List<Comments> comments=commentService.getCommentsByGid(gid);
-		List<CommentsVO> commentVOs=convert(comments);
-		return Result.ok(commentVOs);
-		
-		}
+	
 	/**
-	 * 得到评论信息的级别
+	 * 测试通过产品的id查出所有的评论信息，得到评论信息的级别(好评，中评，差评)
 	 * @param gid
 	 * @param commentGrade
 	 * @param request
@@ -122,8 +116,11 @@ public class CommentsController {
 
 	@RequestMapping(value="/api/comments/grades",method=RequestMethod.GET)
 	@ResponseBody
-	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,HttpServletRequest request,HttpSession session) throws Exception{
-		List<Comments> comments=commentService.selectCommentGradeByGid(gid,commentGrade);
+	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,@RequestParam("from") int from,@RequestParam("size") int size,HttpServletRequest request,HttpSession session) throws Exception{
+		Range range = new Range();
+		range.setFrom(from);
+		range.setTo(from+size);
+		List<Comments> comments=commentService.selectCommentGradeByGid(gid,commentGrade,range);
 		List<CommentsVO> commentVOs=convert(comments);
 		return Result.ok(commentVOs);
 		
@@ -235,7 +232,7 @@ public class CommentsController {
 		
 	}
 	/**
-	 * 通过gid查出评论的总级别
+	 * 通过gid查出评论商品的总级别
 	 * @param gid
 	 * @return
 	 */
@@ -256,5 +253,30 @@ public class CommentsController {
 		return Result.ok(commentsVO);	
 		
 	}
-	
+	/**
+	 * 通过gid查出评论商品，评论服务，评论物流结合的总级别
+	 * @param gid
+	 * @return
+	 */
+	@RequestMapping(value="/api/comments/overall/grade",method=RequestMethod.GET)
+	public Result<CommentsVO> getGrade(@RequestParam(value="gid") String gid){
+		int goodsCount=0;
+		int serviceCount=0;
+		int logisticsCount=0;
+		List<Comments> comments=commentService.getCommentsByGid(gid);
+		int personCount=commentService.commentCount(gid);
+		for (int i=0;i<comments.size();i++) {
+			goodsCount+=comments.get(i).getCommentGrade();
+			serviceCount+=comments.get(i).getServiceGrade();
+			logisticsCount+=comments.get(i).getLogisticsGrade();	
+		}
+		float level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
+		int levelGrade=(int)level*10;
+		CommentsVO commentsVO=new CommentsVO();
+		commentsVO.setLevel(level);
+		commentsVO.setPersonCount(personCount);
+		commentsVO.setLevelGrade(levelGrade);
+		return Result.ok(commentsVO);	
+		
+	}
 }

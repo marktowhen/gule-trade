@@ -25,16 +25,38 @@ public class CommentsVO {
 	private Date addtime;//添加评价的时间
 	private int commentStatus;//评价的是否的状态
 	private int sort;//按其排序
-	private float zongjibie;//总级别
+	private float zongjibie;//评论商品总级别
 	private int personCount;//评论的总人数
-	private int allLevel;
+	private int allLevel;//评论商品总级别
 	private UserVO userVO; 
+	private float level;//所有评论的总级别
+	private int levelGrade;//所有评论的总级别
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
 	private List<String> picture;
+	private String imgPath;
 	
 	
 	
+	
+	public float getLevel() {
+		return level;
+	}
+	public void setLevel(float level) {
+		this.level = level;
+	}
+	public int getLevelGrade() {
+		return levelGrade;
+	}
+	public void setLevelGrade(int levelGrade) {
+		this.levelGrade = levelGrade;
+	}
+	public String getImgPath() {
+		return imgPath;
+	}
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
+	}
 	public int getAllLevel() {
 		return allLevel;
 	}

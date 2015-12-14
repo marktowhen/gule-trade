@@ -29,30 +29,36 @@
 				#{g.addtime}, #{g.statusCode}, #{g.price}, #{g.payout}, #{g.reduce}, #{g.count})
 			</foreach>
 	</insert>
-	<select id="selectByUID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
+	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">
 		select <include refid="order_goods_column"/> 
 		from order_goods og
 		<!--  left join goods_img img on og.gid = img.gid -->  <!--  and #{status}  -->
 		where og.uid = #{UID} and og.status_code= #{status.code}  order by og.addtime desc
+		
 	</select>
-	<select id="selectByGID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
+	<select id="selectByID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
 		select <include refid="order_goods_column"/> 
 		from order_goods og
 		<!--  left join goods_img img on og.gid = img.gid -->  
-		where og.oid = #{OID}
+		where og.id = #{ID}
 	</select>
-	<update id="updateStatus">
+	<!-- <update id="updateStatus">
 		update order_goods og
 		set og.status_code = #{status.code}
 		where og.oid in 
 		<foreach collection="oids" item="oid" open="(" separator="," close=")">
 			#{oid}
 		</foreach>
-	</update>
-	<!-- <update id="updateGoodStatus">
+	</update> -->
+	<update id="updateGoodStatus">
 		update order_goods og
 		set og.status_code = #{status.code}
-		where og.oid = #{OID}
-		
-	</update> -->
+		where og.id = #{ID}
+	</update>
+	<select id="getByOID" resultType="int">
+		select count(id)
+		from order_goods og
+		<!--  left join goods_img img on og.gid = img.gid -->  <!--  and #{status}  -->
+		where og.oid = #{OID} and og.status_code= #{status.code}
+	</select>
 </mapper>

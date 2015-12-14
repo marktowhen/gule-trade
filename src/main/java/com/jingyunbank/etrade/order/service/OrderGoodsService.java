@@ -58,9 +58,9 @@ public class OrderGoodsService implements IOrderGoodsService {
 	 * @return
 	 */
 	@Override
-	public Optional<OrderGoods> singleOrderGoods(String oid) {
+	public Optional<OrderGoods> singleOrderGoods(String id) {
 		OrderGoods orderGoods = new OrderGoods(); 
-		OrderGoodsEntity orderGoodsEntity =	orderGoodsDao.selectByGID(oid);
+		OrderGoodsEntity orderGoodsEntity =	orderGoodsDao.selectByID(id);
 		BeanUtils.copyProperties(orderGoodsEntity, orderGoods);
 		return Optional.of(orderGoods);
 	}
@@ -73,13 +73,21 @@ public class OrderGoodsService implements IOrderGoodsService {
 			throw new DataRefreshingException(e);
 		}
 	}
-	/*@Override
-	public void refreshGoodStatus(String oid, OrderStatusDesc status) throws DataRefreshingException{
+	@Override
+	public void refreshGoodStatus(String id, OrderStatusDesc status) throws DataRefreshingException{
 		try {
-			orderGoodsDao.updateGoodStatus(oid, status);
+			orderGoodsDao.updateGoodStatus(id, status);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
-	}*/
+	}
 
+	@Override
+	public int getByOID(String oid, OrderStatusDesc status) {
+		
+		
+		return orderGoodsDao.getByOID(oid, status);
+	}
+
+	
 }
