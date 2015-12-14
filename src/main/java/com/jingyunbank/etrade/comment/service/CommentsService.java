@@ -60,18 +60,6 @@ public class CommentsService implements ICommentService{
 				}).collect(Collectors.toList());
 	}
 	/**
-	 * 有范围的查询
-	 */
-	@Override
-	public List<Comments> getCommentsByGids(String gid,Range range) {
-		return commentsDao.getCommentByGid(gid,range.getFrom(),range.getTo()-range.getFrom())
-				.stream().map(entity -> {
-					Comments bo=new Comments();
-					BeanUtils.copyProperties(entity, bo);
-					return bo;
-				}).collect(Collectors.toList());
-	}
-	/**
 	 * 通过id查出对应的评论信息
 	 */
 	@Override

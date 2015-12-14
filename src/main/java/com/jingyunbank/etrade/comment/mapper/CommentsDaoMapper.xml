@@ -38,16 +38,6 @@
 		   from comment where gid=#{GID}
 		   order by addtime desc,sort desc
 		</select>
-		 <!-- 有查看更多的条件 -->
-		<!--<select id="getCommentByGid" resultMap="ResultMap">
-		   select 
-		   <include refid="comment_list"></include>
-		   from comment where gid=#{GID}
-		   order by addtime desc,sort desc
-		   <if test="offset!=null and size!=null and size!=0">
-			LIMIT #{offset,javaType=LONG},#{size,javaType=LONG}
-			</if>
-		</select> -->
 		<!-- 通过gid和评论级别查询评论信息，多条 -->
 		<select id="selectCommentGradeByGid" resultMap="ResultMap">
 		   select 

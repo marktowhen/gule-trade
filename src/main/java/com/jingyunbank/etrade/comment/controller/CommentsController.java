@@ -103,28 +103,9 @@ public class CommentsController {
 		return Result.fail("保存失败！");
 	}
 	
-	/**
-	 * 测试通过产品的id查出所有的评论信息
-	 * @param gid
-	 * @param request
-	 * @param session
-	 * @return
-	 */
-	
-	@RequestMapping(value="/api/comments/getbygid",method=RequestMethod.GET)
-	@ResponseBody
-	public Result<List<CommentsVO>> getComments(@RequestParam("gid") String gid,@RequestParam("from") int from,@RequestParam("size") int size,HttpServletRequest request,HttpSession session) throws Exception{
-		Range range = new Range();
-		range.setFrom(from);
-		range.setTo(from+size);
-		List<Comments> comments=commentService.getCommentsByGids(gid,range);
-		List<CommentsVO> commentVOs=convert(comments);
-		return Result.ok(commentVOs);
-		
-		}
 	
 	/**
-	 * 得到评论信息的级别(好评，中评，差评)
+	 * 测试通过产品的id查出所有的评论信息，得到评论信息的级别(好评，中评，差评)
 	 * @param gid
 	 * @param commentGrade
 	 * @param request
