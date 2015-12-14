@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
-import com.jingyunbank.etrade.api.pay.handler.PayHandler;
-import com.jingyunbank.etrade.api.pay.handler.PayHandlerResolver;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandlerResolver;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
@@ -22,7 +22,7 @@ public class PayContextService implements IPayContextService{
 	@Autowired
 	private IPayService payService;
 	@Autowired
-	private PayHandlerResolver payHandlerResolver;
+	private IPayHandlerResolver payHandlerResolver;
 	
 	@Override
 	@Transactional
@@ -42,7 +42,7 @@ public class PayContextService implements IPayContextService{
 			x.setPipelineName(pipelineName);
 		});
 		payService.refreshNOAndPipeline(payments);
-		PayHandler handler = payHandlerResolver.resolve(pipelineCode);
+		IPayHandler handler = payHandlerResolver.resolve(pipelineCode);
 		return handler.prepare(payments, bankCode);
 	}
 }

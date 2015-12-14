@@ -22,6 +22,7 @@ public class Order2ShowVO {
 	private String deliveryTypeCode;
 	private String deliveryTypeName;
 	private BigDecimal price;//订单总价
+	private BigDecimal payout;//优惠后价格
 	private BigDecimal postage;
 	private String statusCode;
 	private String statusName;
@@ -138,6 +139,12 @@ public class Order2ShowVO {
 	}
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+	public BigDecimal getPayout() {
+		return payout;
+	}
+	public void setPayout(BigDecimal payout) {
+		this.payout = payout;
 	}
 	public BigDecimal getPostage() {
 		return postage;

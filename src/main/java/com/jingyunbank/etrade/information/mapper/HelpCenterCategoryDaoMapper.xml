@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.information.dao.HelpCenterCategoryDao">
+		<resultMap type="com.jingyunbank.etrade.information.entity.HelpCenterCategoryEntity" id="HelpCenterCategoryResultMap">
+			<id column="id" property="ID"/>
+			<result column="name" property="name"/>
+			<result column="valid" property="valid"/>
+			<result column="sort" property="sort"/>
+			<result column="add_time" property="addTime"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="update_uid" property="updateUID"/>
+		</resultMap>
+		<sql id="base_column_list">
+			id,name,valid,sort,add_time,update_time,update_uid
+		</sql>
+		
+		<insert id="insert">
+			insert into help_center_category(<include refid="base_column_list"/>)
+			values(#{ID},#{name},#{valid},#{sort},now(),now(),#{updateUID})
+		</insert>
+		
+		<update id="update">
+			update  help_center_category set
+				<if test="name!=null and !''.equals(name)">
+					name=#{name},
+				</if>
+				<if test="sort!=null and !''.equals(sort) and sort!=0">
+					sort=#{sort},
+				</if>
+				<if test="updateUID!=null and !''.equals(updateUID)">
+					update_uid=#{updateUID},
+				</if>
+				update_time = now()
+				
+			where id=#{ID}
+		</update>
+		
+		<update id="updateValid">
+			update help_center_category set valid=#{valid},update_time = now()
+				where id=#{ID}		
+		</update>
+		
+		<select id="selectValidList" resultMap="HelpCenterCategoryResultMap">
+			select <include refid="base_column_list"/> from help_center_category where valid=true order by sort
+		</select>
+		
+		<select id="selectSingle" resultMap="HelpCenterCategoryResultMap">
+			select <include refid="base_column_list"/> from help_center_category where id=#{ID}
+		</select>
+		
+		
+	</mapper>

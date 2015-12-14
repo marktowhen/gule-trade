@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,8 @@ import com.jingyunbank.etrade.api.order.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.bo.Orders;
 import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyResolver;
+import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyService;
 import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
@@ -40,6 +43,8 @@ public class OrderController {
 
 	@Autowired
 	private IOrderContextService orderContextService;
+	@Autowired
+	private ICouponStrategyResolver couponStrategyResolver;
 	
 	/**
 	 * 订单确认并提交<br>
@@ -64,8 +69,12 @@ public class OrderController {
 						.map(oe -> Arrays.asList(oe.getCodes()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
+		
 		String UID = ServletBox.getLoginUID(session);
 		purchase.setUID(UID);
+
+		String couponID = purchase.getCouponID();
+		String couponType = purchase.getCouponType();
 		
 		List<PurchaseOrderVO> ordervos = purchase.getOrders();
 		List<Orders> orders = new ArrayList<Orders>();
@@ -101,8 +110,39 @@ public class OrderController {
 			order.setGoods(orderGoodses);
 			orders.add(order);
 		}
+		
+		setOrdersGoodsFinalPrice(couponID, couponType, UID, orders);
+		
 		orderContextService.save(orders);
 		return Result.ok(purchase);
+	}
+
+	private void setOrdersGoodsFinalPrice(String couponID, String couponType, String UID,
+			List<Orders> orders) throws Exception{
+		if(StringUtils.hasText(couponType) && StringUtils.hasText(couponID)){
+			BigDecimal originprice = orders.stream()
+										.map(x->x.getPrice())
+										.reduce(new BigDecimal(0), (x,y)->x.add(y));
+			ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
+			Result<BigDecimal> finalpricer = couponStrategyService.calculate(UID, couponID, originprice);
+			if(finalpricer.isBad()) return;//illegal coupon
+			
+			BigDecimal finalprice = finalpricer.getBody();
+			orders.forEach(order -> {
+				BigDecimal orderprice = order.getPrice();
+				BigDecimal orderpricepercent = orderprice.divide(originprice);
+				BigDecimal neworderprice = finalprice.multiply(orderpricepercent);
+				order.setPayout(neworderprice);
+				List<OrderGoods> goodses = order.getGoods();
+				goodses.forEach(goods -> {
+					BigDecimal origingoodsprice = goods.getPrice();
+					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice);
+					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice);
+					goods.setPayout(finalgoodsprice);
+					goods.setReduce(origingoodsprice.subtract(finalgoodsprice));
+				});
+			});
+		}
 	}
 	
 	@AuthBeforeOperation

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.util.UniqueSequence;
@@ -34,6 +35,7 @@ import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
+import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyResolver;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
@@ -54,6 +56,8 @@ public class OrderContextService implements IOrderContextService {
 	private IOrderLogisticService orderLogisticService;
 	@Autowired
 	private IGoodsOperationService goodsOperationService;
+	@Autowired
+	private ICouponStrategyResolver couponStrategyResolver;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -120,6 +124,7 @@ public class OrderContextService implements IOrderContextService {
 		if(orders.size() == 0){
 			return;
 		}
+		Orders fo = orders.get(0);
 		List<String> oids = orders.stream().map(x->x.getID()).collect(Collectors.toList());
 		//刷新订单状态
 		orderService.refreshStatus(oids, OrderStatusDesc.PAID);
@@ -136,6 +141,11 @@ public class OrderContextService implements IOrderContextService {
 		orderTraceService.save(traces);
 		//更新库存
 		//goodsOperationService.refreshGoodsVolume(gid, count);
+		//更新优惠卡券状态
+		if(StringUtils.hasText(fo.getCouponID()) && StringUtils.hasText(fo.getCouponType())){
+			couponStrategyResolver.resolve(fo.getCouponType())
+							.consume(fo.getUID(), fo.getCouponID());
+		}
 	}
 
 	@Override
@@ -317,7 +327,7 @@ public class OrderContextService implements IOrderContextService {
 			op.setDone(false);
 			op.setID(KeyGen.uuid());
 			op.setOID(order.getID());
-			op.setMoney(order.getPrice());
+			op.setMoney(order.getPayout());
 			op.setTransno(UniqueSequence.next());
 			payments.add(op);
 		}

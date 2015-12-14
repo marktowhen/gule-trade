@@ -6,18 +6,18 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.etrade.api.pay.handler.PayHandler;
-import com.jingyunbank.etrade.api.pay.handler.PayHandlerResolver;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandlerResolver;
 
 @Service("payHandlerResolver")
-public class InternPayHandlerResolver implements PayHandlerResolver {
+public class InternPayHandlerResolver implements IPayHandlerResolver {
 	
 	@Autowired
-	private Map<String, PayHandler> handlers = new HashMap<String, PayHandler>();
+	private Map<String, IPayHandler> handlers = new HashMap<String, IPayHandler>();
 	
 	@Override
-	public PayHandler resolve(String pipelinecode) throws IllegalArgumentException {
-		PayHandler handler = handlers.get((pipelinecode+"Handler").toUpperCase());
+	public IPayHandler resolve(String pipelinecode) throws IllegalArgumentException {
+		IPayHandler handler = handlers.get((pipelinecode+"Handler").toUpperCase());
 		if(handler == null) 
 			throw new IllegalArgumentException("不合法支付平台码！");
 		

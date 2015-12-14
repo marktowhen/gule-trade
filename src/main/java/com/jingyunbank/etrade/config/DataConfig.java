@@ -34,14 +34,14 @@ public class DataConfig {
 	public SqlSessionFactoryBean mybatisSqlSession() throws IOException{
 		SqlSessionFactoryBean ssfb = new SqlSessionFactoryBean();
 		ssfb.setDataSource(dataSource());
-		ssfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:com/jingyunbank/etrade/*/mapper/*Mapper.xml"));
+		ssfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:com/jingyunbank/etrade/**/mapper/*Mapper.xml"));
 		return ssfb;
 	}
 	
 	@Bean
 	public MapperScannerConfigurer mapperScanner(){
 		MapperScannerConfigurer msc = new MapperScannerConfigurer();
-		msc.setBasePackage("com.jingyunbank.etrade.*.dao");
+		msc.setBasePackage("com.jingyunbank.etrade.**.dao");
 		return msc;
 	}
 	
