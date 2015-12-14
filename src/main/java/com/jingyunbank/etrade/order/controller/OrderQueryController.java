@@ -83,7 +83,7 @@ public class OrderQueryController {
 		String loginuid = ServletBox.getLoginUID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
-		return Result.ok(orderService.getAmount(uid, statuscode, fromdate, keywords));
+		return Result.ok(orderService.count(uid, statuscode, fromdate, keywords));
 	}
 	
 	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
