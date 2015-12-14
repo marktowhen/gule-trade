@@ -12,7 +12,7 @@ public interface UserDiscountCouponDao {
 
 	boolean updateConsumeStatus(UserDiscountCouponEntity entity) throws Exception;
 
-	UserDiscountCouponEntity getUserDiscountCoupon(@Param(value="couponID")String couponID,@Param(value="UID") String uid);
+	UserDiscountCouponEntity selectUserDiscountCoupon(@Param(value="couponID")String couponID,@Param(value="UID") String uid);
 
 	/**
 	 * 未消费未过期的数量
@@ -20,7 +20,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	int getUnusedCouponAmount(@Param(value="UID") String uid);
+	int countUnusedCoupon(@Param(value="UID") String uid);
 	/**
 	 * 未消费未过期的列表
 	 * @param uid
@@ -29,7 +29,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月4日 qxs
 	 */
-	List<UserDiscountCouponEntity> getUnusedCoupon(@Param(value="UID") String uid ,@Param(value="offset") long offset, @Param(value="size") long size);
+	List<UserDiscountCouponEntity> selectUnusedCoupon(@Param(value="UID") String uid ,@Param(value="offset") long offset, @Param(value="size") long size);
 
 	/**
 	 * 已消费的数量
@@ -37,7 +37,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	int getConsumedCouponAmount(@Param(value="UID")String uid);
+	int countConsumedCoupon(@Param(value="UID")String uid);
 	/**
 	 * 已消费的列表
 	 * @param uid
@@ -46,7 +46,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	List<UserDiscountCouponEntity> getConsumedCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
+	List<UserDiscountCouponEntity> selectConsumedCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
 	
 	/**
 	 * 已过期的数量
@@ -54,7 +54,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	int getOverdueCouponAmount(@Param(value="UID")String uid);
+	int countOverdueCoupon(@Param(value="UID")String uid);
 	/**
 	 * 已过期的列表
 	 * @param uid
@@ -63,7 +63,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	List<UserDiscountCouponEntity> getOverdueCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
+	List<UserDiscountCouponEntity> selectOverdueCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
 	
 	/**
 	 * 当前可用
@@ -71,7 +71,7 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	int getUseableCouponAmount(@Param(value="UID")String uid);
+	int countUseableCoupon(@Param(value="UID")String uid);
 
 	/**
 	 * 当前可用的列表
@@ -81,6 +81,6 @@ public interface UserDiscountCouponDao {
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	List<UserDiscountCouponEntity> getUseableCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
+	List<UserDiscountCouponEntity> selectUseableCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
 	
 }

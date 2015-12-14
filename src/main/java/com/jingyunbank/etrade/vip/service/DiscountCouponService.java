@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.vip.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,8 +68,8 @@ public class DiscountCouponService implements IDiscountCouponService{
 	}
 
 	@Override
-	public Result<String> canActive(String code) {
-		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(code);
+	public Result<DiscountCoupon> canActive(String code) {
+		DiscountCouponEntity entity = discountCouponDao.selectSingleByKey(code);
 		if(entity==null){
 			return Result.fail("卡号错误");
 		}
@@ -81,45 +82,31 @@ public class DiscountCouponService implements IDiscountCouponService{
 		if(entity.getEnd().before(EtradeUtil.getNowDate())){
 			return Result.fail("已过期");
 		}
-		return Result.ok("可激活");
+		return Result.ok(getBoFromEntity(entity));
 	}
 
 	@Override
-	public DiscountCoupon getSingleByCode(String code) {
-		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(code);
+	public DiscountCoupon singleByCode(String code) {
+		DiscountCouponEntity entity = discountCouponDao.selectSingleByKey(code);
 		if(entity!=null){
 			return getBoFromEntity(entity);
 		}
 		return null;
 	}
 	@Override
-	public DiscountCoupon getSingleByID(String ID) {
-		DiscountCouponEntity entity = discountCouponDao.getSingleByKey(ID);
+	public DiscountCoupon singleByID(String ID) {
+		DiscountCouponEntity entity = discountCouponDao.selectSingleByKey(ID);
 		if(entity!=null){
 			return getBoFromEntity(entity);
 		}
 		return null;
 	}
+
 	@Override
-	public List<DiscountCoupon> listAll(DiscountCoupon discountCoupon) {
+	public List<DiscountCoupon> list(Date addTimeFrom, Date addTimeTo, Range range){
 		
-		return discountCouponDao.selectList(getEntityFromBo(discountCoupon))
+		return discountCouponDao.selectByAddtime(addTimeFrom, addTimeTo, range.getFrom(), range.getTo()-range.getFrom())
 				.stream().map(entity ->{
-					return getBoFromEntity(entity);
-				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<DiscountCoupon> listAll(DiscountCoupon discountCoupon,
-			Range range) {
-		DiscountCouponEntity entityFromBo = getEntityFromBo(discountCoupon);
-		if(range!=null){
-			entityFromBo.setOffset(range.getFrom());
-			entityFromBo.setSize(range.getTo()-range.getFrom());
-		}
-		
-		return discountCouponDao.selectList(entityFromBo).stream()
-				.map(entity ->{
 					return getBoFromEntity(entity);
 				}).collect(Collectors.toList());
 	}
@@ -173,8 +160,8 @@ public class DiscountCouponService implements IDiscountCouponService{
 	}
 
 	@Override
-	public int getAmount(DiscountCoupon cashCoupon) {
-		return discountCouponDao.selectAmount(getEntityFromBo(cashCoupon));
+	public int count(Date addtimeFrom, Date addtimeTo) {
+		return discountCouponDao.countByAddtime(addtimeFrom, addtimeTo);
 	}
 
 	

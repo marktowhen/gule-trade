@@ -37,7 +37,7 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public boolean active(String code, String UID) throws DataRefreshingException, DataSavingException {
-		CashCoupon cashCoupon = cashCouponService.getSingleByCode(code);
+		CashCoupon cashCoupon = cashCouponService.singleByCode(code);
 		//插入User_Cash_Coupon
 		UserCashCoupon userCoupon = new UserCashCoupon();
 		userCoupon.setID(KeyGen.uuid());
@@ -55,21 +55,21 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	}
 
 	@Override
-	public List<UserCashCoupon> getUnusedCoupon(String uid, Range range) {
+	public List<UserCashCoupon> listUnusedCoupon(String uid, Range range) {
 		long offset = 0L;
 		long size = 0L;
 		if(range!=null){
 			offset = range.getFrom();
 			size = range.getTo()-range.getFrom();
 		}
-		return userCashCouponDao.getUnusedCoupon(uid, offset, size)
+		return userCashCouponDao.selectUnusedCoupon(uid, offset, size)
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}
 	
 	@Override
-	public int getUnusedCouponAmount(String uid) {
-		return userCashCouponDao.getUnusedCouponAmount(uid);
+	public int countUnusedCoupon(String uid) {
+		return userCashCouponDao.countUnusedCoupon(uid);
 	}
 	
 	private boolean save(UserCashCoupon userCashCoupon) throws DataSavingException{
@@ -81,11 +81,10 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	}
 	
 	@Override
-	public boolean consume(String couponId, String oid) throws DataRefreshingException {
+	public boolean consume(String couponId, String uid) throws DataRefreshingException {
 		
 		UserCashCouponEntity entity = new UserCashCouponEntity();
 		entity.setCouponID(couponId);
-		entity.setOID(oid);
 		try {
 			return userCashCouponDao.updateConsumeStatus(entity);
 		} catch (Exception e) {
@@ -110,8 +109,8 @@ public class UserCashCouponService  implements IUserCashCouponService {
 
 
 	@Override
-	public Result<String> canConsume(String couponId, String uid, BigDecimal orderPrice) {
-		UserCashCouponEntity entity =  userCashCouponDao.getUserCashCoupon(couponId,  uid);
+	public Result<UserCashCoupon> canConsume(String couponId, String uid, BigDecimal orderPrice) {
+		UserCashCouponEntity entity =  userCashCouponDao.selectUserCashCoupon(couponId,  uid);
 		if(entity==null){
 			return Result.fail("未找到");
 		}
@@ -136,59 +135,59 @@ public class UserCashCouponService  implements IUserCashCouponService {
 			return Result.fail("未到使用门槛:"+cashCoupon.getThreshhold().doubleValue());
 		}
 		
-		return Result.ok();
+		return Result.ok(getBoFromEntity(entity));
 	}
 
 	@Override
-	public int getConsumedCouponAmount(String uid) {
-		return userCashCouponDao.getConsumedCouponAmount(uid);
+	public int countConsumedCoupon(String uid) {
+		return userCashCouponDao.countConsumedCoupon(uid);
 	}
 
 	@Override
-	public List<UserCashCoupon> getConsumedCoupon(String uid, Range range) {
+	public List<UserCashCoupon> listConsumedCoupon(String uid, Range range) {
 		long offset = 0L;
 		long size = 0L;
 		if(range!=null){
 			offset = range.getFrom();
 			size = range.getTo()-range.getFrom();
 		}
-		return userCashCouponDao.getConsumedCoupon(uid, offset, size)
+		return userCashCouponDao.selectConsumedCoupon(uid, offset, size)
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public int getOverdueCouponAmount(String uid) {
-		return userCashCouponDao.getOverdueCouponAmount(uid);
+	public int countOverdueCoupon(String uid) {
+		return userCashCouponDao.countOverdueCoupon(uid);
 	}
 
 	@Override
-	public List<UserCashCoupon> getOverdueCoupon(String uid, Range range) {
+	public List<UserCashCoupon> listOverdueCoupon(String uid, Range range) {
 		long offset = 0L;
 		long size = 0L;
 		if(range!=null){
 			offset = range.getFrom();
 			size = range.getTo()-range.getFrom();
 		}
-		return userCashCouponDao.getOverdueCoupon(uid, offset, size)
+		return userCashCouponDao.selectOverdueCoupon(uid, offset, size)
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public int getUseableCouponAmount(String uid) {
-		return userCashCouponDao.getUseableCouponAmount(uid);
+	public int countUseableCoupon(String uid) {
+		return userCashCouponDao.countUseableCoupon(uid);
 	}
 
 	@Override
-	public List<UserCashCoupon> getUseableCoupon(String uid, Range range) {
+	public List<UserCashCoupon> listUseableCoupon(String uid, Range range) {
 		long offset = 0L;
 		long size = 0L;
 		if(range!=null){
 			offset = range.getFrom();
 			size = range.getTo()-range.getFrom();
 		}
-		return userCashCouponDao.getUseableCoupon(uid, offset, size)
+		return userCashCouponDao.selectUseableCoupon(uid, offset, size)
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}

@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -26,15 +27,6 @@ public interface CashCouponDao {
 	public boolean insertMuti(@Param(value="list") List<CashCouponEntity> list);
 	
 	/**
-	 * 查询
-	 * @param entity
-	 * @return
-	 * 2015年12月9日 qxs
-	 */
-	public List<CashCouponEntity> selectList(CashCouponEntity entity); 
-	
-	
-	/**
 	 * 修改删除状态
 	 * @param entity
 	 * @return
@@ -50,15 +42,25 @@ public interface CashCouponDao {
 	 */
 	public boolean updateUsedStatus(CashCouponEntity entity) throws Exception;
 
-
 	/**
 	 * 查询数量
 	 * @param entityFromBo
 	 * @return
 	 * 2015年11月19日 qxs
 	 */
-	public int selectAmount(CashCouponEntity entity);
+	public int countByAddTime(@Param(value="from") Date addTimeFrom,@Param(value="to") Date addTimeTo);
 
+	/**
+	 * 查询
+	 * @param entity
+	 * @return
+	 * 2015年12月9日 qxs
+	 */
+	public List<CashCouponEntity> selectListByAddTime(
+			@Param(value="from") Date addTimeFrom,
+			@Param(value="to") Date addTimeTo,
+			@Param(value="offset") long offset, 
+			@Param(value="size") long size); 
 
 	/**
 	 * 单个查询

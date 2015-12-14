@@ -14,7 +14,6 @@ public class UserDiscountCouponVO implements Serializable{
 	private String ID;
 	private String UID;
 	private String couponID;
-	private String OID;
 	
 	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date consumeTime;//消费使用时间
@@ -53,12 +52,6 @@ public class UserDiscountCouponVO implements Serializable{
 	}
 	public void setCouponID(String couponID) {
 		this.couponID = couponID;
-	}
-	public String getOID() {
-		return OID;
-	}
-	public void setOID(String oID) {
-		OID = oID;
 	}
 	public Date getConsumeTime() {
 		return consumeTime;

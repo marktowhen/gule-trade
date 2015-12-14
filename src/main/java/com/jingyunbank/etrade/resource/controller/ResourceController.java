@@ -105,7 +105,6 @@ public class ResourceController {
 			// 忽略
 		}
 		String configContent = this.filter( builder.toString() );
-		
 		configContent = configContent.replaceAll(" ", "");
 		//System.err.println(configContent);
 		String exec = callbackName+"("+configContent.toString()+");";
