@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
@@ -51,12 +52,19 @@ public class CommentsService implements ICommentService{
 	 */
 	@Override
 	public List<Comments> getCommentsByGid(String gid) {
-/*		List<CommentsEntity> lists=commentsDao.selectCommentByGid(gid);
-			Comments bo=new Comments();
-			BeanUtils.copyProperties(lists, bo);
-			List<Comments> comments=(List<Comments>) bo;
-				return comments;*/
 		return commentsDao.selectCommentByGid(gid)
+				.stream().map(entity -> {
+					Comments bo=new Comments();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
+	}
+	/**
+	 * 有范围的查询
+	 */
+	@Override
+	public List<Comments> getCommentsByGids(String gid,Range range) {
+		return commentsDao.getCommentByGid(gid,range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity -> {
 					Comments bo=new Comments();
 					BeanUtils.copyProperties(entity, bo);
@@ -127,8 +135,8 @@ public class CommentsService implements ICommentService{
 	 * 通过gid和评论的级别查询好评或中评或差评
 	 */
 	@Override
-	public List<Comments> selectCommentGradeByGid(String gid, int commentGrade) {
-		return commentsDao.selectCommentGradeByGid(gid,commentGrade)
+	public List<Comments> selectCommentGradeByGid(String gid, int commentGrade,Range range) {
+		return commentsDao.selectCommentGradeByGid(gid,commentGrade,range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity -> {
 					Comments bo=new Comments();
 					BeanUtils.copyProperties(entity, bo);

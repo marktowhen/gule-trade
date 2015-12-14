@@ -11,9 +11,11 @@ public interface CommentsDao {
 	
 	public int insert(CommentsEntity commentsEntity) throws Exception;
 	
-	public List<CommentsEntity> selectCommentByGid(String gid); 
+	public List<CommentsEntity> getCommentByGid(@Param(value="GID") String gid,@Param(value="offset")long offset, @Param(value="size")long size); 
 	
-	public List<CommentsEntity> selectCommentGradeByGid(@Param(value="GID") String gid,@Param(value="commentGrade") int commentGrade);
+	public List<CommentsEntity> selectCommentByGid(String gid);
+	
+	public List<CommentsEntity> selectCommentGradeByGid(@Param(value="GID") String gid,@Param(value="commentGrade") int commentGrade,@Param(value="offset")long offset, @Param(value="size")long size);
 	
 	public CommentsEntity selectById(String id);
 	
