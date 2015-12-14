@@ -29,11 +29,11 @@ public class StoreService implements IStoreService {
 			String dpath = FileStore.buildpath();
 			///static/upload/2015/11/16/random_sequence_code/random_sequece.name
 			FileSystemServer server = fileSystemService.current();
-			Path pp = Paths.get(server.getRootpath(), 
+			Path fullpath = Paths.get(server.getRootpath(), 
 									dpath,
 									fname);
 			
-			File f = pp.toFile();
+			File f = fullpath.toFile();
 			File parent = f.getParentFile();
 			if(!parent.exists()) parent.mkdirs();
 			if(!f.exists())
@@ -43,7 +43,7 @@ public class StoreService implements IStoreService {
 					throw new FileStorageException(e);
 				}
 			
-			String url = new StringBuilder().append(server.getHost())
+			String url = new StringBuilder().append(server.getHost()).append(server.getVpath())
 								.append(Paths.get(dpath, fname).toString()).toString();
 			
 			Path p = f.toPath();
