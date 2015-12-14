@@ -1,8 +1,8 @@
 package com.jingyunbank.etrade.resource.controller;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,16 +73,15 @@ public class ResourceController {
 		////reStr.setTitle("j_0084.gif");
 		UeditorImg reStr = new UeditorImg();
 		reStr.setState("SUCCESS");
-		reStr.setOriginal("j_0084.gif");
-		reStr.setName("j_0084.gif");
-		reStr.setUrl("http://img.baidu.com/hi/jx2/j_0084.gif");
+		reStr.setOriginal(fname);
+		reStr.setName(fname);
+		reStr.setUrl(url);
 		reStr.setType(".jpg");
-		reStr.setSize("99697");
+		reStr.setSize(String.valueOf(contents.length));
 			
 		/*转成json*/
 		ObjectMapper objectMapper = new ObjectMapper();
-		 String result = objectMapper.writeValueAsString(reStr);
-		 System.out.println(result);
+		String result = objectMapper.writeValueAsString(reStr);
 		PrintWriter writer = response.getWriter();
 		writer.write(result);
         writer.flush();
@@ -95,12 +95,12 @@ public class ResourceController {
 		response.setHeader("Content-Type" , "text/html");
 		response.addHeader("Access-Control-Allow-Origin", "*");  
 		//config.json 文件位置~
-		String rootPath =Class.class.getClass().getResource("/com/jingyunbank/etrade/resource/controller/config.json").getPath();
+		InputStream inputstream =ResourceController.class.getClassLoader().getResourceAsStream("ueditor-config.json");
 		//System.err.println(rootPath);
 		String callbackName = request.getParameter("callback");
 		StringBuilder builder = new StringBuilder();
 		try {
-			InputStreamReader reader = new InputStreamReader( new FileInputStream(rootPath), "UTF-8" );
+			InputStreamReader reader = new InputStreamReader(inputstream, "UTF-8" );
 			BufferedReader bfReader = new BufferedReader( reader );
 			String tmpContent = null;
 			while ( ( tmpContent = bfReader.readLine() ) != null ) {
@@ -113,7 +113,9 @@ public class ResourceController {
 		String configContent = this.filter( builder.toString() );
 		configContent = configContent.replaceAll(" ", "");
 		//System.err.println(configContent);
-		String exec = callbackName+"("+configContent.toString()+");";
+		String exec = StringUtils.hasText(callbackName)? 
+						callbackName+"("+configContent+")"//jsonp approach
+						:configContent;
 		PrintWriter writer = response.getWriter();
 		writer.write(exec);
         writer.flush();
