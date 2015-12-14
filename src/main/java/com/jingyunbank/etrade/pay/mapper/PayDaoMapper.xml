@@ -21,8 +21,7 @@
 	</resultMap>
 	<sql id="order_payment_columns">
 		id, transno, extransno, oid, uid, mid, mname, addtime, paidtime,
-		pipeline_code, pipeline_name, done,
-		money, note
+		pipeline_code, pipeline_name, done, money, note
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity">
 		insert into order_payment
@@ -42,7 +41,7 @@
 			#{p.money}, #{p.note})
 		</foreach>
 	</insert>
-	<select id="selectPayments" resultType="com.jingyunbank.etrade.pay.entity.OrderPaymentEntity">
+	<select id="selectPayments" resultMap="OrderPaymentEntityResultMap">
 		select <include refid="order_payment_columns"/>
 		from order_payment
 		where oid in

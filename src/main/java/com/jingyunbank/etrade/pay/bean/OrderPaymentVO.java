@@ -21,7 +21,7 @@ public class OrderPaymentVO{
 	private BigDecimal money;
 	private String note;
 	private boolean done;
-	private int pipelineCode;
+	private String pipelineCode;
 	private String pipelineName;
 	private Date addtime;
 	private Date paidtime;
@@ -98,10 +98,10 @@ public class OrderPaymentVO{
 	public void setExtransno(long extransno) {
 		this.extransno = extransno;
 	}
-	public int getPipelineCode() {
+	public String getPipelineCode() {
 		return pipelineCode;
 	}
-	public void setPipelineCode(int pipelineCode) {
+	public void setPipelineCode(String pipelineCode) {
 		this.pipelineCode = pipelineCode;
 	}
 	public String getPipelineName() {
