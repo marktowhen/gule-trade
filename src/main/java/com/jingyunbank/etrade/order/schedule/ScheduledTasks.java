@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledTasks {
 
-	@Scheduled(fixedDelay=5000)
+	@Scheduled(fixedDelay=(60000*5))//5 minutes
 	public void checkOrderStatus(){
 		System.out.println("are you kiding me?"+new Date()+"++++++++++++++++++++++++++++++");
 	}
