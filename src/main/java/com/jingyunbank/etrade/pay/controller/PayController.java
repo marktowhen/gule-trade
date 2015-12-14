@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -122,6 +123,9 @@ public class PayController {
 				pipelineCode, pipelineName,
 				bankCode
 		);
+		if(StringUtils.hasText(payinfo.get("error"))){
+			return Result.fail(payinfo.get("error"));
+		}
 		
 		return Result.ok(payinfo);
 	}
