@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.merchant.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +11,14 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +27,6 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
@@ -111,9 +115,15 @@ public class MerchantController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value = "/updatemerchant", method = RequestMethod.POST)
-	public Result<MerchantVO> updateMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception{
+	public Result<MerchantVO> updateMerchant(HttpServletRequest request, HttpSession session,@RequestBody @Valid MerchantVO merchantVO,BindingResult valid) throws Exception{
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
 		Merchant merchant=Merchant.getInstance();
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型

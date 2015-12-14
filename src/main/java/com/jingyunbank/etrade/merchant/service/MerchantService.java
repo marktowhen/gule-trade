@@ -91,7 +91,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		boolean flag = false;
 		try {
 		String mid = merchant.getID();
-		String codes = merchant.getInvoiceCodes();
+		String codes = merchant.getInvoiceCodes() == null ?"":merchant.getInvoiceCodes();
 		String[] codeArr = codes.split(",");
 		for(String s : codeArr){
 			MerchantInvoiceEntity me = new MerchantInvoiceEntity();
@@ -153,7 +153,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		boolean flag = false;
 		try {
 		String mid = merchant.getID();
-		String codes = merchant.getDeliveryCodes();
+		String codes = merchant.getDeliveryCodes() == null ?"":merchant.getDeliveryCodes();
 		String[] codeArr = codes.split(",");
 		for(String s : codeArr){
 			MerchantDeliveryEntity me = new MerchantDeliveryEntity();
