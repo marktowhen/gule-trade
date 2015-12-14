@@ -10,7 +10,7 @@ import com.jingyunbank.etrade.order.entity.OrderEntity;
 
 public interface OrderDao{
 
-	public void insertMany(@Param(value="orders") List<OrderEntity> orders) throws Exception;
+	public void insertMany(@Param(value="orders")List<OrderEntity> orders) throws Exception;
 	
 	public void insertOne(OrderEntity order) throws Exception ;
 
