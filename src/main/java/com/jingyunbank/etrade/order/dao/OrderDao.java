@@ -10,7 +10,7 @@ import com.jingyunbank.etrade.order.entity.OrderEntity;
 
 public interface OrderDao{
 
-	public void insertMany(@Param(value="orders") List<OrderEntity> orders) throws Exception;
+	public void insertMany(@Param(value="orders")List<OrderEntity> orders) throws Exception;
 	
 	public void insertOne(OrderEntity order) throws Exception ;
 
@@ -44,6 +44,8 @@ public interface OrderDao{
 	public OrderEntity selectOne(String oid);
 
 	public List<OrderEntity> selectByOIDs(@Param("oids") List<String> oids);
+	
+	public void updateOrderStatus(@Param("ID") String id,@Param("status") OrderStatusDesc status) throws Exception;
 	
 	public int selectCount(
 			@Param("uid") String uid, 

@@ -21,10 +21,13 @@ public class OrderEntity {
 	private String paytypeName;
 	private String deliveryTypeCode;
 	private String deliveryTypeName;
+	private String couponID;
+	private String couponType;
 	private BigDecimal price;//订单总价
 	private String statusCode;//订单状态id
 	private String statusName;
 	private BigDecimal postage;
+	private BigDecimal payout;
 	private String note;
 	private List<GoodsEntity> goods = new ArrayList<GoodsEntity>();//商品图片路径
 	
@@ -186,6 +189,24 @@ public class OrderEntity {
 	}
 	public void setGoods(List<GoodsEntity> goods) {
 		this.goods = goods;
+	}
+	public String getCouponID() {
+		return couponID;
+	}
+	public void setCouponID(String couponID) {
+		this.couponID = couponID;
+	}
+	public String getCouponType() {
+		return couponType;
+	}
+	public void setCouponType(String couponType) {
+		this.couponType = couponType;
+	}
+	public BigDecimal getPayout() {
+		return payout;
+	}
+	public void setPayout(BigDecimal payout) {
+		this.payout = payout;
 	}
 	
 }

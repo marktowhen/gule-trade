@@ -87,5 +87,12 @@ public interface MerchantDao{
 	 * @return
 	 */
 	public List<DeliveryTypeEntity> selectDeliveryTypeByMid(String mid);
+	/**
+	 * 根据条件查询所有商家列表
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MerchantEntity> selectMerchantsByCondition(Map<String, Object> map) throws Exception;
 	
 }

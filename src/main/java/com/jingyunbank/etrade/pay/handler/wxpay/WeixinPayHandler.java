@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
-import com.jingyunbank.etrade.api.pay.handler.PayHandler;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
 
 @Service(PayPipeline.WXPAYHANDLER)//该名称不可改！！！！
-public class WeixinPayHandler implements PayHandler {
+public class WeixinPayHandler implements IPayHandler {
 
 	@Override
 	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {

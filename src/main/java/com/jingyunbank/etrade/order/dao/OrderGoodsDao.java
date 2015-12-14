@@ -11,13 +11,13 @@ public interface OrderGoodsDao {
 
 	public void insertMany(@Param("goods") List<OrderGoodsEntity> goods) throws Exception;
 	
-
 	public List<OrderGoodsEntity> selectByUID(@Param(value="UID") String uid,@Param("status") OrderStatusDesc status);/*,@Param("status") OrderStatusDesc status*/
 		
-	public OrderGoodsEntity selectByGID(@Param(value="OID") String oid);
+	public OrderGoodsEntity selectByID(String id);
 
 	public void updateStatus(@Param("oids") List<String> oids, @Param("status") OrderStatusDesc status) throws Exception;
 	
-	/*public void updateGoodStatus(@Param("OID") String oids, @Param("status") OrderStatusDesc status) throws Exception;*/
-
+	public void updateGoodStatus(@Param("ID") String id, @Param("status") OrderStatusDesc status) throws Exception;
+	
+	public int getByOID(@Param(value="OID") String uid,@Param("status") OrderStatusDesc status);
 }

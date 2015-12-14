@@ -216,7 +216,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/up/{gid}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/up/{gid}", method = RequestMethod.GET)
 	public Result goodsUp(@PathVariable String gid) throws Exception {
 		if(goodsOperationService.refreshGoodsUp(gid)){
 			return Result.ok("success");
@@ -230,7 +230,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/down/{gid}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/down/{gid}", method = RequestMethod.GET)
 	public Result goodsDown(@PathVariable String gid) throws Exception {
 		if(goodsOperationService.refreshGoodsDown(gid)){
 			return Result.ok("success");

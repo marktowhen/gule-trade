@@ -13,11 +13,11 @@ import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
-import com.jingyunbank.etrade.api.pay.handler.PayHandler;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
 
 @Service(PayPipeline.ALIPAYHANDLER)//该名称不可改！！！！
-public class AlipayHandler implements PayHandler {
+public class AlipayHandler implements IPayHandler {
 
 	@Autowired
 	private IPayPipelineService payPipelineService;

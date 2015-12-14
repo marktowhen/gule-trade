@@ -9,7 +9,9 @@ import java.util.List;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
+/**
+ * @see CartController.list()
+ */
 public class OrdersInCartVO implements Serializable{
 	
 	private static final long serialVersionUID = -3657800214838173712L;

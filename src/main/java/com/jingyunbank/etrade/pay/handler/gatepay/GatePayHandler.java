@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
-import com.jingyunbank.etrade.api.pay.handler.PayHandler;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
 
 @Service(PayPipeline.GATEPAYHANDLER)//该名称不可改！！！！
-public class GatePayHandler implements PayHandler {
+public class GatePayHandler implements IPayHandler {
 	
 	@Autowired
 	private IPayPipelineService payPipelineService;

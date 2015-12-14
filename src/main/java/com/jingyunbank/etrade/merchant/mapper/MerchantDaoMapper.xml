@@ -108,4 +108,11 @@
 	select a.code as code,a.name as name,a.description as description from delivery_type a,merchant_delivery b
 	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
 	</select>
+	<!--根据条件查询所有商家列表 -->
+	<select id="selectMerchantsByCondition" parameterType="java.util.Map"
+		resultMap="rlt_merchant">
+		select * from merchant  m
+		where m.merchant_name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
+		LIMIT #{from} , #{size}
+	</select>
 </mapper>

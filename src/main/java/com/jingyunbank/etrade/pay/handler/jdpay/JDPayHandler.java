@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
-import com.jingyunbank.etrade.api.pay.handler.PayHandler;
+import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
 
 @Service("JDPAYHANDLER")//该名称不可改！！！！
-public class JDPayHandler implements PayHandler {
+public class JDPayHandler implements IPayHandler {
 
 	@Override
 	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {

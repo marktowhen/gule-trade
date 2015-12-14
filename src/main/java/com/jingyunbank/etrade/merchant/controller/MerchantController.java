@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Page;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
@@ -27,6 +30,7 @@ import com.jingyunbank.etrade.api.merchant.service.IMerchantService;
 import com.jingyunbank.etrade.api.merchant.service.context.IMerchantContextService;
 import com.jingyunbank.etrade.merchant.bean.DeliveryTypeVO;
 import com.jingyunbank.etrade.merchant.bean.InvoiceTypeVO;
+import com.jingyunbank.etrade.merchant.bean.MerchantSearchVO;
 import com.jingyunbank.etrade.merchant.bean.MerchantVO;
 /**
  * 商家管理控制器
@@ -161,6 +165,32 @@ public class MerchantController {
 		}else{
 			return Result.fail("查询没有数据！");
 		}
+	}
+	
+	/**
+	 * 根据条件查询商品列表
+	 * @param request
+	 * @param goodsSearchVO
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public Result<List<MerchantVO>> queryMerchantsByCondition(HttpServletRequest request, MerchantSearchVO merchantSearchVO, Page page)
+			throws Exception {
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getSize());
+		Merchant merchant = new Merchant();
+		BeanUtils.copyProperties(merchantSearchVO, merchant);
+		
+		List<MerchantVO> merchantlist = merchantService.listMerchantsByCondition(merchant, range).stream().map(bo -> {
+			MerchantVO vo = new MerchantVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		
+		return Result.ok(merchantlist);
 	}
 	
 }

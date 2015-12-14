@@ -43,17 +43,21 @@
 		   select 
 		   <include refid="comment_list"></include>
 		   from comment where gid=#{GID}
+		   	<if test="commentGrade!=0">
 		   		<if test="commentGrade >=8">
 		   			and comment_grade  &gt;8
 		   		</if>
-		   		<if test="commentGrade &lt;8  &amp; commentGrade &gt;5">
+		   		<if test="commentGrade &lt;8  &amp;&amp; commentGrade &gt;5">
 		   			and comment_grade &lt;8 &amp;&amp; comment_grade &gt;5
 		   		</if> 
 		   		<if test="commentGrade &lt;6">
 		   			and comment_grade &lt;6
 		   		</if>
-		   
+		   </if>
 		   order by addtime desc,sort desc
+		   <if test="offset!=null and size!=null and size!=0">
+			LIMIT #{offset,javaType=LONG},#{size,javaType=LONG}
+			</if>
 		</select>
 		<!-- 通过id查询出评论信息 -->
 		<select id="selectById" parameterType="String" resultMap="ResultMap">

@@ -45,6 +45,9 @@ public class PurchaseRequestVO {
 	private boolean requireInvoice = false;//是否需要发票, 默认不需要
 	private boolean businessReceipt;//是否是单位发票
 	private String invoiceTitle;//发票抬头
+
+	private String couponID;//卡券id
+	private String couponType;//卡券类型
 	
 	@Valid
 	@NotNull
@@ -117,5 +120,16 @@ public class PurchaseRequestVO {
 	public void setInvoiceTitle(String invoiceTitle) {
 		this.invoiceTitle = invoiceTitle;
 	}
-	
+	public String getCouponID() {
+		return couponID;
+	}
+	public void setCouponID(String couponID) {
+		this.couponID = couponID;
+	}
+	public String getCouponType() {
+		return couponType;
+	}
+	public void setCouponType(String couponType) {
+		this.couponType = couponType;
+	}
 }
