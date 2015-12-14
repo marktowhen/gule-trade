@@ -36,7 +36,7 @@ public class OrderGoodsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/order/goods",method=RequestMethod.GET)
+	@RequestMapping(value="/api/received/order/goods",method=RequestMethod.GET)
 	public Result<List<OrderGoodsVO>> listOrderGoods(HttpSession session,HttpServletRequest request){
 		String uid = ServletBox.getLoginUID(request);
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED)/*OrderStatusDesc.RECEIVED*/
@@ -50,6 +50,28 @@ public class OrderGoodsController {
 			return orderGoodsVO;
 		}).collect(Collectors.toList()));
 	}
+	/**
+	 * 查询某状态的订单产品
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/comment/order/goods",method=RequestMethod.GET)
+	public Result<List<OrderGoodsVO>> listyiOrderGoods(HttpSession session,HttpServletRequest request){
+		String uid = ServletBox.getLoginUID(request);
+		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED)/*OrderStatusDesc.RECEIVED*/
+			.stream().map(bo ->{
+			
+			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
+			String addtimeStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(bo.getAddtime());
+			orderGoodsVO.setAddtimeStr(addtimeStr);
+			
+			BeanUtils.copyProperties(bo, orderGoodsVO);
+			return orderGoodsVO;
+		}).collect(Collectors.toList()));
+	}
+	
 	
 	/**
 	 * 查出该用户未评价商品的个数

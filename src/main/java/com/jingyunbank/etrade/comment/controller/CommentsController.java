@@ -241,12 +241,20 @@ public class CommentsController {
 	@RequestMapping(value="/api/comments/goods/grade",method=RequestMethod.GET)
 	public Result<CommentsVO> getGoodsGrade(@RequestParam(value="gid") String gid){
 		int gradeCount=0;
+		float zongjibie =0;
+		int personCount=0;
 		List<Comments> comments=commentService.getCommentsByGid(gid);
-		int personCount=commentService.commentCount(gid);
+		if(comments.size()==0){
+			zongjibie=0;
+		}
+		personCount=commentService.commentCount(gid);
+		if(personCount==0){
+			personCount=0;
+		}
 		for(int i=0;i<comments.size();i++){
 			gradeCount+=comments.get(i).getCommentGrade();
 		}
-		float zongjibie=gradeCount/personCount;
+		zongjibie=gradeCount/personCount;
 		CommentsVO commentsVO=new CommentsVO();
 		int allLevel=(int)zongjibie*10;
 		commentsVO.setAllLevel(allLevel);
@@ -265,14 +273,23 @@ public class CommentsController {
 		int goodsCount=0;
 		int serviceCount=0;
 		int logisticsCount=0;
+		float level = 0;
+		int personCount=0;
+		
 		List<Comments> comments=commentService.getCommentsByGid(gid);
-		int personCount=commentService.commentCount(gid);
+		if(comments.size()==0){
+			level=0;
+		}
+		personCount=commentService.commentCount(gid);
+		if(personCount==0){
+			personCount=0;
+		}
 		for (int i=0;i<comments.size();i++) {
 			goodsCount+=comments.get(i).getCommentGrade();
 			serviceCount+=comments.get(i).getServiceGrade();
 			logisticsCount+=comments.get(i).getLogisticsGrade();	
 		}
-		float level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
+		level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
 		int levelGrade=(int)level*10;
 		CommentsVO commentsVO=new CommentsVO();
 		commentsVO.setLevel(level);
