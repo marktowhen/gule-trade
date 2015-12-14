@@ -11,6 +11,30 @@ public class UeditorImg {
 	private String url;//上传地址
 	private String title;//图片名称demo.jpg
 	private String original;//图片名称demo.jpg
+	private String name;
+	private String size;
+	private String type;
+	
+	
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public String getState() {
 		return state;
 	}

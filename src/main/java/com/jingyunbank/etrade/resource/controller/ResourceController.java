@@ -57,7 +57,8 @@ public class ResourceController {
 	
 	/*ueditor*/
 	@RequestMapping(value="/api/resource/ueditor/upload", method=RequestMethod.POST)
-	public @ResponseBody UeditorImg ueditorUpload(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public  void ueditorUpload(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		response.addHeader("Access-Control-Allow-Origin", "*"); 
 		response.setContentType("text/html;charset=UTF-8");
 		MultipartHttpServletRequest multipartRequest=(MultipartHttpServletRequest) request;
 		MultipartFile file =multipartRequest.getFile("upfile"); 
@@ -66,21 +67,30 @@ public class ResourceController {
 		String fname = file.getOriginalFilename();
 		String url = storeService.store(fname, contents);
 		
-		System.out.println(url);
+		//System.out.println(url);
 		/*
 		 * 上传返回格式
 		 * "{'original':'1.jpg','state':'SUCCESS','title':'1.jpg','url':'D:/img/1.jpg'}";
 		 * 
 		 * */
 		//上传回显 待测试~
+		////reStr.setTitle("j_0084.gif");
 		UeditorImg reStr = new UeditorImg();
 		reStr.setState("SUCCESS");
-		reStr.setOriginal("2837110795393038972.jpg");
-		reStr.setTitle("2837110795393038972.jpg");
-		reStr.setUrl("D:/images/2015/12/9/1492808051228625247/2837110795393038972.jpg");
-		return reStr;
-
-
+		reStr.setOriginal("j_0084.gif");
+		reStr.setName("j_0084.gif");
+		reStr.setUrl("http://img.baidu.com/hi/jx2/j_0084.gif");
+		reStr.setType(".jpg");
+		reStr.setSize("99697");
+			
+		/*转成json*/
+		ObjectMapper objectMapper = new ObjectMapper();
+		 String result = objectMapper.writeValueAsString(reStr);
+		 System.out.println(result);
+		PrintWriter writer = response.getWriter();
+		writer.write(result);
+        writer.flush();
+        writer.close();
 	}
 	
 	/*ueditor init*/
@@ -88,6 +98,7 @@ public class ResourceController {
     public void config(HttpServletRequest request,  HttpServletResponse response, String action) throws Exception {
 		response.setContentType("application/json");      
 		response.setHeader("Content-Type" , "text/html");
+		response.addHeader("Access-Control-Allow-Origin", "*");  
 		//config.json 文件位置~
 		String rootPath =Class.class.getClass().getResource("/com/jingyunbank/etrade/resource/controller/config.json").getPath();
 		//System.err.println(rootPath);
