@@ -34,10 +34,10 @@
 	<!--添加商家信息 -->
 	<insert id="insertMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
 			INSERT INTO merchant(id,merchant_name,merchant_ename,merchant_code,merchant_address,merchant_scale,employee_num,tel,
-			zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag)
+			zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level)
 			VALUES 
 			(#{ID},#{merchantName},#{merchantEname},#{merchantCode},#{merchantAddress},#{merchantScale},#{employeeNum},#{tel},
-			#{zipcode},#{qq},#{twoDimensionCode},#{registerDate},#{adminSortNum},#{merchantDesc},#{imgPath},#{invoiceFlag});
+			#{zipcode},#{qq},#{twoDimensionCode},#{registerDate},#{adminSortNum},#{merchantDesc},#{imgPath},#{invoiceFlag},#{level});
 	</insert>
 	<!--查询所有发票类型列表 -->
 	<select id = "selectInvoiceType" resultMap="rlt_invoicetype" >
@@ -66,6 +66,7 @@
 			admin_sort_num = #{adminSortNum},
 			merchant_desc = #{merchantDesc},
 			img_path = #{imgPath},
+			level = #{level},
 			invoice_flag = #{invoiceFlag} 
 			where id = #{ID}
 	</update>

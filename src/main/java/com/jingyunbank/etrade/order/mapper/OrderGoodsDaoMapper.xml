@@ -42,14 +42,14 @@
 		<!--  left join goods_img img on og.gid = img.gid -->  
 		where og.id = #{ID}
 	</select>
-	<!-- <update id="updateStatus">
+	<update id="updateStatus">
 		update order_goods og
 		set og.status_code = #{status.code}
 		where og.oid in 
 		<foreach collection="oids" item="oid" open="(" separator="," close=")">
 			#{oid}
 		</foreach>
-	</update> -->
+	</update>
 	<update id="updateGoodStatus">
 		update order_goods og
 		set og.status_code = #{status.code}
