@@ -31,7 +31,7 @@
 			<result column="gname" property="gname" javaType="String"/>
 			<result column="imgpath" property="imgpath" javaType="String"/>
 			<result column="count" property="count" jdbcType="INTEGER"/>
-			<result column="price" property="price" jdbcType="DECIMAL"/>
+			<result column="gprice" property="price" jdbcType="DECIMAL"/>
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
@@ -49,7 +49,7 @@
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, o.coupon_id, o.coupon_type,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, 
 		img.thumb_path_1 as imgpath, img.gid as gid, 
-		og.gname as gname, og.count as count, og.price as price
+		og.gname as gname, og.count as count, og.price as gprice
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders
@@ -94,7 +94,6 @@
 		left join goods_img img on og.gid = img.gid 
 		left join orders o on og.oid = o.id 
 		where o.id = #{oid}
-		limit 1
 	</select>
 	<select id="selectWithCondition" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
