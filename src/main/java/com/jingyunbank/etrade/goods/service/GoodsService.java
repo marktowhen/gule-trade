@@ -21,6 +21,9 @@ import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
+import com.jingyunbank.etrade.back.api.goods.bo.GoodsList;
+import com.jingyunbank.etrade.back.api.goods.bo.GoodsSearch;
+import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity;
@@ -38,6 +41,8 @@ import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
 public class GoodsService implements IGoodsService {
 	@Resource
 	private GoodsDao goodsDao;
+	@Resource
+	private GoodsBKDao goodsBKDao;
 
 	@Override
 	public List<ShowGoods> listGoodsByLikeName(String goodsname, Range range) throws Exception {
@@ -275,4 +280,21 @@ public class GoodsService implements IGoodsService {
 		}
 		return rltlist;
 	}
+	
+	@Override
+	public List<GoodsList> listGoodsByCondition(GoodsSearch goodsSearch, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		map.put("name", goodsSearch.getName());
+		map.put("state", goodsSearch.getState());
+		List<GoodsList> showGoodsList = goodsBKDao.selectGoodsByCondition(map).stream().map(dao -> {
+			GoodsList bo = new GoodsList();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return showGoodsList;
+	}
+	
 }

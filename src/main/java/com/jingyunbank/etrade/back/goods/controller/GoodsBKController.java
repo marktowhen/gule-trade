@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.api.goods.bo.GoodsSearch;
-import com.jingyunbank.etrade.back.api.goods.service.IGoodsBKService;
 import com.jingyunbank.etrade.back.goods.bean.GoodsListShowVO;
 import com.jingyunbank.etrade.back.goods.bean.GoodsSearchVO;
 
@@ -30,7 +30,7 @@ import com.jingyunbank.etrade.back.goods.bean.GoodsSearchVO;
 public class GoodsBKController {
 
 	@Resource
-	protected IGoodsBKService goodsBKService;
+	protected IGoodsService goodsService;
 
 	/**
 	 * 根据条件查询商品列表
@@ -49,7 +49,7 @@ public class GoodsBKController {
 		GoodsSearch goodsSearch = new GoodsSearch();
 		BeanUtils.copyProperties(goodsSearchVO, goodsSearch);
 		
-		List<GoodsListShowVO> goodslist = goodsBKService.listGoodsByCondition(goodsSearch, range).stream().map(bo -> {
+		List<GoodsListShowVO> goodslist = goodsService.listGoodsByCondition(goodsSearch, range).stream().map(bo -> {
 			GoodsListShowVO vo = new GoodsListShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
