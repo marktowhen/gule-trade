@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.information.bo.InformationDetails;
 import com.jingyunbank.etrade.api.information.service.IInformationDetailsService;
 import com.jingyunbank.etrade.information.bean.InformationDetailsVO;
-@Controller
+@RestController
 public class InformationDetailsController {
 	@Autowired
 	private IInformationDetailsService informationDetailsService;
