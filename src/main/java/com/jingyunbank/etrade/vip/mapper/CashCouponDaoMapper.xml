@@ -46,7 +46,7 @@
 		</where>
 		order by addtime,usedtime desc
 		<if test="size!=0">
-			limit offset,size
+			limit #{offset},#{size}
 		</if>
 	</select>
 	
@@ -110,6 +110,20 @@
 	<select id="selectSingle" resultMap="CashCouponEntityResultMap">
 		select <include refid="column_list"/>
 		from cash_coupon where id=#{key} or code=#{key}
-	
 	</select>
+	
+	<select id="selectListByAddTime" resultMap="CashCouponEntityResultMap">
+		select 
+			<include refid="column_list"></include>
+		from 	cash_coupon 
+		where addtime between #{from} and #{to}
+			order by addtime,usedtime desc
+			limit #{offset},#{size}
+	</select>
+	
+	<select id="countByAddTime" resultType="int" parameterType="com.jingyunbank.etrade.vip.entity.CashCouponEntity" >
+		select count(1) from cash_coupon 
+			where addtime between #{from} and #{to}
+	</select>
+	
 </mapper>

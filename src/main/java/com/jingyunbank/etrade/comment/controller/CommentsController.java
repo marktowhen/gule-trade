@@ -96,7 +96,9 @@ public class CommentsController {
 				orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);
 			//修改订单的状态
 			if(orderGoodsService.getByOID(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
-				orderService.refreshOrderStatus(orderGoods.getOID(), OrderStatusDesc.COMMENTED);
+				List<String> oids=new ArrayList<String>();
+				oids.add(orderGoods.getOID());
+				orderService.refreshStatus(oids, OrderStatusDesc.COMMENTED);
 			}
 			return Result.ok("保存成功");
 			}

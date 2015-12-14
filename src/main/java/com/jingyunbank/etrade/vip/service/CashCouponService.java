@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.vip.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +71,7 @@ public class CashCouponService implements ICashCouponService{
 	}
 
 	@Override
-	public Result<String> canActive(String code) {
+	public Result<CashCoupon> canActive(String code) {
 		CashCouponEntity entity = cashCouponDao.selectSingle(code);
 		if(entity==null){
 			return Result.fail("卡号错误");
@@ -84,11 +85,11 @@ public class CashCouponService implements ICashCouponService{
 		if(entity.getEnd().before(EtradeUtil.getNowDate())){
 			return Result.fail("已过期");
 		}
-		return Result.ok("可激活");
+		return Result.ok(getBofromEntity(entity));
 	}
 
 	@Override
-	public CashCoupon getSingleByCode(String code) {
+	public CashCoupon singleByCode(String code) {
 		CashCouponEntity entity = cashCouponDao.selectSingle(code);
 		if(entity!=null){
 			return getBofromEntity(entity);
@@ -97,7 +98,7 @@ public class CashCouponService implements ICashCouponService{
 	}
 
 	@Override
-	public CashCoupon getSingleByID(String id) {
+	public CashCoupon singleByID(String id) {
 		CashCouponEntity entity = cashCouponDao.selectSingle(id);
 		if(entity!=null){
 			return getBofromEntity(entity);
@@ -105,22 +106,10 @@ public class CashCouponService implements ICashCouponService{
 		return null;
 	}
 
-	@Override
-	public List<CashCoupon> listAll(CashCoupon cashCoupon) {
-		return cashCouponDao.selectList(getEntityFromBo(cashCoupon))
-				.stream().map( entity -> {
-					return getBofromEntity(entity);
-				}).collect(Collectors.toList());
-	}
 
 	@Override
-	public List<CashCoupon> listAll(CashCoupon cashCoupon, Range range) {
-		CashCouponEntity cashCouponEntity = getEntityFromBo(cashCoupon);
-		if(range!=null){
-			cashCouponEntity.setOffset(range.getFrom());
-			cashCouponEntity.setSize(range.getTo()-range.getFrom());
-		}
-		return cashCouponDao.selectList(getEntityFromBo(cashCoupon))
+	public List<CashCoupon> list(Date addTimeFrom, Date addTimeTo, Range range) {
+		return cashCouponDao.selectListByAddTime(addTimeFrom, addTimeTo, range.getFrom(), range.getTo()-range.getFrom())
 			.stream().map(entity->{
 					return (getBofromEntity(entity));
 			}).collect(Collectors.toList());
@@ -178,8 +167,8 @@ public class CashCouponService implements ICashCouponService{
 	}
 
 	@Override
-	public int getAmount(CashCoupon cashCoupon) {
-		return cashCouponDao.selectAmount(getEntityFromBo(cashCoupon));
+	public int count(Date addTimeFrom, Date addTimeTo) {
+		return cashCouponDao.countByAddTime(addTimeFrom, addTimeTo);
 	}
 
 	

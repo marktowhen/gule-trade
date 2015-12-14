@@ -16,8 +16,6 @@ public class BaseCouponEntity implements Serializable{
 	private static final long serialVersionUID = -4209769546160818768L;
 	private boolean del;//是否被删除
 	private String remark;//备注 
-	private long offset;
-	private long size;
 	
 	private Date addtimeStart;
 	private Date addtiemEnd;
@@ -82,17 +80,5 @@ public class BaseCouponEntity implements Serializable{
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-	public long getOffset() {
-		return offset;
-	}
-	public void setOffset(long offset) {
-		this.offset = offset;
-	}
-	public long getSize() {
-		return size;
-	}
-	public void setSize(long size) {
-		this.size = size;
 	}
 }

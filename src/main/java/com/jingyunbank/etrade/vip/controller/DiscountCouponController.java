@@ -37,7 +37,7 @@ import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
 import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
 
 @RestController
-@RequestMapping("/api/discountcoupon")
+@RequestMapping("/api/vip/discountcoupon")
 public class DiscountCouponController {
 
 	@Autowired
@@ -134,7 +134,11 @@ public class DiscountCouponController {
 	@RequestMapping(value="/can/active/{code}", method=RequestMethod.GET)
 	public Result<String> canActive(@PathVariable String code) throws Exception{
 		
-		return discountCouponService.canActive(code);
+		Result<DiscountCoupon> canActive = discountCouponService.canActive(code);
+		if(canActive.isBad()){
+			return Result.fail(canActive.getMessage());
+		}
+		return Result.ok();
 	}
 	
 	/**
@@ -165,14 +169,14 @@ public class DiscountCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/list", method=RequestMethod.GET)
-	public Result<List<DiscountCouponVO>> getList(DiscountCouponVO vo, Page page){
+	public Result<List<DiscountCouponVO>> getList(Date addtimeFrom, Date addtimeTo, Page page){
 		Range range = null;
 		if(page!=null){
 			range = new Range();
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(discountCouponService.listAll(getBoFromVo(vo), range)
+		return Result.ok(discountCouponService.list(addtimeFrom, addtimeTo, range)
 		 	.stream().map( bo ->{
 		 		return getVoFromBo(bo);
 		 	}).collect(Collectors.toList()));
@@ -186,8 +190,8 @@ public class DiscountCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount", method=RequestMethod.GET)
-	public Result<Integer> getAmount(DiscountCouponVO vo){
-		return Result.ok(discountCouponService.getAmount(getBoFromVo(vo)));
+	public Result<Integer> getAmount(Date addtimeFrom, Date addtimeTo){
+		return Result.ok(discountCouponService.count(addtimeFrom, addtimeTo));
 	}
 	private DiscountCoupon getBoFromVo(DiscountCouponVO vo) {
 		if(vo!=null){

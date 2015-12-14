@@ -210,13 +210,5 @@ public class OrderService implements IOrderService{
 				}).collect(Collectors.toList());
 	}
 
-	@Override
-	public void refreshOrderStatus(String id, OrderStatusDesc status)  throws DataRefreshingException {
-		try {
-			orderDao.updateOrderStatus(id, status);
-		} catch (Exception e) {
-			throw new DataRefreshingException(e);
-		}
-	}
 
 }

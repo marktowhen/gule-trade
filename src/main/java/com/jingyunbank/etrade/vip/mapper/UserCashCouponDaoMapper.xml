@@ -7,7 +7,6 @@
 		<id column="id" property="ID" javaType="String" />
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="coupon_id" property="couponID" javaType="String"/>
-		<result column="oid" property="OID" javaType="String"/>
 		<result column="add_time" property="addTime" javaType="java.util.Date"/>
 		<result column="consume_time" property="consumeTime"  javaType="java.util.Date"/>
 		<result column="consumed" property="consumed" javaType="BOOLEAN"/>
@@ -20,33 +19,38 @@
 		</association>
 	</resultMap>
 	<sql id="column_list">
-		id,uid,coupon_id,oid,add_time,consume_time,consumed
+		id,uid,coupon_id,add_time,consume_time,consumed
 	</sql>
+	<sql id="user_cash_join_cash_column_list">
+		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,
+		c.code,c.value,c.start,c.end,c.threshhold 
+	</sql>
+	
 	
 	<insert id="insert">
 		insert into user_cash_coupon (<include refid="column_list"/>)
-		values(#{ID},#{UID},#{couponID},#{OID},now(),#{consumeTime},#{consumed})
+		values(#{ID},#{UID},#{couponID},now(),#{consumeTime},#{consumed})
 	</insert>
 	<!-- 用户未消费且未过期的券 -->
-	<select id="getUnusedCoupon" resultMap="UserCashCouponEntityResultMap">
-		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold 
+	<select id="selectUnusedCoupon" resultMap="UserCashCouponEntityResultMap">
+		select <include refid="user_cash_join_cash_column_list"/>
 			from 
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getUnusedCoupon_condition"/>
+			where <include refid="selectUnusedCoupon_condition"/>
 				order by u.add_time DESC
 				<if test="size!=null and size!=0">
-				LIMIT offset,size
+				LIMIT #{offset}, #{size}
 				</if>
 	</select>
 	<!-- 用户未消费且未过期的券的券数量 -->
-	<select id="getUnusedCouponAmount" resultType="int">
+	<select id="countUnusedCoupon" resultType="int">
 		select count(1) from  
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getUnusedCoupon_condition"/>
+			where <include refid="selectUnusedCoupon_condition"/>
 	</select>
 	
 	<!-- 未消费且未过期的券查询条件 -->
-	<sql id="getUnusedCoupon_condition">
+	<sql id="selectUnusedCoupon_condition">
 		 		u.coupon_id = c.id
 				and u.uid=#{UID}
 				and c.del=false
@@ -55,48 +59,48 @@
 	</sql>
 	
 	<!-- 用户已消费的券 -->
-	<select id="getConsumedCoupon" resultMap="UserCashCouponEntityResultMap">
-		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold 
+	<select id="selectConsumedCoupon" resultMap="UserCashCouponEntityResultMap">
+		select <include refid="user_cash_join_cash_column_list"/>
 			from 
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getConsumedCoupon_condition"/>
+			where <include refid="selectConsumedCoupon_condition"/>
 				order by u.add_time DESC
 				<if test="size!=null and size!=0">
-				LIMIT offset,size
+				LIMIT #{offset}, #{size}
 				</if>
 	</select>
 	<!-- 用户已消费的券 数量 -->
-	<select id="getConsumedCouponAmount" resultType="int">
+	<select id="countConsumedCoupon" resultType="int">
 		select count(1) from  
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getConsumedCoupon_condition"/>
+			where <include refid="selectConsumedCoupon_condition"/>
 	</select>
 	<!-- 已消费券查询条件 -->
-	<sql id="getConsumedCoupon_condition">
+	<sql id="selectConsumedCoupon_condition">
 		 		u.coupon_id = c.id
 				and u.uid=#{UID}
 				and u.consumed=true
 	</sql>
 	
 	<!-- 用户已过期的券 -->
-	<select id="getOverdueCoupon" resultMap="UserCashCouponEntityResultMap">
-		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold 
+	<select id="selectOverdueCoupon" resultMap="UserCashCouponEntityResultMap">
+		select <include refid="user_cash_join_cash_column_list"/>
 			from 
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getOverdueCoupon_condition"/>
+			where <include refid="selectOverdueCoupon_condition"/>
 				order by u.add_time DESC
 				<if test="size!=null and size!=0">
-				LIMIT offset,size
+				LIMIT #{offset}, #{size}
 				</if>
 	</select>
 	<!-- 用户已过期的券 数量 -->
-	<select id="getOverdueCouponAmount" resultType="int">
+	<select id="countOverdueCoupon" resultType="int">
 		select count(1) from  
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getOverdueCoupon_condition"/>
+			where <include refid="selectOverdueCoupon_condition"/>
 	</select>
 	<!-- 已过期券查询条件 -->
-	<sql id="getOverdueCoupon_condition">
+	<sql id="selectOverdueCoupon_condition">
 		 		u.coupon_id = c.id
 		 		and c.del=false
 				and u.uid=#{UID}
@@ -107,24 +111,24 @@
 	
 	
 	<!-- 用户当前可用的券 -->
-	<select id="getUseableCoupon" resultMap="UserCashCouponEntityResultMap">
-		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold 
+	<select id="selectUseableCoupon" resultMap="UserCashCouponEntityResultMap">
+		select <include refid="user_cash_join_cash_column_list"/>
 			from 
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getUseableCoupon_condition"/>
+			where <include refid="selectUseableCoupon_condition"/>
 				order by u.add_time DESC
 				<if test="size!=null and size!=0">
-				LIMIT offset,size
+				LIMIT #{offset}, #{size}
 				</if>
 	</select>
 	<!-- 用户当前可用 数量 -->
-	<select id="getUseableCouponAmount" resultType="int">
+	<select id="countUseableCoupon" resultType="int">
 		select count(1) from  
 				user_cash_coupon u , cash_coupon c
-			where <include refid="getUseableCoupon_condition"/>
+			where <include refid="selectUseableCoupon_condition"/>
 	</select>
 	<!-- 用户当前可用查询条件 -->
-	<sql id="getUseableCoupon_condition">
+	<sql id="selectUseableCoupon_condition">
 		 		u.coupon_id = c.id
 		 		and c.del=false
 				and u.uid=#{UID}
@@ -136,14 +140,13 @@
 	<!-- 将消费状态置为true 并更新订单号 -->
 	<update id="updateConsumeStatus">
 		update user_cash_coupon 
-		 set oid = #{OID},
 		 consumed = true,
 		 consume_time = now()
 		 where coupon_id = #{couponID}
 	</update>
 	<!-- 根据用户id和券id查询详情 -->
-	<select id="getUserCashCoupon" resultMap="UserCashCouponEntityResultMap">
-		select u.*,c.`code`,c.`value`,c.`start`,c.`end`,c.threshhold 
+	<select id="selectUserCashCoupon" resultMap="UserCashCouponEntityResultMap">
+		select <include refid="user_cash_join_cash_column_list"/>
 			from 
 				user_cash_coupon u , cash_coupon c
 			where u.coupon_id = c.id
