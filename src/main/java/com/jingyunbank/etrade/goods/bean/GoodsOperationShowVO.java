@@ -4,46 +4,35 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-/**
- * 
-* Title: 商品录入VO
-* @author    duanxf
-* @date      2015年11月13日
- */
-public class GoodsOperationVO implements Serializable {
+public class GoodsOperationShowVO implements Serializable{
+
 	private static final long serialVersionUID = 1L;
-	//--------商品信息-----------
-	@NotNull(message="商家不能为空")
+	private String GID;//商品ID
 	private String MID;//商家ID
-	@NotNull(message="商品品牌不能为空")
+	private String merchantName;
 	private String BID;//品牌ID
-	@NotNull(message="商品名称不能为空")
+	private String brandName;
 	private String name;//商品名称
-	@NotNull(message="商品编码不能为空")
 	private String code;//商品编码
-	@NotNull(message="商品类型不能为空")
-	private String tid;//商品类型ID
-	@NotNull(message="商品价格不能为空")
-	@DecimalMin(value="0.00", inclusive=false)
+	private String TID;//商品类型ID
 	private BigDecimal price;//商品价格
-	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal promotionPrice;//商品促销价格
-	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal now_price;//商品现价
 	private int state;//是否上架0否1是
-	private String upTime;//上架时间
-	private String downTime;//下架时间
-	@NotNull(message="库存不能为空")
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	private Date upTime;//上架时间
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	private Date downTime;//下架时间
 	private int count;//库存
 	private int volume;//销量
-	private String addTime;//添加时间
-	private String pro_start;  //促销开始时间
-	private String pro_end;	//促销结束时间
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	private Date addTime;//添加时间
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	private Date pro_start;  //促销开始时间
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	private Date pro_end;	//促销结束时间
 	private int pro_flag; //是否促销标志
 	private BigDecimal postage; //邮费
 	private int subVolumeType; //减库存方式 (拍下减库存 0 付款减库存1)
@@ -78,38 +67,19 @@ public class GoodsOperationVO implements Serializable {
 	private String note;//注意事项
 	private String storageMethods;//储藏方法
 	private String isGiftBox;//是否礼盒装
-	private String ProductionDate;//生产日期
+	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	private Date productionDate;//生产日期
 	private String weight;//重量
 	private String unit;//单位
 	private String factoryName; //厂名
 	private String factoryAddr; //厂址
 	private String factoryTel;  //联系方式
 	
-	
-
-	
-
-
-	public String getProductionDate() {
-		return ProductionDate;
+	public String getGID() {
+		return GID;
 	}
-	public void setProductionDate(String productionDate) {
-		ProductionDate = productionDate;
-	}
-	public void setUpTime(String upTime) {
-		this.upTime = upTime;
-	}
-	public void setDownTime(String downTime) {
-		this.downTime = downTime;
-	}
-	public void setAddTime(String addTime) {
-		this.addTime = addTime;
-	}
-	public void setPro_start(String pro_start) {
-		this.pro_start = pro_start;
-	}
-	public void setPro_end(String pro_end) {
-		this.pro_end = pro_end;
+	public void setGID(String gID) {
+		GID = gID;
 	}
 	public String getMID() {
 		return MID;
@@ -135,11 +105,12 @@ public class GoodsOperationVO implements Serializable {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public String getTid() {
-		return tid;
+
+	public String getTID() {
+		return TID;
 	}
-	public void setTid(String tid) {
-		this.tid = tid;
+	public void setTID(String tID) {
+		TID = tID;
 	}
 	public BigDecimal getPrice() {
 		return price;
@@ -165,7 +136,18 @@ public class GoodsOperationVO implements Serializable {
 	public void setState(int state) {
 		this.state = state;
 	}
-	
+	public Date getUpTime() {
+		return upTime;
+	}
+	public void setUpTime(Date upTime) {
+		this.upTime = upTime;
+	}
+	public Date getDownTime() {
+		return downTime;
+	}
+	public void setDownTime(Date downTime) {
+		this.downTime = downTime;
+	}
 	public int getCount() {
 		return count;
 	}
@@ -178,7 +160,24 @@ public class GoodsOperationVO implements Serializable {
 	public void setVolume(int volume) {
 		this.volume = volume;
 	}
-	
+	public Date getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
+	}
+	public Date getPro_start() {
+		return pro_start;
+	}
+	public void setPro_start(Date pro_start) {
+		this.pro_start = pro_start;
+	}
+	public Date getPro_end() {
+		return pro_end;
+	}
+	public void setPro_end(Date pro_end) {
+		this.pro_end = pro_end;
+	}
 	public int getPro_flag() {
 		return pro_flag;
 	}
@@ -215,6 +214,30 @@ public class GoodsOperationVO implements Serializable {
 	public void setGoodsTitle(String goodsTitle) {
 		this.goodsTitle = goodsTitle;
 	}
+	public int getAdminSort() {
+		return adminSort;
+	}
+	public void setAdminSort(int adminSort) {
+		this.adminSort = adminSort;
+	}
+	public int getMerchantSort() {
+		return merchantSort;
+	}
+	public void setMerchantSort(int merchantSort) {
+		this.merchantSort = merchantSort;
+	}
+	public int getExpandSort() {
+		return expandSort;
+	}
+	public void setExpandSort(int expandSort) {
+		this.expandSort = expandSort;
+	}
+	public int getRecordSort() {
+		return recordSort;
+	}
+	public void setRecordSort(int recordSort) {
+		this.recordSort = recordSort;
+	}
 	public String getThumbpath1() {
 		return thumbpath1;
 	}
@@ -223,6 +246,19 @@ public class GoodsOperationVO implements Serializable {
 	}
 	public String getThumbpath2() {
 		return thumbpath2;
+	}
+	
+	public String getMerchantName() {
+		return merchantName;
+	}
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
+	}
+	public String getBrandName() {
+		return brandName;
+	}
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
 	}
 	public void setThumbpath2(String thumbpath2) {
 		this.thumbpath2 = thumbpath2;
@@ -311,6 +347,12 @@ public class GoodsOperationVO implements Serializable {
 	public void setFunctions(String functions) {
 		this.functions = functions;
 	}
+	public String getIngredient() {
+		return ingredient;
+	}
+	public void setIngredient(String ingredient) {
+		this.ingredient = ingredient;
+	}
 	public String getNote() {
 		return note;
 	}
@@ -330,6 +372,12 @@ public class GoodsOperationVO implements Serializable {
 		this.isGiftBox = isGiftBox;
 	}
 
+	public Date getProductionDate() {
+		return productionDate;
+	}
+	public void setProductionDate(Date productionDate) {
+		this.productionDate = productionDate;
+	}
 	public String getWeight() {
 		return weight;
 	}
@@ -360,54 +408,5 @@ public class GoodsOperationVO implements Serializable {
 	public void setFactoryTel(String factoryTel) {
 		this.factoryTel = factoryTel;
 	}
-	public int getAdminSort() {
-		return adminSort;
-	}
-	public void setAdminSort(int adminSort) {
-		this.adminSort = adminSort;
-	}
-	public int getMerchantSort() {
-		return merchantSort;
-	}
-	public void setMerchantSort(int merchantSort) {
-		this.merchantSort = merchantSort;
-	}
-	public int getExpandSort() {
-		return expandSort;
-	}
-	public void setExpandSort(int expandSort) {
-		this.expandSort = expandSort;
-	}
-	public int getRecordSort() {
-		return recordSort;
-	}
-	public void setRecordSort(int recordSort) {
-		this.recordSort = recordSort;
-	}
-	public String getIngredient() {
-		return ingredient;
-	}
-	public void setIngredient(String ingredient) {
-		this.ingredient = ingredient;
-	}
-	public String getUpTime() {
-		return upTime;
-	}
-	public String getDownTime() {
-		return downTime;
-	}
-	public String getAddTime() {
-		return addTime;
-	}
-	public String getPro_start() {
-		return pro_start;
-	}
-	public String getPro_end() {
-		return pro_end;
-	}
-	
-	
-	
-	
 	
 }

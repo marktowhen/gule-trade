@@ -7,6 +7,7 @@ import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDetailEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;
+import com.jingyunbank.etrade.goods.entity.GoodsOperationEntity;
 
 /**
  * 
@@ -50,7 +51,7 @@ public interface GoodsOperationDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public GoodsDaoEntity selectOne(String gid) throws Exception;
+	public GoodsOperationEntity selectOne(String gid) throws Exception;
 
 	/**
 	 * 修改商品信息
@@ -114,7 +115,7 @@ public interface GoodsOperationDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<GoodsDaoEntity> selectMerchant() throws Exception;
+	public List<GoodsOperationEntity> selectMerchant() throws Exception;
 
 	/**
 	 * 根据MID 查询所属的品牌
@@ -123,5 +124,5 @@ public interface GoodsOperationDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<GoodsDaoEntity> selectBrandsByMid(String mid) throws Exception;
+	public List<GoodsOperationEntity> selectBrandsByMid(String mid) throws Exception;
 }

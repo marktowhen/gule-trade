@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.goods.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.bo.BaseGoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.Goods;
 import com.jingyunbank.etrade.api.goods.bo.GoodsDetail;
 import com.jingyunbank.etrade.api.goods.bo.GoodsImg;
@@ -29,8 +31,11 @@ import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
+import com.jingyunbank.etrade.goods.bean.GoodsOperationShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 import com.jingyunbank.etrade.goods.bean.GoodsVO;
+
+import sun.java2d.pipe.SpanShapeRenderer.Simple;
 
 /**
  * 
@@ -64,11 +69,26 @@ public class GoodsOperationController {
 					.collect(Collectors.joining(" ; ")));
 		}
 		// ------封装商品信息---------------
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		Goods goods = new Goods();
 		BeanUtils.copyProperties(vo, goods);
 		goods.setID(KeyGen.uuid()); // id
 		goods.setVolume(0); // 销量
 		goods.setAddTime(new Date());// 添加时间
+		
+		if(vo.getUpTime()!=null &&vo.getUpTime()!=""){
+			goods.setUpTime(sf.parse(vo.getUpTime()));
+		}
+		if(vo.getDownTime()!=null && vo.getDownTime()!=""){
+			goods.setDownTime(sf.parse(vo.getDownTime()));
+		}
+		if(vo.getPro_start()!=null && vo.getPro_start()!=""){
+			goods.setPro_start(sf.parse(vo.getPro_start()));
+		}
+		if(vo.getPro_end()!=null && vo.getPro_end()!=""){
+			goods.setPro_end(sf.parse(vo.getPro_end()));
+		}
+		
 		goods.setAdminSort(0);// 管理员排序
 		goods.setMerchantSort(0);// 商家排序
 		goods.setExpandSort(0);// 推广排序
@@ -77,6 +97,9 @@ public class GoodsOperationController {
 		// ------封装商品详细信息-----------
 		GoodsDetail detail = new GoodsDetail();
 		BeanUtils.copyProperties(vo, detail);
+		if(vo.getProductionDate()!=null && vo.getProductionDate()!=""){
+			detail.setProductionDate(sf.parse(vo.getProductionDate()));
+		}
 		detail.setID(KeyGen.uuid());
 		detail.setGID(goods.getID());
 		// ------封装商品图片信息-----------
@@ -112,18 +135,18 @@ public class GoodsOperationController {
 	 */
 	@RequestMapping(value = "/updateveiw/{gid}", method = RequestMethod.GET)
 	public Result queryGoodsById(@PathVariable String gid) throws Exception {
-		GoodsVO vo = null;
-		Optional<ShowGoods> showbo = goodsOperationService.singleById(gid);
+		GoodsOperationShowVO vo = null;
+		Optional<BaseGoodsOperation> showbo = goodsOperationService.singleById(gid);
 		if (Objects.nonNull(showbo)) {
-			vo = new GoodsVO();
+			vo = new GoodsOperationShowVO();
 			BeanUtils.copyProperties(showbo.get(), vo);
 		}
+		System.err.println(vo.getProductionDate());
 		return Result.ok(vo);
 	}
 
 	/**
 	 * 修改商品详细信息
-	 * 
 	 * @param gid
 	 * @param vo
 	 * @param valid
@@ -139,16 +162,31 @@ public class GoodsOperationController {
 			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 					.collect(Collectors.joining(" ; ")));
 		}
-
 		// ------封装商品信息---------------
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		Goods goods = new Goods();
 		BeanUtils.copyProperties(vo, goods);
 		goods.setID(gid);
+		if(vo.getUpTime()!=null && vo.getUpTime()!=""){
+			goods.setUpTime(sf.parse(vo.getUpTime()));
+		}
+		if(vo.getDownTime()!=null && vo.getDownTime()!=""){
+			goods.setDownTime(sf.parse(vo.getDownTime()));
+		}
+		if(vo.getPro_start()!=null && vo.getPro_start()!=""){
+			goods.setPro_start(sf.parse(vo.getPro_start()));
+		}
+		if(vo.getPro_end()!=null && vo.getPro_end()!=""){
+			goods.setPro_end(sf.parse(vo.getPro_end()));
+		}
 
 		// ------封装商品详细信息-----------
 		GoodsDetail detail = new GoodsDetail();
 		BeanUtils.copyProperties(vo, detail);
 		detail.setGID(gid);
+		if(vo.getProductionDate()!=null && vo.getProductionDate()!=""){
+			detail.setProductionDate(sf.parse(vo.getProductionDate()));
+		}
 
 		// ------封装商品图片信息-----------
 		GoodsImg img = new GoodsImg();

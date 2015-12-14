@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.goods.bo.BaseGoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
@@ -20,6 +21,7 @@ import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDetailEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;
+import com.jingyunbank.etrade.goods.entity.GoodsOperationEntity;
 
 @Service("goodsOperationService")
 public class GoodsOperationService implements IGoodsOperationService {
@@ -55,14 +57,14 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
-	public Optional<ShowGoods> singleById(String gid) throws Exception {
-		GoodsDaoEntity goods = goodsOperationDao.selectOne(gid);
-		ShowGoods showGoods = null;
+	public Optional<BaseGoodsOperation> singleById(String gid) throws Exception {
+		GoodsOperationEntity goods = goodsOperationDao.selectOne(gid);
+		BaseGoodsOperation goodsOperation = null;
 		if (Objects.nonNull(goods)) {
-			showGoods = new ShowGoods();
-			BeanUtils.copyProperties(goods, showGoods);
+			goodsOperation = new BaseGoodsOperation();
+			BeanUtils.copyProperties(goods, goodsOperation);
 		}
-		return Optional.ofNullable(showGoods);
+		return Optional.ofNullable(goodsOperation);
 	}
 
 	/**
@@ -127,9 +129,9 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
-	public List<ShowGoods> listBrandsByMid(String mid) throws Exception {
-		List<ShowGoods> brandslist = goodsOperationDao.selectBrandsByMid(mid).stream().map(dao -> {
-			ShowGoods bo = new ShowGoods();
+	public List<BaseGoodsOperation> listBrandsByMid(String mid) throws Exception {
+		List<BaseGoodsOperation> brandslist = goodsOperationDao.selectBrandsByMid(mid).stream().map(dao -> {
+			BaseGoodsOperation bo = new BaseGoodsOperation();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
@@ -137,9 +139,9 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
-	public List<ShowGoods> listMerchant() throws Exception {
-		List<ShowGoods> merchantlist = goodsOperationDao.selectMerchant().stream().map(dao -> {
-			ShowGoods bo = new ShowGoods();
+	public List<BaseGoodsOperation> listMerchant() throws Exception {
+		List<BaseGoodsOperation> merchantlist = goodsOperationDao.selectMerchant().stream().map(dao -> {
+			BaseGoodsOperation bo = new BaseGoodsOperation();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
