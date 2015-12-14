@@ -76,8 +76,13 @@ public class MerchantController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/savemerchant", method = RequestMethod.POST)
-	public Result<MerchantVO> saveMerchant(HttpServletRequest request, HttpSession session,MerchantVO merchantVO) throws Exception {
-		//String uid = ServletBox.getLoginUID(request);
+	public Result<MerchantVO> saveMerchant(HttpServletRequest request, HttpSession session,@RequestBody @Valid MerchantVO merchantVO,BindingResult valid) throws Exception {
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
 		Merchant merchant=Merchant.getInstance();
 		merchantVO.setAdminSortNum(0);
 		merchantVO.setID(KeyGen.uuid());
