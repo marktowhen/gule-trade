@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.order.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -101,6 +102,7 @@ public class OrderController {
 				orderGoods.setOrderno(order.getOrderno());
 				orderGoods.setStatusCode(OrderStatusDesc.NEW_CODE);
 				orderGoods.setAddtime(new Date());
+				orderGoods.setUID(order.getUID());
 				orderGoodses.add(orderGoods);
 			}
 			order.setPrice(orderGoodses.stream()
@@ -130,13 +132,13 @@ public class OrderController {
 			BigDecimal finalprice = finalpricer.getBody();
 			orders.forEach(order -> {
 				BigDecimal orderprice = order.getPrice();
-				BigDecimal orderpricepercent = orderprice.divide(originprice);
+				BigDecimal orderpricepercent = orderprice.divide(originprice, 2, RoundingMode.HALF_UP);
 				BigDecimal neworderprice = finalprice.multiply(orderpricepercent);
 				order.setPayout(neworderprice);
 				List<OrderGoods> goodses = order.getGoods();
 				goodses.forEach(goods -> {
 					BigDecimal origingoodsprice = goods.getPrice();
-					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice);
+					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 2, RoundingMode.HALF_UP);
 					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice);
 					goods.setPayout(finalgoodsprice);
 					goods.setReduce(origingoodsprice.subtract(finalgoodsprice));

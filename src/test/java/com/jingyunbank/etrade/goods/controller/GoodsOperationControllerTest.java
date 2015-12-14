@@ -31,8 +31,8 @@ public class GoodsOperationControllerTest extends TestCaseBase {
 		vo.setCode("JY006");
 		vo.setTid("2");
 		vo.setPrice(new BigDecimal("333.00"));
-		vo.setPro_start(new Date());
-		vo.setPro_end(new Date());
+		//vo.setPro_start(new Date());
+		//vo.setPro_end(new Date());
 		vo.setState(1);
 		vo.setStandardNo("星期六阿胶标准号003");
 		vo.setCount(1000);
@@ -92,30 +92,13 @@ public class GoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void updateById() throws Exception {
 		GoodsOperationVO vo = new GoodsOperationVO();
-		vo.setMID("-2");
-		vo.setBID("-2");
-		// vo.setName("星期六阿胶-2-3");
-		vo.setCode("JY006-2");
-		vo.setTid("2");
-		vo.setAddTime(new Date());
-		vo.setPrice(new BigDecimal("333.22"));
-		vo.setPro_start(new Date());
-		vo.setPro_end(new Date());
-		vo.setState(1);
-		vo.setStandardNo("星期六阿胶标准号003-2");
-		vo.setCount(1000);
-		
-		vo.setThumbpath1("D://img/1-2-3.jpg");
-		vo.setThumbpath2("D://img/2-2-3.jpg");
-		vo.setThumbpath3("D://img/3-2-3.jpg");
-		vo.setThumbpath4("D://img/4-2-3.jpg");
-		vo.setThumbpath5("D://img/5-2-3.jpg");
-		vo.setContent("<h3>hello-2-3<h3>");
+		vo.setGoodsTitle("aaaa");
+//		vo.setProductionDate(new Date());
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		getMockMvc()
-				.perform(post("/api/goodsOperation/update/-_ctCfR9ShK5_6tdISLLNA")
+				.perform(put("/api/goodsOperation/update/-_ctCfR9ShK5_6tdISLLNA")
 						.content(json)
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))

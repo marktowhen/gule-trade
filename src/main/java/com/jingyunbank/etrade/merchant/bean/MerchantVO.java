@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 /**
@@ -18,20 +20,25 @@ public class MerchantVO implements Serializable {
 	/**主键*/
 	private String ID;
 	/**商家名称*/
+	@NotNull(message="商家名称不能为空")
 	private String merchantName;
 	/**商家英文名称*/
 	private String merchantEname;
 	/**商家编码*/
 	private String merchantCode;
 	/**商家地址*/
+	@NotNull(message="商家地址不能为空")
 	private String merchantAddress;
 	/**商家规模*/
+	@NotNull(message="商家规模不能为空")
 	private String merchantScale;
 	/**员工人数（人）*/
 	private int employeeNum;
 	/**电话*/
+	@NotNull(message="电话不能为空")
 	private String tel;
 	/**邮编*/
+	@NotNull(message="邮编不能为空")
 	private String zipcode;
 	/**qq*/
 	private String qq ;
@@ -40,6 +47,7 @@ public class MerchantVO implements Serializable {
 	/**注册时间*/
 	private Date registerDate ;
 	/**管理员排序*/
+	@NotNull(message="管理员排序不能为空")
 	private int adminSortNum ;
 	/**商家描述*/
 	private String  merchantDesc ;
