@@ -178,7 +178,7 @@ public class UserController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/coupon/amount/{uid}",method=RequestMethod.GET)
 	public Result<Integer> getUnusedCouponAmount(@PathVariable String uid) throws Exception {
-		return Result.ok(userCashCouponService.getUnusedCouponAmount(uid)+userDiscountCouponService.getUnusedCouponAmount(uid));
+		return Result.ok(userCashCouponService.countUnusedCoupon(uid)+userDiscountCouponService.countUnusedCoupon(uid));
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.vip.bo.CashCoupon;
 import com.jingyunbank.etrade.api.vip.bo.UserCashCoupon;
 import com.jingyunbank.etrade.api.vip.service.ICashCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserCashCouponService;
@@ -24,7 +25,7 @@ import com.jingyunbank.etrade.vip.bean.CashCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserCashCouponVO;
 
 @RestController
-@RequestMapping("/api/user/cashcoupon")
+@RequestMapping("/api/vip/cashcoupon/user")
 public class UserCashCouponController {
 	
 	@Autowired
@@ -42,7 +43,7 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/unused/{uid}",method=RequestMethod.GET)
-	public Result<List<UserCashCouponVO>> getUnusedCoupon(@PathVariable String uid , Page page)
+	public Result<List<UserCashCouponVO>> listtUnusedCoupon(@PathVariable String uid , Page page)
 		throws Exception{
 		Range range = null;
 		if(page!=null){
@@ -50,7 +51,7 @@ public class UserCashCouponController {
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(userCashCouponService.getUnusedCoupon(uid, range)
+		return Result.ok(userCashCouponService.listUnusedCoupon(uid, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
 	}
@@ -64,9 +65,9 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/unused/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getUnusedCouponAmount(HttpServletRequest request, @PathVariable String uid)
+	public Result<Integer> countUnusedCoupon(HttpServletRequest request, @PathVariable String uid)
 		throws Exception{
-		return Result.ok(userCashCouponService.getUnusedCouponAmount(uid));
+		return Result.ok(userCashCouponService.countUnusedCoupon(uid));
 	}
 	
 	/**
@@ -79,7 +80,7 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/consumed/{uid}",method=RequestMethod.GET)
-	public Result<List<UserCashCouponVO>> getConsumedCoupon(@PathVariable String uid , Page page)
+	public Result<List<UserCashCouponVO>> listConsumedCoupon(@PathVariable String uid , Page page)
 		throws Exception{
 		Range range = null;
 		if(page!=null){
@@ -87,7 +88,7 @@ public class UserCashCouponController {
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(userCashCouponService.getConsumedCoupon(uid, range)
+		return Result.ok(userCashCouponService.listConsumedCoupon(uid, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
 	}
@@ -101,9 +102,9 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/consumed/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getConsumedCouponAmount( @PathVariable String uid)
+	public Result<Integer> countConsumedCoupon( @PathVariable String uid)
 		throws Exception{
-		return Result.ok(userCashCouponService.getConsumedCouponAmount(uid));
+		return Result.ok(userCashCouponService.countConsumedCoupon(uid));
 	}
 	
 	/**
@@ -116,7 +117,7 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/overdue/{uid}",method=RequestMethod.GET)
-	public Result<List<UserCashCouponVO>> getOverdueCoupon(@PathVariable String uid , Page page)
+	public Result<List<UserCashCouponVO>> listOverdueCoupon(@PathVariable String uid , Page page)
 		throws Exception{
 		Range range = null;
 		if(page!=null){
@@ -124,7 +125,7 @@ public class UserCashCouponController {
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(userCashCouponService.getOverdueCoupon(uid, range)
+		return Result.ok(userCashCouponService.listOverdueCoupon(uid, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
 	}
@@ -138,9 +139,9 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/overdue/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getOverdueCouponAmount(@PathVariable String uid)
+	public Result<Integer> countOverdueCoupon(@PathVariable String uid)
 		throws Exception{
-		return Result.ok(userCashCouponService.getOverdueCouponAmount(uid));
+		return Result.ok(userCashCouponService.countOverdueCoupon(uid));
 	}
 	
 	/**
@@ -153,7 +154,7 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/useable/{uid}",method=RequestMethod.GET)
-	public Result<List<UserCashCouponVO>> getUseableCoupon(@PathVariable String uid , Page page)
+	public Result<List<UserCashCouponVO>> listUseableCoupon(@PathVariable String uid , Page page)
 		throws Exception{
 		Range range = null;
 		if(page!=null){
@@ -161,7 +162,7 @@ public class UserCashCouponController {
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(userCashCouponService.getUseableCoupon(uid, range)
+		return Result.ok(userCashCouponService.listUseableCoupon(uid, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
 	}
@@ -175,9 +176,9 @@ public class UserCashCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/useable/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getUseableCouponAmount( @PathVariable String uid)
+	public Result<Integer> countUseableCoupon( @PathVariable String uid)
 		throws Exception{
-		return Result.ok(userCashCouponService.getUseableCouponAmount(uid));
+		return Result.ok(userCashCouponService.countUseableCoupon(uid));
 	}
 	
 	
@@ -193,9 +194,9 @@ public class UserCashCouponController {
 	@RequestMapping(value="/{code}", method=RequestMethod.PUT)
 	public Result<String> active(@PathVariable String code, HttpServletRequest request) throws Exception {
 		String uid = ServletBox.getLoginUID(request);
-		Result<String> valid = cashCouponService.canActive(code);
+		Result<CashCoupon> valid = cashCouponService.canActive(code);
 		if(valid.isBad()){
-			return valid;
+			return Result.fail(valid.getMessage());
 		}
 		if(userCashCouponService.active(code, uid)){
 			return Result.ok();

@@ -1,6 +1,9 @@
 package com.jingyunbank.etrade.vip.dao;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.jingyunbank.etrade.vip.entity.DiscountCouponEntity;
 
@@ -10,7 +13,6 @@ public interface DiscountCouponDao {
 	
 	public boolean insertMuti(List<DiscountCouponEntity> list) throws Exception;
 	
-	
 	public List<DiscountCouponEntity> selectList(DiscountCouponEntity entity); 
 	
 	/**
@@ -19,7 +21,7 @@ public interface DiscountCouponDao {
 	 * @return
 	 * 2015年11月20日 qxs
 	 */
-	public DiscountCouponEntity getSingleByKey(String key);
+	public DiscountCouponEntity selectSingleByKey(String key);
 	
 	/**
 	 * 修改删除状态
@@ -44,5 +46,13 @@ public interface DiscountCouponDao {
 	 * 2015年11月19日 qxs
 	 */
 	public int selectAmount(DiscountCouponEntity entity);
+	
+	public List<DiscountCouponEntity> selectByAddtime(
+			@Param(value="from") Date addTimeFrom,
+			@Param(value="to") Date addTimeTo,
+			@Param(value="offset") long offset, 
+			@Param(value="size") long size); 
+	
+	public int countByAddtime(@Param(value="from") Date addTimeFrom,@Param(value="to") Date addTimeTo);
 
 }

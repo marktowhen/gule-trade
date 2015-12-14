@@ -9,6 +9,7 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.vip.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.bo.DiscountCoupon;
+import com.jingyunbank.etrade.api.vip.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyService;
 import com.jingyunbank.etrade.api.vip.service.IDiscountCouponService;
 import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
@@ -29,9 +30,9 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 	@Override
 	public Result<BigDecimal> calculate(String UID, String couponID,
 			BigDecimal originprice) throws UnsupportedOperationException {
-		Result<String> r = userDiscountCouponService.canConsume(couponID, UID, originprice);
+		Result<UserDiscountCoupon> r = userDiscountCouponService.canConsume(couponID, UID, originprice);
 		if(r.isBad()) return Result.fail(r.getMessage());
-		DiscountCoupon coupon = discountCouponService.getSingleByID(couponID);
+		DiscountCoupon coupon = r.getBody().getDiscountCoupon();
 		BigDecimal discount = coupon.getDiscount();
 		BigDecimal discountprice = originprice.multiply(discount);
 		discountprice = discountprice.compareTo(coupon.getValue())<0?discountprice: coupon.getValue();

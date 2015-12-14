@@ -43,9 +43,6 @@
 			<include refid="base_condition"></include>
 		</where>
 		order by addtime,usedtime desc
-		<if test="size!=0">
-			limit offset,size
-		</if>
 	</select>
 	
 	<select id="selectAmount" resultType="int" parameterType="com.jingyunbank.etrade.vip.entity.DiscountCouponEntity" >
@@ -107,9 +104,21 @@
 			and code =#{code}
 	</update>
 	
-	<select id="getSingleByKey" resultMap="DiscountCouponEntityResultMap">
+	<select id="selectSingleByKey" resultMap="DiscountCouponEntityResultMap">
 		select <include refid="column_list"/>
 		from discount_coupon where id =#{key} or code=#{key}
+	</select>
+	
+	<select id="selectByAddtime" resultMap="DiscountCouponEntityResultMap">
+		select <include refid="column_list"/>
+		from discount_coupon where addtime between #{from} and #{to}
+		order by addtime desc
+		limit #{offset},#{size}
+	</select>
+	
+	<select id="countByAddtime" resultType="int">
+		select count(1)
+		from discount_coupon where addtime between #{from} and #{to}
 	</select>
 	
 </mapper>
