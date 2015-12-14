@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.bo.GoodsSearch;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
-import com.jingyunbank.etrade.back.api.goods.bo.GoodsSearch;
 import com.jingyunbank.etrade.back.goods.bean.GoodsListShowVO;
 import com.jingyunbank.etrade.back.goods.bean.GoodsSearchVO;
 
