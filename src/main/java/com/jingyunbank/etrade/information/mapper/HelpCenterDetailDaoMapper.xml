@@ -34,12 +34,15 @@
 				<if test="sort!=null and !''.equals(sort) and sort!=0">
 					sort=#{sort},
 				</if>
-				id = #{ID}
+				<if test="content!=null and !''.equals(content)">
+					content=#{content},
+				</if>
+				update_time = now()
 			where id=#{ID}
 		</update>
 		
 		<update id="updateValid">
-			update help_center_detail set valid=#{valid}
+			update help_center_detail set valid=#{valid}, update_time = now()
 				where id=#{ID}		
 		</update>
 		
