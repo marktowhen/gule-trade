@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
@@ -42,18 +43,19 @@ public class AddressController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result<String> add(HttpServletRequest request,@RequestBody @Valid AddressVO address, BindingResult valid) throws Exception {
+	public Result<AddressVO> add(HttpServletRequest request,@RequestBody @Valid AddressVO address, BindingResult valid) throws Exception {
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
+		address.setUID(ServletBox.getLoginUID(request));
+		address.setID(KeyGen.uuid());
 		Address addressBo = new Address();
 		BeanUtils.copyProperties(address, addressBo);
-		addressBo.setUID(ServletBox.getLoginUID(request));
 		addressService.save(addressBo);
-		return Result.ok("保存成功");
+		return Result.ok(address);
 	}
 
 	/**

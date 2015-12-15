@@ -6,6 +6,7 @@ public class FileSystemServerEntity {
 	private String name;
 	private String host;
 	private String rootpath;
+	private String vpath;
 	
 	public String getCode() {
 		return code;
@@ -30,5 +31,11 @@ public class FileSystemServerEntity {
 	}
 	public void setRootpath(String rootpath) {
 		this.rootpath = rootpath;
+	}
+	public String getVpath() {
+		return vpath;
+	}
+	public void setVpath(String vpath) {
+		this.vpath = vpath;
 	}
 }

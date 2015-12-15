@@ -1,14 +1,11 @@
 package com.jingyunbank.etrade.resource.controller;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -28,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.FileStorageException;
 import com.jingyunbank.etrade.api.resource.service.IStoreService;
-import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 import com.jingyunbank.etrade.resource.entity.UeditorImg;
 
 @RestController
@@ -39,7 +35,7 @@ public class ResourceController {
 	
 	@RequestMapping(value="/api/resource/upload/multiple", method=RequestMethod.POST,
 			consumes="multipart/form-data")
-	public Result uploadMultiple(@RequestParam(value="file", required=true) MultipartFile[] files) throws Exception{
+	public Result<List<String>> uploadMultiple(@RequestParam(value="file", required=true) MultipartFile[] files) throws Exception{
 		List<String> urls = new ArrayList<String>();
 		for (MultipartFile file : files){
 			urls.add(process(file));
@@ -49,7 +45,7 @@ public class ResourceController {
 	
 	@RequestMapping(value="/api/resource/upload/single", method=RequestMethod.POST,
 			consumes="multipart/form-data")
-	public Result uploadSingle(@RequestParam(value="file", required=true) MultipartFile file) throws Exception{
+	public Result<String> uploadSingle(@RequestParam(value="file", required=true) MultipartFile file) throws Exception{
 		String url = process(file);
 		return Result.ok(url);
 	}
@@ -57,7 +53,8 @@ public class ResourceController {
 	
 	/*ueditor*/
 	@RequestMapping(value="/api/resource/ueditor/upload", method=RequestMethod.POST)
-	public @ResponseBody UeditorImg ueditorUpload(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public  void ueditorUpload(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		response.addHeader("Access-Control-Allow-Origin", "*"); 
 		response.setContentType("text/html;charset=UTF-8");
 		MultipartHttpServletRequest multipartRequest=(MultipartHttpServletRequest) request;
 		MultipartFile file =multipartRequest.getFile("upfile"); 
@@ -66,21 +63,29 @@ public class ResourceController {
 		String fname = file.getOriginalFilename();
 		String url = storeService.store(fname, contents);
 		
-		System.out.println(url);
+		//System.out.println(url);
 		/*
 		 * 上传返回格式
 		 * "{'original':'1.jpg','state':'SUCCESS','title':'1.jpg','url':'D:/img/1.jpg'}";
 		 * 
 		 * */
 		//上传回显 待测试~
+		////reStr.setTitle("j_0084.gif");
 		UeditorImg reStr = new UeditorImg();
 		reStr.setState("SUCCESS");
-		reStr.setOriginal("2837110795393038972.jpg");
-		reStr.setTitle("2837110795393038972.jpg");
-		reStr.setUrl("D:/images/2015/12/9/1492808051228625247/2837110795393038972.jpg");
-		return reStr;
-
-
+		reStr.setOriginal(fname);
+		reStr.setName(fname);
+		reStr.setUrl(url);
+		reStr.setType(".jpg");
+		reStr.setSize(String.valueOf(contents.length));
+			
+		/*转成json*/
+		ObjectMapper objectMapper = new ObjectMapper();
+		String result = objectMapper.writeValueAsString(reStr);
+		PrintWriter writer = response.getWriter();
+		writer.write(result);
+        writer.flush();
+        writer.close();
 	}
 	
 	/*ueditor init*/
@@ -88,13 +93,14 @@ public class ResourceController {
     public void config(HttpServletRequest request,  HttpServletResponse response, String action) throws Exception {
 		response.setContentType("application/json");      
 		response.setHeader("Content-Type" , "text/html");
+		response.addHeader("Access-Control-Allow-Origin", "*");  
 		//config.json 文件位置~
-		String rootPath =Class.class.getClass().getResource("/com/jingyunbank/etrade/resource/controller/config.json").getPath();
+		InputStream inputstream =ResourceController.class.getClassLoader().getResourceAsStream("ueditor-config.json");
 		//System.err.println(rootPath);
 		String callbackName = request.getParameter("callback");
 		StringBuilder builder = new StringBuilder();
 		try {
-			InputStreamReader reader = new InputStreamReader( new FileInputStream(rootPath), "UTF-8" );
+			InputStreamReader reader = new InputStreamReader(inputstream, "UTF-8" );
 			BufferedReader bfReader = new BufferedReader( reader );
 			String tmpContent = null;
 			while ( ( tmpContent = bfReader.readLine() ) != null ) {
@@ -107,7 +113,9 @@ public class ResourceController {
 		String configContent = this.filter( builder.toString() );
 		configContent = configContent.replaceAll(" ", "");
 		//System.err.println(configContent);
-		String exec = callbackName+"("+configContent.toString()+");";
+		String exec = StringUtils.hasText(callbackName)? 
+						callbackName+"("+configContent+")"//jsonp approach
+						:configContent;
 		PrintWriter writer = response.getWriter();
 		writer.write(exec);
         writer.flush();

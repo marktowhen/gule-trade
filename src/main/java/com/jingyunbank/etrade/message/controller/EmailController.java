@@ -162,7 +162,7 @@ public class EmailController {
 			message.setTitle(subTitle);
 			message.setContent("您的验证码是:"+code);
 			message.getReceiveUser().setEmail(email);
-			//emailService.inform(message);
+			emailService.inform(message);
 			request.getSession().setAttribute(email, new Date());
 			System.out.println("-----------------"+"您的验证码是:"+code);
 			return Result.ok();

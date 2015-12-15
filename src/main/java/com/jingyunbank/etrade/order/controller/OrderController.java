@@ -144,6 +144,15 @@ public class OrderController {
 					goods.setReduce(origingoodsprice.subtract(finalgoodsprice));
 				});
 			});
+		}else{
+			orders.forEach(order->{
+				order.setPayout(order.getPrice());
+				List<OrderGoods> goodses = order.getGoods();
+				goodses.forEach(goods -> {
+					goods.setPayout(goods.getPrice());
+					goods.setReduce(BigDecimal.ZERO);
+				});
+			});
 		}
 	}
 	
