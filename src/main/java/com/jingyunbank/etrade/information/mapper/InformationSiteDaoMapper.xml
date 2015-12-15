@@ -20,4 +20,7 @@
 		<select id="selectSitesBySiteid" parameterType="String" resultMap="InformationSiteResultMap">
 			select id,site_id,name from information_site where site_id=#{SiteID}
 		</select>
+		<select id="selectSitesByName" parameterType="String" resultMap="InformationSiteResultMap">
+			select id,site_id,name from information_site where name=#{name}
+		</select>
 	</mapper>

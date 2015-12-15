@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.information.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -47,6 +48,13 @@ public class InformationSiteService implements IInformationSiteService{
 			BeanUtils.copyProperties(entity, informationSite);
 			return informationSite;
 		}).collect(Collectors.toList());
+	}
+	@Override
+	public Optional<InformationSite> singleSitesByName(String name) {
+		InformationSite informationSite=new InformationSite();
+		InformationSiteEntity informationSiteEntity=informationSiteDao.selectSitesByName(name);
+		BeanUtils.copyProperties(informationSiteEntity, informationSite);
+		return Optional.of(informationSite);
 	}
 
 }

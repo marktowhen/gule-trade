@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.information.controller;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,4 +63,24 @@ public class InformationSiteController {
 		}).collect(Collectors.toList()));
 		
 	}
+	/**
+	 * 通过name查出对象
+	 * @param name
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/api/information/sites/{name}",method=RequestMethod.GET)
+	@ResponseBody
+	public Result selectSitesByName(@PathVariable String name,HttpServletRequest request,HttpSession session) throws Exception{
+		Optional<InformationSite> optional= informationSiteService.singleSitesByName(name);
+		InformationSiteVO informationSiteVO=new InformationSiteVO();
+		InformationSite informationSite=optional.get();
+		BeanUtils.copyProperties(informationSite, informationSiteVO);
+		
+		return Result.ok(informationSiteVO);
+
+	}
+	
 }
