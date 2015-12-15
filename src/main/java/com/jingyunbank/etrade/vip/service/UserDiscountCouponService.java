@@ -77,12 +77,15 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 		if(entity==null){
 			return Result.fail("未找到");
 		}
+		if(entity.isConsumed()){
+			return  Result.fail("该券已消费");
+		}
+		if(entity.isLocked()){
+			return  Result.fail("该券已锁定");
+		}
 		DiscountCouponEntity discountCoupon = entity.getDiscountCouponEntity();
 		if(discountCoupon==null){
 			return Result.fail("数据错误");
-		}
-		if(entity.isConsumed()){
-			return  Result.fail("该券已消费");
 		}
 		if(discountCoupon.isDel()){
 			return  Result.fail("该券已被删除");
@@ -216,7 +219,7 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 	}
 
 	@Override
-	public boolean deblock(String couponID, String uid) throws DataRefreshingException {
+	public boolean unlock(String couponID, String uid) throws DataRefreshingException {
 		return userDiscountCouponDao.updateLockedStatus(couponID, uid, false);
 	}
 

@@ -105,8 +105,8 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		}
 		
 		@Test
-		public void testDeblock() throws Exception{
-			userCashCouponService.deblock("Ys3WfVB-RUK-Yff_-hqacQ", "2");
+		public void testUnlock() throws Exception{
+			userCashCouponService.unlock("Ys3WfVB-RUK-Yff_-hqacQ", "2");
 		}
 		
 		

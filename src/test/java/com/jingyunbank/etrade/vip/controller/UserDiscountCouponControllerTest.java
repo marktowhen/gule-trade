@@ -104,8 +104,8 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		}
 		
 		@Test
-		public void testDeblock() throws Exception{
-			userDiscountCouponService.deblock("A2KMNs64RHiNZjSEi7rY3w", "2");
+		public void testUnlock() throws Exception{
+			userDiscountCouponService.unlock("A2KMNs64RHiNZjSEi7rY3w", "2");
 		}
 		
 		

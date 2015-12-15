@@ -113,16 +113,21 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		if(entity==null){
 			return Result.fail("未找到");
 		}
+		if(entity.isConsumed()){
+			return  Result.fail("该券已消费");
+		}
+		
+		if(entity.isLocked()){
+			return  Result.fail("该券已锁定");
+		}
 		CashCouponEntity cashCoupon = entity.getCashCoupon();
 		if(cashCoupon==null){
 			return Result.fail("数据错误");
 		}
-		if(entity.isConsumed()){
-			return  Result.fail("该券已消费");
-		}
 		if(cashCoupon.isDel()){
 			return  Result.fail("该券已被删除");
 		}
+		
 		Date nowDate = EtradeUtil.getNowDate();
 		if(cashCoupon.getStart().after(nowDate)){
 			return Result.fail("未到使用时间");
@@ -206,7 +211,7 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	}
 
 	@Override
-	public boolean deblock(String couponID, String uid) throws DataRefreshingException {
+	public boolean unlock(String couponID, String uid) throws DataRefreshingException {
 		return userCashCouponDao.updateLockedStatus(couponID,uid, false);
 	}
 
