@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.vip.service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -83,10 +84,8 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	@Override
 	public boolean consume(String couponId, String uid) throws DataRefreshingException {
 		
-		UserCashCouponEntity entity = new UserCashCouponEntity();
-		entity.setCouponID(couponId);
 		try {
-			return userCashCouponDao.updateConsumeStatus(entity);
+			return userCashCouponDao.updateConsumeStatus(couponId, uid);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
@@ -191,6 +190,41 @@ public class UserCashCouponService  implements IUserCashCouponService {
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}
+
+	@Override
+	public boolean isLocked(String couponID) {
+		Optional<UserCashCoupon> single = single(couponID);
+		if(single.isPresent() && !single.get().isLocked()){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean lock(String couponID, String uid) throws DataRefreshingException {
+		return userCashCouponDao.updateLockedStatus(couponID,uid, true);
+	}
+
+	@Override
+	public boolean deblock(String couponID, String uid) throws DataRefreshingException {
+		return userCashCouponDao.updateLockedStatus(couponID,uid, false);
+	}
+
+	@Override
+	public Optional<UserCashCoupon> single(String couponID, String uid) {
+		UserCashCouponEntity entity = userCashCouponDao.selectUserCashCoupon(couponID, uid);
+		if(entity!=null){
+			return Optional.of(getBoFromEntity(entity));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<UserCashCoupon> single(String couponID) {
+		return single(couponID, null);
+	}
+
+
 
 	
 

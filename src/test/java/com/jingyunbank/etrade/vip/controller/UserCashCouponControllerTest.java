@@ -9,13 +9,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.api.vip.service.IUserCashCouponService;
 
 public class UserCashCouponControllerTest extends TestCaseBase{
+	
+	@Autowired
+	private IUserCashCouponService userCashCouponService;
 	
 		/**
 		 * 新增
@@ -91,6 +96,23 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andDo(MockMvcResultHandlers.print())
 				.andDo(print());
+		}
+		
+		
+		@Test
+		public void testLock() throws Exception{
+			userCashCouponService.lock("Ys3WfVB-RUK-Yff_-hqacQ", "2");
+		}
+		
+		@Test
+		public void testDeblock() throws Exception{
+			userCashCouponService.deblock("Ys3WfVB-RUK-Yff_-hqacQ", "2");
+		}
+		
+		
+		@Test
+		public void testSingle() throws Exception{
+			userCashCouponService.single("Ys3WfVB-RUK-Yff_-hqacQ", "2");
 		}
 		
 		

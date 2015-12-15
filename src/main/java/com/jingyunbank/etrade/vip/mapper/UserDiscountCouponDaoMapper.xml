@@ -10,6 +10,7 @@
 		<result column="add_time" property="addTime" javaType="java.util.Date"/>
 		<result column="consume_time" property="consumeTime"  javaType="java.util.Date"/>
 		<result column="consumed" property="consumed" javaType="BOOLEAN"/>
+		<result column="locked" property="locked" javaType="BOOLEAN"/>
 		<association property="discountCouponEntity" javaType="com.jingyunbank.etrade.vip.entity.DiscountCouponEntity">
 			<result column="code" property="code" javaType="String" />
 			<result column="value" property="value" javaType="DECIMAL" />
@@ -20,15 +21,15 @@
 		</association>
 	</resultMap>
 	<sql id="column_list">
-		id,uid,coupon_id,add_time,consume_time,consumed
+		id,uid,coupon_id,add_time,consume_time,consumed,locked
 	</sql>
 	<sql id="user_discount_join_discount_column_list">
-		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,
+		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,u.locked,
 		c.code,c.value,c.start,c.end,c.threshhold ,c.discount
 	</sql>
 	<insert id="insert">
 		insert into user_discount_coupon (<include refid="column_list"/>)
-		values(#{ID},#{UID},#{couponID},now(),#{consumeTime},#{consumed})
+		values(#{ID},#{UID},#{couponID},now(),#{consumeTime},#{consumed},#{locked})
 	</insert>
 	<!-- 用户未消费且未过期的券 -->
 	<select id="selectUnusedCoupon" resultMap="UserDiscountCouponEntityResultMap">
@@ -54,6 +55,7 @@
 				and u.uid=#{UID}
 				and c.del=false
 				and u.consumed=false
+				and u.locked=false
 				and now() &lt;= c.end
 	</sql>
 	
@@ -132,16 +134,28 @@
 		 		and c.del=false
 				and u.uid=#{UID}
 				and u.consumed=false
+				and u.locked=false
 				and now() between c.start and c.end
 	</sql>
 	
 	
 	
 	<update id="updateConsumeStatus">
-		update user_discount_coupon 
+		update user_discount_coupon set
 		 consumed = true,
+		 locked=false,
 		 consume_time = now()
 		 where coupon_id = #{couponID}
+		 	and uid = #{UID}
+	</update>
+	
+	<!-- 修改锁定状态-->
+	<update id="updateLockedStatus">
+		update user_discount_coupon set
+		 locked=#{locked},
+		 consume_time = now()
+		 where coupon_id = #{couponID}
+		 	and uid = #{UID}
 	</update>
 	
 	<select id="selectUserDiscountCoupon" resultMap="UserDiscountCouponEntityResultMap">
@@ -149,8 +163,10 @@
 			from 
 				user_discount_coupon u , discount_coupon c
 			where u.coupon_id = c.id
-				and u.uid=#{UID}
 				and c.id=#{couponID} 
+				<if test="UID!=null and !''.equals(UID)">
+					and u.uid=#{UID}
+				</if>
 	</select>
 	
 </mapper>

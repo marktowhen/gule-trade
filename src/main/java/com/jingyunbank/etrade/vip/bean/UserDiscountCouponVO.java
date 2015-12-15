@@ -23,6 +23,15 @@ public class UserDiscountCouponVO implements Serializable{
 	private Date addTime;//激活时间
 	private DiscountCouponVO discountCoupon;
 	
+	private boolean locked;//是否被锁定
+	
+	public boolean isLocked() {
+		return locked;
+	}
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+	
 	public DiscountCouponVO getDiscountCoupon() {
 		return discountCoupon;
 	}

@@ -10,8 +10,15 @@ public interface UserDiscountCouponDao {
 
 	boolean insert(UserDiscountCouponEntity entityFromBo) throws Exception;
 
-	boolean updateConsumeStatus(UserDiscountCouponEntity entity) throws Exception;
+	boolean updateConsumeStatus(@Param(value="couponID")String couponID,@Param(value="UID") String uid) throws Exception;
 
+	/**
+	 * 单个查询 
+	 * @param couponID 必选
+	 * @param uid 可选
+	 * @return
+	 * 2015年12月15日 qxs
+	 */
 	UserDiscountCouponEntity selectUserDiscountCoupon(@Param(value="couponID")String couponID,@Param(value="UID") String uid);
 
 	/**
@@ -82,5 +89,15 @@ public interface UserDiscountCouponDao {
 	 * 2015年12月3日 qxs
 	 */
 	List<UserDiscountCouponEntity> selectUseableCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
+	
+	/**
+	 * 修改锁定状态
+	 * @param couponID
+	 * @param uid
+	 * @param locked
+	 * @return
+	 * 2015年12月15日 qxs
+	 */
+	boolean updateLockedStatus(@Param(value="couponID")String couponID,@Param(value="UID") String uid,@Param(value="locked") boolean locked);
 	
 }
