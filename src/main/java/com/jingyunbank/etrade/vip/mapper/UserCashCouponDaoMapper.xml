@@ -10,6 +10,7 @@
 		<result column="add_time" property="addTime" javaType="java.util.Date"/>
 		<result column="consume_time" property="consumeTime"  javaType="java.util.Date"/>
 		<result column="consumed" property="consumed" javaType="BOOLEAN"/>
+		<result column="locked" property="locked" javaType="BOOLEAN"/>
 		<association property="cashCoupon" javaType="com.jingyunbank.etrade.vip.entity.CashCouponEntity">
 			<result column="code" property="code" javaType="String" />
 			<result column="value" property="value" javaType="DECIMAL" />
@@ -19,17 +20,17 @@
 		</association>
 	</resultMap>
 	<sql id="column_list">
-		id,uid,coupon_id,add_time,consume_time,consumed
+		id,uid,coupon_id,add_time,consume_time,consumed,locked
 	</sql>
 	<sql id="user_cash_join_cash_column_list">
-		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,
+		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,u.locked,
 		c.code,c.value,c.start,c.end,c.threshhold 
 	</sql>
 	
 	
 	<insert id="insert">
 		insert into user_cash_coupon (<include refid="column_list"/>)
-		values(#{ID},#{UID},#{couponID},now(),#{consumeTime},#{consumed})
+		values(#{ID},#{UID},#{couponID},now(),#{consumeTime},#{consumed},#{locked})
 	</insert>
 	<!-- 用户未消费且未过期的券 -->
 	<select id="selectUnusedCoupon" resultMap="UserCashCouponEntityResultMap">
@@ -55,6 +56,7 @@
 				and u.uid=#{UID}
 				and c.del=false
 				and u.consumed=false
+				and u.locked=false
 				and now() &lt;= c.`end`
 	</sql>
 	
@@ -133,16 +135,31 @@
 		 		and c.del=false
 				and u.uid=#{UID}
 				and u.consumed=false
+				and u.locked=false
 				and now() between c.start and c.`end`
+				<if test="orderPrice!=null">
+					and c.threshhold &lt;= #{orderPrice}
+				</if>
 	</sql>
 	
 	
-	<!-- 将消费状态置为true 并更新订单号 -->
+	<!-- 将消费状态置为true 锁定状态置为false-->
 	<update id="updateConsumeStatus">
-		update user_cash_coupon 
+		update user_cash_coupon set
 		 consumed = true,
+		 locked=false,
 		 consume_time = now()
 		 where coupon_id = #{couponID}
+		 and uid = #{UID}
+	</update>
+	
+	<!-- 修改锁定状态-->
+	<update id="updateLockedStatus">
+		update user_cash_coupon set
+		 locked=#{locked},
+		 consume_time = now()
+		 where coupon_id = #{couponID}
+		 and uid = #{UID}
 	</update>
 	<!-- 根据用户id和券id查询详情 -->
 	<select id="selectUserCashCoupon" resultMap="UserCashCouponEntityResultMap">
@@ -150,7 +167,9 @@
 			from 
 				user_cash_coupon u , cash_coupon c
 			where u.coupon_id = c.id
-				and u.uid=#{UID}
 				and c.id=#{couponID} 
+				<if test="UID!=null and !''.equals(UID)">
+					and u.uid=#{UID}
+				</if>
 	</select>
 </mapper>

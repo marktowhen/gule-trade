@@ -146,4 +146,15 @@
 			#{rid}
 		</foreach>
 	</delete>
+	<!--查询广告列表 -->
+	<resultMap  id="rlt_addetails" type="com.jingyunbank.etrade.track.entity.AdDetailEntity">
+	     <id column="id" property="ID"/>
+    	 <result column="ad_module_id" property="adModuleId"/>
+    	 <result column="sort_num" property="sortNum"/>
+	</resultMap>
+	<select id = "selectAdDetails" resultMap="rlt_addetails" >
+	select a.* from ad_detail a ,ad_module b
+	where a.ad_module_id = b.id
+	and b.code = #{code} order by a.sort_num asc;
+	</select>
 </mapper>

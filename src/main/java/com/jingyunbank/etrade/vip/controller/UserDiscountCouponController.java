@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Page;
@@ -158,7 +160,7 @@ public class UserDiscountCouponController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/useable/{uid}",method=RequestMethod.GET)
-	public Result<List<UserDiscountCouponVO>> listUseableCoupon(@PathVariable String uid, Page page)
+	public Result<List<UserDiscountCouponVO>> listUseableCoupon(@PathVariable String uid,@RequestParam(required=false) BigDecimal orderPrice, Page page)
 		throws Exception{
 		Range range = null;
 		if(page!=null){
@@ -166,7 +168,7 @@ public class UserDiscountCouponController {
 			range.setFrom(page.getOffset());
 			range.setTo(page.getOffset()+page.getSize());
 		}
-		return Result.ok(userDiscountCouponService.listUseableCoupon(uid, range)
+		return Result.ok(userDiscountCouponService.listUseableCoupon(uid, orderPrice, range)
 			.stream().map( bo ->{ return getVoFromBo(bo);})
 			.collect(Collectors.toList()));
 	}

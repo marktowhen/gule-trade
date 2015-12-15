@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.track.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.track.bo.AdDetail;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
 import com.jingyunbank.etrade.track.dao.TrackDao;
+import com.jingyunbank.etrade.track.entity.AdDetailEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
@@ -152,5 +155,20 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 			throw new DataRemovingException(e);
 		}
 		return flag;
+	}
+	
+	@Override
+	public List<AdDetail> listAdDetails(String code) throws IllegalAccessException, InvocationTargetException {
+		Map<String, String> params = new HashMap<String,String>();
+		params.put("code", code);
+		List<AdDetail> rlist = new ArrayList<AdDetail>();
+		List<AdDetailEntity> list = trackDao.selectAdDetails(params);
+		AdDetail bo = null;
+		for(AdDetailEntity e : list){
+			bo = new AdDetail();
+			BeanUtils.copyProperties(e,bo);
+			rlist.add(bo);
+		}
+		return rlist;
 	}
 }

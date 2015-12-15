@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;
+
 /**
  * 订单详情业务对象<br>
  * 改对象定义订单中包含的商品以及下单时的商品价格等信息
@@ -26,7 +28,15 @@ public class OrderGoodsEntity implements Serializable{
 	private BigDecimal payout;//实际付款
 	private BigDecimal reduce;//优惠减免价格
 	private Date addtime;
+	private GoodsImgEntity goodsImgEntity;
 	
+	
+	public GoodsImgEntity getGoodsImgEntity() {
+		return goodsImgEntity;
+	}
+	public void setGoodsImgEntity(GoodsImgEntity goodsImgEntity) {
+		this.goodsImgEntity = goodsImgEntity;
+	}
 	public String getID() {
 		return ID;
 	}

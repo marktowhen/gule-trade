@@ -43,6 +43,7 @@ public class OrderGoodsController {
 			.stream().map(bo ->{
 			
 			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
+			
 			String addtimeStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(bo.getAddtime());
 			orderGoodsVO.setAddtimeStr(addtimeStr);
 			
