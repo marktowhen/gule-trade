@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.goods.dao.BrandDao">
+	
+	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity" id="brandMap">
+		<result column="bid" property="ID" />
+		<result column="mid_" property="MID" />
+		<result column="name_" property="name" />
+		<result column="desc_" property="desc" />
+		<result column="sort" property="admin_sort" />
+	</resultMap>
+	
+	
+	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity" id="querybrandMap">
+		<result column="mname" property="MID" />
+		<result column="bid" property="ID" />
+		<result column="bname" property="name" />
+		<result column="desc_" property="desc" />
+	</resultMap>
+	
+	<insert id="insertBrand" parameterType="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity">
+	INSERT INTO `goods_brand` ( `id`,`mid`,`name`,`desc`,`admin_sort`) VALUES
+  	(
+  	#{ID},#{MID},#{name},#{desc},#{admin_sort}
+  	)
+	</insert>
+	
+	<select id="selectOne" parameterType="string" resultMap="brandMap">
+		SELECT b.`id` bid, b.`mid` mid_ ,b.`name` name_ ,
+			   b.`desc` desc_ ,b.`admin_sort` sort 
+		FROM goods_brand  b WHERE b.id= #{bid}
+	</select>
+	
+	<update id="updateBrand" parameterType="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity">
+		UPDATE `goods_brand` b SET
+		 <if test="MID !=null and MID !=''">
+			b.`mid` = #{MID},
+		 </if>
+		 <if test="name !=null and name !=''">
+			 b.`name` =  #{name},
+		 </if>
+		  <if test="desc !=null and desc !=''">
+			  b.`desc` =  #{desc},
+		 </if>
+		<if test="admin_sort >= 0 ">
+			    b.`admin_sort` = #{admin_sort},
+		 </if>
+		b.`id` = #{ID}
+		WHERE `id` = #{ID}
+	</update>
+	
+	<select id="selectbrand" resultMap="querybrandMap" parameterType="string">
+		SELECT m.merchant_name mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
+		LEFT JOIN merchant m ON b.mid = m.id
+ 			WHERE MID=#{mid}
+	</select>
+</mapper>
