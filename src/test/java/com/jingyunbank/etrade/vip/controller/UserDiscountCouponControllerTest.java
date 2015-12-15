@@ -9,13 +9,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
 
 public class UserDiscountCouponControllerTest extends TestCaseBase{
+	
+	@Autowired
+	private IUserDiscountCouponService userDiscountCouponService;
 	
 		/**
 		 * 新增
@@ -25,7 +30,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testSave() throws Exception{
 			getMockMvc().perform(
-					 put("/api/user-discountcoupon/")
+					 put("/api/vip/discountcoupon/user/")
 					.param("code", "20151117161936")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +49,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testGet() throws Exception{
 			getMockMvc().perform(
-					 get("/api/user-discountcoupon/1")
+					 get("/api/vip/discountcoupon/user/1")
 					.param("discountCouponVO.threshholdLow", "2")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +64,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testConsume() throws Exception{
 			getMockMvc().perform(
-					 post("/api/user-discountcoupon/")
+					 post("/api/vip/discountcoupon/user/")
 					.param("oid", "1")
 					.param("couponId", "WYIgbRGhRqOP30iGE2Yrmg")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
@@ -81,7 +86,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testGetAmount() throws Exception{
 			getMockMvc().perform(
-					 get("/api/user-discountcoupon/amount")
+					 get("/api/vip/discountcoupon/user/amount")
 					//.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -92,6 +97,44 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 				.andDo(MockMvcResultHandlers.print())
 				.andDo(print());
 		}
+		
+		@Test
+		public void testLock() throws Exception{
+			userDiscountCouponService.lock("A2KMNs64RHiNZjSEi7rY3w", "2");
+		}
+		
+		@Test
+		public void testUnlock() throws Exception{
+			userDiscountCouponService.unlock("A2KMNs64RHiNZjSEi7rY3w", "2");
+		}
+		
+		
+		@Test
+		public void testSingle() throws Exception{
+			userDiscountCouponService.single("A2KMNs64RHiNZjSEi7rY3w", "2");
+		}
+		
+		/**
+		 * 查询可用的
+		 * @throws Exception
+		 * 2015年11月17日 qxs
+		 */
+		@Test
+		public void testUseableList() throws Exception{
+			getMockMvc().perform(
+					 get("/api/vip/discountcoupon/user/useable/2")
+					.param("orderPrice", "60")
+					.sessionAttr(ServletBox.LOGIN_ID, "2")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
+		}
+		
+		
 		
 		
 		
