@@ -42,7 +42,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	
 	@Override
 	public List<Merchant> listMerchants() throws IllegalAccessException, InvocationTargetException {
-		this.to = 3;
+		this.to = 5;
 		Map<String, Integer> params = new HashMap<String,Integer>();
 		params.put("from", this.from);
 		params.put("to", this.to);
