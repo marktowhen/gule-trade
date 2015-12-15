@@ -30,7 +30,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testSave() throws Exception{
 			getMockMvc().perform(
-					 put("/api/user-cashcoupon/")
+					 put("/api/vip/cashcoupon/user/")
 					.param("code", "5922969784792231886")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +49,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testGet() throws Exception{
 			getMockMvc().perform(
-					 get("/api/user-cashcoupon/1")
+					 get("/api/vip/cashcoupon/user/1")
 					.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testConsume() throws Exception{
 			getMockMvc().perform(
-					 post("/api/user-cashcoupon/")
+					 post("/api/vip/cashcoupon/user/")
 					.param("oid", "1")
 					.param("couponId", "ly87INApQGaCDzKS4evskA")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
@@ -86,7 +86,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testGetAmount() throws Exception{
 			getMockMvc().perform(
-					 get("/api/user-cashcoupon/amount")
+					 get("/api/vip/cashcoupon/user/amount")
 					.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -113,6 +113,26 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testSingle() throws Exception{
 			userCashCouponService.single("Ys3WfVB-RUK-Yff_-hqacQ", "2");
+		}
+		
+		/**
+		 * 查询可用的
+		 * @throws Exception
+		 * 2015年11月17日 qxs
+		 */
+		@Test
+		public void testUseableList() throws Exception{
+			getMockMvc().perform(
+					 get("/api/vip/cashcoupon/user/useable/2")
+					//.param("orderPrice", "100")
+					.sessionAttr(ServletBox.LOGIN_ID, "2")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.code").value("200"))
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andDo(MockMvcResultHandlers.print())
+				.andDo(print());
 		}
 		
 		

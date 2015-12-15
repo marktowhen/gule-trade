@@ -199,7 +199,20 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 			offset = range.getFrom();
 			size = range.getTo()-range.getFrom();
 		}
-		return userDiscountCouponDao.selectUseableCoupon(uid, offset, size )
+		return userDiscountCouponDao.selectUseableCoupon(uid, null, offset, size )
+			.stream().map(rEntity->{return getBoFromEntity(rEntity);})
+			.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<UserDiscountCoupon> listUseableCoupon(String uid, 	BigDecimal orderPrice, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userDiscountCouponDao.selectUseableCoupon(uid, orderPrice, offset, size )
 			.stream().map(rEntity->{return getBoFromEntity(rEntity);})
 			.collect(Collectors.toList());
 	}
@@ -236,6 +249,8 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 	public Optional<UserDiscountCoupon> single(String couponID) {
 		return single(couponID, null);
 	}
+
+	
 
 	
 

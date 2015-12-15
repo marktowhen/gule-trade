@@ -191,7 +191,20 @@ public class UserCashCouponService  implements IUserCashCouponService {
 			offset = range.getFrom();
 			size = range.getTo()-range.getFrom();
 		}
-		return userCashCouponDao.selectUseableCoupon(uid, offset, size)
+		return userCashCouponDao.selectUseableCoupon(uid, null, offset, size)
+			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
+			.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<UserCashCoupon> listUseableCoupon(String uid, BigDecimal orderPrice, Range range) {
+		long offset = 0L;
+		long size = 0L;
+		if(range!=null){
+			offset = range.getFrom();
+			size = range.getTo()-range.getFrom();
+		}
+		return userCashCouponDao.selectUseableCoupon(uid,orderPrice, offset, size)
 			.stream().map( entityResul ->{return getBoFromEntity(entityResul);})
 			.collect(Collectors.toList());
 	}
@@ -228,6 +241,8 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	public Optional<UserCashCoupon> single(String couponID) {
 		return single(couponID, null);
 	}
+
+	
 
 
 
