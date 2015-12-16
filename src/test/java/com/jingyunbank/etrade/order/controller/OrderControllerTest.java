@@ -62,9 +62,8 @@ public class OrderControllerTest extends TestCaseBase {
 		vo.setPaytypeCode("ONLINE");
 		vo.setPaytypeName("线上支付");
 		vo.setReceiver("XXXX");
-		vo.setBusinessReceipt(true);
 		vo.setInvoiceTitle("XSADFSADFAS");
-		vo.setRequireInvoice(true);
+		vo.setInvoiceType("个人");
 		vo.setUID("XYZXYZ");
 		
 		List<PurchaseOrderVO> ovos = new ArrayList<PurchaseOrderVO>();

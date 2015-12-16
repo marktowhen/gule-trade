@@ -116,6 +116,8 @@ public class OrderController {
 		setOrdersGoodsFinalPrice(couponID, couponType, UID, orders);
 		
 		orderContextService.save(orders);
+		
+		session.removeAttribute(CartController.GOODS_IN_CART_TO_CLEARING);
 		return Result.ok(purchase);
 	}
 
