@@ -137,6 +137,9 @@
 				and u.consumed=false
 				and u.locked=false
 				and now() between c.start and c.`end`
+				<if test="orderPrice!=null">
+					and c.threshhold &lt;= #{orderPrice}
+				</if>
 	</sql>
 	
 	

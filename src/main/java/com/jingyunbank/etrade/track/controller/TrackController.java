@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.track.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,9 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.merchant.bo.Merchant;
+import com.jingyunbank.etrade.api.track.bo.AdDetail;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
+import com.jingyunbank.etrade.merchant.bean.MerchantVO;
+import com.jingyunbank.etrade.track.bean.AdDetailVO;
 import com.jingyunbank.etrade.track.bean.FavoritesGoodsFacadeVO;
 import com.jingyunbank.etrade.track.bean.FavoritesGoodsVO;
 import com.jingyunbank.etrade.track.bean.FavoritesMerchantFacadeVO;
@@ -224,5 +229,26 @@ public class TrackController {
 		ids = Arrays.asList(tmpstr);
 		trackService.removeFavoritesById(ids);
 		return Result.ok(id);
+	}
+	/**
+	 * 推荐商家广告的检索
+	 * @param request
+	 * @param session
+	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 */
+	@RequestMapping(value="/ad/list/{code}", method = RequestMethod.GET)
+	public Result<List<AdDetailVO>> listAdDetails(HttpServletRequest request, @PathVariable String code,HttpSession session) throws Exception{
+		//转成VO
+		List<AdDetail> list = trackService.listAdDetails(code);
+		List<AdDetailVO> rlist = new ArrayList<AdDetailVO>();
+		AdDetailVO vo = null;
+		for(AdDetail bo : list){
+			vo = new AdDetailVO();
+			BeanUtils.copyProperties(bo,vo);
+			rlist.add(vo);
+		}
+		return Result.ok(rlist);
 	}
 }

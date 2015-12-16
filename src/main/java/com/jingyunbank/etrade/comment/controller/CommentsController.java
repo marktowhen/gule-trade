@@ -91,7 +91,7 @@ public class CommentsController {
 				commentsImg.setCommentID(commentVO.getID());;
 				
 				commentImgService.save(commentsImg);
-			/*	}*/
+				/*}*/
 				//修改订单商品的状态
 				orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);
 			//修改订单的状态
@@ -297,5 +297,26 @@ public class CommentsController {
 		commentsVO.setLevelGrade(levelGrade);
 		return Result.ok(commentsVO);	
 		
+	}
+	/**
+	 * 通过oid查出详情
+	 * @param oid
+	 * @return
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/comments/details/{oid}",method=RequestMethod.GET)
+	public Result<CommentsVO> getCommentDetails(@PathVariable String oid){
+		float personalGrade=0;
+		CommentsVO commentsVO=new CommentsVO();
+		Optional<Comments> optional=commentService.selectCommentByOid(oid);
+		if(optional.get().getCommentGrade()==0&&optional.get().getServiceGrade()==0&&optional.get().getLogisticsGrade()==0){
+			 personalGrade=0;
+		}
+		BeanUtils.copyProperties(optional.get(), commentsVO);
+		List<CommentsImg> commentsImgs=	commentImgService.getById(optional.get().getID());
+		commentsVO.setImgs(commentsImgs);
+		 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
+			commentsVO.setPersonalGrade(personalGrade);
+		return Result.ok(commentsVO);		
 	}
 }

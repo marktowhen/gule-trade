@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -83,12 +84,17 @@ public interface UserDiscountCouponDao {
 	/**
 	 * 当前可用的列表
 	 * @param uid
+	 * @param orderPrice
 	 * @param offset
 	 * @param size
 	 * @return
 	 * 2015年12月3日 qxs
 	 */
-	List<UserDiscountCouponEntity> selectUseableCoupon(@Param(value="UID")String uid,@Param(value="offset") long offset, @Param(value="size") long size);
+	List<UserDiscountCouponEntity> selectUseableCoupon(
+			@Param(value="UID")String uid,
+			@Param(value="orderPrice")BigDecimal orderPrice,
+			@Param(value="offset") long offset, 
+			@Param(value="size") long size);
 	
 	/**
 	 * 修改锁定状态

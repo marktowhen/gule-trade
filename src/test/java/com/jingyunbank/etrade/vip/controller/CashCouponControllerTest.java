@@ -38,7 +38,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/cashcoupon/")
+					 post("/api/vip/cashcoupon/")
 					 .content(json)
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +67,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/cashcoupon/10")
+					 post("/api/vip/cashcoupon/20")
 					 .content(json)
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testIsValid() throws Exception{
 			getMockMvc().perform(
-					 get("/api/cashcoupon/isvalid")
+					 get("/api/vip/cashcoupon/isvalid")
 					.param("code", "20151117103601")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +108,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testDel() throws Exception{
 			getMockMvc().perform(
-					 delete("/api/cashcoupon/")
+					 delete("/api/vip/cashcoupon/")
 					.param("code", "20151117103601")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +128,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testList() throws Exception{
 			getMockMvc().perform(
-					 get("/api/cashcoupon/list")
+					 get("/api/vip/cashcoupon/list")
 					 .param("validTime", "true")
 					 .sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +148,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testAmount() throws Exception{
 			getMockMvc().perform(
-					 get("/api/cashcoupon/amount")
+					 get("/api/vip/cashcoupon/amount")
 					 .param("validTime", "true")
 					 .sessionAttr(ServletBox.LOGIN_ID, "1")
 					 .contentType(MediaType.APPLICATION_JSON)

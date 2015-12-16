@@ -21,7 +21,7 @@ public class CommentsVO {
 	private String goodsService;//商品的服务
 	private int serviceGrade;//服务级别
 	private int logisticsGrade;//物流级别
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;//添加评价的时间
 	private int commentStatus;//评价的是否的状态
 	private int sort;//按其排序
@@ -31,14 +31,27 @@ public class CommentsVO {
 	private UserVO userVO; 
 	private float level;//所有评论的总级别
 	private int levelGrade;//所有评论的总级别
+	private float personalGrade;
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
-	private List<String> picture;
+	private String picture;
 	private String imgPath;
 	
 	
 	
 	
+	public String getPicture() {
+		return picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+	public float getPersonalGrade() {
+		return personalGrade;
+	}
+	public void setPersonalGrade(float personalGrade) {
+		this.personalGrade = personalGrade;
+	}
 	public float getLevel() {
 		return level;
 	}
@@ -74,12 +87,6 @@ public class CommentsVO {
 	}
 	public void setZongjibie(float zongjibie) {
 		this.zongjibie = zongjibie;
-	}
-	public List<String> getPicture() {
-		return picture;
-	}
-	public void setPicture(List<String> picture) {
-		this.picture = picture;
 	}
 
 	public List<CommentsImg> getImgs() {

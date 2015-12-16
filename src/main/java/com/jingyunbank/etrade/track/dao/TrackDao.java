@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.jingyunbank.etrade.track.entity.AdDetailEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
@@ -62,5 +63,10 @@ public interface TrackDao {
 	 * @throws Exception
 	 */
 	public boolean deleteFavoritesById(@Param("id") List<String> id) throws Exception;
-	
+	/**
+	 * 查询广告明细
+	 * @param params
+	 * @return
+	 */
+	public List<AdDetailEntity> selectAdDetails(Map<String, String> params);
 }
