@@ -42,25 +42,23 @@ public class CartController {
 	private ICartService cartService;
 	
 	/**
-	 *	uri : get /api/cart/goods/list
+	 *	uri : get /api/cart/goods/list/:uid
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/cart/goods/list",
+	@RequestMapping(value="/api/cart/goods/list/{uid}",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
-	public Result<CartVO> list(HttpSession session) throws Exception{
-		String uid = ServletBox.getLoginUID(session);
+	public Result<CartVO> list(@PathVariable String uid) throws Exception{
 		List<GoodsInCart> goodsincart = cartService.listGoods(uid);
 		CartVO cart = convert(goodsincart);
 		return Result.ok(cart);
 	}
 	
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/cart/goods/count",
+	@RequestMapping(value="/api/cart/goods/count/{uid}",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
-	public Result<Integer> count(HttpSession session) throws Exception{
-		String uid = ServletBox.getLoginUID(session);
+	public Result<Integer> count(@PathVariable String uid) throws Exception{
 		int count = cartService.count(uid);
 		return Result.ok(count);
 	}
