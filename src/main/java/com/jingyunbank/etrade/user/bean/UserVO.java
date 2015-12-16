@@ -81,12 +81,6 @@ public class UserVO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	/*public UserInfo getUinfo() {
-		return uinfo;
-	}
-	public void setUinfo(UserInfo uinfo) {
-		this.uinfo = uinfo;
-	}*/
 	public boolean isLocked() {
 		return locked;
 	}
