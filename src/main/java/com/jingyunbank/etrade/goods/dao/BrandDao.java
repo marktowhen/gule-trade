@@ -32,20 +32,29 @@ public interface BrandDao {
 	 * @throws Exception
 	 */
 	public GoodsBrandEntity selectOne(String bid) throws Exception;
-	
+
 	/**
 	 * 修改品牌
+	 * 
 	 * @param entity
 	 * @return
 	 * @throws Exception
 	 */
 	public int updateBrand(GoodsBrandEntity entity) throws Exception;
-	
+
 	/**
 	 * 根据MID 查询brand
+	 * 
 	 * @param mid
 	 * @return
 	 * @throws Exception
 	 */
 	public List<GoodsBrandEntity> selectbrand(String mid) throws Exception;
+	
+	/**
+	 * 查询所有brands
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsBrandEntity> selectAllBrands() throws Exception;
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +22,7 @@ import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
+import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.controller.UserController;
@@ -31,6 +33,8 @@ public class SMSController {
 
 	@Autowired
 	private IUserService userService;
+	@Resource
+	private ISyncNotifyService smsService;
 	
 	/**
 	 * 为传入的手机号发送验证码
@@ -136,12 +140,12 @@ public class SMSController {
 		if(checkSendTime(request.getSession(), mobile)){
 			request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
 			Message message = new Message();
-			message.setContent("您的验证码是:"+code);
+			message.setContent("您好，您的验证码是"+code);
 			message.getReceiveUser().setMobile(mobile);
 			message.setTitle("");
-			//smsService.inform(message);
+			smsService.inform(message);
 			request.getSession().setAttribute(mobile, new Date());
-			System.out.println("-----------------"+"您的验证码是:"+code);
+			System.out.println("-----------------"+"您好，您的验证码是"+code);
 			return Result.ok();
 		}
 		return Result.fail("发送过于频繁,请稍后再试");
