@@ -41,5 +41,17 @@ public class CashCouponStrategyService  implements ICouponStrategyService {
 		userCashCouponService.consume(couponID, UID);
 	}
 
+	@Override
+	public void lock(String UID, String couponID)
+			throws DataRefreshingException {
+		userCashCouponService.lock(couponID, UID);
+	}
+
+	@Override
+	public void unlock(String UID, String couponID)
+			throws DataRefreshingException {
+		userCashCouponService.unlock(couponID, UID);
+	}
+
 
 }

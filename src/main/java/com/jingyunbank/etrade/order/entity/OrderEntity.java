@@ -21,6 +21,8 @@ public class OrderEntity {
 	private String paytypeName;
 	private String deliveryTypeCode;
 	private String deliveryTypeName;
+	private String invoiceType;//发票类型（个人，企业）
+	private String invoiceTitle;
 	private String couponID;
 	private String couponType;
 	private BigDecimal price;//订单总价
@@ -207,6 +209,18 @@ public class OrderEntity {
 	}
 	public void setPayout(BigDecimal payout) {
 		this.payout = payout;
+	}
+	public String getInvoiceType() {
+		return invoiceType;
+	}
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+	public String getInvoiceTitle() {
+		return invoiceTitle;
+	}
+	public void setInvoiceTitle(String invoiceTitle) {
+		this.invoiceTitle = invoiceTitle;
 	}
 	
 }

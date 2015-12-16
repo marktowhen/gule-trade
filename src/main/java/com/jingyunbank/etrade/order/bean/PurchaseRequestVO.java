@@ -42,8 +42,7 @@ public class PurchaseRequestVO {
 	@NotNull
 	private String paytypeName;
 	
-	private boolean requireInvoice = false;//是否需要发票, 默认不需要
-	private boolean businessReceipt;//是否是单位发票
+	private String invoiceType;
 	private String invoiceTitle;//发票抬头
 
 	private String couponID;//卡券id
@@ -96,17 +95,11 @@ public class PurchaseRequestVO {
 	public void setPaytypeName(String paytypeName) {
 		this.paytypeName = paytypeName;
 	}
-	public boolean isRequireInvoice() {
-		return requireInvoice;
+	public String getInvoiceType() {
+		return invoiceType;
 	}
-	public void setRequireInvoice(boolean requireInvoice) {
-		this.requireInvoice = requireInvoice;
-	}
-	public boolean isBusinessReceipt() {
-		return businessReceipt;
-	}
-	public void setBusinessReceipt(boolean businessReceipt) {
-		this.businessReceipt = businessReceipt;
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
 	}
 	public String getInvoiceTitle() {
 		return invoiceTitle;

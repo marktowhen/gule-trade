@@ -6,6 +6,12 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+/**
+ *  用于商品修改的展示VO
+* Title: GoodsOperationShowVO
+* @author    duanxf
+* @date      2015年12月15日
+ */
 public class GoodsOperationShowVO implements Serializable{
 
 	private static final long serialVersionUID = 1L;

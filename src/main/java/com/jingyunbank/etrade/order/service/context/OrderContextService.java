@@ -108,6 +108,12 @@ public class OrderContextService implements IOrderContextService {
 			payService.save(payments);
 			//将下订单的商品从购物车中删除掉
 			cartService.remove(goods.stream().map(x->x.getGID()).collect(Collectors.toList()), orders.get(0).getUID());
+			//冻结优惠卡
+			Orders fo = orders.get(0);
+			if(StringUtils.hasText(fo.getCouponID()) && StringUtils.hasText(fo.getCouponType())){
+				couponStrategyResolver.resolve(fo.getCouponType())
+								.lock(fo.getUID(), fo.getCouponID());
+			}
 		}catch(Exception e){
 			throw new DataSavingException(e);
 		}
@@ -124,7 +130,7 @@ public class OrderContextService implements IOrderContextService {
 		if(orders.size() == 0){
 			return;
 		}
-		Orders fo = orders.get(0);
+		
 		List<String> oids = orders.stream().map(x->x.getID()).collect(Collectors.toList());
 		//刷新订单状态
 		orderService.refreshStatus(oids, OrderStatusDesc.PAID);
@@ -142,6 +148,7 @@ public class OrderContextService implements IOrderContextService {
 		//更新库存
 		//goodsOperationService.refreshGoodsVolume(gid, count);
 		//更新优惠卡券状态
+		Orders fo = orders.get(0);
 		if(StringUtils.hasText(fo.getCouponID()) && StringUtils.hasText(fo.getCouponType())){
 			couponStrategyResolver.resolve(fo.getCouponType())
 							.consume(fo.getUID(), fo.getCouponID());
@@ -169,6 +176,11 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAYFAIL);
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
+		Orders fo = orders.get(0);
+		if(StringUtils.hasText(fo.getCouponID()) && StringUtils.hasText(fo.getCouponType())){
+			couponStrategyResolver.resolve(fo.getCouponType())
+							.unlock(fo.getUID(), fo.getCouponID());
+		}
 	}
 
 	@Override
@@ -259,6 +271,10 @@ public class OrderContextService implements IOrderContextService {
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CANCELED);
+		if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
+			couponStrategyResolver.resolve(order.getCouponType())
+							.unlock(order.getUID(), order.getCouponID());
+		}
 		return true;
 	}
 

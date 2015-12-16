@@ -141,7 +141,7 @@ public class GoodsOperationController {
 			vo = new GoodsOperationShowVO();
 			BeanUtils.copyProperties(showbo.get(), vo);
 		}
-		System.err.println(vo.getProductionDate());
+		//System.err.println(vo.getProductionDate());
 		return Result.ok(vo);
 	}
 

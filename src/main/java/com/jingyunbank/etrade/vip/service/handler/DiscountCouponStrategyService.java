@@ -44,4 +44,16 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 			throws DataRefreshingException {
 		userDiscountCouponService.consume(couponID, UID);
 	}
+
+	@Override
+	public void lock(String UID, String couponID)
+			throws DataRefreshingException {
+		userDiscountCouponService.lock(couponID, UID);
+	}
+
+	@Override
+	public void unlock(String UID, String couponID)
+			throws DataRefreshingException {
+		userDiscountCouponService.unlock(couponID, UID);
+	}
 }

@@ -21,6 +21,8 @@ public class Order2ShowVO {
 	private String paytypeName;
 	private String deliveryTypeCode;
 	private String deliveryTypeName;
+	private String invoiceType;
+	private String invoiceTitle;
 	private BigDecimal price;//订单总价
 	private BigDecimal payout;//优惠后价格
 	private BigDecimal postage;
@@ -193,5 +195,17 @@ public class Order2ShowVO {
 	}
 	public void setDeliveryTypeName(String deliveryTypeName) {
 		this.deliveryTypeName = deliveryTypeName;
+	}
+	public String getInvoiceType() {
+		return invoiceType;
+	}
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+	public String getInvoiceTitle() {
+		return invoiceTitle;
+	}
+	public void setInvoiceTitle(String invoiceTitle) {
+		this.invoiceTitle = invoiceTitle;
 	}
 }
