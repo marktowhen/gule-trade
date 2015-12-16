@@ -56,4 +56,10 @@
 		LEFT JOIN merchant m ON b.mid = m.id
  			WHERE MID=#{mid}
 	</select>
+	
+	<select id="selectAllBrands" resultMap="querybrandMap">
+		SELECT m.merchant_name mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
+		LEFT JOIN merchant m ON b.mid = m.id
+	</select>
+
 </mapper>

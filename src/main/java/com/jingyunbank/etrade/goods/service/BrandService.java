@@ -67,6 +67,17 @@ public class BrandService implements IBrandService {
 		return brands;
 	}
 
+	@Override
+	public List<Brand> listBrands() throws Exception {
+		// TODO Auto-generated method stub
+		List<Brand> brands = brandDao.selectAllBrands().stream().map(dao -> {
+			Brand bo = new Brand();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return brands;
+	}
+
 
 
 }

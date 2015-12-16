@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.goods.bean.BrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 
 public class GoodsOperationControllerTest extends TestCaseBase {
@@ -119,6 +120,54 @@ public class GoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void getmerchant() throws Exception {
 		getMockMvc().perform(get("/api/goodsOperation/merchant/list").characterEncoding("utf-8")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+		.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
+	
+	
+	@Test
+	public void saveBrand() throws Exception {
+		BrandVO vo = new BrandVO();
+		vo.setName("测试品牌添加");
+		vo.setMID("1");
+		vo.setDesc("测试品牌添加测试品牌添加");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(vo);
+		getMockMvc().perform(post("/api/brand/save").characterEncoding("utf-8")
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+		.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
+
+	
+	@Test
+	public void getbrand() throws Exception {
+		getMockMvc().perform(get("/api/brand/updateveiw/1").characterEncoding("utf-8")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+		.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
+	
+	@Test
+	public void updateBrand() throws Exception {
+		BrandVO vo = new BrandVO();
+		vo.setName("测试品牌添加-2");
+		vo.setMID("2");
+		vo.setDesc("测试品牌添加测试品牌添加-2");
+		vo.setAdmin_sort(0);
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(vo);
+		getMockMvc().perform(post("/api/brand/update/BZPAEhpaQkiweDTSLTGJ2A").characterEncoding("utf-8")
+				.content(json)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
