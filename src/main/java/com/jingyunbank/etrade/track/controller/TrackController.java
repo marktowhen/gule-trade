@@ -4,28 +4,36 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Page;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
-import com.jingyunbank.etrade.api.merchant.bo.Merchant;
 import com.jingyunbank.etrade.api.track.bo.AdDetail;
+import com.jingyunbank.etrade.api.track.bo.AdModule;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
-import com.jingyunbank.etrade.merchant.bean.MerchantVO;
 import com.jingyunbank.etrade.track.bean.AdDetailVO;
+import com.jingyunbank.etrade.track.bean.AdModuleVO;
 import com.jingyunbank.etrade.track.bean.FavoritesGoodsFacadeVO;
 import com.jingyunbank.etrade.track.bean.FavoritesGoodsVO;
 import com.jingyunbank.etrade.track.bean.FavoritesMerchantFacadeVO;
@@ -251,4 +259,186 @@ public class TrackController {
 		}
 		return Result.ok(rlist);
 	}
+	/**
+	 * 根据ID获取广告模块信息
+	 * @param session
+	 * @param request
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/admodule/info/{id}",method=RequestMethod.GET)
+	public Result<?> getAdmoduleInfo(HttpSession session,HttpServletRequest request,@PathVariable String id) throws Exception{
+		Optional<AdModule> adModule= trackService.getAdmoduleInfo(id);
+		if(adModule.isPresent()){
+			AdModule bo = adModule.get();
+			AdModuleVO vo = new AdModuleVO();
+			BeanUtils.copyProperties(bo,vo);
+			return Result.ok(vo);
+		}else{
+			return Result.fail("查询没有数据！");
+		}
+	}
+	/**
+	 * 根据ID获取广告信息
+	 * @param session
+	 * @param request
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/addetail/info/{id}",method=RequestMethod.GET)
+	public Result<?> getAddetailInfo(HttpSession session,HttpServletRequest request,@PathVariable String id) throws Exception{
+		Optional<AdDetail> adDetail= trackService.getAddetailInfo(id);
+		if(adDetail.isPresent()){
+			AdDetail bo = adDetail.get();
+			AdDetailVO vo = new AdDetailVO();
+			BeanUtils.copyProperties(bo,vo);
+			return Result.ok(vo);
+		}else{
+			return Result.fail("查询没有数据！");
+		}
+	}
+	/**
+	 * 保存广告模块信息
+	 * @param request
+	 * @param session
+	 * @param adModuleVO
+	 * @param valid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/admodule/saveAdmodule", method = RequestMethod.POST)
+	public Result<AdModuleVO> saveAdmodule(HttpServletRequest request, HttpSession session,@RequestBody @Valid AdModuleVO adModuleVO,BindingResult valid) throws Exception {
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
+		AdModule adModule = new AdModule();
+		BeanUtils.copyProperties(adModuleVO, adModule);
+		adModule.setID(KeyGen.uuid());
+		if(trackService.saveAdmodule(adModule)){
+			return Result.ok(adModuleVO);
+		}
+		return Result.ok(adModuleVO);
+	}
+	/**
+	 * 保存广告信息
+	 * @param request
+	 * @param session
+	 * @param adDetailVO
+	 * @param valid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addetail/saveAddetail", method = RequestMethod.POST)
+	public Result<AdDetailVO> saveAddetail(HttpServletRequest request, HttpSession session,@RequestBody @Valid AdDetailVO adDetailVO,BindingResult valid) throws Exception {
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
+		AdDetail adDetail = new AdDetail();
+		BeanUtils.copyProperties(adDetailVO, adDetail);
+		adDetail.setID(KeyGen.uuid());
+		if(trackService.saveAddetail(adDetail)){
+			return Result.ok(adDetailVO);
+		}
+		return Result.ok(adDetailVO);
+	}
+	/**
+	 * 更新广告模块信息
+	 * @param request
+	 * @param session
+	 * @param adModuleVO
+	 * @param valid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/admodule/updateAdmodule", method = RequestMethod.POST)
+	public Result<AdModuleVO> updateAdmodule(HttpServletRequest request, HttpSession session,@RequestBody @Valid AdModuleVO adModuleVO,BindingResult valid) throws Exception{
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
+		AdModule adModule = new AdModule();
+		BeanUtils.copyProperties(adModuleVO, adModule);
+		if(this.trackService.updateAdmodule(adModule)){
+			return Result.ok(adModuleVO);
+		}
+		return Result.ok(adModuleVO);
+	}
+	/**
+	 * 更新广告信息
+	 * @param request
+	 * @param session
+	 * @param addetailVO
+	 * @param valid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addetail/updateAddetail", method = RequestMethod.POST)
+	public Result<AdDetailVO> updateAddetail(HttpServletRequest request, HttpSession session,@RequestBody @Valid AdDetailVO addetailVO,BindingResult valid) throws Exception{
+		// 异常信息
+		if (valid.hasErrors()) {
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
+		AdDetail addetail = new AdDetail();
+		BeanUtils.copyProperties(addetailVO, addetail);
+		if(this.trackService.updateAddetail(addetail)){
+			return Result.ok(addetailVO);
+		}
+		return Result.ok(addetailVO);
+	}
+	/**
+	 * 查询广告模块列表
+	 * @param request
+	 * @param adModuleVO
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/admodule/list", method = RequestMethod.GET)
+	public Result<List<AdModuleVO>> queryAdmoduleList(HttpServletRequest request, AdModuleVO adModuleVO, Page page)
+			throws Exception {
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getSize());
+		AdModule adModule = new AdModule();
+		BeanUtils.copyProperties(adModuleVO, adModule);
+		
+		List<AdModuleVO> adModulelist = trackService.listModulesByCondition(adModule, range).stream().map(bo -> {
+			AdModuleVO vo = new AdModuleVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		
+		return Result.ok(adModulelist);
+	}
+	
+	@RequestMapping(value = "/addetail/list", method = RequestMethod.GET)
+	public Result<List<AdDetailVO>> queryAddetailList(HttpServletRequest request, AdDetailVO adDetailVO, Page page)
+			throws Exception {
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getSize());
+		AdDetail adDetail = new AdDetail();
+		BeanUtils.copyProperties(adDetailVO, adDetail);
+		
+		List<AdDetailVO> adDetaillist = trackService.listAddetailsByCondition(adDetail, range).stream().map(bo -> {
+			AdDetailVO vo = new AdDetailVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		
+		return Result.ok(adDetaillist);
+	}
+	
 }

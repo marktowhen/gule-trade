@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 import com.jingyunbank.etrade.track.entity.AdDetailEntity;
+import com.jingyunbank.etrade.track.entity.AdModuleEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
@@ -69,4 +72,47 @@ public interface TrackDao {
 	 * @return
 	 */
 	public List<AdDetailEntity> selectAdDetails(Map<String, String> params);
+	/**
+	 * 根据ID查询广告模块信息
+	 * @param id
+	 * @return
+	 */
+	public AdModuleEntity selectAdmoduleById(String id);
+	/**
+	 * 根据ID查询广告信息
+	 * @param id
+	 * @return
+	 */
+	public AdDetailEntity selectAddetailById(String id);
+	/**
+	 * 保存广告模块
+	 * @param adModuleEntity
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean insertAdModule(AdModuleEntity adModuleEntity) throws Exception;
+	/**
+	 * 保存广告
+	 * @param adDetailEntity
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean insertAdDetail(AdDetailEntity adDetailEntity) throws Exception;
+	/**
+	 * 更新广告模块
+	 * @param adModuleEntity
+	 * @return
+	 * @throws DataRefreshingException
+	 */
+	public boolean updateAdmodule(AdModuleEntity adModuleEntity) throws DataRefreshingException;
+	/**
+	 * 更新广告
+	 * @param adDetailEntity
+	 * @return
+	 * @throws DataRefreshingException
+	 */
+	public boolean updateAddetail(AdDetailEntity adDetailEntity) throws DataRefreshingException;
+	public List<AdModuleEntity> selectModulesByCondition(Map<String, Object> map) throws Exception;
+	public List<AdDetailEntity> selectAddetailsByCondition(Map<String, Object> map) throws Exception;
+	
 }
