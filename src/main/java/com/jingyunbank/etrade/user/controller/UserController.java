@@ -78,7 +78,12 @@ public class UserController {
 			users.setID(ServletBox.getLoginUID(request));
 			//手机验证码
 			Result<String> checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			
+			
 			if(checkResult.isOk()){
+				if(userService.getByPhone(mobile).isPresent()){
+					return Result.fail("该手机号已被使用");
+				}
 				userService.refresh(users);
 				return Result.ok();
 			}
@@ -105,7 +110,11 @@ public class UserController {
 			users.setID(ServletBox.getLoginUID(request));
 			//邮箱验证码
 			Result<String> checkResult = checkCode(code, request, UserController.EMAIL_MESSAGE);
+			
 			if(checkResult.isOk()){
+				if(userService.getByEmail(email).isPresent()){
+					return Result.fail("该邮箱已被使用");
+				}
 				userService.refresh(users); 
 				return Result.ok();
 			}

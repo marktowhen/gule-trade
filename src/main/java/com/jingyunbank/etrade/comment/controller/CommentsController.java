@@ -254,7 +254,9 @@ public class CommentsController {
 		for(int i=0;i<comments.size();i++){
 			gradeCount+=comments.get(i).getCommentGrade();
 		}
-		zongjibie=gradeCount/personCount;
+		if(personCount!=0){
+			zongjibie=gradeCount/personCount;
+		}
 		CommentsVO commentsVO=new CommentsVO();
 		int allLevel=(int)zongjibie*10;
 		commentsVO.setAllLevel(allLevel);
@@ -289,7 +291,9 @@ public class CommentsController {
 			serviceCount+=comments.get(i).getServiceGrade();
 			logisticsCount+=comments.get(i).getLogisticsGrade();	
 		}
-		level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
+		if(personCount!=0){
+			level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
+		}
 		int levelGrade=(int)level*10;
 		CommentsVO commentsVO=new CommentsVO();
 		commentsVO.setLevel(level);

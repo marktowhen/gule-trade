@@ -32,6 +32,9 @@ public class GoodsInCartVO implements Serializable {
 	@Min(value=1)
 	private int count;
 	
+	private int stock;//库存
+	private String imgpath;//图片路径
+	
 	public String getGID() {
 		return GID;
 	}
@@ -91,6 +94,18 @@ public class GoodsInCartVO implements Serializable {
 	}
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
+	}
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+	public String getImgpath() {
+		return imgpath;
+	}
+	public void setImgpath(String imgpath) {
+		this.imgpath = imgpath;
 	}
 		
 }

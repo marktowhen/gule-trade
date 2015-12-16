@@ -44,7 +44,7 @@ public class CartControllerTest extends TestCaseBase{
 	@Test
 	public void testList() throws Exception{
 		getMockMvc().perform(
-				get("/api/cart/goods/list")
+				get("/api/cart/goods/list/123321")
 				.sessionAttr(ServletBox.LOGIN_ID, "123321")
 				.accept(MediaType.APPLICATION_JSON)
 			)
