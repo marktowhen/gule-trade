@@ -36,17 +36,13 @@ public class OrderGoodsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/received/order/goods",method=RequestMethod.GET)
+	@RequestMapping(value="/api/order/goods",method=RequestMethod.GET)
 	public Result<List<OrderGoodsVO>> listOrderGoods(HttpSession session,HttpServletRequest request){
 		String uid = ServletBox.getLoginUID(request);
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED)/*OrderStatusDesc.RECEIVED*/
 			.stream().map(bo ->{
 			
-			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
-			
-			String addtimeStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(bo.getAddtime());
-			orderGoodsVO.setAddtimeStr(addtimeStr);
-			
+			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();			
 			BeanUtils.copyProperties(bo, orderGoodsVO);
 			return orderGoodsVO;
 		}).collect(Collectors.toList()));
@@ -64,10 +60,7 @@ public class OrderGoodsController {
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED)/*OrderStatusDesc.RECEIVED*/
 			.stream().map(bo ->{
 			
-			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
-			String addtimeStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(bo.getAddtime());
-			orderGoodsVO.setAddtimeStr(addtimeStr);
-			
+			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();			
 			BeanUtils.copyProperties(bo, orderGoodsVO);
 			return orderGoodsVO;
 		}).collect(Collectors.toList()));
@@ -114,8 +107,6 @@ public class OrderGoodsController {
 			Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 			OrderGoods	orderGoods =optional.get();
 			OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
-			String addtimeStrs= new SimpleDateFormat("yyyy-MM-dd").format(orderGoods.getAddtime());
-			orderGoodsVO.setAddtimeStr(addtimeStrs);
 			
 			BeanUtils.copyProperties(orderGoods, orderGoodsVO);
 			

@@ -71,7 +71,7 @@ public class InformationSiteController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/information/sites/{name}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/information/sitesSchool/{name}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result selectSitesByName(@PathVariable String name,HttpServletRequest request,HttpSession session) throws Exception{
 		Optional<InformationSite> optional= informationSiteService.singleSitesByName(name);

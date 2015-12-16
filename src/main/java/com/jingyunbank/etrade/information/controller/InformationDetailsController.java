@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,15 +35,14 @@ public class InformationDetailsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/information/savedetails",method=RequestMethod.PUT)
-	@ResponseBody
-	public Result saveDetails(HttpServletRequest request,HttpSession session,InformationDetailsVO informationDetailsVO) throws Exception{
+	public Result<InformationDetailsVO> saveDetails(HttpServletRequest request,HttpSession session,@RequestBody InformationDetailsVO informationDetailsVO) throws Exception{
 		
-		
-		InformationDetails informationDetails=new InformationDetails();
 		informationDetailsVO.setID(KeyGen.uuid());;
-		informationDetailsVO.setPublish(new Date());
+		informationDetailsVO.setAddtime(new Date());
+		InformationDetails informationDetails=new InformationDetails();
 		BeanUtils.copyProperties(informationDetailsVO, informationDetails);
 		if(informationDetailsService.save(informationDetails)){
+			
 			return Result.ok(informationDetailsVO);
 		}
 		return Result.fail("保存失败");

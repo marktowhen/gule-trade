@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.order.bean;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class OrderGoodsVO {
 	private String ID;
 	private String OID;//订单id
@@ -16,6 +18,7 @@ public class OrderGoodsVO {
 	private String statusCode;//状态id，用户支持订单中某个商品的退款
 	private BigDecimal payout;//实际付款
 	private BigDecimal reduce;//优惠减免价格
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
 	private String addtimeStr;
 	

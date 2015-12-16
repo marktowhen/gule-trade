@@ -9,11 +9,18 @@ public class InformationDetailsEntity {
 	private String name;//主要的信息
 	private String title;//标题
 	private String content;//内容
-	private Date publish;//出版时间
+	private String picture;
 	private Date addtime;//添加时间
 	private String status;
 	private int orders;
 	
+	
+	public String getPicture() {
+		return picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
 	public int getOrders() {
 		return orders;
 	}
@@ -56,12 +63,6 @@ public class InformationDetailsEntity {
 	}
 	public void setContent(String content) {
 		this.content = content;
-	}
-	public Date getPublish() {
-		return publish;
-	}
-	public void setPublish(Date publish) {
-		this.publish = publish;
 	}
 	public Date getAddtime() {
 		return addtime;
