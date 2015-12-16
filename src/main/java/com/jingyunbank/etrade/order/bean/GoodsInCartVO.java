@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class GoodsInCartVO implements Serializable {
 
@@ -18,12 +17,12 @@ public class GoodsInCartVO implements Serializable {
 	private String UID;
 	
 	@NotNull
-	@Size(min=22, max=22)
+	//@Size(min=22, max=22)
 	private String GID;
 	@NotNull
 	private String gname;
 	@NotNull
-	@Size(min=22, max=22)
+	//@Size(min=22, max=22)
 	private String MID;
 	@NotNull
 	private String mname;

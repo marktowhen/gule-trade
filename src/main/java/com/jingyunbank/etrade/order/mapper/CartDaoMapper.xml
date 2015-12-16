@@ -42,14 +42,14 @@
 		from goods_in_cart gic
 		left join goods gs on gic.gid = gs.id
 		left join goods_img gimg on gic.gid = gimg.gid
-		where uid = #{uid}
+		where gic.uid = #{uid}
 	</select>
 	<select id="selectAllByCartID" parameterType="String" resultMap="GoodsInCartEntityResultMap">
 		select <include refid="goods_in_cart_columns_to_show"/> 
 		from goods_in_cart gic
 		left join goods gs on gic.gid = gs.id
 		left join goods_img gimg on gic.gid = gimg.gid
-		where cart_id = #{cartID}
+		where gic.cart_id = #{cartID}
 	</select>
 	<select id="selectRangeByUID" resultMap="GoodsInCartEntityResultMap">
 		select <include refid="goods_in_cart_columns_to_show"/>
@@ -57,7 +57,7 @@
 		left join goods gs on gic.gid = gs.id
 		left join goods_img gimg on gic.gid = gimg.gid
 		where
-			uid = #{uid}
+			gic.uid = #{uid}
 		limit #{offset}, #{size}
 	</select>
 	<select id="selectOneGoods" resultMap="GoodsInCartEntityResultMap">
@@ -66,7 +66,7 @@
 		left join goods gs on gic.gid = gs.id
 		left join goods_img gimg on gic.gid = gimg.gid
 		where
-			uid = #{uid} and gid = #{gid}
+			gic.uid = #{uid} and gic.gid = #{gid}
 		limit 1
 	</select>
 	<select id="count" parameterType="String" resultType="Integer">
