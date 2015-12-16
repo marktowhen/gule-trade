@@ -27,7 +27,7 @@ import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserDiscountCouponVO;
 
 @RestController
-@RequestMapping("/api/vip/discountcoupon/user")
+@RequestMapping("/api/vip/coupon/discountcoupon/user")
 public class UserDiscountCouponController {
 
 	@Autowired

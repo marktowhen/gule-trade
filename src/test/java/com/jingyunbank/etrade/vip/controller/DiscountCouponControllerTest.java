@@ -39,7 +39,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/vip/discountcoupon/")
+					 post("/api/vip/coupon/discountcoupon/")
 					 .content(json)
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/vip/discountcoupon/20")
+					 post("/api/vip/coupon/discountcoupon/20")
 					 .content(json)
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testIsValid() throws Exception{
 			getMockMvc().perform(
-					 get("/api/vip/discountcoupon/isvalid")
+					 get("/api/vip/coupon/discountcoupon/isvalid")
 					.param("code", "20151117112038")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +109,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testDel() throws Exception{
 			getMockMvc().perform(
-					 delete("/api/vip/discountcoupon/")
+					 delete("/api/vip/coupon/discountcoupon/")
 					.param("code", "20151117110618")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +129,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testList() throws Exception{
 			getMockMvc().perform(
-					 get("/api/vip/discountcoupon/list")
+					 get("/api/vip/coupon/discountcoupon/list")
 					 //.param("validTime", "true")
 					 .sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -149,7 +149,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testAmount() throws Exception{
 			getMockMvc().perform(
-					 get("/api/vip/discountcoupon/amount")
+					 get("/api/vip/coupon/discountcoupon/amount")
 					// .param("validTime", "true")
 					 .sessionAttr(ServletBox.LOGIN_ID, "1")
 					 .contentType(MediaType.APPLICATION_JSON)

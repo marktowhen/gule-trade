@@ -30,7 +30,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testSave() throws Exception{
 			getMockMvc().perform(
-					 put("/api/vip/discountcoupon/user/")
+					 put("/api/vip/coupon/discountcoupon/user/")
 					.param("code", "20151117161936")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +49,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testGet() throws Exception{
 			getMockMvc().perform(
-					 get("/api/vip/discountcoupon/user/1")
+					 get("/api/vip/coupon/discountcoupon/user/1")
 					.param("discountCouponVO.threshholdLow", "2")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testConsume() throws Exception{
 			getMockMvc().perform(
-					 post("/api/vip/discountcoupon/user/")
+					 post("/api/vip/coupon/discountcoupon/user/")
 					.param("oid", "1")
 					.param("couponId", "WYIgbRGhRqOP30iGE2Yrmg")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
@@ -86,7 +86,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testGetAmount() throws Exception{
 			getMockMvc().perform(
-					 get("/api/vip/discountcoupon/user/amount")
+					 get("/api/vip/coupon/discountcoupon/user/amount")
 					//.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		@Test
 		public void testUseableList() throws Exception{
 			getMockMvc().perform(
-					 get("/api/vip/discountcoupon/user/useable/2")
+					 get("/api/vip/coupon/discountcoupon/user/useable/2")
 					.param("orderPrice", "60")
 					.sessionAttr(ServletBox.LOGIN_ID, "2")
 						.contentType(MediaType.APPLICATION_JSON)
