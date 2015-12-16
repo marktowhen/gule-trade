@@ -82,13 +82,10 @@ public class OrderGoodsController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/goods/nocomment/count",method=RequestMethod.GET)
-	public Result<OrderGoodsVO> getNoCommentCount(HttpSession session,HttpServletRequest request){
-		int noCommentCount=0;
+	public Result<Integer> getNoCommentCount(HttpSession session,HttpServletRequest request){
 		String uid = ServletBox.getLoginUID(request);
-		noCommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED).size();
-		OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
-		orderGoodsVO.setNoCommentCount(noCommentCount);
-		return Result.ok(orderGoodsVO);
+		int noCommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED).size();
+		return Result.ok(noCommentCount);
 		
 	}
 	/**
@@ -99,12 +96,10 @@ public class OrderGoodsController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/goods/comment/count",method=RequestMethod.GET)
-	public Result<OrderGoodsVO> getCommentCount(HttpSession session,HttpServletRequest request){
+	public Result<Integer> getCommentCount(HttpSession session,HttpServletRequest request){
 		String uid = ServletBox.getLoginUID(request);
 		int CommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED).size();
-		OrderGoodsVO  orderGoodsVO = new OrderGoodsVO();
-		orderGoodsVO.setCommentCount(CommentCount);
-		return Result.ok(orderGoodsVO);
+		return Result.ok(CommentCount);
 		
 	}
 	
