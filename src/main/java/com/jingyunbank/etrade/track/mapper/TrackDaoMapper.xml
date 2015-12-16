@@ -147,14 +147,79 @@
 		</foreach>
 	</delete>
 	<!--查询广告列表 -->
-	<resultMap  id="rlt_addetails" type="com.jingyunbank.etrade.track.entity.AdDetailEntity">
+	<resultMap  id="rlt_addetail" type="com.jingyunbank.etrade.track.entity.AdDetailEntity">
 	     <id column="id" property="ID"/>
     	 <result column="ad_module_id" property="adModuleId"/>
     	 <result column="sort_num" property="sortNum"/>
 	</resultMap>
-	<select id = "selectAdDetails" resultMap="rlt_addetails" >
+	<resultMap  id="rlt_admodule" type="com.jingyunbank.etrade.track.entity.AdModuleEntity">
+	     <id column="id" property="ID"/>
+	</resultMap>
+	<select id = "selectAdDetails" resultMap="rlt_addetail" >
 	select a.* from ad_detail a ,ad_module b
 	where a.ad_module_id = b.id
 	and b.code = #{code} order by a.sort_num asc;
+	</select>
+	<!-- 通过id查询广告模块的信息 -->
+ 	<select id="selectAdmoduleById" resultMap="rlt_admodule">
+ 			select * from ad_module where id=#{id}
+ 	</select>
+ 	<!-- 通过id查询广告模块的信息 -->
+ 	<select id="selectAddetailById" resultMap="rlt_addetail">
+ 			select * from ad_detail where id=#{id}
+ 	</select>
+ 	<!--添加广告模块信息 -->
+	<insert id="insertAdModule" parameterType="com.jingyunbank.etrade.track.entity.AdModuleEntity">
+			INSERT INTO ad_module(id,code,name,imgpath,description)
+			VALUES 
+			(#{ID},#{code},#{name},#{imgpath},#{description});
+	</insert>
+	<!--添加广告信息 -->
+	<insert id="insertAdDetail" parameterType="com.jingyunbank.etrade.track.entity.AdDetailEntity">
+			INSERT INTO ad_detail(id,ad_module_id,name,imgpath,linkpath,description,sort_num,attr1,attr2,attr3,attr4)
+			VALUES 
+			(#{ID},#{adModuleId},#{name},#{imgpath},#{linkpath},#{description},#{sortNum},#{attr1},#{attr2},#{attr3},#{attr4});
+	</insert>
+	<!--修改广告模块信息 -->
+	<update id="updateAdmodule" parameterType="com.jingyunbank.etrade.track.entity.AdModuleEntity">
+			update ad_module set
+			code = #{code},
+			name = #{name},
+			imgpath = #{imgpath},
+			description = #{description}
+			where id = #{ID}
+	</update>
+	<!--修改广告信息 -->
+	<update id="updateAddetail" parameterType="com.jingyunbank.etrade.track.entity.AdDetailEntity">
+			update ad_detail set
+			ad_module_id = #{adModuleId},
+			name = #{name},
+			imgpath = #{imgpath},
+			linkpath = #{linkpath},
+			description = #{description},
+			sort_num = #{sortNum},
+			attr1 = #{attr1},
+			attr2 = #{attr2},
+			attr3 = #{attr3},
+			attr4 = #{attr4}
+			where id = #{ID}
+	</update>
+	<!--根据条件查询所有广告模块列表 -->
+	<select id="selectModulesByCondition" parameterType="java.util.Map"
+		resultMap="rlt_admodule">
+		select * from ad_module  t
+		<if test="name !='' and name !=null ">
+			 where t.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		</if>
+		<if test="size > 0">
+			limit #{from},#{size}
+		</if>
+	</select>
+	<!--根据条件查询所有广告模块列表 -->
+	<select id="selectAddetailsByCondition" parameterType="java.util.Map"
+		resultMap="rlt_addetail">
+		select * from ad_detail  t
+		where t.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		LIMIT #{from} , #{size}
 	</select>
 </mapper>

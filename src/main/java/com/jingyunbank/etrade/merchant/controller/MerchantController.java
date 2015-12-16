@@ -183,9 +183,9 @@ public class MerchantController {
 	}
 	
 	/**
-	 * 根据条件查询商品列表
+	 * 根据条件查询商家列表
 	 * @param request
-	 * @param goodsSearchVO
+	 * @param merchantSearchVO
 	 * @param page
 	 * @return
 	 * @throws Exception
