@@ -45,9 +45,7 @@
 			<include refid="base_condition"></include>
 		</where>
 		order by addtime,usedtime desc
-		<if test="size!=0">
 			limit #{offset},#{size}
-		</if>
 	</select>
 	
 	<select id="selectAmount" resultType="int" parameterType="com.jingyunbank.etrade.vip.entity.CashCouponEntity" >

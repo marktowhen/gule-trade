@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -31,6 +32,12 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 		return Optional.empty();
 	}
 
+	@Override
+	public List<HelpCenterCategory> listAllValid(Range range) {
+		return helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom()).stream()
+			.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());
+	}
+	
 	@Override
 	public List<HelpCenterCategory> listAllValid() {
 		return helpCenterCategoryDao.selectValidList().stream()

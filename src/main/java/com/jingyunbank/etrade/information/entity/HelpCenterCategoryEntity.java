@@ -1,7 +1,9 @@
 package com.jingyunbank.etrade.information.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 /**
  * 帮助中心 类别
  * 
@@ -25,6 +27,16 @@ public class HelpCenterCategoryEntity implements Serializable {
 	private Date updateTime;
 	//修改人
 	private String updateUID;
+	
+	private List<HelpCenterDetailEntity> helpCenterDetailList = new ArrayList<HelpCenterDetailEntity>();
+	
+	public List<HelpCenterDetailEntity> getHelpCenterDetailList() {
+		return helpCenterDetailList;
+	}
+	public void setHelpCenterDetailList(
+			List<HelpCenterDetailEntity> helpCenterDetailList) {
+		this.helpCenterDetailList = helpCenterDetailList;
+	}
 	public String getID() {
 		return ID;
 	}

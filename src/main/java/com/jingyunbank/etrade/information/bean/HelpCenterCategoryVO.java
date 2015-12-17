@@ -1,7 +1,9 @@
 package com.jingyunbank.etrade.information.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -34,6 +36,16 @@ public class HelpCenterCategoryVO implements Serializable {
 	private Date updateTime;
 	//修改人
 	private String updateUID;
+	
+	private List<HelpCenterDetailVO> helpCenterDetailList = new ArrayList<HelpCenterDetailVO>();
+	
+	public List<HelpCenterDetailVO> getHelpCenterDetailList() {
+		return helpCenterDetailList;
+	}
+	public void setHelpCenterDetailList(
+			List<HelpCenterDetailVO> helpCenterDetailList) {
+		this.helpCenterDetailList = helpCenterDetailList;
+	}
 	public String getID() {
 		return ID;
 	}
