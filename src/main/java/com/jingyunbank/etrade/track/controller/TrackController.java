@@ -440,5 +440,37 @@ public class TrackController {
 		
 		return Result.ok(adDetaillist);
 	}
-	
+	/**
+	 * 删除广告
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/addetail/remove/{id}", method=RequestMethod.DELETE)
+	public Result<String> removeAddetail(@PathVariable String id) throws Exception{
+		List<String> ids = new ArrayList<String>();
+		String tmpstr[] = id.split(",");
+		ids = Arrays.asList(tmpstr);
+		trackService.removeAddetail(ids);
+		return Result.ok(id);
+	}
+	/**
+	 * 删除广告模块
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/admodule/remove/{id}", method=RequestMethod.DELETE)
+	public Result<String> removeAdmodule(@PathVariable String id) throws Exception{
+		List<String> ids = new ArrayList<String>();
+		String tmpstr[] = id.split(",");
+		ids = Arrays.asList(tmpstr);
+		int rlt = trackService.queryAddetailsCount(ids);
+		if(rlt <= 0){
+			trackService.removeAdmodule(ids);
+			return Result.ok(id);
+		}else{
+			return Result.fail("请先删除该模块下的广告信息！");
+		}
+	}
 }

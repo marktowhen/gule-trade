@@ -222,4 +222,27 @@
 		where t.name LIKE CONCAT(CONCAT('%', #{name}), '%')
 		LIMIT #{from} , #{size}
 	</select>
+	<!--删除广告信息 -->
+	<delete id="deleteAddetail">
+		delete from ad_detail where id in 
+		<foreach collection="id" item="rid" open="(" separator="," close=")">
+			#{rid}
+		</foreach>
+	</delete>
+	<!--删除广告模块信息 -->
+	<delete id="deleteAdmodule">
+		delete from ad_module where id in 
+		<foreach collection="id" item="rid" open="(" separator="," close=")">
+			#{rid}
+		</foreach>
+	</delete>
+	<!-- 查询广告数量 -->
+	<select id="selectAddetailsCount" resultType="int">
+		select count(*) from 
+		ad_detail t
+		where t.ad_module_id in
+		<foreach collection="id" item="rid" open="(" separator="," close=")">
+			#{rid}
+		</foreach>
+	</select>
 </mapper>

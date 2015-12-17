@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 import com.jingyunbank.etrade.track.entity.AdDetailEntity;
 import com.jingyunbank.etrade.track.entity.AdModuleEntity;
@@ -114,5 +115,26 @@ public interface TrackDao {
 	public boolean updateAddetail(AdDetailEntity adDetailEntity) throws DataRefreshingException;
 	public List<AdModuleEntity> selectModulesByCondition(Map<String, Object> map) throws Exception;
 	public List<AdDetailEntity> selectAddetailsByCondition(Map<String, Object> map) throws Exception;
-	
+	/**
+	 * 删除广告
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean deleteAddetail(@Param("id") List<String> id) throws Exception;
+	/**
+	 * 删除广告模块信息
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean deleteAdmodule(@Param("id") List<String> id) throws Exception;
+	/**
+	 * 查询广告数量
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectAddetailsCount(@Param("id") List<String> id) throws Exception;
+	 
 }
