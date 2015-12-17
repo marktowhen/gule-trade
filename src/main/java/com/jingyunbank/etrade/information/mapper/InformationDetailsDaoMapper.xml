@@ -62,7 +62,14 @@
 			where a.id=#{ID}
 		</update>
 		<!-- 通过sid查出对应多个详情内容 -->
-		<select id="selectDetailsBySid" parameterType="String" resultMap="InformationDetailsResultMap">
+		<select id="selectDetailsBySid" resultMap="InformationDetailsResultMap">
+			select <include refid="details_list"></include>
+			from information_details where
+			sid=#{SID}
+			order by orders desc,addtime desc
+			 LIMIT #{from} , #{size}
+		</select>
+		<select id="selectDetailBySid" resultMap="InformationDetailsResultMap">
 			select <include refid="details_list"></include>
 			from information_details where
 			sid=#{SID}
