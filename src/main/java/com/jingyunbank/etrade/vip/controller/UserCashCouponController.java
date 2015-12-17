@@ -27,7 +27,7 @@ import com.jingyunbank.etrade.vip.bean.CashCouponVO;
 import com.jingyunbank.etrade.vip.bean.UserCashCouponVO;
 
 @RestController
-@RequestMapping("/api/vip/cashcoupon/user")
+@RequestMapping("/api/vip/coupon/cashcoupon/user")
 public class UserCashCouponController {
 	
 	@Autowired

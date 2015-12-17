@@ -25,7 +25,7 @@ import com.jingyunbank.etrade.api.information.service.IHelpCenterDetailService;
 import com.jingyunbank.etrade.information.bean.HelpCenterDetailVO;
 
 @RestController
-@RequestMapping("/api/help/center/detail")
+@RequestMapping("/api/information/help/center/detail")
 public class HelpCenterDetailController {
 
 	@Autowired

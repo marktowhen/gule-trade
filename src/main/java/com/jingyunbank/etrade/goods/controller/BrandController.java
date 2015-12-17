@@ -126,4 +126,25 @@ public class BrandController {
 		return Result.ok(list);
 	}
 	
+	
+	
+	
+	/**
+	 * 根据MID 查询所属的品牌
+	 * @param mid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/brands", method = RequestMethod.GET)
+	public Result<List<BrandVO>> getBrands() throws Exception{
+		List<BrandVO> list = brandService.listBrands().stream().map(bo -> {
+			BrandVO vo = new BrandVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+	
+	
+	
 }
