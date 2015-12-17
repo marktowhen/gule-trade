@@ -261,15 +261,15 @@ public class OrderContextService implements IOrderContextService {
 			return false;
 		}
 		
-		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CANCELED);
+		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CLOSED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
-		createOrderTrace(order, OrderStatusDesc.CANCELED);
+		createOrderTrace(order, OrderStatusDesc.CLOSED);
 		traces.addAll(order.getTraces());
 		//set note reason
 		traces.forEach(trace->trace.setNote(reason));
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
-		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CANCELED);
+		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CLOSED);
 		if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
 			couponStrategyResolver.resolve(order.getCouponType())
 							.unlock(order.getUID(), order.getCouponID());
@@ -284,7 +284,7 @@ public class OrderContextService implements IOrderContextService {
 			return false;
 		}
 		Orders order = candidateorder.get();
-		if(!OrderStatusDesc.CANCELED_CODE.equals(order.getStatusCode())){
+		if(!OrderStatusDesc.CLOSED_CODE.equals(order.getStatusCode())){
 			return false;
 		}
 		
