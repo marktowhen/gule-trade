@@ -26,8 +26,10 @@ public class GoodsInCartVO implements Serializable {
 	private String MID;
 	@NotNull
 	private String mname;
+	@NotNull
 	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal price;
+	private BigDecimal pprice;
 	@Min(value=1)
 	private int count;
 	
@@ -105,6 +107,12 @@ public class GoodsInCartVO implements Serializable {
 	}
 	public void setImgpath(String imgpath) {
 		this.imgpath = imgpath;
+	}
+	public BigDecimal getPprice() {
+		return pprice;
+	}
+	public void setPprice(BigDecimal pprice) {
+		this.pprice = pprice;
 	}
 		
 }

@@ -14,6 +14,7 @@ public class GoodsInCartEntity {
 	private int count;
 	private BigDecimal price;
 	private Date addtime;
+	private BigDecimal pprice;
 	
 	private int stock;
 	private String imgpath;
@@ -89,5 +90,11 @@ public class GoodsInCartEntity {
 	}
 	public void setImgpath(String imgpath) {
 		this.imgpath = imgpath;
+	}
+	public BigDecimal getPprice() {
+		return pprice;
+	}
+	public void setPprice(BigDecimal pprice) {
+		this.pprice = pprice;
 	}
 }

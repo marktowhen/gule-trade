@@ -12,8 +12,9 @@
 		<result column="gname" property="gname" javaType="String"/>
 		<result column="status_code" property="statusCode" javaType="String"/>
 		<result column="price" property="price" jdbcType="DECIMAL"/>
+		<result column="pprice" property="pprice" jdbcType="DECIMAL"/>
 		<result column="payout" property="payout" jdbcType="DECIMAL"/>
-		<result column="reduce" property="reduce" jdbcType="DECIMAL"/>
+		<result column="coupon_reduce" property="couponReduce" jdbcType="DECIMAL"/>
 		<result column="count" property="count" jdbcType="INTEGER"/>
 		<result column="uid" property="UID" javaType="String"/>
 		<association property="goodsImgEntity" javaType="com.jingyunbank.etrade.goods.entity.GoodsImgEntity">
@@ -21,7 +22,7 @@
 		</association>
 	</resultMap>
 	<sql id="order_goods_column">
-		id, oid,uid, orderno, gid, gname, addtime, status_code, price, payout, reduce, count
+		id, oid,uid, orderno, gid, gname, addtime, status_code, price, pprice, payout, coupon_reduce, count
 	</sql>
 	<insert id="insertMany">
 		insert into order_goods
@@ -29,7 +30,8 @@
 		values
 			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
 				(#{g.ID}, #{g.OID}, #{g.UID}, #{g.orderno}, #{g.GID}, #{g.gname}, 
-				#{g.addtime}, #{g.statusCode}, #{g.price}, #{g.payout}, #{g.reduce}, #{g.count})
+				#{g.addtime}, #{g.statusCode}, #{g.price}, #{g.pprice}, #{g.payout}, 
+				#{g.couponReduce}, #{g.count})
 			</foreach>
 	</insert>
 	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">

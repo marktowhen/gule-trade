@@ -16,6 +16,7 @@
 		<result column="mid" property="MID" javaType="String"/>
 		<result column="mname" property="mname" javaType="String"/>
 		<result column="price" property="price" jdbcType="DECIMAL"/>
+		<result column="pprice" property="pprice" jdbcType="DECIMAL"/>
 		<result column="count" property="count" jdbcType="INTEGER"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		
@@ -27,11 +28,12 @@
 		id, uid
 	</sql>
 	<sql id="goods_in_cart_columns">
-		id, cart_id, uid, gid, gname, mid, mname, addtime, price, count
+		id, cart_id, uid, gid, gname, mid, mname, addtime, price, count, pprice
 	</sql>
 	<sql id="goods_in_cart_columns_to_show">
 		gic.id, gic.cart_id, gic.uid, gic.gid, gic.gname, gic.mid, 
-		gic.mname, gic.addtime, gic.price, gic.count, gs.count as stock, gimg.thumb_path_1 as imgpath
+		gic.mname, gic.addtime, gic.price, gic.count, gic.pprice,
+		gs.count as stock, gimg.thumb_path_1 as imgpath
 	</sql>
 	<select id="selectOne" parameterType="String" resultMap="CartEntityResultMap">
 		select <include refid="cart_columns"/> from cart where uid = #{uid} limit 1;
@@ -83,14 +85,16 @@
 		insert into goods_in_cart
 			(<include refid="goods_in_cart_columns"/>)
 		values
-			(#{ID}, #{cartID}, #{UID}, #{GID}, #{gname}, #{MID}, #{mname}, #{addtime}, #{price}, #{count})
+			(#{ID}, #{cartID}, #{UID}, #{GID}, #{gname}, #{MID}, #{mname}, 
+			#{addtime}, #{price}, #{count}, #{pprice})
 	</insert>
 	<insert id="insertManyGoods" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
 		insert into goods_in_cart
 			(<include refid="goods_in_cart_columns"/>)
 		values
 			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
-				(#{g.ID}, #{g.cartID}, #{g.UID}, #{g.GID}, #{g.gname}, #{g.MID}, #{g.mname}, #{g.addtime}, #{g.price}, #{g.count})
+				(#{g.ID}, #{g.cartID}, #{g.UID}, #{g.GID}, #{g.gname}, #{g.MID}, 
+				#{g.mname}, #{g.addtime}, #{g.price}, #{g.count}, #{pprice})
 			</foreach>
 	</insert>
 	<update id="update" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">

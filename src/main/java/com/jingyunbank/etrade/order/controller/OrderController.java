@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -139,11 +140,15 @@ public class OrderController {
 				order.setPayout(neworderprice);
 				List<OrderGoods> goodses = order.getGoods();
 				goodses.forEach(goods -> {
+					BigDecimal origingoodspprice = goods.getPprice();//促销价
 					BigDecimal origingoodsprice = goods.getPrice();
+					origingoodsprice = 
+							(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(new BigDecimal(0)) > 0)?
+							origingoodspprice : origingoodsprice;
 					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 2, RoundingMode.HALF_UP);
 					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice);
 					goods.setPayout(finalgoodsprice);
-					goods.setReduce(origingoodsprice.subtract(finalgoodsprice));
+					goods.setCouponReduce(origingoodsprice.subtract(finalgoodsprice));
 				});
 			});
 		}else{
@@ -152,7 +157,7 @@ public class OrderController {
 				List<OrderGoods> goodses = order.getGoods();
 				goodses.forEach(goods -> {
 					goods.setPayout(goods.getPrice());
-					goods.setReduce(BigDecimal.ZERO);
+					goods.setCouponReduce(BigDecimal.ZERO);
 				});
 			});
 		}

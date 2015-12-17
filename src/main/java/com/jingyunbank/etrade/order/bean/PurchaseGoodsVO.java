@@ -17,6 +17,7 @@ public class PurchaseGoodsVO {
 	@Size(min=22, max=22)
 	private String GID;
 	private String gname;
+	private BigDecimal pprice;//促销价
 	@NotNull
 	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal price;
@@ -60,5 +61,11 @@ public class PurchaseGoodsVO {
 	}
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+	public BigDecimal getPprice() {
+		return pprice;
+	}
+	public void setPprice(BigDecimal pprice) {
+		this.pprice = pprice;
 	}
 }
