@@ -8,7 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -71,9 +71,10 @@ public class InformationDetailsService implements IInformationDetailsService{
 	}
 	//通过siteid查询对应的多条信息内容
 	@Override
-	public List<InformationDetails> getDeailsBySiteid(String sid) {
+	public List<InformationDetails> getDeailsBySiteid(String sid,Range range) {
 		// TODO Auto-generated method stub
-		return informationDetailsDao.selectDetailsBySid(sid).stream().map(entity -> {
+		
+		return informationDetailsDao.selectDetailsBySid(sid,range.getFrom(),range.getTo()-range.getFrom()).stream().map(entity -> {
 			InformationDetails informationDetails=new InformationDetails();
 			BeanUtils.copyProperties(entity, informationDetails);
 			return informationDetails;
@@ -89,6 +90,17 @@ public class InformationDetailsService implements IInformationDetailsService{
 		BeanUtils.copyProperties(informationDetailsEntity, informationDetails);
 		
 		return Optional.of(informationDetails);
+	}
+	/**
+	 * 查出所有的详情信息
+	 */
+	@Override
+	public List<InformationDetails> getDeailBySiteid(String sid) {
+		return informationDetailsDao.selectDetailBySid(sid).stream().map(entity -> {
+			InformationDetails informationDetails=new InformationDetails();
+			BeanUtils.copyProperties(entity, informationDetails);
+			return informationDetails;
+		}).collect(Collectors.toList());
 	}
 	
 
