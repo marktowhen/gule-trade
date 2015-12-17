@@ -15,7 +15,7 @@ import com.jingyunbank.etrade.api.comment.service.ICommentService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.bo.Orders;
+import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.comment.dao.CommentsDao;
 import com.jingyunbank.etrade.comment.dao.CommentsImgDao;
 import com.jingyunbank.etrade.comment.entity.CommentsEntity;

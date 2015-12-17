@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
 

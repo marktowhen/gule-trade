@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
-import com.jingyunbank.etrade.api.order.bo.OrderGoods;
-import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
-import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
 import com.jingyunbank.etrade.order.bean.OrderGoodsVO;
 
 @RestController

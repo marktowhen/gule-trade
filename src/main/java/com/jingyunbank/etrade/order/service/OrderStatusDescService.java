@@ -7,8 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
-import com.jingyunbank.etrade.api.order.service.IOrderStatusDescService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderStatusDescService;
 import com.jingyunbank.etrade.order.dao.OrderStatusDescDao;
 
 @Service("orderStatusDescService")

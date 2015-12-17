@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
@@ -289,6 +290,33 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 			return bo;
 		}).collect(Collectors.toList());
 		return showAdDetailList;
+	}
+	
+	@Override
+	public boolean removeAddetail(List<String> id) throws DataRemovingException {
+		boolean flag=false;
+		try {
+			flag = trackDao.deleteAddetail(id);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+		return flag;
+	}
+	@Override
+	public boolean removeAdmodule(List<String> id) throws DataRemovingException {
+		boolean flag=false;
+		try {
+			flag = trackDao.deleteAdmodule(id);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+		return flag;
+	}
+	@Override
+	public int queryAddetailsCount(List<String> id) throws Exception {
+		int rlt=0;
+			rlt = trackDao.selectAddetailsCount(id);
+		return rlt;
 	}
 	
 }

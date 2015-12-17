@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 
 @Controller
 public class FastpayResultController {
