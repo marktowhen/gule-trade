@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.bo.OrderGoods;
-import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
-import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
 import com.jingyunbank.etrade.order.dao.OrderGoodsDao;
 import com.jingyunbank.etrade.order.entity.OrderGoodsEntity;
 

@@ -18,8 +18,8 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
-import com.jingyunbank.etrade.api.order.bo.Orders;
-import com.jingyunbank.etrade.api.order.service.IOrderService;
+import com.jingyunbank.etrade.api.order.presale.bo.Orders;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO.OrderGoods2ShowVO;
 

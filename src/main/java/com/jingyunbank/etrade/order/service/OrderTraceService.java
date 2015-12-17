@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.bo.OrderTrace;
-import com.jingyunbank.etrade.api.order.service.IOrderTraceService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderTrace;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderTraceService;
 import com.jingyunbank.etrade.order.dao.OrderTraceDao;
 import com.jingyunbank.etrade.order.entity.OrderTraceEntity;
 

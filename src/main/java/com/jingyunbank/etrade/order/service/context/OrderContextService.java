@@ -16,21 +16,20 @@ import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.util.UniqueSequence;
+import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
-import com.jingyunbank.etrade.api.order.bo.OrderGoods;
-import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
-import com.jingyunbank.etrade.api.order.bo.OrderStatusDesc;
-import com.jingyunbank.etrade.api.order.bo.OrderTrace;
-import com.jingyunbank.etrade.api.order.bo.Orders;
-import com.jingyunbank.etrade.api.order.bo.Refund;
-import com.jingyunbank.etrade.api.order.service.ICartService;
-import com.jingyunbank.etrade.api.order.service.IOrderGoodsService;
-import com.jingyunbank.etrade.api.order.service.IOrderLogisticService;
-import com.jingyunbank.etrade.api.order.service.IOrderService;
-import com.jingyunbank.etrade.api.order.service.IOrderTraceService;
-import com.jingyunbank.etrade.api.order.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderTrace;
+import com.jingyunbank.etrade.api.order.presale.bo.Orders;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderLogisticService;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderTraceService;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
@@ -299,28 +298,6 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
 		return true;
 	}
-
-	@Override
-	public void refund(Refund refund) {
-
-	}
-
-	@Override
-	public void denyRefund(Refund refund) {
-
-	}
-
-	@Override
-	public void approveRefund(Refund refund) {
-
-	}
-
-	@Override
-	public boolean canRefund(String oid) {
-		return false;
-	}
-
-	
 
 	//创建订单新建追踪状态
 	private void createOrderTrace(Orders order, OrderStatusDesc status) {

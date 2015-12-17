@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.order.service.IOrderService;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO.OrderGoods2ShowVO;
 

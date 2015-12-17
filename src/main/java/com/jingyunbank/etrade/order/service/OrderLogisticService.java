@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.bo.OrderLogistic;
-import com.jingyunbank.etrade.api.order.service.IOrderLogisticService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderLogisticService;
 import com.jingyunbank.etrade.order.dao.OrderLogisticDao;
 import com.jingyunbank.etrade.order.entity.OrderLogisticEntity;
 
