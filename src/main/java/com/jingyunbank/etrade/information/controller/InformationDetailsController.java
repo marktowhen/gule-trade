@@ -85,6 +85,7 @@ public class InformationDetailsController {
 	}
 	/**
 	 * 通过sid查询出对应的多个内容信息
+	 * (条数有限制)
 	 * @param sid
 	 * @param request
 	 * @param session
@@ -97,6 +98,27 @@ public class InformationDetailsController {
 		range.setFrom(from);
 		range.setTo(from+size);
 		return Result.ok(informationDetailsService.getDeailsBySiteid(sid,range)
+			.stream().map(bo -> {
+			
+			InformationDetailsVO vo=new InformationDetailsVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
+		
+	}
+	/**
+	 * 所有的都查出来
+	 * 通过sid查询出对应的多个内容信息
+	 * @param sid
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/api/information/anydetails",method=RequestMethod.GET)
+	@ResponseBody
+	public Result<List<InformationDetailsVO>> selectDetailsBySid(@RequestParam String sid,HttpServletRequest request,HttpSession session) throws Exception{
+	
+		return Result.ok(informationDetailsService.getDeailBySiteid(sid)
 			.stream().map(bo -> {
 			
 			InformationDetailsVO vo=new InformationDetailsVO();
