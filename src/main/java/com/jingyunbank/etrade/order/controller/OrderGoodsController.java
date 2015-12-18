@@ -53,7 +53,7 @@ public class OrderGoodsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/comment/order/goods",method=RequestMethod.GET)
+	@RequestMapping(value="/api/order/goods/comment",method=RequestMethod.GET)
 	public Result<List<OrderGoodsVO>> listyiOrderGoods(HttpSession session,HttpServletRequest request){
 		String uid = ServletBox.getLoginUID(request);
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED)/*OrderStatusDesc.RECEIVED*/
