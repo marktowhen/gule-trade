@@ -19,6 +19,7 @@ import com.jingyunbank.etrade.api.order.postsale.service.IRefundLogisticService;
 import com.jingyunbank.etrade.api.order.postsale.service.IRefundService;
 import com.jingyunbank.etrade.api.order.postsale.service.IRefundTraceService;
 import com.jingyunbank.etrade.api.order.postsale.service.context.IRefundContextService;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 
 @Service("refundContextService")
 public class RefundContextService implements IRefundContextService{
@@ -31,11 +32,15 @@ public class RefundContextService implements IRefundContextService{
 	private IRefundTraceService refundTraceService;
 	@Autowired
 	private IRefundLogisticService refundLogisticService;
+	@Autowired
+	private IOrderContextService orderContextService;
 	
 	@Override
-	public void request(Refund refund) throws DataSavingException{
+	@Transactional
+	public void request(Refund refund) throws DataSavingException, DataRefreshingException{
 		refundService.save(refund);
 		refundCertificateService.save(refund.getCertificates());
+		orderContextService.refund(refund.getOID(), refund.getOGID());
 	}
 
 	@Override

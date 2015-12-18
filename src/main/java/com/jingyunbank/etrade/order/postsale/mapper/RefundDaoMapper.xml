@@ -6,6 +6,7 @@
 	<resultMap type="com.jingyunbank.etrade.order.postsale.entity.RefundEntity" id="RefundEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
 		<result column="oid" property="OID" javaType="String"/>
+		<result column="refundno" property="refundno" jdbcType="BIGINT"/>
 		<result column="ogid" property="OGID" javaType="String"/>
 		<result column="mid" property="MID" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
@@ -17,10 +18,21 @@
 		<result column="description" property="description" javaType="String"/>
 		<result column="reason" property="reason" javaType="String"/>
 		<result column="return_goods" property="returnGoods" javaType="Boolean"/>
+		
+		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
+		<result column="gid" property="GID" javaType="String"/>
+		<result column="gname" property="gname" javaType="String"/>
+		<result column="gpath" property="gpath" javaType="String"/>
+		
 	</resultMap>
 	<sql id="refund_columns">
 		id, uid, oid, mid, ogid, addtime, status_code, status_name,
-		money, omoney, description, reason, return_goods
+		money, omoney, description, reason, return_goods, refundno
+	</sql>
+	<sql id="goods_join_refund_columns">
+		r.id, r.uid, r.oid, r.mid, r.ogid, r.addtime, r.status_code, r.status_name,
+		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno,
+		o.orderno, og.gid, og.gname, img.thumb_path_1 as gpath
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
 		insert into refunds
@@ -28,7 +40,7 @@
 		values
 			(
 				#{ID}, #{UID}, #{OID}, #{MID}, #{OGID}, #{addtime}, #{statusCode}, #{statusName},
-				#{money}, #{omoney}, #{description}, #{reason}, #{return_goods}
+				#{money}, #{omoney}, #{description}, #{reason}, #{return_goods}, #{refundno}
 			 )
 	</insert>
 	<update id="updateStatus">
@@ -40,5 +52,33 @@
 		select <include refid="refund_columns"/> 
 		from refunds
 		where id = #{rid}
+	</select>
+	<select id="selectmWithCondition" resultMap="RefundEntityResultMap">
+		select <include refid="goods_join_refund_columns"/> 
+		from refunds r
+		left join order_goods og on r.ogid = og.id
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where 
+			r.mid = #{mid}
+			<if test="statuscode != null and !''.equals(statuscode)">
+				and r.status_code = #{statuscode}
+			</if>
+			<if test="fromdate != null and !''.equals(fromdate)">
+				and r.addtime &gt;= #{fromdate}
+			</if>
+			<if test="keywords != null and !''.equals(keywords)">
+				and (
+						og.gname like CONCAT('%','${keywords}','%') 
+						or 
+						o.orderno like CONCAT('%','${keywords}','%')
+						or
+						r.mid like CONCAT('%','${keywords}','%')
+						or
+						o.mname like CONCAT('%','${keywords}','%')
+					)
+			</if>
+		order by r.addtime desc 
+		limit #{from}, #{size}
 	</select>
 </mapper>

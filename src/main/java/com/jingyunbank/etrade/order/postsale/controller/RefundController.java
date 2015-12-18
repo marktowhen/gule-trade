@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
@@ -48,6 +49,7 @@ public class RefundController {
 		refundvo.setAddtime(new Date());
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
 		refundvo.setStatusName(RefundStatusDesc.REQUEST.getName());
+		refundvo.setRefundno(UniqueSequence.next18());
 		
 		Refund refund = new Refund();
 		BeanUtils.copyProperties(refundvo, refund, "certificates");
