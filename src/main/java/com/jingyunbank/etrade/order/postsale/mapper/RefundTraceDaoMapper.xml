@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.postsale.dao.RefundTraceDao">
+	<resultMap type="com.jingyunbank.etrade.order.postsale.entity.RefundTraceEntity" id="RefundTraceEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="rid" property="OID" javaType="String"/>
+		<result column="operator" property="operator" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="status_code" property="statusCode" javaType="String"/>
+		<result column="status_name" property="statusName" javaType="String"/>
+		<result column="note" property="note" javaType="String"/>
+	</resultMap>
+	<sql id="refund_trace_column">
+		id, rid, operator, addtime, status_code, status_name, note
+	</sql>
+	<insert id="insertMany">
+		insert into refund_trace
+			(<include refid="refund_trace_column"/>)
+		values
+			<foreach collection="traces" item="t" index="i" open="" separator="," close="">
+				(#{t.ID}, #{t.RID}, #{t.operator}, #{t.addtime}, #{t.statusCode}, #{t.statusName}, #{t.note})
+			</foreach>
+	</insert>
+	<select id="selectMany" parameterType="String" resultMap="RefundTraceEntityResultMap">
+		select <include refid="refund_trace_column"/>
+		from refund_trace
+		where rid = #{rid}
+	</select>
+</mapper>

@@ -31,5 +31,14 @@
 				#{money}, #{omoney}, #{description}, #{reason}, #{return_goods}
 			 )
 	</insert>
-	
+	<update id="updateStatus">
+		update refunds
+		set status_code = #{status.code}, status_name = #{status.name}
+		where id = #{RID}
+	</update>
+	<select id="selectOne" parameterType="String" resultMap="RefundEntityResultMap">
+		select <include refid="refund_columns"/> 
+		from refunds
+		where id = #{rid}
+	</select>
 </mapper>
