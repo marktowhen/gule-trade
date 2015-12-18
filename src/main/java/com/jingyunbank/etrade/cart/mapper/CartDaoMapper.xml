@@ -2,12 +2,12 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.order.dao.CartDao">
-	<resultMap type="com.jingyunbank.etrade.order.entity.CartEntity" id="CartEntityResultMap">
+<mapper namespace="com.jingyunbank.etrade.cart.dao.CartDao">
+	<resultMap type="com.jingyunbank.etrade.cart.entity.CartEntity" id="CartEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
 	</resultMap>
-	<resultMap type="com.jingyunbank.etrade.order.entity.GoodsInCartEntity" id="GoodsInCartEntityResultMap">
+	<resultMap type="com.jingyunbank.etrade.cart.entity.GoodsInCartEntity" id="GoodsInCartEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
 		<result column="cart_id" property="cartID" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
@@ -75,20 +75,20 @@
 		select count(id) from goods_in_cart 
 		where uid = #{uid}
 	</select>
-	<insert id="insertCart" parameterType="com.jingyunbank.etrade.order.entity.CartEntity">
+	<insert id="insertCart" parameterType="com.jingyunbank.etrade.cart.entity.CartEntity">
 		insert into cart
 			(<include refid="cart_columns"/>)
 		values
 			(#{ID}, #{UID})
 	</insert>
-	<insert id="insertOneGoods" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
+	<insert id="insertOneGoods" parameterType="com.jingyunbank.etrade.cart.entity.GoodsInCartEntity">
 		insert into goods_in_cart
 			(<include refid="goods_in_cart_columns"/>)
 		values
 			(#{ID}, #{cartID}, #{UID}, #{GID}, #{gname}, #{MID}, #{mname}, 
 			#{addtime}, #{price}, #{count}, #{pprice})
 	</insert>
-	<insert id="insertManyGoods" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
+	<insert id="insertManyGoods" parameterType="com.jingyunbank.etrade.cart.entity.GoodsInCartEntity">
 		insert into goods_in_cart
 			(<include refid="goods_in_cart_columns"/>)
 		values
@@ -97,7 +97,7 @@
 				#{g.mname}, #{g.addtime}, #{g.price}, #{g.count}, #{pprice})
 			</foreach>
 	</insert>
-	<update id="update" parameterType="com.jingyunbank.etrade.order.entity.GoodsInCartEntity">
+	<update id="update" parameterType="com.jingyunbank.etrade.cart.entity.GoodsInCartEntity">
 		update goods_in_cart
 		<set>
 			count = #{count}

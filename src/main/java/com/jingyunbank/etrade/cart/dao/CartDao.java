@@ -1,11 +1,11 @@
-package com.jingyunbank.etrade.order.dao;
+package com.jingyunbank.etrade.cart.dao;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.order.entity.CartEntity;
-import com.jingyunbank.etrade.order.entity.GoodsInCartEntity;
+import com.jingyunbank.etrade.cart.entity.CartEntity;
+import com.jingyunbank.etrade.cart.entity.GoodsInCartEntity;
 
 public interface CartDao{
 

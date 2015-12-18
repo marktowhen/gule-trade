@@ -3,11 +3,9 @@ package com.jingyunbank.etrade.order.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +33,7 @@ import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyResolver;
 import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyService;
+import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
@@ -66,10 +64,7 @@ public class OrderController {
 	public Result<PurchaseRequestVO> submit(@Valid @RequestBody PurchaseRequestVO purchase,
 			BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getCodes()).toString())
-						.collect(Collectors.joining(" ; ")));
+			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
 		
 		String UID = ServletBox.getLoginUID(session);

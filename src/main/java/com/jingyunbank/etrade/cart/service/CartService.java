@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.order.service;
+package com.jingyunbank.etrade.cart.service;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,9 +17,9 @@ import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.order.dao.CartDao;
-import com.jingyunbank.etrade.order.entity.CartEntity;
-import com.jingyunbank.etrade.order.entity.GoodsInCartEntity;
+import com.jingyunbank.etrade.cart.dao.CartDao;
+import com.jingyunbank.etrade.cart.entity.CartEntity;
+import com.jingyunbank.etrade.cart.entity.GoodsInCartEntity;
 
 @Service("cartService")
 public class CartService implements ICartService {

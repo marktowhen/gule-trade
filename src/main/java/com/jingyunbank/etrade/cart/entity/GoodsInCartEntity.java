@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.order.entity;
+package com.jingyunbank.etrade.cart.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;

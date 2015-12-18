@@ -5,23 +5,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class RefundRequestVO {
 	
 	private String ID;
+	@NotNull
 	private String OGID;//订单商品id
+	@NotNull
 	private String OID;//所退商品订单号
+	@NotNull
 	private String MID;//商家
 	private String UID;
+	@NotNull
 	private BigDecimal omoney;//订单价格
+	@NotNull
 	private BigDecimal money;//退款金额申请
-	private String reason;//退款退货原因
+	@NotNull
+	private String reason;//退款退货原因	
 	private String description;//说明
 	private Date addtime;//申请时间
 	private String statusCode;
 	private String statusName;//RefundStatusDesc
-	private boolean returnGoods;//是否退货
+	@NotNull
+	private boolean returnGoods=false;//是否退货
 	
 	@Size(max=5)
 	private List<String> certificates = new ArrayList<String>();

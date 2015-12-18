@@ -1,11 +1,9 @@
-package com.jingyunbank.etrade.order.controller;
+package com.jingyunbank.etrade.cart.controller;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -13,7 +11,6 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +25,9 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
-import com.jingyunbank.etrade.order.bean.CartVO;
-import com.jingyunbank.etrade.order.bean.GoodsInCartVO;
-import com.jingyunbank.etrade.order.bean.OrdersInCartVO;
+import com.jingyunbank.etrade.cart.bean.CartVO;
+import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
+import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
 
 
 @RestController
@@ -99,10 +96,7 @@ public class CartController {
 						BindingResult valid,
 						HttpSession session) throws Exception{
 		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getCodes()).toString())
-						.collect(Collectors.joining(" ; ")));
+			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
 		String cid = ServletBox.getLoginCartID(session);
 		String uid = ServletBox.getLoginUID(session);

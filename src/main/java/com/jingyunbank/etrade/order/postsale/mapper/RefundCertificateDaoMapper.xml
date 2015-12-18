@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.postsale.dao.RefundCertificateDao">
+	<resultMap type="com.jingyunbank.etrade.order.postsale.entity.RefundCertificateEntity" id="RefundCertificateEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="rid" property="RID" javaType="String"/>
+		<result column="path" property="path" javaType="String"/>
+	</resultMap>
+	<sql id="refund_certificate_columns">
+		id, rid, path
+	</sql>
+	<insert id="insertMany" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundCertificateEntity">
+		insert into refund_certificate
+			(<include refid="refund_certificate_columns"/>)
+		values
+		<foreach collection="certs" item="cert" separator="," open="(" close=")">
+			#{cert.ID}, #{cert.RID}, #{cert.path}
+		</foreach>
+	</insert>
+</mapper>

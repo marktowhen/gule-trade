@@ -20,9 +20,10 @@ import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.order.bean.CartVO;
-import com.jingyunbank.etrade.order.bean.GoodsInCartVO;
-import com.jingyunbank.etrade.order.bean.OrdersInCartVO;
+import com.jingyunbank.etrade.cart.bean.CartVO;
+import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
+import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
+import com.jingyunbank.etrade.cart.controller.CartController;
 
 
 public class CartControllerTest extends TestCaseBase{
