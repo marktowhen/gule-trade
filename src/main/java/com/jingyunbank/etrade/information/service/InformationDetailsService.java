@@ -102,6 +102,18 @@ public class InformationDetailsService implements IInformationDetailsService{
 			return informationDetails;
 		}).collect(Collectors.toList());
 	}
+	/**
+	 * 查出添加资讯的所有信息
+	 */
+	@Override
+	public List<InformationDetails> selectDetail() {
+		
+		return informationDetailsDao.selectDetail().stream().map(entity ->{
+			InformationDetails bo=new InformationDetails();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+	}
 	
 
 }

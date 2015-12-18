@@ -8,6 +8,7 @@
 			<result column="sid" property="SID"/>
 			<result column="name" property="name"/>
 			<result column="title" property="title"/>
+			<result column="abstract" property="abstracts"/>
 			<result column="content" property="content"/>
 			<result column="picture" property="picture"/>
 			<result column="addtime" property="addtime"/>
@@ -15,14 +16,14 @@
 			<result column="orders" property="orders" />
 		</resultMap>
 	<sql id="details_list">
-		id,sid,name,title,content,picture,addtime,status,orders
+		id,sid,name,title,abstract,content,picture,addtime,status,orders
 	</sql>
 	<!-- 增加详情内容 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.information.entity.InformationDetailsEntity">
 			insert into information_details(
-				id,sid,name,title,content,picture,addtime,status,orders
+				id,sid,name,title,abstract,content,picture,addtime,status,orders
 			)values(
-				#{ID},#{SID},#{name},#{title},#{content},#{picture},#{addtime},#{status},#{orders}
+				#{ID},#{SID},#{name},#{title},#{abstracts},#{content},#{picture},#{addtime},#{status},#{orders}
 			)
 		</insert>
 		<!-- 通过id删除对应的信息 -->
@@ -43,10 +44,13 @@
 			<if test="title!=null and title!=''">
 			a.title=#{title},
 			</if>
+			<if test="abstract!=null and abstract!=''">
+			a.abstract=#{abstract},
+			</if>
 			<if test="content!=null and content!=''">
 			a.content=#{content},
 			</if>
-			<if test="publish!=null and publish!=''">
+			<if test="picture!=null and picture!=''">
 			a.picture=#{picture},
 			</if>
 			<if test="addtime!=null and addtime!=''">
@@ -80,6 +84,12 @@
 			select <include refid="details_list"></include>
 			from information_details where
 			id=#{ID}
+		</select>
+		<!-- 查出添加的所有的资讯详情 -->
+		<select id="selectDetail" resultMap="InformationDetailsResultMap">
+			select <include refid="details_list"></include>
+			from information_details 
+			order by orders desc,addtime desc
 		</select>
 	</mapper>
 	

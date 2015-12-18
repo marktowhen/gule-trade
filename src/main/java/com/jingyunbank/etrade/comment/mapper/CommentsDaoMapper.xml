@@ -81,6 +81,10 @@
 		<!-- 通过gid查出该商品的总条数 -->
 		<select id="commentCount" resultType="int" parameterType="string">
 		select count(id) from comment where gid=#{GID}
-	</select>
-		
+		</select>
+		<select id="selectComment" resultMap="ResultMap">
+			select <include refid="comment_list"></include>
+			from comment 
+			 order by addtime desc,sort desc
+		</select>
 	</mapper>

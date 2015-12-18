@@ -141,4 +141,19 @@ public class InformationDetailsController {
 	BeanUtils.copyProperties(adviceDetails, adviceDetailsVO);
 		return Result.ok(adviceDetailsVO);
 	}
+	/**
+	 * 查出添加资讯的所有信息
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/api/information/alldetail",method=RequestMethod.GET)
+	public Result selectDetails() throws Exception{
+		return Result.ok(informationDetailsService.selectDetail()
+				.stream().map(bo -> {
+				
+				InformationDetailsVO vo=new InformationDetailsVO();
+				BeanUtils.copyProperties(bo, vo);
+				return vo;
+			}).collect(Collectors.toList()));
+	}
 }

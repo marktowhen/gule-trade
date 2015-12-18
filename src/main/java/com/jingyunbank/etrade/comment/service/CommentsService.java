@@ -131,5 +131,17 @@ public class CommentsService implements ICommentService{
 					return bo;
 				}).collect(Collectors.toList());
 	}
+	/**
+	 * 查出所有的评价信息
+	 */
+	@Override
+	public List<Comments> selectComment() {
+		return	commentsDao.selectComment().stream().map(entity ->{
+			Comments bo=new Comments();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		 
+	}
 	
 }

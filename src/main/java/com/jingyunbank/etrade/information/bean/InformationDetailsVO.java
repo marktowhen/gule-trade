@@ -16,8 +16,15 @@ public class InformationDetailsVO {
 	private Date addtime;//添加时间
 	private String status;
 	private int orders;//按order排序
+	private String abstracts;
 	
 	
+	public String getAbstracts() {
+		return abstracts;
+	}
+	public void setAbstracts(String abstracts) {
+		this.abstracts = abstracts;
+	}
 	public String getPicture() {
 		return picture;
 	}

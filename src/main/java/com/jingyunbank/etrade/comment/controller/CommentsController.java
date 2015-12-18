@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -194,16 +195,8 @@ public class CommentsController {
 	@RequestMapping(value="/api/comments/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
 	public Result remove(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
-		String uid = ServletBox.getLoginUID(request);
-		Optional<Comments> comments=commentService.getById(id);
-		CommentsVO commentsVO=new CommentsVO();
-		BeanUtils.copyProperties(comments.get(), commentsVO);
-		if(commentsVO.getUID().equals(uid)){
-			commentImgService.remove(commentsVO.getID());
 			commentService.remove(id);
 			return Result.ok("删除成功");
-		}
-		return Result.fail("没有删除的权限");
 	}
 	/**
 	 * 修改评论的状态
@@ -322,5 +315,16 @@ public class CommentsController {
 		 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
 			commentsVO.setPersonalGrade(personalGrade);
 		return Result.ok(commentsVO);		
+	}
+	
+	@RequestMapping(value="/api/allcomments",method=RequestMethod.GET)
+	public Result<List<CommentsVO>> getComment(){
+		
+		return Result.ok(commentService.selectComment().stream().map(bo ->{
+			CommentsVO vo=new CommentsVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
+		
 	}
 }
