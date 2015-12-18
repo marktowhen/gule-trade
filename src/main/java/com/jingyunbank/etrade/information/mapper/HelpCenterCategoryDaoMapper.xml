@@ -55,16 +55,16 @@
 		<select id="selectValidListPage" resultMap="HelpCenterCategoryResultMap">
 			select <include refid="join_column_list"/> 
 				from help_center_category category 
-					LEFT JOIN help_center_detail detail on category.id = detail.parent_id
-				where category.valid=true and detail.valid=TRUE
+					LEFT JOIN help_center_detail detail on category.id = detail.parent_id and detail.valid=TRUE
+				where category.valid=true 
 				order by category.sort,detail.sort
 					limit #{offset},#{size}
 		</select>
 		<select id="selectValidList" resultMap="HelpCenterCategoryResultMap">
 			select <include refid="join_column_list"/> 
 				from help_center_category category 
-					LEFT JOIN help_center_detail detail on category.id = detail.parent_id
-				where category.valid=true and detail.valid=TRUE
+					LEFT JOIN help_center_detail detail on category.id = detail.parent_id and detail.valid=TRUE
+				where category.valid=true 
 				order by category.sort,detail.sort
 		</select>
 		<select id="selectSingle" resultMap="HelpCenterCategoryResultMap">
