@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -37,6 +38,14 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 			.map( entity->{
 						return getBoFromEntity(entity);
 					}).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<HelpCenterDetail> list(Range range) {
+		return helpCenterDetailDao.selectRange(range.getFrom(), range.getTo()-range.getFrom()).stream()
+				.map( entity->{
+					return getBoFromEntity(entity);
+				}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -68,6 +77,16 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 		}
 	}
 	
+	@Override
+	public boolean removeByCategory(String categoryID)
+			throws DataRemovingException {
+		try {
+			return helpCenterDetailDao.updateValidByParent(categoryID, false);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+	}
+	
 	private HelpCenterDetail getBoFromEntity(HelpCenterDetailEntity entity){
 		if(entity!=null){
 			HelpCenterDetail bo = new HelpCenterDetail();
@@ -85,5 +104,9 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 		}
 		return null;
 	}
+
+	
+
+	
 
 }

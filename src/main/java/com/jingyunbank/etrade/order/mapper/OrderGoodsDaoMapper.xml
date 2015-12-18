@@ -35,7 +35,7 @@
 			</foreach>
 	</insert>
 	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">
-		select og.id, og.oid,og.uid, og.orderno,og.gid, og.gname, og.addtime, og.status_code, og.price, og.payout, og.reduce, og.count
+		select og.id, og.oid,og.uid, og.orderno,og.gid, og.gname, og.addtime, og.status_code, og.price, og.payout, og.coupon_reduce, og.count
 		,img.thumb_path_1
 		from order_goods og
 		left join goods_img img on og.gid = img.gid
@@ -43,7 +43,7 @@
 		
 	</select>
 	<select id="selectByID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
-		select og.id, og.oid,og.uid, og.orderno,og.gid, og.gname, og.addtime, og.status_code, og.price, og.payout, og.reduce, og.count
+		select og.id, og.oid,og.uid, og.orderno,og.gid, og.gname, og.addtime, og.status_code, og.price, og.payout, og.coupon_reduce, og.count
 		,img.thumb_path_1
 		from order_goods og
 		left join goods_img img on og.gid = img.gid

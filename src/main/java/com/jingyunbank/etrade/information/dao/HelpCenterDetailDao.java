@@ -34,6 +34,15 @@ public interface HelpCenterDetailDao {
 	public boolean updateValid(@Param(value="ID")String ID, @Param(value="valid") boolean valid) throws Exception;
 	
 	/**
+	 * 更改有效状态
+	 * @param parentID
+	 * @param valid
+	 * @return
+	 * 2015年12月18日 qxs
+	 */
+	public boolean updateValidByParent(@Param(value="parentID") String parentID,@Param(value="valid") boolean valid);
+	
+	/**
 	 * 查询有效的
 	 * @return
 	 * 2015年12月10日 qxs
@@ -41,9 +50,22 @@ public interface HelpCenterDetailDao {
 	public List<HelpCenterDetailEntity> selectValidList(String categoryID) ;
 	
 	/**
+	 * 查询
+	 * @param offset
+	 * @param size
+	 * @return
+	 * 2015年12月18日 qxs
+	 */
+	public List<HelpCenterDetailEntity> selectRange(@Param(value="offset")long offset,@Param(value="size")long size);
+	
+	/**
 	 * 查询单个
 	 * @return
 	 * 2015年12月10日 qxs
 	 */
 	public HelpCenterDetailEntity selectSingle(String ID);
+
+	
+
+	
 }
