@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.postsale.dao.RefundLogisticDao">
+	<resultMap type="com.jingyunbank.etrade.order.postsale.entity.RefundLogisticEntity" id="RefundLogisticEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="rid" property="RID" javaType="String"/>
+		<result column="expressno" property="expressno" javaType="String"/>
+		<result column="express_name" property="expressName" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="receiver" property="receiver" javaType="String"/>
+	</resultMap>
+	<sql id="refund_logistic_column">
+		id, rid, expressno, express_name, addtime, receiver
+	</sql>
+	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundLogisticEntity">
+		insert into refund_logistic 
+			(<include refid="refund_logistic_column"/>)
+		values (#{ID}, #{RID}, #{expressno}, #{expressName}, #{addtime}, #{receiver})
+	</insert>
+	<select id="selectRID" parameterType="String" resultMap="RefundLogisticEntityResultMap">
+		select <include refid="refund_logistic_column"/>
+		from refund_logistic
+		where rid = #{rid}
+		limit 1
+	</select>
+</mapper>

@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.information.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
@@ -14,6 +16,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.information.bo.HelpCenterCategory;
 import com.jingyunbank.etrade.api.information.service.IHelpCenterCategoryService;
+import com.jingyunbank.etrade.api.information.service.IHelpCenterDetailService;
 import com.jingyunbank.etrade.information.dao.HelpCenterCategoryDao;
 import com.jingyunbank.etrade.information.entity.HelpCenterCategoryEntity;
 
@@ -22,6 +25,9 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	
 	@Autowired
 	private HelpCenterCategoryDao helpCenterCategoryDao;
+	
+	@Autowired
+	private IHelpCenterDetailService helpCenterDetailService;
 
 	@Override
 	public Optional<HelpCenterCategory> single(String id) {
@@ -34,8 +40,18 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 
 	@Override
 	public List<HelpCenterCategory> listAllValid(Range range) {
-		return helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom()).stream()
-			.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());
+		
+		List<HelpCenterCategoryEntity> listPage = helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom());
+		if(listPage!=null && !listPage.isEmpty()){
+			String [] ids = new String[listPage.size()];
+			for (int i = 0; i < ids.length; i++) {
+				ids[i] = listPage.get(i).getID();
+			}
+			return helpCenterCategoryDao.selectListByCondition(ids).stream()
+					.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());
+		}
+		return new ArrayList<HelpCenterCategory>();
+		
 	}
 	
 	@Override
@@ -65,9 +81,12 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	}
 
 	@Override
+	@Transactional
 	public boolean remove(String id) throws DataRemovingException {
 		try {
-			return helpCenterCategoryDao.updateValid(id, false);
+			helpCenterCategoryDao.updateValid(id, false);
+			helpCenterDetailService.removeByCategory(id);
+			return true;
 		} catch (Exception e) {
 			throw new DataRemovingException(e);
 		}

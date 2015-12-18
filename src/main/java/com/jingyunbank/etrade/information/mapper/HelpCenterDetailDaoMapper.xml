@@ -46,12 +46,23 @@
 				where id=#{ID}		
 		</update>
 		
+		<update id="updateValidByParent">
+			update help_center_detail set valid=#{valid}, update_time = now()
+				where parent_id=#{parentID}		
+		</update>
+		
+		
+		
 		<select id="selectValidList" resultMap="HelpCenterDetailResultMap">
 			select <include refid="list_column"/> from help_center_detail where parent_id =#{categoryID} and valid=true  order by sort
 		</select>
 		
 		<select id="selectSingle" resultMap="HelpCenterDetailResultMap">
 			select <include refid="detail_column_list"/> from help_center_detail where id=#{ID}
+		</select>
+		
+		<select id="selectRange" resultMap="HelpCenterDetailResultMap">
+			select <include refid="list_column"/> from help_center_detail where  valid=true  order by sort limit #{offset},#{size}
 		</select>
 		
 		

@@ -110,12 +110,12 @@ public class HelpCenterCategoryController {
 	}
 	
 	/**
-	 * 查看所有有效类别
+	 * 查看有效类别
 	 * @return
 	 * 2015年12月11日 qxs
 	 */
 	@RequestMapping(value="/list/{offset}/{size}", method=RequestMethod.GET)
-	public Result<List<HelpCenterCategoryVO>> listAllValid(@PathVariable long offset, @PathVariable long size){
+	public Result<List<HelpCenterCategoryVO>> listAllValidPage(@PathVariable long offset, @PathVariable long size){
 		Range range = new Range();
 		range.setFrom(offset);
 		range.setTo(offset + size);

@@ -109,7 +109,7 @@ public class HelpCenterDetailController {
 	}
 	
 	/**
-	 * 查看所有有效类别
+	 * 查看单个类别
 	 * @return
 	 * 2015年12月11日 qxs
 	 */
@@ -121,6 +121,7 @@ public class HelpCenterDetailController {
 		}
 		return Result.fail("未找到");
 	}
+	
 	
 	
 	

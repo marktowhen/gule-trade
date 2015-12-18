@@ -21,6 +21,7 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
@@ -86,7 +87,7 @@ public class GoodsService implements IGoodsService {
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				HotGoods bo = new HotGoods();
-					BeanUtils.copyProperties(eo, bo);
+				BeanUtils.copyProperties(eo, bo);
 				return bo;
 			}).collect(Collectors.toList());
 		}
@@ -124,7 +125,7 @@ public class GoodsService implements IGoodsService {
 
 	@Override
 	public List<ShowGoods> listRecommend(String from, String to) throws Exception {
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", Integer.parseInt(from));
 		map.put("to", Integer.parseInt(to));
 		List<ShowGoods> recommendlist = goodsDao.selectRecommend(map).stream().map(dao -> {
@@ -168,8 +169,7 @@ public class GoodsService implements IGoodsService {
 		}).collect(Collectors.toList());
 		return list;
 	}
-	
-	
+
 	@Override
 	public List<ShowGoods> listMerchantByWhereGoodsMax(GoodsShow show, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -178,7 +178,7 @@ public class GoodsService implements IGoodsService {
 		map.put("beginprice", show.getBeginPrice());
 		map.put("endprice", show.getEndPrice());
 		map.put("mid", show.getMID());
-		
+
 		if (show.getOrder() == 1) {
 			map.put("order", "1");
 		} else if (show.getOrder() == 2) {
@@ -188,9 +188,9 @@ public class GoodsService implements IGoodsService {
 		} else if (show.getOrder() == 4) {
 			map.put("order", "4");
 		}
-		
-		map.put("from", (int)range.getFrom());
-		map.put("size", (int)range.getTo());
+
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
 		List<ShowGoods> list = goodsDao.selectMerchantByWhereGoodsMax(map).stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
@@ -206,7 +206,7 @@ public class GoodsService implements IGoodsService {
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				Hot24Goods bo = new Hot24Goods();
-					BeanUtils.copyProperties(eo, bo);
+				BeanUtils.copyProperties(eo, bo);
 				return bo;
 			}).collect(Collectors.toList());
 		}
@@ -266,7 +266,7 @@ public class GoodsService implements IGoodsService {
 		}).collect(Collectors.toList());
 		return list;
 	}
-	
+
 	@Override
 	public List<HoneyGoods> listHoneyGoods() throws Exception {
 		List<HoneyGoods> rltlist = new ArrayList<HoneyGoods>();
@@ -274,13 +274,13 @@ public class GoodsService implements IGoodsService {
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				HoneyGoods bo = new HoneyGoods();
-					BeanUtils.copyProperties(eo, bo);
+				BeanUtils.copyProperties(eo, bo);
 				return bo;
 			}).collect(Collectors.toList());
 		}
 		return rltlist;
 	}
-	
+
 	@Override
 	public List<GoodsList> listGoodsByCondition(GoodsSearch goodsSearch, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -296,5 +296,19 @@ public class GoodsService implements IGoodsService {
 		}).collect(Collectors.toList());
 		return showGoodsList;
 	}
-	
+
+	@Override
+	public List<SalesRecord> listSalesRecords(String gid, Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gid", gid);
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		List<SalesRecord> saleList = goodsDao.selectSalesRecords(map).stream().map(dao -> {
+			SalesRecord bo = new SalesRecord();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return saleList;
+	}
+
 }
