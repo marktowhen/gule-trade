@@ -494,4 +494,23 @@
 		ORDER BY g.volume desc limit 0,4
 		]]>
 	</select>
+	
+	
+	<resultMap type="com.jingyunbank.etrade.goods.entity.SalesRecordEntity" id="salesrecordsMap">
+		<result column="gid" property="ID" />
+		<result column="goodsname" property="OID" />
+		<result column="price" property="UID" />
+		<result column="now_price" property="uname" />
+		<result column="now_price" property="GID" />
+		<result column="thumb_path_1" property="count" />
+		<result column="thumb_path_1" property="sales_date" />
+	</resultMap>
+	<!-- 查询商品的交易记录 -->
+	<select id="selectSalesRecords"  parameterType="java.util.Map" resultMap="salesrecordsMap">
+		SELECT s.`id`,s.`oid`,s.`uid`, s.`uname`,s.`gid`, s.`count`,s.`sales_date` 
+		FROM `sales_records` s
+		WHERE 1=1 AND s.`gid` =#{gid}
+		ORDER BY s.`sales_date`DESC
+		LIMIT #{from}, #{size}
+	</select>
 </mapper>

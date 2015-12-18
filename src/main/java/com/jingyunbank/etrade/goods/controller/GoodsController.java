@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.goods.controller;
 
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +10,11 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
@@ -26,6 +23,7 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
+import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
@@ -38,6 +36,7 @@ import com.jingyunbank.etrade.goods.bean.HoneyGoodsVO;
 import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
+import com.jingyunbank.etrade.goods.bean.SaleRecordVO;
 
 /**
  * Title: 商品controller
@@ -197,8 +196,9 @@ public class GoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/recommend/list/{from}/{size}", method = RequestMethod.GET)
-	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request,@PathVariable String from,@PathVariable String size) throws Exception {
-		List<RecommendGoods> list = goodsService.listRecommend(from,size).stream().map(bo -> {
+	public Result<List<RecommendGoods>> queryGoodsByWhere(HttpServletRequest request, @PathVariable String from,
+			@PathVariable String size) throws Exception {
+		List<RecommendGoods> list = goodsService.listRecommend(from, size).stream().map(bo -> {
 			RecommendGoods vo = new RecommendGoods();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -413,7 +413,7 @@ public class GoodsController {
 		System.out.println(vo);
 		return Result.ok(vo);
 	}
-	
+
 	/**
 	 * 阿胶详情页 宝贝推荐排行
 	 * 
@@ -431,7 +431,25 @@ public class GoodsController {
 		return Result.ok(list);
 	}
 
-
-
+	/**
+	 * 获取商品的购买记录
+	 * 
+	 * @param gid
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/salesrecords/list/{gid}", method = RequestMethod.GET)
+	public Result<List<SaleRecordVO>> querySalesRecords(@PathVariable String gid, Page page) throws Exception {
+		Range range = new Range();
+		range.setFrom(page.getOffset());
+		range.setTo(page.getSize());
+		List<SalesRecord> salelist = goodsService.listSalesRecords(gid, range);
+		List<SaleRecordVO> list = salelist.stream().map(bo -> {
+			SaleRecordVO vo = new SaleRecordVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
 
 }
