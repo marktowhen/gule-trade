@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.information.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,8 +35,18 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 
 	@Override
 	public List<HelpCenterCategory> listAllValid(Range range) {
-		return helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom()).stream()
-			.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());
+		
+		List<HelpCenterCategoryEntity> listPage = helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom());
+		if(listPage!=null && !listPage.isEmpty()){
+			String [] ids = new String[listPage.size()];
+			for (int i = 0; i < ids.length; i++) {
+				ids[i] = listPage.get(i).getID();
+			}
+			return helpCenterCategoryDao.selectListByCondition(ids).stream()
+					.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());
+		}
+		return new ArrayList<HelpCenterCategory>();
+		
 	}
 	
 	@Override
