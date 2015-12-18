@@ -2,6 +2,8 @@ package com.jingyunbank.etrade.information.bean;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class InformationDetailsVO {
 	
 	private String ID;
@@ -10,6 +12,7 @@ public class InformationDetailsVO {
 	private String title;//标题
 	private String content;//内容
 	private String picture;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;//添加时间
 	private String status;
 	private int orders;//按order排序

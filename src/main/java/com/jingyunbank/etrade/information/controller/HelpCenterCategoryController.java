@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.information.bo.HelpCenterCategory;
 import com.jingyunbank.etrade.api.information.service.IHelpCenterCategoryService;
@@ -110,6 +111,22 @@ public class HelpCenterCategoryController {
 	
 	/**
 	 * 查看所有有效类别
+	 * @return
+	 * 2015年12月11日 qxs
+	 */
+	@RequestMapping(value="/list/{offset}/{size}", method=RequestMethod.GET)
+	public Result<List<HelpCenterCategoryVO>> listAllValid(@PathVariable long offset, @PathVariable long size){
+		Range range = new Range();
+		range.setFrom(offset);
+		range.setTo(offset + size);
+		return Result.ok(helpCenterCategoryService.listAllValid(range).stream()
+					.map( bo -> {
+						return getVOFromBo(bo);
+					}).collect(Collectors.toList()));
+	}
+	
+	/**
+	 * 查看单个
 	 * @return
 	 * 2015年12月11日 qxs
 	 */

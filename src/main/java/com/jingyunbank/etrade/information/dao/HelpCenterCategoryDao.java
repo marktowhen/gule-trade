@@ -35,8 +35,17 @@ public interface HelpCenterCategoryDao {
 	
 	/**
 	 * 查询有效的
+	 * @param offset
+	 * @param size
 	 * @return
-	 * 2015年12月10日 qxs
+	 * 2015年12月17日 qxs
+	 */
+	public List<HelpCenterCategoryEntity> selectValidListPage(@Param(value="offset")long offset,@Param(value="size")long size);
+	
+	/**
+	 * 查询有效的
+	 * @return
+	 * 2015年12月17日 qxs
 	 */
 	public List<HelpCenterCategoryEntity> selectValidList();
 	
