@@ -56,9 +56,9 @@
 	<select id="selectmWithCondition" resultMap="RefundEntityResultMap">
 		select <include refid="goods_join_refund_columns"/> 
 		from refunds r
-		left join order_goods og on r.ogid = og.id
+		inner join order_goods og on r.ogid = og.id 
+		inner join orders o on r.oid = o.id 
 		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
 		where 
 			r.mid = #{mid}
 			<if test="statuscode != null and !''.equals(statuscode)">
