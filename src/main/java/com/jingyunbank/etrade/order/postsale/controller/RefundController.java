@@ -87,4 +87,15 @@ public class RefundController {
 		refundContextService.deny(rid, note);
 		return Result.ok();
 	}
+	
+	@RequestMapping(
+			value="/api/refund/completion",
+			method=RequestMethod.POST,
+			consumes={MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE},
+			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public Result<String> done(@RequestParam(required=true) String rid, HttpSession session) throws Exception{
+		
+		refundContextService.done(rid);
+		return Result.ok();
+	}
 }
