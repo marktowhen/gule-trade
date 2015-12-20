@@ -46,7 +46,7 @@ public class OrderLogisticController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/orders/accept", method=RequestMethod.PUT)
+	@RequestMapping(value="/api/orders/acception", method=RequestMethod.PUT)
 	public Result<String> accept(@NotNull @Size(min=1) @RequestBody List<String> oids, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单信息有误！");

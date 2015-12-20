@@ -62,8 +62,11 @@ public class RefundContextService implements IRefundContextService{
 			return;
 		}
 		Refund refund = candidate.get();
-		refundService.refreshStatus(RID, RefundStatusDesc.ACCEPT);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, note));
+		boolean returnGoods = refund.isReturnGoods();
+		if(returnGoods){
+			refundService.refreshStatus(RID, RefundStatusDesc.ACCEPT);
+			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, note));
+		}
 	}
 
 	@Override
