@@ -157,6 +157,6 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<RecommendGoodsEntity> selectRecommendGoods(@Param("bids") List<String> bids,@Param("tids") List<String> tids,@Param("from") int from,@Param("to") int to) throws Exception;
+	public List<RecommendGoodsEntity> selectRecommendGoods(@Param("bids") List<String> bids,@Param("tids") List<String> tids,@Param("from") int from,@Param("to") int to,@Param("uid") String uid) throws Exception;
 	 
 }
