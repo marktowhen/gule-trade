@@ -346,7 +346,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		String tmptidstr[] = tidstr.split(",");
 		tids = Arrays.asList(tmptidstr);
 		//查询相关产品
-		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bids,tids,from,to);
+		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bids,tids,from,to,uid);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				RecommendGoods bo = new RecommendGoods();

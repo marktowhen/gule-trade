@@ -269,14 +269,16 @@
 	</resultMap>
 	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
 			select * from goods where 1=1 
-			and bid in
-		  <foreach collection="bids" item="bid" open="(" separator="," close=")">
-			#{bid}
-		  </foreach>
-		  	and tid in
-		   <foreach collection="tids" item="tid" open="(" separator="," close=")">
-			#{tid}
-		  </foreach>
+			<if test="uid !='' and uid !=null"> 
+				and bid in
+			  <foreach collection="bids" item="bid" open="(" separator="," close=")">
+				#{bid}
+			  </foreach>
+			  	and tid in
+			   <foreach collection="tids" item="tid" open="(" separator="," close=")">
+				#{tid}
+			   </foreach>
+		   </if>
 		  LIMIT #{from} , #{to}
 	</select>
 </mapper>
