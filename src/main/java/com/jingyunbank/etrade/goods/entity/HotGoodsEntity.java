@@ -13,5 +13,12 @@ public class HotGoodsEntity  extends BaseGoods{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private String imgPath; // 商家图片
+	public String getImgPath() {
+		return imgPath;
+	}
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
+	}
+	
 }
