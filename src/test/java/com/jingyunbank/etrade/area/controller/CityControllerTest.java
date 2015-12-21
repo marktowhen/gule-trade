@@ -21,7 +21,7 @@ import com.jingyunbank.etrade.TestCaseBase;
 public class CityControllerTest extends TestCaseBase {
 
 	/**
-	 * 测试新增
+	 * 测试新增  
 	 * @throws Exception
 	 */
 	@Test
