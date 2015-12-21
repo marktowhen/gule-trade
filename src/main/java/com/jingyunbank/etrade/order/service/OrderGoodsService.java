@@ -86,7 +86,7 @@ public class OrderGoodsService implements IOrderGoodsService {
 	public int getByOID(String oid, OrderStatusDesc status) {
 		
 		
-		return orderGoodsDao.getByOID(oid, status);
+		return orderGoodsDao.count(oid, status);
 	}
 
 	

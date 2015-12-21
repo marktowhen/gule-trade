@@ -34,12 +34,19 @@ public class OrderEntity {
 	private List<GoodsEntity> goods = new ArrayList<GoodsEntity>();//商品图片路径
 	
 	public static class GoodsEntity {
+		private String ID;
 		private String GID;
 		private String gname;
 		private String imgpath;
 		private int count;
 		private BigDecimal price;
 		
+		public String getID() {
+			return ID;
+		}
+		public void setID(String iD) {
+			ID = iD;
+		}
 		public String getGID() {
 			return GID;
 		}

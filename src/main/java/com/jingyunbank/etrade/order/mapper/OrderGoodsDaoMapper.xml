@@ -14,15 +14,19 @@
 		<result column="price" property="price" jdbcType="DECIMAL"/>
 		<result column="pprice" property="pprice" jdbcType="DECIMAL"/>
 		<result column="payout" property="payout" jdbcType="DECIMAL"/>
-		<result column="reduce" property="reduce" jdbcType="DECIMAL"/>
+		<result column="coupon_reduce" property="couponReduce" jdbcType="DECIMAL"/>
 		<result column="count" property="count" jdbcType="INTEGER"/>
 		<result column="uid" property="UID" javaType="String"/>
-		<association property="goodsImgEntity" javaType="com.jingyunbank.etrade.goods.entity.GoodsImgEntity">
-			<result column="thumb_path_1" property="thumbpath1"/>
-		</association>
+		<result column="mid" property="MID" javaType="String"/>
+		<result column="mname" property="mname" javaType="String"/>
+		<result column="imgpath" property="imgpath" javaType="String"/>
 	</resultMap>
 	<sql id="order_goods_column">
-		id, oid,uid, orderno, gid, gname, addtime, status_code, price, pprice, payout, reduce, count
+		id, oid,uid, orderno, gid, gname, addtime, status_code, price, pprice, payout, coupon_reduce, count
+	</sql>
+	<sql id="select_order_goods_column">
+		og.id, og.oid, og.uid, og.orderno, og.gid, og.gname, og.addtime, og.status_code, 
+		og.price, og.pprice, og.payout, og.coupon_reduce, og.count, o.mid, o.mname, img.thumb_path_1 as imgpath
 	</sql>
 	<insert id="insertMany">
 		insert into order_goods
@@ -31,22 +35,23 @@
 			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
 				(#{g.ID}, #{g.OID}, #{g.UID}, #{g.orderno}, #{g.GID}, #{g.gname}, 
 				#{g.addtime}, #{g.statusCode}, #{g.price}, #{g.pprice}, #{g.payout}, 
-				#{g.reduce}, #{g.count})
+				#{g.couponReduce}, #{g.count})
 			</foreach>
 	</insert>
 	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">
-		select og.id, og.oid,og.uid, og.orderno,og.gid, og.gname, og.addtime, og.status_code, og.price, og.payout, og.reduce, og.count
-		,img.thumb_path_1
+		select <include refid="select_order_goods_column"/>
 		from order_goods og
 		left join goods_img img on og.gid = img.gid
-		where og.uid = #{UID} and og.status_code= #{status.code}  order by og.addtime desc
+		left join orders o on og.oid = o.id
+		where og.uid = #{UID} and og.status_code = #{status.code}
+		order by og.addtime desc
 		
 	</select>
 	<select id="selectByID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
-		select og.id, og.oid,og.uid, og.orderno,og.gid, og.gname, og.addtime, og.status_code, og.price, og.payout, og.reduce, og.count
-		,img.thumb_path_1
+		select <include refid="select_order_goods_column"/>
 		from order_goods og
 		left join goods_img img on og.gid = img.gid
+		left join orders o on og.oid = o.id
 		where og.id = #{ID}
 	</select>
 	<update id="updateStatus">
@@ -62,7 +67,7 @@
 		set og.status_code = #{status.code}
 		where og.id = #{ID}
 	</update>
-	<select id="getByOID" resultType="int">
+	<select id="count" resultType="int">
 		select count(id)
 		from order_goods og
 		where og.oid = #{OID} and og.status_code= #{status.code}

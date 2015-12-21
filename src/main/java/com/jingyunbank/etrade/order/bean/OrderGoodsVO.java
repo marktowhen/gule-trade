@@ -12,7 +12,7 @@ public class OrderGoodsVO {
 	private long orderno;
 	private String GID;//商品id
 	private String gname;
-	private BigDecimal pprice;//
+	private BigDecimal pprice;//促销价
 	private BigDecimal price;//订单生成时的商品价格
 	private int count;
 	private int points;//赠送积分
@@ -21,15 +21,11 @@ public class OrderGoodsVO {
 	private BigDecimal couponReduce;//优惠减免价格
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
-	private String addtimeStr;
 	
+	private String MID;
+	private String mname;
+	private String imgpath;
 	
-	public String getAddtimeStr() {
-		return addtimeStr;
-	}
-	public void setAddtimeStr(String addtimeStr) {
-		this.addtimeStr = addtimeStr;
-	}
 	public String getID() {
 		return ID;
 	}
@@ -114,5 +110,23 @@ public class OrderGoodsVO {
 	}
 	public void setCouponReduce(BigDecimal couponReduce) {
 		this.couponReduce = couponReduce;
+	}
+	public String getMname() {
+		return mname;
+	}
+	public void setMname(String mname) {
+		this.mname = mname;
+	}
+	public String getImgpath() {
+		return imgpath;
+	}
+	public void setImgpath(String imgpath) {
+		this.imgpath = imgpath;
+	}
+	public String getMID() {
+		return MID;
+	}
+	public void setMID(String mID) {
+		MID = mID;
 	}
 }

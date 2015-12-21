@@ -29,6 +29,7 @@
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
 		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.entity.OrderEntity$GoodsEntity">
+			<result column="ogid" property="ID" javaType="String"/>
 			<result column="gid" property="GID" javaType="String"/>
 			<result column="gname" property="gname" javaType="String"/>
 			<result column="imgpath" property="imgpath" javaType="String"/>
@@ -52,7 +53,7 @@
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
 		img.thumb_path_1 as imgpath, img.gid as gid, 
-		og.gname as gname, og.count as count, og.price as gprice
+		og.gname as gname, og.count as count, og.price as gprice, og.id as ogid
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders

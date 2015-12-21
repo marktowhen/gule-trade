@@ -32,10 +32,18 @@ public class Order2ShowVO {
 	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
 	
 	public static class OrderGoods2ShowVO{
+		private String ID;//订单商品id
 		private String GID;
 		private String imgpath;
 		private String gname;
 		private int count;
+		
+		public String getID() {
+			return ID;
+		}
+		public void setID(String iD) {
+			ID = iD;
+		}
 		private BigDecimal price;
 		
 		public String getGID() {

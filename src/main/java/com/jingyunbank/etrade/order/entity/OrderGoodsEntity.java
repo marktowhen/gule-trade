@@ -21,13 +21,18 @@ public class OrderGoodsEntity implements Serializable{
 	private long orderno;
 	private String GID;//商品id
 	private String gname;
+	private BigDecimal pprice;
 	private BigDecimal price;//订单生成时的商品价格
 	private int count;
 	private int points;//赠送积分
 	private String statusCode;//状态id，用户支持订单中某个商品的退款
 	private BigDecimal payout;//实际付款
-	private BigDecimal reduce;//优惠减免价格
+	private BigDecimal couponReduce;//优惠减免价格
 	private Date addtime;
+	
+	private String MID;
+	private String mname;
+	private String imgpath;
 	private GoodsImgEntity goodsImgEntity;
 	
 	
@@ -98,12 +103,6 @@ public class OrderGoodsEntity implements Serializable{
 	public void setPayout(BigDecimal payout) {
 		this.payout = payout;
 	}
-	public BigDecimal getReduce() {
-		return reduce;
-	}
-	public void setReduce(BigDecimal reduce) {
-		this.reduce = reduce;
-	}
 	public String getGname() {
 		return gname;
 	}
@@ -116,5 +115,34 @@ public class OrderGoodsEntity implements Serializable{
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-	
+	public String getMID() {
+		return MID;
+	}
+	public void setMID(String mID) {
+		MID = mID;
+	}
+	public String getMname() {
+		return mname;
+	}
+	public void setMname(String mname) {
+		this.mname = mname;
+	}
+	public String getImgpath() {
+		return imgpath;
+	}
+	public void setImgpath(String imgpath) {
+		this.imgpath = imgpath;
+	}
+	public BigDecimal getPprice() {
+		return pprice;
+	}
+	public void setPprice(BigDecimal pprice) {
+		this.pprice = pprice;
+	}
+	public BigDecimal getCouponReduce() {
+		return couponReduce;
+	}
+	public void setCouponReduce(BigDecimal couponReduce) {
+		this.couponReduce = couponReduce;
+	}
 }
