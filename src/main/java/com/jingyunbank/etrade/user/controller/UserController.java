@@ -170,7 +170,7 @@ public class UserController {
 				level += 33;
 			}
 			//支付密码与登录密码不同
-			if(!users.getPassword().equals(users.getTradepwd())){
+			if(StringUtils.isEmpty(users.getPassword()) && !users.getPassword().equals(users.getTradepwd())){
 				level += 33;
 			}
 		}

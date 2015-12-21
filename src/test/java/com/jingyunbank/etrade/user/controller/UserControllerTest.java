@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.user.bean.LoginUserVO;
+import com.jingyunbank.etrade.user.bean.LoginUserPwdVO;
 
 public class UserControllerTest extends TestCaseBase {
 	/**
@@ -24,7 +24,7 @@ public class UserControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testLogin() throws Exception{
-		LoginUserVO user = new LoginUserVO();
+		LoginUserPwdVO user = new LoginUserPwdVO();
 		user.setKey("username");
 		user.setPassword("12345678");
 		ObjectMapper mapper = new ObjectMapper();

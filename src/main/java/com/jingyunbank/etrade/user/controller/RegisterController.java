@@ -24,6 +24,7 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -80,7 +81,7 @@ public class RegisterController {
 		user.setID(KeyGen.uuid());//generate uid here to make view visible
 		
 		UserInfo userInfo=new UserInfo();
-		userInfo.setRegip(request.getRemoteAddr());
+		userInfo.setRegip(EtradeUtil.getIpAddr(request));
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
 			userService.save(user, userInfo);
