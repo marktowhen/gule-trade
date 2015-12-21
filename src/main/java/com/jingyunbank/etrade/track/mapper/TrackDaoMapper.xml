@@ -245,4 +245,38 @@
 			#{rid}
 		</foreach>
 	</select>
+	<!-- 查询推荐品牌 -->
+	<select id="selectRecommendBidstr" parameterType="java.util.Map" resultType="map">
+		 select uid,GROUP_CONCAT(bid) as bidstr from (
+			select distinct uid,bid from 
+			v_recommend_goods v,goods g
+			where v.gid = g.id
+			and v.uid = #{uid}
+			) t group by t.uid
+	</select>
+	<!-- 查询推荐类别 -->
+	<select id="selectRecommendTidstr" parameterType="java.util.Map" resultType="map">
+		 select uid,GROUP_CONCAT(tid) as tidstr from (
+			select distinct uid,tid from 
+			v_recommend_goods v,goods g
+			where v.gid = g.id
+			and v.uid = #{uid}
+			) t group by t.uid
+	</select>
+	<!-- 查询推荐商品 -->
+	<resultMap type="com.jingyunbank.etrade.track.entity.RecommendGoodsEntity" id="rltRecommendGoods">
+		<result column="id" property="GID"/>
+	</resultMap>
+	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
+			select * from goods where 1=1 
+			and bid in
+		  <foreach collection="bids" item="bid" open="(" separator="," close=")">
+			#{bid}
+		  </foreach>
+		  	and tid in
+		   <foreach collection="tids" item="tid" open="(" separator="," close=")">
+			#{tid}
+		  </foreach>
+		  LIMIT #{from} , #{to}
+	</select>
 </mapper>

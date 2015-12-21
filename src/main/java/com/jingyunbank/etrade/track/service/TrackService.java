@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.track.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
@@ -24,6 +24,7 @@ import com.jingyunbank.etrade.api.track.bo.AdDetail;
 import com.jingyunbank.etrade.api.track.bo.AdModule;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
+import com.jingyunbank.etrade.api.track.bo.RecommendGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
 import com.jingyunbank.etrade.track.dao.TrackDao;
@@ -33,6 +34,7 @@ import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
+import com.jingyunbank.etrade.track.entity.RecommendGoodsEntity;
 
 /**
  * 
@@ -318,6 +320,47 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 			rlt = trackDao.selectAddetailsCount(id);
 		return rlt;
 	}
+	
+	public List<RecommendGoods> listRecommendGoods(String uid,int from,int to) throws Exception {
+		this.from = from;
+		this.to = to;
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("uid", uid);
+		params.put("from", this.from);
+		params.put("to", this.to);
+		List<RecommendGoods> rltlist = new ArrayList<RecommendGoods>();
+		String bidstr = "";
+		String tidstr = "";
+		if(uid == null || "".equals(uid)){
+			
+		}else{
+			//查询品牌字符串
+		    bidstr = trackDao.selectRecommendBidstr(params).get("bidstr");
+			//查询类别字符串
+		    tidstr = trackDao.selectRecommendTidstr(params).get("tidstr");
+		}
+		List<String> bids = new ArrayList<String>();
+		String tmpbidstr[] = bidstr.split(",");
+		bids = Arrays.asList(tmpbidstr);
+		List<String> tids = new ArrayList<String>();
+		String tmptidstr[] = tidstr.split(",");
+		tids = Arrays.asList(tmptidstr);
+		//查询相关产品
+		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bids,tids,from,to);
+		if (goodslist != null) {
+			rltlist = goodslist.stream().map(eo -> {
+				RecommendGoods bo = new RecommendGoods();
+				try {
+					BeanUtils.copyProperties(eo, bo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return rltlist;
+	}
+	
 	
 }
 

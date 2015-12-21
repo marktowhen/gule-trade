@@ -32,6 +32,7 @@ import com.jingyunbank.etrade.api.track.bo.AdModule;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
+import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.track.bean.AdDetailVO;
 import com.jingyunbank.etrade.track.bean.AdModuleVO;
 import com.jingyunbank.etrade.track.bean.FavoritesGoodsFacadeVO;
@@ -472,5 +473,26 @@ public class TrackController {
 		}else{
 			return Result.fail("请先删除该模块下的广告信息！");
 		}
+	}
+	
+	/**
+	 * 列举为您推荐的商品
+	 * @param pcount
+	 * @param pfrom
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/recommend/list/{pcount}/{pfrom}", method = RequestMethod.GET)
+	public Result<List<CommonGoodsVO>> listRecommendGoods(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+			String uid = ServletBox.getLoginUID(request);
+			//获取展示条数
+			int count = Integer.valueOf(pcount);
+			int from = Integer.valueOf(pfrom);
+			List<CommonGoodsVO> goodslist = trackService.listRecommendGoods(uid,from,count).stream().map(bo -> {
+				CommonGoodsVO vo = new CommonGoodsVO();
+				BeanUtils.copyProperties(bo, vo);
+				return vo;
+			}).collect(Collectors.toList());
+			return Result.ok(goodslist);
 	}
 }
