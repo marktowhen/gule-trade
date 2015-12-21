@@ -81,4 +81,33 @@
 		order by r.addtime desc 
 		limit #{from}, #{size}
 	</select>
+	
+	<select id="selectWithCondition" resultMap="RefundEntityResultMap">
+		select <include refid="goods_join_refund_columns"/> 
+		from refunds r
+		inner join order_goods og on r.ogid = og.id 
+		inner join orders o on r.oid = o.id 
+		left join goods_img img on og.gid = img.gid 
+		where 
+			r.uid = #{uid}
+			<if test="statuscode != null and !''.equals(statuscode)">
+				and r.status_code = #{statuscode}
+			</if>
+			<if test="fromdate != null and !''.equals(fromdate)">
+				and r.addtime &gt;= #{fromdate}
+			</if>
+			<if test="keywords != null and !''.equals(keywords)">
+				and (
+						og.gname like CONCAT('%','${keywords}','%') 
+						or 
+						o.orderno like CONCAT('%','${keywords}','%')
+						or
+						r.mid like CONCAT('%','${keywords}','%')
+						or
+						o.mname like CONCAT('%','${keywords}','%')
+					)
+			</if>
+		order by r.addtime desc 
+		limit #{from}, #{size}
+	</select>
 </mapper>

@@ -67,4 +67,15 @@ public class RefundService implements IRefundService {
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Refund> list(String uid, String statuscode, String fromdate,
+			String keywords, Range range) {
+		return refundDao.selectWithCondition(uid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+				.stream().map(entity -> {
+					Refund bo = new Refund();
+					BeanUtils.copyProperties(entity, bo, "certificates");
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
 }

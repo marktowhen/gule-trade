@@ -22,6 +22,14 @@ public interface RefundDao {
 			@Param("keywords") String keywords,
 			@Param("from") long from, 
 			@Param("size") int size);
+	
+	public List<RefundEntity> selectWithCondition(
+			@Param("uid") String uid, 
+			@Param("statuscode") String statuscode,
+			@Param("fromdate") String fromdate,
+			@Param("keywords") String keywords,
+			@Param("from") long from, 
+			@Param("size") int size);
 
 	
 }
