@@ -119,10 +119,6 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
-	public void update(Orders order) throws DataSavingException {
-	}
-
-	@Override
 	@Transactional
 	public void paysuccess(String extransno) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.listByExtransno(extransno);
@@ -229,23 +225,20 @@ public class OrderContextService implements IOrderContextService {
 
 	@Override
 	@Transactional
-	public boolean received(List<String> oids) throws DataRefreshingException, DataSavingException{
-		List<Orders> orders = orderService.list(oids);
-		if(orders.size() == 0){
+	public boolean received(String oid) throws DataRefreshingException, DataSavingException{
+		Optional<Orders> candidate = orderService.single(oid);
+		if(!candidate.isPresent()){
 			return false;
 		}
-		if(orders.stream().anyMatch(order -> !OrderStatusDesc.DELIVERED_CODE.equals(order.getStatusCode()))){
+		Orders order = candidate.get();
+		if(!OrderStatusDesc.DELIVERED_CODE.equals(order.getStatusCode())){
 			return false;
 		}
-		orderService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
-		List<OrderTrace> traces = new ArrayList<OrderTrace>();
-		for (Orders order : orders) {
-			createOrderTrace(order, OrderStatusDesc.RECEIVED);
-			traces.addAll(order.getTraces());
-		}
-		orderTraceService.save(traces);
+		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
+		createOrderTrace(order, OrderStatusDesc.RECEIVED);
+		orderTraceService.save(order.getTraces());
 		//刷新订单商品的状态
-		orderGoodsService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
+		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
 		return true;
 	}
 
@@ -326,4 +319,10 @@ public class OrderContextService implements IOrderContextService {
 		}
 	}
 
+	@Override
+	public boolean refund(String oid, String ogid)
+			throws DataRefreshingException, DataSavingException {
+		orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.REFUNDING);
+		return true;
+	}
 }

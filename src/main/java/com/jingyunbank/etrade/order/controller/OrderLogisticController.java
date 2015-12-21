@@ -46,7 +46,7 @@ public class OrderLogisticController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/orders/accept", method=RequestMethod.PUT)
+	@RequestMapping(value="/api/orders/acception", method=RequestMethod.PUT)
 	public Result<String> accept(@NotNull @Size(min=1) @RequestBody List<String> oids, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单信息有误！");
@@ -100,7 +100,7 @@ public class OrderLogisticController {
 			return Result.fail("支付密码错误！");
 		}
 		
-		if(!orderContextService.received(oidswithpwd.getOids())){
+		if(!orderContextService.received(oidswithpwd.getOid())){
 			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
 		}
 		return Result.ok();
@@ -119,17 +119,17 @@ public class OrderLogisticController {
 	
 	private static class OIDsWithTradePWDVO{
 		@NotNull @Size(min=1) 
-		private List<String> oids;
+		private String oid;
 		@NotNull
 		@Size(min=6)
 		private String tradepwd;
 		
-		public List<String> getOids() {
-			return oids;
+		public String getOid() {
+			return oid;
 		}
 		@SuppressWarnings("unused")
-		public void setOids(List<String> oids) {
-			this.oids = oids;
+		public void setOid(String oid) {
+			this.oid = oid;
 		}
 		public String getTradepwd() {
 			return tradepwd;

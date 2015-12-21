@@ -14,6 +14,7 @@ import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
+import com.jingyunbank.etrade.track.entity.RecommendGoodsEntity;
 
 /**
  * 
@@ -136,5 +137,26 @@ public interface TrackDao {
 	 * @throws Exception
 	 */
 	public int selectAddetailsCount(@Param("id") List<String> id) throws Exception;
+	/**
+	 * 查询推荐品牌
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, String> selectRecommendBidstr(Map<String, Object> params) throws Exception;
+	/**
+	 * 查询推荐类别
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, String> selectRecommendTidstr(Map<String, Object> params) throws Exception;
+	/**
+	 * 查询推荐商品
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public List<RecommendGoodsEntity> selectRecommendGoods(@Param("bids") List<String> bids,@Param("tids") List<String> tids,@Param("from") int from,@Param("to") int to) throws Exception;
 	 
 }
