@@ -266,15 +266,18 @@
 	<!-- 查询推荐商品 -->
 	<resultMap type="com.jingyunbank.etrade.track.entity.RecommendGoodsEntity" id="rltRecommendGoods">
 		<result column="id" property="GID"/>
+		<result column="name" property="goodsName"/>
 	</resultMap>
 	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
-			select * from goods where 1=1 
+			select g.*,d.specifications from goods g left join goods_detail d 
+			on g.id = d.gid
+			where 1=1 
 			<if test="uid !='' and uid !=null"> 
-				and bid in
+				and g.bid in
 			  <foreach collection="bids" item="bid" open="(" separator="," close=")">
 				#{bid}
 			  </foreach>
-			  	and tid in
+			  	and g.tid in
 			   <foreach collection="tids" item="tid" open="(" separator="," close=")">
 				#{tid}
 			   </foreach>
