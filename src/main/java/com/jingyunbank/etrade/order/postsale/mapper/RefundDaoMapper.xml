@@ -18,6 +18,7 @@
 		<result column="description" property="description" javaType="String"/>
 		<result column="reason" property="reason" javaType="String"/>
 		<result column="return_goods" property="returnGoods" javaType="Boolean"/>
+		<result column="received" property="received" javaType="Boolean"/>
 		
 		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
 		<result column="gid" property="GID" javaType="String"/>
@@ -27,11 +28,11 @@
 	</resultMap>
 	<sql id="refund_columns">
 		id, uid, oid, mid, ogid, addtime, status_code, status_name,
-		money, omoney, description, reason, return_goods, refundno
+		money, omoney, description, reason, return_goods, refundno, received
 	</sql>
 	<sql id="goods_join_refund_columns">
 		r.id, r.uid, r.oid, r.mid, r.ogid, r.addtime, r.status_code, r.status_name,
-		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno,
+		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno, r.received
 		o.orderno, og.gid, og.gname, img.thumb_path_1 as gpath
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
@@ -40,7 +41,7 @@
 		values
 			(
 				#{ID}, #{UID}, #{OID}, #{MID}, #{OGID}, #{addtime}, #{statusCode}, #{statusName},
-				#{money}, #{omoney}, #{description}, #{reason}, #{return_goods}, #{refundno}
+				#{money}, #{omoney}, #{description}, #{reason}, #{returnGoods}, #{refundno}, #{received}
 			 )
 	</insert>
 	<update id="updateStatus">
