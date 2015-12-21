@@ -12,7 +12,7 @@ import com.jingyunbank.etrade.api.user.bo.UserInfo.Device;
  */
 public class UserInfoVO {
 	private String UID;
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date birthday;//生日
 	private boolean marriage;//婚否
 	private boolean gender;//性别

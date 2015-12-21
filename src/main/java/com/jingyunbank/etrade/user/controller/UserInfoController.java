@@ -69,17 +69,13 @@ public class UserInfoController {
 	public Result<UserInfoVO> selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
-		/*System.out.println(userinfo.get().getBirthday());*/
+		
 		
 		if(userinfo.isPresent()){
 			
 			UserInfo userInfo=userinfo.get();
 			UserInfoVO userInfoVO=new UserInfoVO();
 			BeanUtils.copyProperties(userInfo, userInfoVO);
-			if(!StringUtils.isEmpty(userinfo.get().getBirthday())){
-				String birthdayStr= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(userinfo.get().getBirthday());
-				userInfoVO.setBirthdayStr(birthdayStr);
-			}
 			return Result.ok(userInfoVO);
 		}
 		return Result.fail("重试");
