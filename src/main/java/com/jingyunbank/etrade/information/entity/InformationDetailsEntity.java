@@ -14,8 +14,22 @@ public class InformationDetailsEntity {
 	private String status;
 	private int orders;
 	private String abstracts;
+	private String recipe;//古方医药的处方
+	private String function;//古方医药的主治功能
 	
 	
+	public String getRecipe() {
+		return recipe;
+	}
+	public void setRecipe(String recipe) {
+		this.recipe = recipe;
+	}
+	public String getFunction() {
+		return function;
+	}
+	public void setFunction(String function) {
+		this.function = function;
+	}
 	public String getAbstracts() {
 		return abstracts;
 	}

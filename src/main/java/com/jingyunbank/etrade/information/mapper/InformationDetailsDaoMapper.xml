@@ -12,18 +12,20 @@
 			<result column="content" property="content"/>
 			<result column="picture" property="picture"/>
 			<result column="addtime" property="addtime"/>
+			<result column="recipe" property="recipe"/>
+			<result column="function" property="function"/>
 			<result column="status" property="status"/>
 			<result column="orders" property="orders" />
 		</resultMap>
 	<sql id="details_list">
-		id,sid,name,title,abstract,content,picture,addtime,status,orders
+		id,sid,name,title,abstract,content,picture,addtime,status,recipe,function,orders
 	</sql>
 	<!-- 增加详情内容 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.information.entity.InformationDetailsEntity">
 			insert into information_details(
-				id,sid,name,title,abstract,content,picture,addtime,status,orders
+				id,sid,name,title,abstract,content,picture,addtime,recipe,function,status,orders
 			)values(
-				#{ID},#{SID},#{name},#{title},#{abstracts},#{content},#{picture},#{addtime},#{status},#{orders}
+				#{ID},#{SID},#{name},#{title},#{abstracts},#{content},#{picture},#{addtime},#{recipe},#{function},#{status},#{orders}
 			)
 		</insert>
 		<!-- 通过id删除对应的信息 -->
