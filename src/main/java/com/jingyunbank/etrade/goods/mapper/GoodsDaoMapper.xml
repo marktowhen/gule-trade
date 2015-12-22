@@ -88,6 +88,7 @@
 		<!-- 商品概要信息 -->
 		<result column="gid" property="GID" />
 		<result column="goodsname" property="goodsName" />
+		<result column="img_path" property="imgPath" />
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="price" property="price" />
@@ -174,7 +175,7 @@
 	<!-- 查询热门推荐商品 -->
 	<sql id="hotGoodsWhere">
 		g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name as goodsname,
-		g.price,g.now_price now_price , g.count count, g.volume volume
+		g.price,g.now_price now_price , g.count count, g.volume volume,mt.img_path as img_path
 		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
