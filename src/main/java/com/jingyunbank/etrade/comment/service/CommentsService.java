@@ -123,8 +123,8 @@ public class CommentsService implements ICommentService{
 	 * 通过gid和评论的级别查询好评或中评或差评
 	 */
 	@Override
-	public List<Comments> selectCommentGradeByGid(String gid, int commentGrade,Range range) {
-		return commentsDao.selectCommentGradeByGid(gid,commentGrade,range.getFrom(),range.getTo()-range.getFrom())
+	public List<Comments> selectCommentGradeByGid(String gid, int commentGrade,int picture, Range range) {
+		return commentsDao.selectCommentGradeByGid(gid,commentGrade,picture,range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity -> {
 					Comments bo=new Comments();
 					BeanUtils.copyProperties(entity, bo);

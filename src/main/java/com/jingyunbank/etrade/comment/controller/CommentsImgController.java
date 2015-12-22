@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.comment.controller;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -25,7 +26,7 @@ public class CommentsImgController{
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/commentsImg/getImg/{imgid}")
 	@ResponseBody
-	public Result selectById(@PathVariable String imgid,HttpSession session) throws Exception{
+	public Result<List<CommentsImgVO>> selectById(@PathVariable String imgid,HttpSession session) throws Exception{
 		
 		return Result.ok(commentImgService.getById(imgid)
 				.stream().map(bo -> {

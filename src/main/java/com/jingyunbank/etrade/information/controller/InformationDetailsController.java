@@ -133,8 +133,7 @@ public class InformationDetailsController {
 	 * @return
 	 */
 	@RequestMapping(value="/api/information/detail/{id}",method=RequestMethod.GET)
-	@ResponseBody
-	public Result selectDetailByid(@PathVariable String id) throws Exception{
+	public Result<InformationDetailsVO> selectDetailByid(@PathVariable String id) throws Exception{
 	Optional<InformationDetails> informationDetails=informationDetailsService.getDetailByid(id);
 	InformationDetails adviceDetails=informationDetails.get();
 	InformationDetailsVO adviceDetailsVO=new InformationDetailsVO();
@@ -147,7 +146,7 @@ public class InformationDetailsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/information/alldetail",method=RequestMethod.GET)
-	public Result selectDetails() throws Exception{
+	public Result<List<InformationDetailsVO>> selectDetails() throws Exception{
 		return Result.ok(informationDetailsService.selectDetail()
 				.stream().map(bo -> {
 				
