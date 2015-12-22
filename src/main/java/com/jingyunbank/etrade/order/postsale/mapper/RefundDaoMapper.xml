@@ -32,7 +32,7 @@
 	</sql>
 	<sql id="goods_join_refund_columns">
 		r.id, r.uid, r.oid, r.mid, r.ogid, r.addtime, r.status_code, r.status_name,
-		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno, r.received
+		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno, r.received,
 		o.orderno, og.gid, og.gname, img.thumb_path_1 as gpath
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
