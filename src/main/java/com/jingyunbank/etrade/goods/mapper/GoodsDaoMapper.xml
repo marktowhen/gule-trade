@@ -165,6 +165,14 @@
 		SELECT b.id bid, b.name
 		brandname, b.desc branddesc FROM goods_brand b ORDER BY b.admin_sort
 	</select>
+	
+	<select id="selectBrandsThree" resultMap="baseGoodsMap">
+	<![CDATA[
+		SELECT b.id bid, b.name brandname, b.desc branddesc 
+		FROM goods_brand b WHERE b.admin_sort <> 0 ORDER BY b.admin_sort 
+		LIMIT 0,3
+	]]>
+	</select>
 	<!-- 查询类型 -->
 	<select id="selectTypes" resultMap="baseGoodsMap">
 		SELECT t.id tid,t.name

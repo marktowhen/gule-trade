@@ -92,6 +92,23 @@ public class GoodsController {
 	}
 
 	/**
+	 * 首页商品分类 ----显示3条品牌
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/brand/list_three", method = RequestMethod.GET)
+	public Result<List<GoodsBrandVO>> queryBrandsThree(HttpServletRequest request) throws Exception {
+		List<GoodsBrandVO> list = goodsService.listBrandsThree().stream().map(bo -> {
+			GoodsBrandVO vo = new GoodsBrandVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+	
+	/**
 	 * 查询类型类别
 	 * 
 	 * @param request
