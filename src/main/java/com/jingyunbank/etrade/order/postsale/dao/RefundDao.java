@@ -11,6 +11,8 @@ public interface RefundDao {
 
 	public void insertOne(RefundEntity refund) throws Exception;
 
+	public void update(RefundEntity entity) throws Exception;
+	
 	public void updateStatus(@Param("RID")String rID, @Param("status") RefundStatusDesc status) throws Exception;
 
 	public RefundEntity selectOne(String rid);
@@ -31,5 +33,11 @@ public interface RefundDao {
 			@Param("from") long from, 
 			@Param("size") int size);
 
+	/**
+	 * 按照ogid查找最新的退款明细
+	 * @param ogid
+	 * @return
+	 */
+	public RefundEntity selectOneByOGID(String ogid);
 	
 }

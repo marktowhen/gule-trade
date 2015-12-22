@@ -36,6 +36,17 @@ public class RefundService implements IRefundService {
 	}
 
 	@Override
+	public void refresh(Refund refund) throws DataRefreshingException {
+		RefundEntity entity = new RefundEntity();
+		BeanUtils.copyProperties(refund, entity);
+		try {
+			refundDao.update(entity);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+	
+	@Override
 	public void refreshStatus(String RID, RefundStatusDesc status)
 			throws DataRefreshingException {
 		try {
@@ -78,4 +89,14 @@ public class RefundService implements IRefundService {
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public Optional<Refund> latestOneByOGID(String ogid) {
+		RefundEntity entity = refundDao.selectOneByOGID(ogid);
+		if(Objects.isNull(entity)){
+			return Optional.ofNullable(null);
+		}
+		Refund bo = new Refund();
+		BeanUtils.copyProperties(entity, bo, "certificates");
+		return Optional.of(bo);
+	}
 }

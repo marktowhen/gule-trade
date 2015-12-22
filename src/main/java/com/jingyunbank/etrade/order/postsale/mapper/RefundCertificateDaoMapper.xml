@@ -19,4 +19,15 @@
 			#{cert.ID}, #{cert.RID}, #{cert.path}
 		</foreach>
 	</insert>
+	
+	<select id="selectMany" parameterType="String" resultType="String">
+		select 
+			path 
+		from refund_certificate
+		where rid = #{rid}
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		delete from refund_certificate where rid = #{rid}
+	</delete>
 </mapper>

@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;
-
 /**
  * 订单详情业务对象<br>
  * 改对象定义订单中包含的商品以及下单时的商品价格等信息

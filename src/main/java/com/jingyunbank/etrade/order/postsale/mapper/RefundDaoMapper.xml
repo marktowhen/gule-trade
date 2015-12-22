@@ -49,10 +49,38 @@
 		set status_code = #{status.code}, status_name = #{status.name}
 		where id = #{RID}
 	</update>
+	
+	<update id="update" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
+		update refunds
+		<set>
+			<if test="statusCode != null and !''.equals(statusCode)">
+				status_code = #{statusCode},
+			</if>
+			<if test="statusName != null and !''.equals(statusName)">
+				status_name = #{statusName},
+			</if>
+			<if test="money != null">
+				money = #{money},
+			</if>
+			<if test="description != null and !''.equals(description)">
+				description = #{description},
+			</if>
+			<if test="reason != null and !''.equals(reason)">
+				reason = #{reason},
+			</if>
+		</set>
+		where id = #{ID}
+	</update>
+	
 	<select id="selectOne" parameterType="String" resultMap="RefundEntityResultMap">
 		select <include refid="refund_columns"/> 
 		from refunds
 		where id = #{rid}
+	</select>
+	<select id="selectOneByOGID" parameterType="String" resultMap="RefundEntityResultMap">
+		select <include refid="refund_columns"/> 
+		from refunds
+		where ogid = #{ogid}
 	</select>
 	<select id="selectmWithCondition" resultMap="RefundEntityResultMap">
 		select <include refid="goods_join_refund_columns"/> 

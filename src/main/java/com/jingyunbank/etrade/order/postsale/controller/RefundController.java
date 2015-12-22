@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,35 @@ public class RefundController {
 			refund.getCertificates().add(rc);
 		});
 		refundContextService.request(refund);
+		
+		return Result.ok(refundvo);
+	}
+	
+	@AuthBeforeOperation
+	@RequestMapping(
+			value="/api/refund",
+			method=RequestMethod.PUT,
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public Result<RefundRequestVO> update(@Valid @RequestBody RefundRequestVO refundvo,
+			BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors() || StringUtils.isEmpty(refundvo.getID())){
+			return Result.fail("您提交的数据不完整，请核实后重新提交！");
+		}
+		
+		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
+		refundvo.setStatusName(RefundStatusDesc.REQUEST.getName());
+		
+		Refund refund = new Refund();
+		BeanUtils.copyProperties(refundvo, refund, "certificates");
+		refundvo.getCertificates().forEach(cer->{
+			RefundCertificate rc = new RefundCertificate();
+			rc.setID(KeyGen.uuid());
+			rc.setPath(cer);
+			rc.setRID(refund.getID());
+			refund.getCertificates().add(rc);
+		});
+		refundContextService.refresh(refund);
 		
 		return Result.ok(refundvo);
 	}

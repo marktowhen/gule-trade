@@ -16,6 +16,8 @@ public class AdDetailVO implements Serializable{
 	private String ID;
 	/**外键ID */
 	private String adModuleId;
+	/**模块名称 */
+	private String adModuleName;
 	/**广告名称 */
 	private String name;
 	/**广告图片地址 */
@@ -100,4 +102,11 @@ public class AdDetailVO implements Serializable{
 	public void setAttr4(String attr4) {
 		this.attr4 = attr4;
 	}
+	public String getAdModuleName() {
+		return adModuleName;
+	}
+	public void setAdModuleName(String adModuleName) {
+		this.adModuleName = adModuleName;
+	}
+	
 }

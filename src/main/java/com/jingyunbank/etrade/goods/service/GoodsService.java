@@ -311,4 +311,14 @@ public class GoodsService implements IGoodsService {
 		return saleList;
 	}
 
+	@Override
+	public List<ShowGoods> listBrandsThree() throws Exception {
+		List<ShowGoods> brandslist = goodsDao.selectBrandsThree().stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return brandslist;
+	}
+
 }

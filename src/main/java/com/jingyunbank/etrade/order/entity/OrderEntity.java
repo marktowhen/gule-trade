@@ -40,6 +40,7 @@ public class OrderEntity {
 		private String imgpath;
 		private int count;
 		private BigDecimal price;
+		private String statusCode;
 		
 		public String getID() {
 			return ID;
@@ -76,6 +77,12 @@ public class OrderEntity {
 		}
 		public void setPrice(BigDecimal price) {
 			this.price = price;
+		}
+		public String getStatusCode() {
+			return statusCode;
+		}
+		public void setStatusCode(String statusCode) {
+			this.statusCode = statusCode;
 		}
 	}
 	
