@@ -33,15 +33,7 @@ public class OrderGoodsEntity implements Serializable{
 	private String MID;
 	private String mname;
 	private String imgpath;
-	private GoodsImgEntity goodsImgEntity;
 	
-	
-	public GoodsImgEntity getGoodsImgEntity() {
-		return goodsImgEntity;
-	}
-	public void setGoodsImgEntity(GoodsImgEntity goodsImgEntity) {
-		this.goodsImgEntity = goodsImgEntity;
-	}
 	public String getID() {
 		return ID;
 	}

@@ -12,13 +12,27 @@ public class InformationDetailsVO {
 	private String title;//标题
 	private String content;//内容
 	private String picture;
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;//添加时间
 	private String status;
 	private int orders;//按order排序
 	private String abstracts;
+	private String recipe;//古方医药的处方
+	private String function;//古方医药的主治功能
 	
 	
+	public String getRecipe() {
+		return recipe;
+	}
+	public void setRecipe(String recipe) {
+		this.recipe = recipe;
+	}
+	public String getFunction() {
+		return function;
+	}
+	public void setFunction(String function) {
+		this.function = function;
+	}
 	public String getAbstracts() {
 		return abstracts;
 	}
