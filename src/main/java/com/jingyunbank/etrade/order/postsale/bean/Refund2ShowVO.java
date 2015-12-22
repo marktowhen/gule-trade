@@ -19,11 +19,13 @@ public class Refund2ShowVO {
 	private String statusCode;
 	private String statusName;//RefundStatusDesc
 	private boolean returnGoods;//是否退货
+	private boolean received;
 	
 	private String GID;//商品id
 	private String gname;//商品名
 	private String gpath;//
 	private String orderno;
+	
 	
 	public String getID() {
 		return ID;
@@ -132,5 +134,11 @@ public class Refund2ShowVO {
 	}
 	public void setGpath(String gpath) {
 		this.gpath = gpath;
+	}
+	public boolean isReceived() {
+		return received;
+	}
+	public void setReceived(boolean received) {
+		this.received = received;
 	}
 }

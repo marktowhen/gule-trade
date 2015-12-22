@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundLogistic;
@@ -39,6 +40,15 @@ public class RefundContextService implements IRefundContextService{
 	@Transactional
 	public void request(Refund refund) throws DataSavingException, DataRefreshingException{
 		refundService.save(refund);
+		refundCertificateService.save(refund.getCertificates());
+		orderContextService.refund(refund.getOID(), refund.getOGID());
+	}
+	
+	@Override
+	@Transactional
+	public void refresh(Refund refund) throws DataSavingException, DataRefreshingException, DataRemovingException{
+		refundService.refresh(refund);
+		refundCertificateService.remove(refund.getID());
 		refundCertificateService.save(refund.getCertificates());
 		orderContextService.refund(refund.getOID(), refund.getOGID());
 	}

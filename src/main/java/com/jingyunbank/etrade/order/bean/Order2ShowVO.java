@@ -29,54 +29,7 @@ public class Order2ShowVO {
 	private String statusCode;
 	private String statusName;
 	private String note;
-	private List<OrderGoods2ShowVO> goods = new ArrayList<OrderGoods2ShowVO>();//商品图片路径
-	
-	public static class OrderGoods2ShowVO{
-		private String ID;//订单商品id
-		private String GID;
-		private String imgpath;
-		private String gname;
-		private int count;
-		
-		public String getID() {
-			return ID;
-		}
-		public void setID(String iD) {
-			ID = iD;
-		}
-		private BigDecimal price;
-		
-		public String getGID() {
-			return GID;
-		}
-		public void setGID(String gID) {
-			GID = gID;
-		}
-		public String getImgpath() {
-			return imgpath;
-		}
-		public void setImgpath(String imgpath) {
-			this.imgpath = imgpath;
-		}
-		public String getGname() {
-			return gname;
-		}
-		public void setGname(String gname) {
-			this.gname = gname;
-		}
-		public int getCount() {
-			return count;
-		}
-		public void setCount(int count) {
-			this.count = count;
-		}
-		public BigDecimal getPrice() {
-			return price;
-		}
-		public void setPrice(BigDecimal price) {
-			this.price = price;
-		}
-	}
+	private List<OrderGoodsVO> goods = new ArrayList<OrderGoodsVO>();//商品图片路径
 	
 	public String getID() {
 		return ID;
@@ -162,10 +115,10 @@ public class Order2ShowVO {
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
 	}
-	public List<OrderGoods2ShowVO> getGoods() {
+	public List<OrderGoodsVO> getGoods() {
 		return goods;
 	}
-	public void setGoods(List<OrderGoods2ShowVO> goods) {
+	public void setGoods(List<OrderGoodsVO> goods) {
 		this.goods = goods;
 	}
 	public String getMname() {

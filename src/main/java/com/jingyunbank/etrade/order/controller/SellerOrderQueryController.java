@@ -17,7 +17,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.bean.Order2ShowVO;
-import com.jingyunbank.etrade.order.bean.Order2ShowVO.OrderGoods2ShowVO;
+import com.jingyunbank.etrade.order.bean.OrderGoodsVO;
 
 @RestController
 public class SellerOrderQueryController {
@@ -49,7 +49,7 @@ public class SellerOrderQueryController {
 					BeanUtils.copyProperties(bo, vo, "goods");
 					vo.setOrderno(String.valueOf(bo.getOrderno()));
 					bo.getGoods().forEach(bg -> {
-						OrderGoods2ShowVO gvo = new OrderGoods2ShowVO();
+						OrderGoodsVO gvo = new OrderGoodsVO();
 						BeanUtils.copyProperties(bg, gvo);
 						vo.getGoods().add(gvo);
 					});

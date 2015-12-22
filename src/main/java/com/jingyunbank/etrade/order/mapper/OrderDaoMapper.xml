@@ -35,6 +35,7 @@
 			<result column="imgpath" property="imgpath" javaType="String"/>
 			<result column="count" property="count" jdbcType="INTEGER"/>
 			<result column="gprice" property="price" jdbcType="DECIMAL"/>
+			<result column="gstatuscode" property="statusCode" javaType="String"/>
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
@@ -53,7 +54,8 @@
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
 		img.thumb_path_1 as imgpath, img.gid as gid, 
-		og.gname as gname, og.count as count, og.price as gprice, og.id as ogid
+		og.gname as gname, og.count as count, 
+		og.price as gprice, og.id as ogid, og.status_code as gstatuscode
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.entity.OrderEntity">
 		insert into orders
