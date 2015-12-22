@@ -151,6 +151,7 @@
 	     <id column="id" property="ID"/>
     	 <result column="ad_module_id" property="adModuleId"/>
     	 <result column="sort_num" property="sortNum"/>
+    	 <result column="ad_module_name" property="adModuleName"/>
 	</resultMap>
 	<resultMap  id="rlt_admodule" type="com.jingyunbank.etrade.track.entity.AdModuleEntity">
 	     <id column="id" property="ID"/>
@@ -218,8 +219,10 @@
 	<!--根据条件查询所有广告模块列表 -->
 	<select id="selectAddetailsByCondition" parameterType="java.util.Map"
 		resultMap="rlt_addetail">
-		select * from ad_detail  t
-		where t.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		select d.*,m.`name` as ad_module_name  From ad_module m ,ad_detail d 
+		where m.id = d.ad_module_id
+		and d.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		and d.ad_module_id = #{adModuleId}
 		LIMIT #{from} , #{size}
 	</select>
 	<!--删除广告信息 -->
