@@ -102,6 +102,7 @@
 		<!--类型信息 -->
 		<result column="tid" property="TID" />
 		<result column="typename" property="typeName" />
+		<result column="merchant_name" property="merchantName" />
 	</resultMap>
 
 	<!-- 商品图片属性 goods_img i -->
@@ -176,7 +177,7 @@
 	<sql id="hotGoodsWhere">
 		g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name as goodsname,
 		g.price,g.now_price now_price , g.count count, g.volume volume,mt.img_path as img_path
-		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,
+		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,mt.merchant_name as merchant_name,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
