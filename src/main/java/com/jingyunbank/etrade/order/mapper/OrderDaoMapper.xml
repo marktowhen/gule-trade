@@ -73,12 +73,14 @@
 		insert into orders
 			(<include refid="orders_columns"/>)
 		values
-		<foreach collection="orders" item="order" separator="," open="(" close=")">
-			#{order.ID}, #{order.orderno}, #{order.receiver}, #{order.UID}, #{order.MID}, #{order.mname}, #{order.address},
+		<foreach collection="orders" item="order" separator="," open="" close="">
+			(
+			 #{order.ID}, #{order.orderno}, #{order.receiver}, #{order.UID}, #{order.MID}, #{order.mname}, #{order.address},
 			 #{order.mobile}, #{order.zipcode}, #{order.addtime},  #{order.paytypeCode}, #{order.paytypeName}, 
 			 #{order.deliveryTypeCode}, #{order.deliveryTypeName}, #{order.couponID}, #{order.couponType},
 			 #{order.statusCode}, #{order.statusName}, #{order.price}, #{order.payout}, #{order.postage}, #{order.note},
-			#{order.invoiceType}, #{order.invoiceTitle}
+			 #{order.invoiceType}, #{order.invoiceTitle}
+			)
 		</foreach>
 	</insert>
 	<select id="selectByUID" parameterType="String" resultMap="OrderEntityResultMap">
