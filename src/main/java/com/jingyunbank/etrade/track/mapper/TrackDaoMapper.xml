@@ -269,8 +269,9 @@
 		<result column="name" property="goodsName"/>
 	</resultMap>
 	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
-			select g.*,d.specifications from goods g left join goods_detail d 
+			select g.*,i.thumb_path_1 as thumb_path_1,d.specifications from goods g left join goods_detail d 
 			on g.id = d.gid
+			LEFT JOIN goods_img i ON g.id=i.gid
 			where 1=1 
 			<if test="uid !='' and uid !=null"> 
 				and g.bid in
