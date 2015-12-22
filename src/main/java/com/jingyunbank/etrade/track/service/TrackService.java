@@ -286,6 +286,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		map.put("from", (int) range.getFrom());
 		map.put("size", (int) range.getTo());
 		map.put("name", adDetail.getName());
+		map.put("adModuleId", adDetail.getAdModuleId());
 		List<AdDetail> showAdDetailList = trackDao.selectAddetailsByCondition(map).stream().map(eo -> {
 			AdDetail bo = new AdDetail();
 			BeanUtils.copyProperties(eo, bo);
