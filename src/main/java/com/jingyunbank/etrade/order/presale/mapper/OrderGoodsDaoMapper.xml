@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.presale.dao.OrderGoodsDao">
+	<resultMap type="com.jingyunbank.etrade.order.presale.entity.OrderGoodsEntity" id="OrderGoodsEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="oid" property="OID" javaType="String"/>
+		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
+		<result column="gid" property="GID" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="gname" property="gname" javaType="String"/>
+		<result column="status_code" property="statusCode" javaType="String"/>
+		<result column="price" property="price" jdbcType="DECIMAL"/>
+		<result column="pprice" property="pprice" jdbcType="DECIMAL"/>
+		<result column="payout" property="payout" jdbcType="DECIMAL"/>
+		<result column="coupon_reduce" property="couponReduce" jdbcType="DECIMAL"/>
+		<result column="count" property="count" jdbcType="INTEGER"/>
+		<result column="uid" property="UID" javaType="String"/>
+		<result column="mid" property="MID" javaType="String"/>
+		<result column="mname" property="mname" javaType="String"/>
+		<result column="imgpath" property="imgpath" javaType="String"/>
+	</resultMap>
+	<sql id="order_goods_column">
+		id, oid,uid, orderno, gid, gname, addtime, status_code, price, pprice, payout, coupon_reduce, count
+	</sql>
+	<sql id="select_order_goods_column">
+		og.id, og.oid, og.uid, og.orderno, og.gid, og.gname, og.addtime, og.status_code, 
+		og.price, og.pprice, og.payout, og.coupon_reduce, og.count, o.mid, o.mname, img.thumb_path_1 as imgpath
+	</sql>
+	<insert id="insertMany">
+		insert into order_goods
+			(<include refid="order_goods_column"/>)
+		values
+			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
+				(#{g.ID}, #{g.OID}, #{g.UID}, #{g.orderno}, #{g.GID}, #{g.gname}, 
+				#{g.addtime}, #{g.statusCode}, #{g.price}, #{g.pprice}, #{g.payout}, 
+				#{g.couponReduce}, #{g.count})
+			</foreach>
+	</insert>
+	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">
+		select <include refid="select_order_goods_column"/>
+		from order_goods og
+		left join goods_img img on og.gid = img.gid
+		left join orders o on og.oid = o.id
+		where og.uid = #{UID} and og.status_code = #{status.code}
+		order by og.addtime desc
+		
+	</select>
+	<select id="selectByID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
+		select <include refid="select_order_goods_column"/>
+		from order_goods og
+		left join goods_img img on og.gid = img.gid
+		left join orders o on og.oid = o.id
+		where og.id = #{ID}
+	</select>
+	<update id="updateStatus">
+		update order_goods og
+		set og.status_code = #{status.code}
+		where og.oid in 
+		<foreach collection="oids" item="oid" open="(" separator="," close=")">
+			#{oid}
+		</foreach>
+	</update>
+	<update id="updateGoodStatus">
+		update order_goods og
+		set og.status_code = #{status.code}
+		where og.id = #{ID}
+	</update>
+	<select id="count" resultType="int">
+		select count(id)
+		from order_goods og
+		where og.oid = #{OID} and og.status_code= #{status.code}
+	</select>
+</mapper>

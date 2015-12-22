@@ -20,9 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
-import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
-import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
+import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
+import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
+import com.jingyunbank.etrade.order.presale.bean.PurchaseRequestVO;
 
 public class OrderControllerTest extends TestCaseBase {
 
