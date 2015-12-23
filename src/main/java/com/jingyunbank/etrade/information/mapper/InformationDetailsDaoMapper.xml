@@ -18,7 +18,7 @@
 			<result column="orders" property="orders" />
 		</resultMap>
 	<sql id="details_list">
-		id,sid,name,title,abstract,content,picture,addtime,status,recipe,function,orders
+		id,sid,name,title,abstract,picture,addtime,status,recipe,function,orders
 	</sql>
 	<!-- 增加详情内容 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.information.entity.InformationDetailsEntity">
@@ -36,7 +36,6 @@
 		<update id="update" parameterType="com.jingyunbank.etrade.information.entity.InformationDetailsEntity">
 			update information_details a 
 			set 
-			
 			<if test="SID!=null and SID!=''">
 			a.sid=#{SID},
 			</if>
@@ -83,7 +82,8 @@
 		</select>
 		<!-- 通过id查出每一条信息的详细内容啊 -->
 		<select id="selectDetailByid" parameterType="String" resultMap="InformationDetailsResultMap">
-			select <include refid="details_list"></include>
+			select 
+			id,sid,name,title,abstract,content,picture,addtime,status,recipe,function,orders
 			from information_details where
 			id=#{ID}
 		</select>

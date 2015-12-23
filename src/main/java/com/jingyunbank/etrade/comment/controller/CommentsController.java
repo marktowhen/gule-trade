@@ -119,11 +119,11 @@ public class CommentsController {
 
 	@RequestMapping(value="/api/comments/grades",method=RequestMethod.GET)
 	@ResponseBody
-	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,@RequestParam("from") int from,@RequestParam("size") int size,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,@RequestParam("picture") int picture,@RequestParam("from") int from,@RequestParam("size") int size,HttpServletRequest request,HttpSession session) throws Exception{
 		Range range = new Range();
 		range.setFrom(from);
 		range.setTo(from+size);
-		List<Comments> comments=commentService.selectCommentGradeByGid(gid,commentGrade,range);
+		List<Comments> comments=commentService.selectCommentGradeByGid(gid,commentGrade,picture,range);
 		List<CommentsVO> commentVOs=convert(comments);
 		return Result.ok(commentVOs);
 		

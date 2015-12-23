@@ -13,7 +13,7 @@ public interface CommentsDao {
 	
 	public List<CommentsEntity> selectCommentByGid(String gid);
 	
-	public List<CommentsEntity> selectCommentGradeByGid(@Param(value="GID") String gid,@Param(value="commentGrade") int commentGrade,@Param(value="offset")long offset, @Param(value="size")long size);
+	public List<CommentsEntity> selectCommentGradeByGid(@Param(value="GID") String gid,@Param(value="commentGrade") int commentGrade,@Param(value="picture") int picture,@Param(value="offset")long offset, @Param(value="size")long size);
 	
 	public CommentsEntity selectById(String id);
 	
