@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
@@ -188,6 +190,37 @@ public class UserController {
 	@RequestMapping(value="/coupon/amount/{uid}",method=RequestMethod.GET)
 	public Result<Integer> getUnusedCouponAmount(@PathVariable String uid) throws Exception {
 		return Result.ok(userCashCouponService.countUnusedCoupon(uid)+userDiscountCouponService.countUnusedCoupon(uid));
+	}
+	
+	/**
+	 * 修改用户名
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 * 2015年11月27日 qxs
+	 */
+	@AuthBeforeOperation
+	@RequestMapping(value="/username/{username}",method=RequestMethod.PUT)
+	public Result<String> refreshUsername(@PathVariable String username,HttpServletRequest request) throws Exception {
+		String loginUname = ServletBox.getLoginUname(request);
+		String uid = ServletBox.getLoginUID(request);
+		//用户名规则校验 
+		Pattern p = Pattern.compile("^([a-zA-Z]+[a-zA-Z0-9]{3,19})$");
+		if(StringUtils.isEmpty(username) || !p.matcher(username).matches()){
+			return Result.fail("用户名必须以字母开头，并且只能是字母或数字");
+		}
+		Users oldUser = userService.getByUID(uid).get();
+		if(!username.equals(loginUname)
+				&& oldUser.getUsername().equals(IUserService.SMS_LOGIN_USERNAME_PREFIX+oldUser.getMobile())){
+			if(userService.exists(username)){
+				return Result.fail("用户名已存在");
+			}
+			Users user = new Users();
+			user.setID(uid);
+			user.setUsername(username);
+			userService.refresh(user);
+		}
+		return Result.ok();
 	}
 	
 	/**

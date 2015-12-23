@@ -134,16 +134,16 @@ public class LoginController {
 		if(StringUtils.isEmpty(sessionCode)){
 			return Result.fail("验证码未发送或已失效");
 		}
-		session.setAttribute(ServletBox.SMS_MESSAGE, null);
 		if(!sessionCode.equals(user.getCode())){
 			return Result.fail("验证码错误");
 		}
+		session.setAttribute(ServletBox.SMS_MESSAGE, null);
 		Optional<Users> userOption = userService.getByPhone(user.getMobile());
 		//如果未注册自动注册
 		if(!userOption.isPresent()){
 			Users registerUser = new Users();
 			registerUser.setMobile(user.getMobile());
-			registerUser.setUsername(user.getMobile());
+			registerUser.setUsername(IUserService.SMS_LOGIN_USERNAME_PREFIX+user.getMobile());
 			registerUser.setID(KeyGen.uuid());
 			UserInfo userInfo=new UserInfo();
 			userInfo.setRegip(EtradeUtil.getIpAddr(request));
