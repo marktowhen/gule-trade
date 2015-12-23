@@ -45,17 +45,20 @@
 			<if test="title!=null and title!=''">
 			a.title=#{title},
 			</if>
-			<if test="abstract!=null and abstract!=''">
-			a.abstract=#{abstract},
+			<if test="abstracts!=null and abstracts!=''">
+			a.abstract=#{abstracts},
 			</if>
 			<if test="content!=null and content!=''">
 			a.content=#{content},
 			</if>
+			<if test="recipe!=null and recipe!=''">
+			a.recipe=#{recipe},
+			</if>
+			<if test="function!=null and function!=''">
+			a.function=#{function},
+			</if>
 			<if test="picture!=null and picture!=''">
 			a.picture=#{picture},
-			</if>
-			<if test="addtime!=null and addtime!=''">
-			a.addtime=#{addtime},
 			</if>
 			<if test="status!=null and status!=''">
 			a.status=#{status},

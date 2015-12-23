@@ -24,4 +24,5 @@ public interface InformationDetailsDao {
 	public InformationDetailsEntity selectDetailByid(String id);
 	
 	public List<InformationDetailsEntity> selectDetail();
+	
 }
