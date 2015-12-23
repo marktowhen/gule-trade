@@ -112,6 +112,7 @@ public class RefundContextService implements IRefundContextService{
 		Refund refund = candidate.get();
 		refundService.refreshStatus(RID, RefundStatusDesc.DONE);
 		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, ""));
+		orderContextService.refundDone(refund.getOID(), refund.getOGID());
 	}
 	
 	//创建订单新建追踪状态

@@ -5,7 +5,7 @@
 <mapper namespace="com.jingyunbank.etrade.order.postsale.dao.RefundTraceDao">
 	<resultMap type="com.jingyunbank.etrade.order.postsale.entity.RefundTraceEntity" id="RefundTraceEntityResultMap">
 		<id column="id" property="ID" javaType="String"/>
-		<result column="rid" property="OID" javaType="String"/>
+		<result column="rid" property="RID" javaType="String"/>
 		<result column="operator" property="operator" javaType="String"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="status_code" property="statusCode" javaType="String"/>
@@ -27,5 +27,13 @@
 		select <include refid="refund_trace_column"/>
 		from refund_trace
 		where rid = #{rid}
+	</select>
+	<select id="selectWithStatus" resultMap="RefundTraceEntityResultMap">
+		select <include refid="refund_trace_column"/>
+		from refund_trace
+		where rid = #{rid}
+		<if test="status != null and !''.equals(status)">
+			and status_code = #{status}
+		</if>
 	</select>
 </mapper>

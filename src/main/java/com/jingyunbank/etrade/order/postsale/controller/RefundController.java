@@ -24,8 +24,10 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundCertificate;
+import com.jingyunbank.etrade.api.order.postsale.bo.RefundLogistic;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundStatusDesc;
 import com.jingyunbank.etrade.api.order.postsale.service.context.IRefundContextService;
+import com.jingyunbank.etrade.order.postsale.bean.RefundLogisticVO;
 import com.jingyunbank.etrade.order.postsale.bean.RefundRequestVO;
 
 @RestController
@@ -165,6 +167,26 @@ public class RefundController {
 	public Result<String> done(@RequestParam(required=true) String rid, HttpSession session) throws Exception{
 		
 		refundContextService.done(rid);
+		return Result.ok();
+	}
+
+	/**
+	 * 填写订单的物流信息。
+	 * @param logisticvo
+	 * @param valid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/api/refund/logistic", method=RequestMethod.PUT)
+	public Result<String> dispatch(@Valid @RequestBody RefundLogisticVO logisticvo, BindingResult valid) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的物流信息有误！");
+		}
+		RefundLogistic logistic = new RefundLogistic();
+		BeanUtils.copyProperties(logisticvo, logistic);
+		logistic.setAddtime(new Date());
+		logistic.setID(KeyGen.uuid());
+		refundContextService.doReturn(logistic);
 		return Result.ok();
 	}
 }

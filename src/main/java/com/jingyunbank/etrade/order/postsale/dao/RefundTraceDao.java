@@ -11,4 +11,6 @@ public interface RefundTraceDao {
 	public void insertMany(@Param("traces") List<RefundTraceEntity> traces) throws Exception;
 
 	public List<RefundTraceEntity> selectMany(String rid);
+	
+	public List<RefundTraceEntity> selectWithStatus(@Param("rid")String rid, @Param("status")String status);
 }
