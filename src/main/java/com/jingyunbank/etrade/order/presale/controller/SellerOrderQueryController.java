@@ -26,16 +26,16 @@ public class SellerOrderQueryController {
 	private IOrderService orderService;
 	
 	/**
-	 * get /api/orders/seller/xxxx/0/10?keywords=东阿&status=PAID&fromdate=2015-11-09
+	 * get /api/orders/seller/0/10?keywords=东阿&status=PAID&fromdate=2015-11-09&mid=xzxcvzx
 	 *	
 	 * 查询某用户的最新的订单中的从from开始的size条
 	 * @param mid
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/orders/seller/{mid}/{from}/{size}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/seller/{from}/{size}", method=RequestMethod.GET)
 	public Result<List<Order2ShowVO>> listMID(
-			@PathVariable("mid") String mid, 
+			@RequestParam(value="mid", required=false, defaultValue="") String mid, 
 			@PathVariable("from") int from, 
 			@PathVariable("size") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,

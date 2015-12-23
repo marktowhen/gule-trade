@@ -90,8 +90,10 @@
 		inner join order_goods og on r.ogid = og.id 
 		inner join orders o on r.oid = o.id 
 		left join goods_img img on og.gid = img.gid 
-		where 
-			r.mid = #{mid}
+		<where>
+			<if test="mid != null and !''.equals(mid)">
+				r.mid = #{mid}
+			</if>
 			<if test="statuscode != null and !''.equals(statuscode)">
 				and r.status_code = #{statuscode}
 			</if>
@@ -109,6 +111,7 @@
 						o.mname like CONCAT('%','${keywords}','%')
 					)
 			</if>
+		</where>
 		order by r.addtime desc 
 		limit #{from}, #{size}
 	</select>
