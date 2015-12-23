@@ -73,8 +73,7 @@ public class InformationDetailsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/information/update",method=RequestMethod.POST)
-	@ResponseBody
-	public Result updateDetsils(InformationDetailsVO informationDetailsVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<InformationDetailsVO> updateDetsils(@RequestBody InformationDetailsVO informationDetailsVO,HttpServletRequest request,HttpSession session) throws Exception{
 		InformationDetails informationDetails=new InformationDetails();
 		BeanUtils.copyProperties(informationDetailsVO, informationDetails);
 		if(informationDetailsService.refresh(informationDetails)){
