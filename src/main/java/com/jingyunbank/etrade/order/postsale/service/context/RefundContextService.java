@@ -77,6 +77,9 @@ public class RefundContextService implements IRefundContextService{
 		if(returnGoods){
 			refundService.refreshStatus(RID, RefundStatusDesc.ACCEPT);
 			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, note));
+		}else{
+			refundService.refreshStatus(RID, RefundStatusDesc.DONE);
+			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, note));
 		}
 	}
 
