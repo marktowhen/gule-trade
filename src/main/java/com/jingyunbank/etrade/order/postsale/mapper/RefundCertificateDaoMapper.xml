@@ -15,8 +15,8 @@
 		insert into refund_certificate
 			(<include refid="refund_certificate_columns"/>)
 		values
-		<foreach collection="certs" item="cert" separator="," open="(" close=")">
-			#{cert.ID}, #{cert.RID}, #{cert.path}
+		<foreach collection="certs" item="cert" separator="," open="" close="">
+			(#{cert.ID}, #{cert.RID}, #{cert.path})
 		</foreach>
 	</insert>
 	

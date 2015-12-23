@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,44 @@ public class RefundController {
 		refundContextService.refresh(refund);
 		
 		return Result.ok(refundvo);
+	}
+	
+	@AuthBeforeOperation
+	@RequestMapping(
+			value="/api/refund/cancellation",
+			method=RequestMethod.PUT,
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public Result<String> cancel(@Valid @RequestBody RIDWithNoteVO cancellation,
+			BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的数据不完整，请核实后重新提交！");
+		}
+		
+		refundContextService.cancel(cancellation.getRid(), cancellation.getNote());
+		
+		return Result.ok();
+	}
+	
+	private static class RIDWithNoteVO{
+		@NotNull
+		private String rid;
+		@NotNull
+		private String note;
+		public String getRid() {
+			return rid;
+		}
+		@SuppressWarnings("unused")
+		public void setRid(String rid) {
+			this.rid = rid;
+		}
+		public String getNote() {
+			return note;
+		}
+		@SuppressWarnings("unused")
+		public void setNote(String note) {
+			this.note = note;
+		}
 	}
 	
 	@RequestMapping(

@@ -448,7 +448,7 @@
 		LEFT JOIN COMMENT c ON c.gid=g.id
 		WHERE 1 = 1 AND g.state=1 
 		<include refid="where" />
-		<if test="goodsname !=''">
+		<if test="goodsname !='' and goodsname!=null ">
 			<![CDATA[ AND g.name LIKE CONCAT(CONCAT('%', #{goodsname}), '%')]]>
 		</if>
 		GROUP BY g.id
