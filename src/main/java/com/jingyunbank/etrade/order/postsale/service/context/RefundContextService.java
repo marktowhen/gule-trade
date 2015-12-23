@@ -55,14 +55,15 @@ public class RefundContextService implements IRefundContextService{
 
 	@Override
 	@Transactional
-	public void cancel(String RID) throws DataRefreshingException, DataSavingException {
+	public void cancel(String RID, String note) throws DataRefreshingException, DataSavingException {
 		Optional<Refund> candidate = refundService.single(RID);
 		if(!candidate.isPresent()){
 			return;
 		}
 		Refund refund = candidate.get();
 		refundService.refreshStatus(RID, RefundStatusDesc.CANCEL);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.CANCEL, ""));
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.CANCEL, note));
+		orderContextService.cancelRefund(refund.getOID(), refund.getOGID());
 	}
 
 	@Override

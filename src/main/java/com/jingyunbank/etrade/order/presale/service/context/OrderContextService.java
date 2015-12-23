@@ -325,4 +325,16 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.REFUNDING);
 		return true;
 	}
+
+	@Override
+	public boolean cancelRefund(String oid, String ogid)
+			throws DataRefreshingException, DataSavingException {
+		Optional<Orders> candidate = orderService.single(oid);
+		if(candidate.isPresent()){
+			Orders o = candidate.get();
+			orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.resolve(o.getStatusCode()));
+			return true;
+		}
+		return false;
+	}
 }

@@ -81,6 +81,8 @@
 		select <include refid="refund_columns"/> 
 		from refunds
 		where ogid = #{ogid}
+		order by addtime desc
+		limit 1
 	</select>
 	<select id="selectmWithCondition" resultMap="RefundEntityResultMap">
 		select <include refid="goods_join_refund_columns"/> 
