@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.information.controller;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -7,10 +8,13 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +42,13 @@ public class InformationDetailsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/information/savedetails",method=RequestMethod.PUT)
-	public Result<InformationDetailsVO> saveDetails(HttpServletRequest request,HttpSession session,@RequestBody InformationDetailsVO informationDetailsVO) throws Exception{
-		
+	public Result<InformationDetailsVO> saveDetails(HttpServletRequest request,HttpSession session,@Valid @RequestBody InformationDetailsVO informationDetailsVO,BindingResult valid) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
+		}
 		informationDetailsVO.setID(KeyGen.uuid());;
 		informationDetailsVO.setAddtime(new Date());
 		InformationDetails informationDetails=new InformationDetails();
