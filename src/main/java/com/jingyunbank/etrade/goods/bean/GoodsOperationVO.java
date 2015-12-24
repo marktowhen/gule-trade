@@ -2,113 +2,90 @@ package com.jingyunbank.etrade.goods.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 
-* Title: 商品录入VO
-* @author    duanxf
-* @date      2015年11月13日
+ * Title: 商品录入VO
+ * 
+ * @author duanxf
+ * @date 2015年11月13日
  */
 public class GoodsOperationVO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	//--------商品信息-----------
-	@NotNull(message="商家不能为空")
-	private String MID;//商家ID
-	@NotNull(message="商品品牌不能为空")
-	private String BID;//品牌ID
-	@NotNull(message="商品名称不能为空")
-	private String name;//商品名称
-	@NotNull(message="商品编码不能为空")
-	private String code;//商品编码
-	@NotNull(message="商品类型不能为空")
-	private String tid;//商品类型ID
-	@NotNull(message="商品价格不能为空")
-	@DecimalMin(value="0.00", inclusive=false)
-	private BigDecimal price;//商品价格
-	@DecimalMin(value="0.00", inclusive=false)
-	private BigDecimal promotionPrice;//商品促销价格
-	@DecimalMin(value="0.00", inclusive=false)
-	private BigDecimal now_price;//商品现价
-	private int state;//是否上架0否1是
-	private String upTime;//上架时间
-	private String downTime;//下架时间
-	@NotNull(message="库存不能为空")
-	private int count;//库存
-	private int volume;//销量
-	private String addTime;//添加时间
-	private String pro_start;  //促销开始时间
-	private String pro_end;	//促销结束时间
-	private int pro_flag; //是否促销标志
-	private BigDecimal postage; //邮费
-	private int subVolumeType; //减库存方式 (拍下减库存 0 付款减库存1)
-	private String barCode; //条形码
-	private String goodsDesc; //宝贝描述
-	private String goodsTitle; //宝贝标题
-	private int adminSort;//管理员排序字段
-	private int merchantSort;//商家排序字段
-	private int expandSort;//推广排序字段
-	private int recordSort;//推荐排序字段
-	
-	//--------图片信息-----------
-	private String thumbpath1;//商品 缩略图1
-	private String thumbpath2;//商品 缩略图2
-	private String thumbpath3;//商品 缩略图3
-	private String thumbpath4;//商品 缩略图4
-	private String thumbpath5;//商品展示图1
-	private String content;//商品展示图2
-	
-	//---------详细信息-----------
-	private String standardNo;//产品标准号
-	private String shelfLife;//保质期
+	// --------商品信息-----------
+	@NotNull(message = "商家不能为空")
+	private String MID;// 商家ID
+	@NotNull(message = "商品品牌不能为空")
+	private String BID;// 品牌ID
+	@NotNull(message = "商品名称不能为空")
+	private String name;// 商品名称
+	@NotNull(message = "商品编码不能为空")
+	private String code;// 商品编码
+	@NotNull(message = "商品类型不能为空")
+	private String tid;// 商品类型ID
+	@NotNull(message = "商品价格不能为空")
+	@DecimalMin(value = "0.00", inclusive = false)
+	private BigDecimal price;// 商品价格
+	@DecimalMin(value = "0.00", inclusive = false)
+	private BigDecimal promotionPrice;// 商品促销价格
+	@DecimalMin(value = "0.00", inclusive = false)
+	private BigDecimal now_price;// 商品现价
+	private boolean state;// 是否上架0否1是
+	private String upTime;// 上架时间
+	private String downTime;// 下架时间
+	@NotNull(message = "库存不能为空")
+	private int count;// 库存
+	private int volume;// 销量
+	private Date addTime;// 添加时间
+	private String onSaleBeginTime;  //促销开始时间
+	private String onSaleEndTime;	//促销结束时间
+	private boolean onSale; //是否促销标志
+	private BigDecimal postage; // 邮费
+	private int subVolumeType; // 减库存方式 (拍下减库存 0 付款减库存1)
+	private String barCode; // 条形码
+	private String goodsDesc; // 宝贝描述
+	private String goodsTitle; // 宝贝标题
+	private int adminSort;// 管理员排序字段
+	private int merchantSort;// 商家排序字段
+	private int expandSort;// 推广排序字段
+	private int recordSort;// 推荐排序字段
+
+	// --------图片信息-----------
+	private String thumbpath1;// 商品 缩略图1
+	private String thumbpath2;// 商品 缩略图2
+	private String thumbpath3;// 商品 缩略图3
+	private String thumbpath4;// 商品 缩略图4
+	private String thumbpath5;// 商品展示图1
+	private String content;// 商品展示图2
+
+	// ---------详细信息-----------
+	private String standardNo;// 产品标准号
+	private String shelfLife;// 保质期
 	private String approveNo;// 批准文号
-	private String usage;//食用方法和食用量
-	private String commendedUser;//适宜人群
+	private String usage;// 食用方法和食用量
+	private String commendedUser;// 适宜人群
 	private String notCommendedUser;// 不适宜人群
-	private String ingredients;//配料表
-	private String foodAdditives;//食品添加剂
-	private String specifications;//具体规格
-	private String functions;//功能及功效
-	private String ingredient; //成分含量
-	private String note;//注意事项
-	private String storageMethods;//储藏方法
-	private String isGiftBox;//是否礼盒装
-	private String ProductionDate;//生产日期
-	private String weight;//重量
-	private String unit;//单位
-	private String factoryName; //厂名
-	private String factoryAddr; //厂址
-	private String factoryTel;  //联系方式
-	
-	
+	private String ingredients;// 配料表
+	private String foodAdditives;// 食品添加剂
+	private String specifications;// 具体规格
+	private String functions;// 功能及功效
+	private String ingredient; // 成分含量
+	private String note;// 注意事项
+	private String storageMethods;// 储藏方法
+	private String isGiftBox;// 是否礼盒装
 
-	
-
-
-	public String getProductionDate() {
-		return ProductionDate;
-	}
-	public void setProductionDate(String productionDate) {
-		ProductionDate = productionDate;
-	}
-	public void setUpTime(String upTime) {
-		this.upTime = upTime;
-	}
-	public void setDownTime(String downTime) {
-		this.downTime = downTime;
-	}
-	public void setAddTime(String addTime) {
-		this.addTime = addTime;
-	}
-	public void setPro_start(String pro_start) {
-		this.pro_start = pro_start;
-	}
-	public void setPro_end(String pro_end) {
-		this.pro_end = pro_end;
-	}
+	private String ProductionDate;// 生产日期
+	private String weight;// 重量
+	private String unit;// 单位
+	private String factoryName; // 厂名
+	private String factoryAddr; // 厂址
+	private String factoryTel; // 联系方式
 	public String getMID() {
 		return MID;
 	}
@@ -157,13 +134,24 @@ public class GoodsOperationVO implements Serializable {
 	public void setNow_price(BigDecimal now_price) {
 		this.now_price = now_price;
 	}
-	public int getState() {
+	public boolean isState() {
 		return state;
 	}
-	public void setState(int state) {
+	public void setState(boolean state) {
 		this.state = state;
 	}
-	
+	public String getUpTime() {
+		return upTime;
+	}
+	public void setUpTime(String upTime) {
+		this.upTime = upTime;
+	}
+	public String getDownTime() {
+		return downTime;
+	}
+	public void setDownTime(String downTime) {
+		this.downTime = downTime;
+	}
 	public int getCount() {
 		return count;
 	}
@@ -176,12 +164,29 @@ public class GoodsOperationVO implements Serializable {
 	public void setVolume(int volume) {
 		this.volume = volume;
 	}
-	
-	public int getPro_flag() {
-		return pro_flag;
+	public Date getAddTime() {
+		return addTime;
 	}
-	public void setPro_flag(int pro_flag) {
-		this.pro_flag = pro_flag;
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
+	}
+	public String getOnSaleBeginTime() {
+		return onSaleBeginTime;
+	}
+	public void setOnSaleBeginTime(String onSaleBeginTime) {
+		this.onSaleBeginTime = onSaleBeginTime;
+	}
+	public String getOnSaleEndTime() {
+		return onSaleEndTime;
+	}
+	public void setOnSaleEndTime(String onSaleEndTime) {
+		this.onSaleEndTime = onSaleEndTime;
+	}
+	public boolean isOnSale() {
+		return onSale;
+	}
+	public void setOnSale(boolean onSale) {
+		this.onSale = onSale;
 	}
 	public BigDecimal getPostage() {
 		return postage;
@@ -212,6 +217,30 @@ public class GoodsOperationVO implements Serializable {
 	}
 	public void setGoodsTitle(String goodsTitle) {
 		this.goodsTitle = goodsTitle;
+	}
+	public int getAdminSort() {
+		return adminSort;
+	}
+	public void setAdminSort(int adminSort) {
+		this.adminSort = adminSort;
+	}
+	public int getMerchantSort() {
+		return merchantSort;
+	}
+	public void setMerchantSort(int merchantSort) {
+		this.merchantSort = merchantSort;
+	}
+	public int getExpandSort() {
+		return expandSort;
+	}
+	public void setExpandSort(int expandSort) {
+		this.expandSort = expandSort;
+	}
+	public int getRecordSort() {
+		return recordSort;
+	}
+	public void setRecordSort(int recordSort) {
+		this.recordSort = recordSort;
 	}
 	public String getThumbpath1() {
 		return thumbpath1;
@@ -309,6 +338,12 @@ public class GoodsOperationVO implements Serializable {
 	public void setFunctions(String functions) {
 		this.functions = functions;
 	}
+	public String getIngredient() {
+		return ingredient;
+	}
+	public void setIngredient(String ingredient) {
+		this.ingredient = ingredient;
+	}
 	public String getNote() {
 		return note;
 	}
@@ -327,7 +362,12 @@ public class GoodsOperationVO implements Serializable {
 	public void setIsGiftBox(String isGiftBox) {
 		this.isGiftBox = isGiftBox;
 	}
-
+	public String getProductionDate() {
+		return ProductionDate;
+	}
+	public void setProductionDate(String productionDate) {
+		ProductionDate = productionDate;
+	}
 	public String getWeight() {
 		return weight;
 	}
@@ -358,54 +398,8 @@ public class GoodsOperationVO implements Serializable {
 	public void setFactoryTel(String factoryTel) {
 		this.factoryTel = factoryTel;
 	}
-	public int getAdminSort() {
-		return adminSort;
-	}
-	public void setAdminSort(int adminSort) {
-		this.adminSort = adminSort;
-	}
-	public int getMerchantSort() {
-		return merchantSort;
-	}
-	public void setMerchantSort(int merchantSort) {
-		this.merchantSort = merchantSort;
-	}
-	public int getExpandSort() {
-		return expandSort;
-	}
-	public void setExpandSort(int expandSort) {
-		this.expandSort = expandSort;
-	}
-	public int getRecordSort() {
-		return recordSort;
-	}
-	public void setRecordSort(int recordSort) {
-		this.recordSort = recordSort;
-	}
-	public String getIngredient() {
-		return ingredient;
-	}
-	public void setIngredient(String ingredient) {
-		this.ingredient = ingredient;
-	}
-	public String getUpTime() {
-		return upTime;
-	}
-	public String getDownTime() {
-		return downTime;
-	}
-	public String getAddTime() {
-		return addTime;
-	}
-	public String getPro_start() {
-		return pro_start;
-	}
-	public String getPro_end() {
-		return pro_end;
-	}
 	
 	
 	
-	
-	
+
 }

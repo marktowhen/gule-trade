@@ -24,9 +24,13 @@
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
 		<result column="addtime" property="addTime" />
-		<result column="pro_flag" property="pro_flag" />
-		<result column="pro_start" property="pro_start" />
-		<result column="pro_end" property="pro_end" />
+		
+		<result column="pro_flag" property="onSale" />
+		<result column="pro_start" property="onSaleBeginTime" />
+		<result column="pro_end" property="onSaleEndTime" />
+
+		
+		
 		<result column="postage" property="postage" />
 		<result column="subvolumeType" property="subVolumeType" />
 		<result column="barvode" property="barCode" />
@@ -78,8 +82,9 @@
 			#{ID},#{MID},#{BID},#{name},#{code},#{tid},#{price},#{promotionPrice},#{now_price},#{state},
 			#{upTime},#{downTime},#{count},#{volume},#{addTime},#{postage},#{subVolumeType},#{barCode},
 			#{goodsDesc},#{goodsTitle},#{adminSort},#{merchantSort},#{expandSort},#{recordSort},
-			#{pro_start},#{pro_end},#{pro_flag}
+			#{onSaleBeginTime},#{onSaleEndTime},#{onSale}
 			)
+			
 	</insert>
 	<!-- 插入商品detail -->
 	<sql id="goodsdetailSql">
@@ -165,16 +170,13 @@
 		<if test="promotionPrice !=null and promotionPrice != ''">
 			g.`promotion_price` = #{promotionPrice},
 		</if>
-		<if test="state >=0">
-			g.`state` = #{state},
-		</if>
 		<if test="upTime !=null and upTime != ''">
 			g.`up_time` = #{upTime},
 		</if>
 		<if test="downTime !=null and downTime != ''">
 			g.`down_time` = #{downTime},
 		</if>
-		<if test="count !=null and count != ''">
+		<if test="count >=0">
 			g.`count` = #{count},
 		</if>
 		<if test="postage !=null and postage != ''">
@@ -192,16 +194,13 @@
 		<if test="goodsTitle !=null and goodsTitle != ''">
 			g.`title` = #{goodsTitle},
 		</if>
-		<if test="pro_start !=null and pro_start != ''">
-			g.`pro_start` = #{pro_start},
+		<if test="onSaleBeginTime !=null and onSaleBeginTime != ''">
+			g.`pro_start` = #{onSaleBeginTime},
 		</if>
-		<if test="pro_end !=null and pro_end != ''">
-			g.`pro_end` = #{pro_end},
+		<if test="onSaleEndTime !=null and onSaleEndTime != ''">
+			g.`pro_end` = #{onSaleEndTime},
 		</if>
-		<if test=" pro_flag >=0">
-			g.`pro_flag` = #{pro_flag},
-		</if>
-		g.id = #{ID}
+		g.`state` = #{state},g.`pro_flag` = #{onSale},g.id = #{ID}
 		 WHERE id = #{ID}
 	</update>
 	<!-- 修改商品描述信息 -->
