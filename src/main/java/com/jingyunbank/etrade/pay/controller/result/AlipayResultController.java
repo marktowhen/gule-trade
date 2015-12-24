@@ -129,7 +129,8 @@ public class AlipayResultController {
 			.forEach((x)->{
 			builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
 		});
-		builder.append("key=").append(key);
+		builder.delete(builder.length()-1, builder.length());
+		builder.append(key);
 		return builder.toString();
 	}
 

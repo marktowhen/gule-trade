@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
+import com.jingyunbank.etrade.api.vip.coupon.service.IUserDiscountCouponService;
 
 public class UserDiscountCouponControllerTest extends TestCaseBase{
 	

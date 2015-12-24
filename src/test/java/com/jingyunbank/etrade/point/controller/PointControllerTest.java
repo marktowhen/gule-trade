@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.api.point.service.context.IPointContextService;
+import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 
 public class PointControllerTest extends TestCaseBase {
 

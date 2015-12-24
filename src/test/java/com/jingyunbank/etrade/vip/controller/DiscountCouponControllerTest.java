@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.vip.bean.DiscountCouponVO;
+import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponVO;
 
 public class DiscountCouponControllerTest extends TestCaseBase{
 	
