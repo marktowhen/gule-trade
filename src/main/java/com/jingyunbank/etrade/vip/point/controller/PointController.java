@@ -10,6 +10,7 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.vip.point.service.IPointService;
 
 @RestController
+@RequestMapping(value="/vip/point")
 public class PointController {
 	
 	@Autowired
@@ -20,7 +21,7 @@ public class PointController {
 	 * @return
 	 * 2015年12月2日 qxs
 	 */
-	@RequestMapping(value="/point/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public Result<Integer> getPiont(@PathVariable String uid){
 		return Result.ok(pointService.getPoint(uid));
 	}
