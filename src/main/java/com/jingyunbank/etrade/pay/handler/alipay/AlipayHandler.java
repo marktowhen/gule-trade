@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
@@ -43,7 +42,7 @@ public class AlipayHandler implements IPayHandler {
 		//需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/
 		result.put("return_url", pipeline.getReturnUrl());
 		//商户订单号
-		result.put("out_trade_no", String.valueOf(UniqueSequence.next18()));
+		result.put("out_trade_no", String.valueOf(payments.get(0).getExtransno()));
 		//订单名称//必填
 		result.put("subject", payments.get(0).getMname());
 		//付款金额//必填
@@ -73,6 +72,7 @@ public class AlipayHandler implements IPayHandler {
 			builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
 		});
 		builder.delete(builder.length()-1, builder.length());
+		builder.append(key);
 		return builder.toString();
 	}
 
