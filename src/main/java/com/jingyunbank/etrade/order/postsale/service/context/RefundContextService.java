@@ -77,6 +77,9 @@ public class RefundContextService implements IRefundContextService{
 		if(returnGoods){
 			refundService.refreshStatus(RID, RefundStatusDesc.ACCEPT);
 			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, note));
+		}else{
+			refundService.refreshStatus(RID, RefundStatusDesc.DONE);
+			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, note));
 		}
 	}
 
@@ -112,6 +115,7 @@ public class RefundContextService implements IRefundContextService{
 		Refund refund = candidate.get();
 		refundService.refreshStatus(RID, RefundStatusDesc.DONE);
 		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, ""));
+		orderContextService.refundDone(refund.getOID(), refund.getOGID());
 	}
 	
 	//创建订单新建追踪状态

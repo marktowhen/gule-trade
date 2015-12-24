@@ -40,5 +40,4 @@ public class RefundLogisticService implements IRefundLogisticService {
 		BeanUtils.copyProperties(entity, bo);
 		return Optional.of(bo);
 	}
-
 }

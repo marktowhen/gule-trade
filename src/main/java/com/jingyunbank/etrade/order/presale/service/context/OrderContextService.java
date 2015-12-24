@@ -337,4 +337,10 @@ public class OrderContextService implements IOrderContextService {
 		}
 		return false;
 	}
+
+	@Override
+	public void refundDone(String oid, String ogid)
+			throws DataRefreshingException, DataSavingException {
+		orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.REFUNDED);
+	}
 }

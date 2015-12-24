@@ -60,7 +60,7 @@ public class AlipayHandler implements IPayHandler {
 		String signkey = pipeline.getSignkey();
 		
 		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, signkey)));
-		result.put("sign_type", pipeline.getSigntype());
+		result.put("sign_type", pipeline.getSigntype().toUpperCase());
 		
 		result.put("payurl", pipeline.getPayUrl());
 		

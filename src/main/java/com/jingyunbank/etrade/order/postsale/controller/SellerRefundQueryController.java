@@ -25,16 +25,16 @@ public class SellerRefundQueryController {
 	private IRefundService refundService;
 	
 	/**
-	 * get /api/refund/seller/xxxx/0/10?keywords=东阿&status=PAID&fromdate=2015-11-09
+	 * get /api/refund/seller/0/10?keywords=东阿&status=PAID&fromdate=2015-11-09&mid
 	 *	
 	 * 查询某用户的退单的从from开始的size条
 	 * @param mid
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/refund/seller/{mid}/{from}/{size}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/refund/seller/{from}/{size}", method=RequestMethod.GET)
 	public Result<List<Refund2ShowVO>> listMID(
-			@PathVariable("mid") String mid, 
+			@RequestParam(value="mid", required=false, defaultValue="") String mid, 
 			@PathVariable("from") int from, 
 			@PathVariable("size") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
