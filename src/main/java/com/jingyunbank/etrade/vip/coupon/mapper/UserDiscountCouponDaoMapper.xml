@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.vip.coupon.dao.UserDiscountCouponDao">
+	<resultMap type="com.jingyunbank.etrade.vip.coupon.entity.UserDiscountCouponEntity" id="UserDiscountCouponEntityResultMap">
+	<id column="id" property="ID" javaType="String" />
+		<result column="uid" property="UID" javaType="String"/>
+		<result column="coupon_id" property="couponID" javaType="String"/>
+		<result column="add_time" property="addTime" javaType="java.util.Date"/>
+		<result column="consume_time" property="consumeTime"  javaType="java.util.Date"/>
+		<result column="consumed" property="consumed" javaType="BOOLEAN"/>
+		<result column="locked" property="locked" javaType="BOOLEAN"/>
+		<association property="discountCouponEntity" javaType="com.jingyunbank.etrade.vip.coupon.entity.DiscountCouponEntity">
+			<result column="code" property="code" javaType="String" />
+			<result column="value" property="value" javaType="DECIMAL" />
+			<result column="discount" property="discount" javaType="DECIMAL" />
+			<result column="start" property="start" javaType="java.util.Date"/>
+			<result column="end" property="end" javaType="java.util.Date"/>
+			<result column="threshhold" property="threshhold" javaType="DECIMAL" />
+		</association>
+	</resultMap>
+	<sql id="column_list">
+		id,uid,coupon_id,add_time,consume_time,consumed,locked
+	</sql>
+	<sql id="user_discount_join_discount_column_list">
+		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,u.locked,
+		c.code,c.value,c.start,c.end,c.threshhold ,c.discount
+	</sql>
+	<insert id="insert">
+		insert into user_discount_coupon (<include refid="column_list"/>)
+		values(#{ID},#{UID},#{couponID},now(),#{consumeTime},#{consumed},#{locked})
+	</insert>
+	<!-- 用户未消费且未过期的券 -->
+	<select id="selectUnusedCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select <include refid="user_discount_join_discount_column_list"/>
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectUnusedCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT #{offset}, #{size}
+				</if>
+	</select>
+	<!-- 用户未消费且未过期的券的券数量 -->
+	<select id="countUnusedCoupon" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectUnusedCoupon_condition"/>
+	</select>
+	
+	<!-- 未消费且未过期的券查询条件 -->
+	<sql id="selectUnusedCoupon_condition">
+		 		u.coupon_id = c.id
+				and u.uid=#{UID}
+				and c.del=false
+				and u.consumed=false
+				and u.locked=false
+				and now() &lt;= c.end
+	</sql>
+	
+	<!-- 用户已消费的券 -->
+	<select id="selectConsumedCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select <include refid="user_discount_join_discount_column_list"/>
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectConsumedCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT #{offset}, #{size}
+				</if>
+	</select>
+	<!-- 用户已消费的券 数量 -->
+	<select id="countConsumedCoupon" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectConsumedCoupon_condition"/>
+	</select>
+	<!-- 已消费券查询条件 -->
+	<sql id="selectConsumedCoupon_condition">
+		 		u.coupon_id = c.id
+				and u.uid=#{UID}
+				and u.consumed=true
+	</sql>
+	
+	<!-- 用户已过期的券 -->
+	<select id="selectOverdueCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select <include refid="user_discount_join_discount_column_list"/>
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectOverdueCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT #{offset}, #{size}
+				</if>
+	</select>
+	<!-- 用户已过期的券 数量 -->
+	<select id="countOverdueCoupon" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectOverdueCoupon_condition"/>
+	</select>
+	<!-- 已过期券查询条件 -->
+	<sql id="selectOverdueCoupon_condition">
+		 		u.coupon_id = c.id
+		 		and c.del=false
+				and u.uid=#{UID}
+				and u.consumed=false
+				and now() &gt;= c.end
+	</sql>
+	
+	
+	
+	<!-- 用户当前可用的券 -->
+	<select id="selectUseableCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select <include refid="user_discount_join_discount_column_list"/>
+			from 
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectUseableCoupon_condition"/>
+				order by u.add_time DESC
+				<if test="size!=null and size!=0">
+				LIMIT #{offset}, #{size}
+				</if>
+	</select>
+	<!-- 用户当前可用 数量 -->
+	<select id="countUseableCoupon" resultType="int">
+		select count(1) from  
+				user_discount_coupon u , discount_coupon c
+			where <include refid="selectUseableCoupon_condition"/>
+	</select>
+	<!-- 用户当前可用查询条件 -->
+	<sql id="selectUseableCoupon_condition">
+		 		u.coupon_id = c.id
+		 		and c.del=false
+				and u.uid=#{UID}
+				and u.consumed=false
+				and u.locked=false
+				and now() between c.start and c.end
+				<if test="orderPrice!=null">
+					and c.threshhold &lt;= #{orderPrice}
+				</if>
+	</sql>
+	
+	
+	
+	<update id="updateConsumeStatus">
+		update user_discount_coupon set
+		 consumed = true,
+		 locked=false,
+		 consume_time = now()
+		 where coupon_id = #{couponID}
+		 	and uid = #{UID}
+	</update>
+	
+	<!-- 修改锁定状态-->
+	<update id="updateLockedStatus">
+		update user_discount_coupon set
+		 locked=#{locked},
+		 consume_time = now()
+		 where coupon_id = #{couponID}
+		 	and uid = #{UID}
+	</update>
+	
+	<select id="selectUserDiscountCoupon" resultMap="UserDiscountCouponEntityResultMap">
+		select <include refid="user_discount_join_discount_column_list"/>
+			from 
+				user_discount_coupon u , discount_coupon c
+			where u.coupon_id = c.id
+				and c.id=#{couponID} 
+				<if test="UID!=null and !''.equals(UID)">
+					and u.uid=#{UID}
+				</if>
+	</select>
+	
+</mapper>

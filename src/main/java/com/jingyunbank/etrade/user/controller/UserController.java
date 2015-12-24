@@ -20,8 +20,8 @@ import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.api.vip.service.IUserCashCouponService;
-import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
+import com.jingyunbank.etrade.api.vip.coupon.service.IUserCashCouponService;
+import com.jingyunbank.etrade.api.vip.coupon.service.IUserDiscountCouponService;
 import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController

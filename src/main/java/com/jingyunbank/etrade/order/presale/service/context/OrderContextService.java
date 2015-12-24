@@ -34,7 +34,7 @@ import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
-import com.jingyunbank.etrade.api.vip.handler.ICouponStrategyResolver;
+import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
