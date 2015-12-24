@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
 @RequestMapping("/api")
@@ -44,7 +46,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<String> login(@Valid @RequestBody LoginUserVO user, 
+	public Result<UserVO> login(@Valid @RequestBody LoginUserVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -101,7 +103,9 @@ public class LoginController {
 		cookie.setPath("/");
 		response.addCookie(cookie);
 		
-		return Result.ok("成功");
+		UserVO vo = new UserVO();
+		BeanUtils.copyProperties(users, vo);
+		return Result.ok(vo);
 	}
 	/**
 	 * 用户注销登录
