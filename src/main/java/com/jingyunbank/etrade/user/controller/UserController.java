@@ -61,6 +61,25 @@ public class UserController {
 		return Result.ok(userVO);
 	}
 	/**
+	 * 查询该手机是否存在！
+	 * @param phone
+	 * @return
+	 */
+	@RequestMapping(value="/phone/exists/{key}",method=RequestMethod.GET)
+	public Result<Integer> existsPhone(@PathVariable String key){
+		int count;
+		if(!userService.exists(key)){
+			//该手机号不存在
+			 count=0;
+		}else{
+			//该手机号已经存在
+			 count=1;
+		}
+		return Result.ok(count);
+		
+		
+	}
+	/**
 	 * 验证通过后修改手机号
 	 * @param userVO
 	 * @param valid

@@ -13,4 +13,6 @@ public interface CommentsImgDao {
 	public void delete(String id) throws Exception;
 	
 	public List<CommentsImgEntity> selectImg();
+	
+	public CommentsImgEntity getById(String id);
 }

@@ -24,4 +24,7 @@
 	<delete id="delete" parameterType="String">
 		delete from comment_img where comment_id=#{comment_id}
 	</delete>
+	<select id="getById" resultMap="ResultMap" parameterType="String">
+		select id,comment_id,picture from comment_img where id=#{ID}
+	</select>
 	</mapper>

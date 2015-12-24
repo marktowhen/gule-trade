@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.comment.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,14 @@ public class CommentsImgService implements ICommentImgService{
 			
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public Optional<CommentsImg> singleById(String id) {
+		CommentsImgEntity commentsImgEntity=	commentsImgDao.getById(id);
+		CommentsImg bo = new CommentsImg();
+		BeanUtils.copyProperties(commentsImgEntity, bo);
+		return Optional.of(bo);
 	}
 
 }
