@@ -94,5 +94,11 @@ public interface MerchantDao{
 	 * @throws Exception
 	 */
 	public List<MerchantEntity> selectMerchantsByCondition(Map<String, Object> map) throws Exception;
+	/**
+	 * 查询商家数量
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectMerchantsCount(Map<String, Object> map) throws Exception;
 	
 }
