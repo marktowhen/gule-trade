@@ -10,7 +10,7 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.vip.point.service.IPointService;
 
 @RestController
-@RequestMapping(value="/vip/point")
+@RequestMapping(value="/api/vip/point")
 public class PointController {
 	
 	@Autowired

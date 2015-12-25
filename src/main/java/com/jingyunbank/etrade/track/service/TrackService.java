@@ -48,10 +48,11 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	@Resource
 	private TrackDao trackDao;
 	@Override
-	public List<FootprintGoods> listFootprintGoods(int from,int to) throws Exception {
+	public List<FootprintGoods> listFootprintGoods(int from,int to,String uid) throws Exception {
 		this.from = from;
 		this.to = to;
-		Map<String, Integer> params = new HashMap<String,Integer>();
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("uid", uid);
 		params.put("from", this.from);
 		params.put("to", this.to);
 		List<FootprintGoods> rltlist = new ArrayList<FootprintGoods>();

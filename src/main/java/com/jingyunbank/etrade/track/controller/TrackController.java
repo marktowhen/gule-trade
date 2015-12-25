@@ -60,11 +60,12 @@ public class TrackController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/footprint/list/{pcount}/{pfrom}", method = RequestMethod.GET)
-	public Result<FootprintGoodsVO> listFootprintGoods(@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+	public Result<FootprintGoodsVO> listFootprintGoods(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
-			List<FootprintGoods> goodslist = trackService.listFootprintGoods(from,count);
+			String uid = ServletBox.getLoginUID(request);
+			List<FootprintGoods> goodslist = trackService.listFootprintGoods(from,count,uid);
 			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
 			footprintGoodsVO.init(goodslist);
 			return Result.ok(footprintGoodsVO);
