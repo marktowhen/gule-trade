@@ -97,6 +97,7 @@
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
 		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
 		<result column="brandname" property="brandName" />
