@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.information.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,19 +9,21 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.information.bo.InformationSite;
 import com.jingyunbank.etrade.api.information.service.IInformationSiteService;
 import com.jingyunbank.etrade.information.bean.InformationSiteVO;
 
-@Controller
+@RestController
 public class InformationSiteController {
 	@Autowired
 	private IInformationSiteService informationSiteService;
@@ -55,7 +58,7 @@ public class InformationSiteController {
 	 */
 	@RequestMapping(value="/api/information/sites/{siteid}",method=RequestMethod.GET)
 	@ResponseBody
-	public Result selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<List<InformationSiteVO>> selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session) throws Exception{
 		return Result.ok(informationSiteService.getSitesBySiteid(siteid).stream().map(bo ->{
 			InformationSiteVO informationSiteVO=new InformationSiteVO();
 			BeanUtils.copyProperties(bo, informationSiteVO);
@@ -81,6 +84,27 @@ public class InformationSiteController {
 		
 		return Result.ok(informationSiteVO);
 
+	}
+	/**
+	 * 首页的显示（得到name和标题）
+	 * @param informationID
+	 * @param from
+	 * @param size
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/api/information/site/detail",method=RequestMethod.GET)
+	public Result<List<InformationSiteVO>> selectGetSite(@RequestParam String informationID,@RequestParam int from,@RequestParam int size,HttpServletRequest request,HttpSession session){
+		Range range =new Range();
+		range.setFrom(from);
+		range.setTo(from+size);
+		return Result.ok(informationSiteService.getSite(informationID, range).stream().map(bo ->{
+			InformationSiteVO vo=new InformationSiteVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
+		
 	}
 	
 }

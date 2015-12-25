@@ -16,6 +16,7 @@
 			<result column="function" property="function"/>
 			<result column="status" property="status"/>
 			<result column="orders" property="orders" />
+			
 		</resultMap>
 	<sql id="details_list">
 		id,sid,name,title,abstract,picture,addtime,status,recipe,function,orders
@@ -96,6 +97,9 @@
 			from information_details 
 			order by orders desc,addtime desc
 		</select>
+		<!-- <select id="selectInfo" resultMap="">
+			select <include refid="details_list"></include>
+		</select> -->
 	</mapper>
 	
 	

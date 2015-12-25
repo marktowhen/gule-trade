@@ -1,21 +1,33 @@
 package com.jingyunbank.etrade.information.bean;
 
+import com.jingyunbank.etrade.information.entity.InformationDetailsEntity;
+
 public class InformationSiteVO {
 	private String ID;
-	private String SiteID;
+	private String informationID;
 	private String name;
 	
+	private String titles;
+	private String did;
+	
+	
+	public String getDid() {
+		return did;
+	}
+	public void setDid(String did) {
+		this.did = did;
+	}
 	public String getID() {
 		return ID;
 	}
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getSiteID() {
-		return SiteID;
+	public String getInformationID() {
+		return informationID;
 	}
-	public void setSiteID(String siteID) {
-		SiteID = siteID;
+	public void setInformationID(String informationID) {
+		this.informationID = informationID;
 	}
 	public String getName() {
 		return name;
@@ -23,5 +35,14 @@ public class InformationSiteVO {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public String getTitles() {
+		return titles;
+	}
+	public void setTitles(String titles) {
+		this.titles = titles;
+	}
+	
+	
+	
 	
 }

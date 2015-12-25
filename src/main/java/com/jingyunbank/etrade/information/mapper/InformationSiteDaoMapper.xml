@@ -5,22 +5,31 @@
 	<mapper namespace="com.jingyunbank.etrade.information.dao.InformationSiteDao">
 		<resultMap type="com.jingyunbank.etrade.information.entity.InformationSiteEntity" id="InformationSiteResultMap">
 			<id column="id" property="ID"/>
-			<result column="site_id" property="SiteID"/>
+			<result column="information_id" property="informationID"/>
 			<result column="name" property="name"/>
+			<result column="did" property="did"/>
+			<result column="titles" property="titles"/> 
 		</resultMap>
 		<!-- 添加二级菜单中的多个标题 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.information.entity.InformationSiteEntity">
 			insert into information_site(
-			id,site_id,name
+			id,information_id,name
 			)values(
-			#{ID},#{SiteID},#{name}
+			#{ID},#{informationID},#{name}
 			)
 		</insert>
 		<!-- 通过site_id查出对应的多个标题 -->
 		<select id="selectSitesBySiteid" parameterType="String" resultMap="InformationSiteResultMap">
-			select id,site_id,name from information_site where site_id=#{SiteID}
+			select id,information_id,name from information_site where information_id=#{informationID}
 		</select>
 		<select id="selectSitesByName" parameterType="String" resultMap="InformationSiteResultMap">
-			select id,site_id,name from information_site where name=#{name}
+			select id,information_id,name from information_site where name=#{name}
+		</select>
+	 	<select id="select" resultMap="InformationSiteResultMap">
+			select s.name,d.title as titles,d.id as did
+			from information_site s left join information_details d on s.id = d.sid
+			where s.information_id = #{informationID}
+			order by d.addtime desc
+			LIMIT #{from} , #{size}
 		</select>
 	</mapper>
