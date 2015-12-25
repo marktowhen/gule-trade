@@ -51,15 +51,8 @@ public class GoodsController {
 	@Resource
 	protected IGoodsService goodsService;
 
-	/**
-	 * 根据名称模糊查询商品
-	 * 
-	 * @param request
-	 * @param goodsname
-	 * @param page
-	 * @return
-	 * @throws Exception
-	 */
+	
+	/*
 	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname,
 			Page page) throws Exception {
@@ -72,7 +65,7 @@ public class GoodsController {
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
-	}
+	}*/
 
 	/**
 	 * 查询品牌列表
@@ -419,7 +412,7 @@ public class GoodsController {
 	 * @param gid
 	 * @return
 	 */
-	@RequestMapping(value = "/byid/{gid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{gid}", method = RequestMethod.GET)
 	public Result<GoodsVO> queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsVO vo = null;
 		Optional<ShowGoods> showbo = goodsService.singleById(gid);

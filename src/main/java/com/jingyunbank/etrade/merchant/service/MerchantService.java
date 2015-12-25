@@ -12,9 +12,12 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
+import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -224,5 +227,12 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 			return bo;
 		}).collect(Collectors.toList());
 		return showMerchantList;
+	}
+	@Override
+	public int countMerchants(Merchant merchant) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("merchantName", merchant.getMerchantName());
+		int count = merchantDao.selectMerchantsCount(map);
+		return count;
 	}
 }

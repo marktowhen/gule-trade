@@ -16,9 +16,11 @@
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
 		<result column="addtime" property="addTime" />
-		<result column="pro_flag" property="pro_flag" />
-		<result column="pro_start" property="pro_start" />
-		<result column="pro_end" property="pro_end" />
+		
+		<result column="pro_flag" property="onSale" />
+		<result column="pro_start" property="onSaleBeginTime" />
+		<result column="pro_end" property="onSaleEndTime" />
+		
 		<result column="up_time" property="upTime" />
 		<result column="down_time" property="downTime" />
 		<result column="postage" property="postage" />
@@ -95,6 +97,7 @@
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
 		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
 		<result column="brandname" property="brandName" />

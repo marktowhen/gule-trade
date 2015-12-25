@@ -28,7 +28,7 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FootprintGoodsEntity> selectFootprintGoods(Map<String, Integer> params) throws Exception;
+	public List<FootprintGoodsEntity> selectFootprintGoods(Map<String, Object> params) throws Exception;
 	/**
 	 * 保存我的足迹信息
 	 * @param fe

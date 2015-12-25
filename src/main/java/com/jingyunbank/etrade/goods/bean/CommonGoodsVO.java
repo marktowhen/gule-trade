@@ -24,11 +24,15 @@ public class CommonGoodsVO implements Serializable{
 	private String thumb_path_1; // 缩略图
 	private String goodsTitle; //宝贝标题
 	private int comment; //商品评论数
+	
+	
 	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
-	private Date pro_start;  //促销开始时间
+	private Date onSaleBeginTime;  //促销开始时间
 	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
-	private Date pro_end;	//促销结束时间
-	private String pro_flag; //是否促销标志
+	private Date onSaleEndTime;	//促销结束时间
+	private boolean onSale; //是否促销标志
+	
+	
 	
 	/****我的足迹 冗余浏览时间字段***/
 	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
@@ -36,7 +40,6 @@ public class CommonGoodsVO implements Serializable{
 	/****我的收藏 冗余收藏时间字段***/
 	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date collectTime;
-	
 	public String getGID() {
 		return GID;
 	}
@@ -55,8 +58,6 @@ public class CommonGoodsVO implements Serializable{
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-	
-	 
 	public BigDecimal getPromotionPrice() {
 		return promotionPrice;
 	}
@@ -68,6 +69,12 @@ public class CommonGoodsVO implements Serializable{
 	}
 	public void setNowPrice(BigDecimal nowPrice) {
 		this.nowPrice = nowPrice;
+	}
+	public String getSpecifications() {
+		return specifications;
+	}
+	public void setSpecifications(String specifications) {
+		this.specifications = specifications;
 	}
 	public String getWeight() {
 		return weight;
@@ -87,23 +94,35 @@ public class CommonGoodsVO implements Serializable{
 	public void setThumb_path_1(String thumb_path_1) {
 		this.thumb_path_1 = thumb_path_1;
 	}
-	public Date getPro_start() {
-		return pro_start;
+	public String getGoodsTitle() {
+		return goodsTitle;
 	}
-	public void setPro_start(Date pro_start) {
-		this.pro_start = pro_start;
+	public void setGoodsTitle(String goodsTitle) {
+		this.goodsTitle = goodsTitle;
 	}
-	public Date getPro_end() {
-		return pro_end;
+	public int getComment() {
+		return comment;
 	}
-	public void setPro_end(Date pro_end) {
-		this.pro_end = pro_end;
+	public void setComment(int comment) {
+		this.comment = comment;
 	}
-	public String getPro_flag() {
-		return pro_flag;
+	public Date getOnSaleBeginTime() {
+		return onSaleBeginTime;
 	}
-	public void setPro_flag(String pro_flag) {
-		this.pro_flag = pro_flag;
+	public void setOnSaleBeginTime(Date onSaleBeginTime) {
+		this.onSaleBeginTime = onSaleBeginTime;
+	}
+	public Date getOnSaleEndTime() {
+		return onSaleEndTime;
+	}
+	public void setOnSaleEndTime(Date onSaleEndTime) {
+		this.onSaleEndTime = onSaleEndTime;
+	}
+	public boolean isOnSale() {
+		return onSale;
+	}
+	public void setOnSale(boolean onSale) {
+		this.onSale = onSale;
 	}
 	public Date getVisitTime() {
 		return visitTime;
@@ -116,24 +135,6 @@ public class CommonGoodsVO implements Serializable{
 	}
 	public void setCollectTime(Date collectTime) {
 		this.collectTime = collectTime;
-	}
-	public int getComment() {
-		return comment;
-	}
-	public void setComment(int comment) {
-		this.comment = comment;
-	}
-	public String getGoodsTitle() {
-		return goodsTitle;
-	}
-	public void setGoodsTitle(String goodsTitle) {
-		this.goodsTitle = goodsTitle;
-	}
-	public String getSpecifications() {
-		return specifications;
-	}
-	public void setSpecifications(String specifications) {
-		this.specifications = specifications;
 	}
 	
 	

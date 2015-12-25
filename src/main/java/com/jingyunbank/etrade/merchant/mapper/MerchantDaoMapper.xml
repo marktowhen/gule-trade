@@ -116,4 +116,10 @@
 		where m.merchant_name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
 		LIMIT #{from} , #{size}
 	</select>
+	<!-- 查询商家数量 -->
+	<select id="selectMerchantsCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from 
+		merchant m
+		where m.merchant_name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
+	</select>
 </mapper>

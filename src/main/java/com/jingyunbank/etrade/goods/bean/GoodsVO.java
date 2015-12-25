@@ -43,10 +43,12 @@ public class GoodsVO implements Serializable{
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date addTime;// 商品添加时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
-		private Date pro_start;  //促销开始时间
+		private Date onSaleBeginTime;  //促销开始时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
-		private Date pro_end;	//促销结束时间
-		private String pro_flag; //是否促销标志
+		private Date onSaleEndTime;	//促销结束时间
+		private boolean onSale; //是否促销标志
+		
+		
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date upTime; //上架时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
@@ -56,7 +58,7 @@ public class GoodsVO implements Serializable{
 		private String barCode; //条形码
 		private String goodsDesc; //宝贝描述
 		private String goodsTitle; //宝贝标题
-		private int state;
+		private boolean state;
 		private int comment; //商品评论数
 		
 		//----------------商品图片属性-----------------//
@@ -210,23 +212,23 @@ public class GoodsVO implements Serializable{
 		public void setAddTime(Date addTime) {
 			this.addTime = addTime;
 		}
-		public Date getPro_start() {
-			return pro_start;
+		public Date getOnSaleBeginTime() {
+			return onSaleBeginTime;
 		}
-		public void setPro_start(Date pro_start) {
-			this.pro_start = pro_start;
+		public void setOnSaleBeginTime(Date onSaleBeginTime) {
+			this.onSaleBeginTime = onSaleBeginTime;
 		}
-		public Date getPro_end() {
-			return pro_end;
+		public Date getOnSaleEndTime() {
+			return onSaleEndTime;
 		}
-		public void setPro_end(Date pro_end) {
-			this.pro_end = pro_end;
+		public void setOnSaleEndTime(Date onSaleEndTime) {
+			this.onSaleEndTime = onSaleEndTime;
 		}
-		public String getPro_flag() {
-			return pro_flag;
+		public boolean isOnSale() {
+			return onSale;
 		}
-		public void setPro_flag(String pro_flag) {
-			this.pro_flag = pro_flag;
+		public void setOnSale(boolean onSale) {
+			this.onSale = onSale;
 		}
 		public Date getUpTime() {
 			return upTime;
@@ -270,11 +272,17 @@ public class GoodsVO implements Serializable{
 		public void setGoodsTitle(String goodsTitle) {
 			this.goodsTitle = goodsTitle;
 		}
-		public int getState() {
+		public boolean isState() {
 			return state;
 		}
-		public void setState(int state) {
+		public void setState(boolean state) {
 			this.state = state;
+		}
+		public int getComment() {
+			return comment;
+		}
+		public void setComment(int comment) {
+			this.comment = comment;
 		}
 		public String getThumb_path_1() {
 			return thumb_path_1;
@@ -396,7 +404,6 @@ public class GoodsVO implements Serializable{
 		public void setIsGiftBox(String isGiftBox) {
 			this.isGiftBox = isGiftBox;
 		}
-
 		public Date getProductionDate() {
 			return productionDate;
 		}
@@ -433,12 +440,8 @@ public class GoodsVO implements Serializable{
 		public void setFactoryTel(String factoryTel) {
 			this.factoryTel = factoryTel;
 		}
-		public int getComment() {
-			return comment;
-		}
-		public void setComment(int comment) {
-			this.comment = comment;
-		}
+		
+		
 		
 		
 }

@@ -28,7 +28,7 @@
 			 from (
 		select uid,gid,MAX(visit_time) as visit_time 
 		from footprint
-		where uid = '1'
+		where uid = #{uid}
 		group by uid,gid
 		ORDER BY visit_time desc
 		) v inner join goods x
@@ -71,6 +71,7 @@
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
 		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
 		<result column="brandname" property="brandName" />
@@ -270,6 +271,7 @@
 	<resultMap type="com.jingyunbank.etrade.track.entity.RecommendGoodsEntity" id="rltRecommendGoods">
 		<result column="id" property="GID"/>
 		<result column="name" property="goodsName"/>
+		<result column="pro_flag" property="onSale" />
 	</resultMap>
 	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
 			select g.*,i.thumb_path_1 as thumb_path_1,d.specifications from goods g left join goods_detail d 
