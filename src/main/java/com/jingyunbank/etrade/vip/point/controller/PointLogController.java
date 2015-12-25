@@ -17,7 +17,7 @@ import com.jingyunbank.etrade.api.vip.point.service.IPointLogService;
 import com.jingyunbank.etrade.vip.point.bean.PointLogVO;
 
 @RestController
-@RequestMapping(value="/vip/point/log")
+@RequestMapping(value="/api/vip/point/log")
 public class PointLogController {
 
 	@Autowired
