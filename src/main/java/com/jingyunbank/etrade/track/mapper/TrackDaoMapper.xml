@@ -28,7 +28,7 @@
 			 from (
 		select uid,gid,MAX(visit_time) as visit_time 
 		from footprint
-		where uid = '1'
+		where uid = #{uid}
 		group by uid,gid
 		ORDER BY visit_time desc
 		) v inner join goods x
