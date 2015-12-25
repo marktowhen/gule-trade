@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
@@ -24,26 +25,10 @@ import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 public class GoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void testAddGoods() throws Exception {
-
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		GoodsOperationVO vo = new GoodsOperationVO();
-		vo.setMID("2");
-		vo.setBID("1");
-		 vo.setName("星期六阿胶");
-		vo.setCode("JY006");
-		vo.setTid("2");
-		vo.setPrice(new BigDecimal("333.00"));
-		//vo.setPro_start(new Date());
-		//vo.setPro_end(new Date());
-		vo.setState(1);
-		vo.setStandardNo("星期六阿胶标准号003");
-		vo.setCount(1000);
 		
-		vo.setThumbpath1("D://img/1.jpg");
-		vo.setThumbpath2("D://img/2.jpg");
-		vo.setThumbpath3("D://img/3.jpg");
-		vo.setThumbpath4("D://img/4.jpg");
-		vo.setThumbpath5("D://img/5.jpg");
-		vo.setContent("<h3>hello<h3>");
+		//vo.setUpTime(format.parse("2015-01-01 00:00:00"));
 
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
