@@ -89,7 +89,7 @@
 		LEFT JOIN goods_img i ON g.id = i.gid
 		LEFT JOIN goods_brand b ON b.id=g.bid
 		left join merchant mt on g.mid = mt.id
-		WHERE 1 = 1 AND g.state=#{state}  
+		WHERE 1 = 1   
 		AND g.name LIKE CONCAT(CONCAT('%', #{name}), '%')
 		LIMIT #{from} , #{size}
 	</select>
