@@ -3,7 +3,6 @@ package com.jingyunbank.etrade.information.entity;
 public class InformationEntity {
 	
 	private String ID;
-	private String SiteID;
 	private String name;
 	
 	public String getID() {
@@ -12,12 +11,7 @@ public class InformationEntity {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getSiteID() {
-		return SiteID;
-	}
-	public void setSiteID(String siteID) {
-		SiteID = siteID;
-	}
+	
 	public String getName() {
 		return name;
 	}

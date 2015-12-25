@@ -2,7 +2,7 @@ package com.jingyunbank.etrade.information.bean;
 
 public class InformationVO {
 	private String ID;
-	private String SiteID;
+
 	private String name;
 	
 	public String getID() {
@@ -11,12 +11,7 @@ public class InformationVO {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getSiteID() {
-		return SiteID;
-	}
-	public void setSiteID(String siteID) {
-		SiteID = siteID;
-	}
+	
 	public String getName() {
 		return name;
 	}

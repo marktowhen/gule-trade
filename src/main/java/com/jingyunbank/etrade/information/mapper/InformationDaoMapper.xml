@@ -5,19 +5,18 @@
 	<mapper namespace="com.jingyunbank.etrade.information.dao.InformationDao">
 		<resultMap type="com.jingyunbank.etrade.information.entity.InformationEntity" id="InformationResultMap">
 			<id column="id" property="ID"/>
-			<result column="site_id" property="SiteID"/>
 			<result column="name" property="name"/>
 		</resultMap>
 		<!-- 添加一级菜单中的多个标题 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.information.entity.InformationEntity">
 			insert into information(
-			id,site_id,name
+			id,name
 			)values(
-			#{ID},#{SiteID},#{name}
+			#{ID},#{name}
 			)
 		</insert>
 		<!-- 通过id查出对应的多个标题 -->
 		<select id="selectList"  resultMap="InformationResultMap">
-			select id,site_id,name from information 
+			select id,name from information 
 		</select>
 	</mapper>
