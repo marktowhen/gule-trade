@@ -290,4 +290,27 @@
 		   </if>
 		  LIMIT #{from} , #{to}
 	</select>
+	<!-- 查询推荐商品 -->
+	<resultMap type="com.jingyunbank.etrade.track.entity.OtherGoodsEntity" id="rltOtherGoods">
+		<result column="id" property="GID"/>
+		<result column="name" property="goodsName"/>
+		<result column="pro_flag" property="onSale" />
+	</resultMap>
+	<select id="selectOtherGoods"  resultMap="rltOtherGoods" parameterType="java.util.Map">
+	<![CDATA[
+		 select g.* from (
+			select a.uid,a.gid, sum(count) as r_count From sales_records a where  exists
+			(
+			select 1 from sales_records b where gid = #{gid}
+			and a.uid = b.uid
+			)
+			and a.gid <> #{gid}
+			and a.uid <> #{uid}
+			group by a.uid,a.gid
+			order by r_count desc
+			) c left join goods g
+			on c.gid = g.id
+			 LIMIT #{from} , #{to}
+	]]>
+	</select>
 </mapper>

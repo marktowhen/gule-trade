@@ -24,6 +24,7 @@ import com.jingyunbank.etrade.api.track.bo.AdDetail;
 import com.jingyunbank.etrade.api.track.bo.AdModule;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
+import com.jingyunbank.etrade.api.track.bo.OtherGoods;
 import com.jingyunbank.etrade.api.track.bo.RecommendGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
@@ -34,6 +35,7 @@ import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
+import com.jingyunbank.etrade.track.entity.OtherGoodsEntity;
 import com.jingyunbank.etrade.track.entity.RecommendGoodsEntity;
 
 /**
@@ -352,6 +354,31 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				RecommendGoods bo = new RecommendGoods();
+				try {
+					BeanUtils.copyProperties(eo, bo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return rltlist;
+	}
+	
+	public List<OtherGoods> listOtherGoods(String gid,String uid,int from,int to) throws Exception {
+		this.from = from;
+		this.to = to;
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("uid", uid);
+		params.put("gid", gid);
+		params.put("from", this.from);
+		params.put("to", this.to);
+		List<OtherGoods> rltlist = new ArrayList<OtherGoods>();
+		//查询相关产品
+		List<OtherGoodsEntity> goodslist = trackDao.selectOtherGoods(params);
+		if (goodslist != null) {
+			rltlist = goodslist.stream().map(eo -> {
+				OtherGoods bo = new OtherGoods();
 				try {
 					BeanUtils.copyProperties(eo, bo);
 				} catch (Exception e) {

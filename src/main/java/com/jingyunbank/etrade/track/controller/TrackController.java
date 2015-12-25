@@ -496,4 +496,25 @@ public class TrackController {
 			}).collect(Collectors.toList());
 			return Result.ok(goodslist);
 	}
+	/**
+	 * 买过该商品的用户还买了
+	 * @param request
+	 * @param pcount
+	 * @param pfrom
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/othergoods/list/{pcount}/{pfrom}", method = RequestMethod.GET)
+	public Result<List<CommonGoodsVO>> listOtherGoods(HttpServletRequest request,@PathVariable String gid,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
+			String uid = ServletBox.getLoginUID(request);
+			//获取展示条数
+			int count = Integer.valueOf(pcount);
+			int from = Integer.valueOf(pfrom);
+			List<CommonGoodsVO> goodslist = trackService.listOtherGoods(gid,uid,from,count).stream().map(bo -> {
+				CommonGoodsVO vo = new CommonGoodsVO();
+				BeanUtils.copyProperties(bo, vo);
+				return vo;
+			}).collect(Collectors.toList());
+			return Result.ok(goodslist);
+	}
 }
