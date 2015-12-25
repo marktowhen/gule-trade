@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -206,6 +208,14 @@ public class MerchantController {
 		}).collect(Collectors.toList());
 		
 		return Result.ok(merchantlist);
+	}
+
+	@RequestMapping(value = "/count", method = RequestMethod.GET)
+	public Result<Integer> countMerchants(MerchantSearchVO merchantSearchVO) throws Exception {
+		Merchant merchant = new Merchant();
+		BeanUtils.copyProperties(merchantSearchVO, merchant);
+		int count = merchantService.countMerchants(merchant);
+		return Result.ok(count);
 	}
 	
 }

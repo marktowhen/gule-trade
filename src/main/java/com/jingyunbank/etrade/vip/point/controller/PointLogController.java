@@ -17,7 +17,7 @@ import com.jingyunbank.etrade.api.vip.point.service.IPointLogService;
 import com.jingyunbank.etrade.vip.point.bean.PointLogVO;
 
 @RestController
-@RequestMapping(value="/vip/point")
+@RequestMapping(value="/api/vip/point/log")
 public class PointLogController {
 
 	@Autowired
@@ -29,7 +29,7 @@ public class PointLogController {
 	 * @return
 	 * 2015年12月2日 qxs
 	 */
-	@RequestMapping(value="/log/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public Result<List<PointLogVO>> getUserLog(@PathVariable String uid){
 		
 		return Result.ok(pointLogService.list(uid).stream().map(bo -> {
@@ -45,7 +45,7 @@ public class PointLogController {
 	 * @return
 	 * 2015年12月2日 qxs
 	 */
-	@RequestMapping(value="/log/list/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/list/{uid}", method=RequestMethod.GET)
 	public Result<List<PointLogVO>> getUserLogList(@PathVariable String uid, Page page){
 		Range range = new Range();
 		range.setFrom(page.getOffset());
