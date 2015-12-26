@@ -82,7 +82,6 @@ public class OrderControllerTest extends TestCaseBase {
 				PurchaseGoodsVO g = new PurchaseGoodsVO();
 				g.setGID("@@@@#$@#@@SDFASDXCV");
 				g.setGname("GXNAME");
-				g.setTotal(new BigDecimal("123.3"));
 				g.setCount(2);
 				g.setMID("1111111111111111111111");
 				g.setPrice(new BigDecimal("123.3"));

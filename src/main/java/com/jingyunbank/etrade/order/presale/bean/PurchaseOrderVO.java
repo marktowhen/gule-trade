@@ -26,9 +26,12 @@ public class PurchaseOrderVO {
 	private String deliveryTypeCode;
 	@NotNull
 	private String deliveryTypeName;
-	@NotNull
+	@NotNull//订单计算出的邮费（主要用于数据校验）
 	@DecimalMin(value="0.00", inclusive=true)
 	private BigDecimal postage = new BigDecimal(0);
+	@NotNull//订单使用卡券前的总价（包含邮费）
+	@DecimalMin(value="0.00", inclusive=false)
+	private BigDecimal price = new BigDecimal(0);
 
 	private Date addtime;
 	
@@ -117,5 +120,13 @@ public class PurchaseOrderVO {
 
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 }

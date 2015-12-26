@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.vip.coupon.service.handler;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 		if(r.isBad()) return Result.fail(r.getMessage());
 		DiscountCoupon coupon = r.getBody().getDiscountCoupon();
 		BigDecimal discount = coupon.getDiscount();
-		BigDecimal discountprice = originprice.multiply(discount);
+		BigDecimal discountprice = originprice.multiply(discount).setScale(2, RoundingMode.HALF_UP);
 		discountprice = discountprice.compareTo(coupon.getValue())<0?discountprice: coupon.getValue();
 		return Result.ok(originprice.compareTo(coupon.getThreshhold()) >= 0? originprice.subtract(discountprice): originprice);
 	}

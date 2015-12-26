@@ -64,14 +64,97 @@ public class OrderController {
 	public Result<PurchaseRequestVO> submit(@Valid @RequestBody PurchaseRequestVO purchase,
 			BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
-			return Result.fail("您提交的数据不完整，请核实后重新提交！");
+			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
-		
 		String UID = ServletBox.getLoginUID(session);
 		purchase.setUID(UID);
 
 		String couponID = purchase.getCouponID();
 		String couponType = purchase.getCouponType();
+		
+		List<Orders> orders = populateOrderData(purchase, session);
+		
+		//订单价格简单校验
+		//订单价应担匹配商品总价及邮费计算规则
+		boolean goodData = verifyOrderData(orders);
+		if(!goodData){
+			return Result.fail("订单数据校验失败，请检查订单信息后重新提交。");
+		}
+		
+		boolean legalCoupon = calculateOrdersGoodsPayout(couponID, couponType, UID, orders);
+		if(!legalCoupon){
+			return Result.fail("无效的订单优惠卡券，请检查订单信息后重新提交。");
+		}
+		
+		orderContextService.save(orders);
+		session.removeAttribute(CartController.GOODS_IN_CART_TO_CLEARING);
+		return Result.ok(purchase);
+	}
+
+	@AuthBeforeOperation
+	@RequestMapping(
+			value="/api/orders/cancellation",
+			method=RequestMethod.PUT,
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public Result<String> cancel(@Valid @RequestBody OIDWithNoteVO cancellation,
+			BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的订单信息有误！");
+		}
+		if(!orderContextService.cancel(cancellation.getOid(), cancellation.getNote())){
+			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
+		}
+		return Result.ok();
+	}
+	
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
+	public Result<String> remove(@PathVariable String id) throws Exception{
+		
+		orderContextService.remove(id);
+		
+		return Result.ok(id);
+	}
+	
+	
+	
+	
+	
+	public final static BigDecimal FREE_SHIPPING_THRESHOLD = new BigDecimal(99);//包邮下限
+	private boolean verifyOrderData(List<Orders> orders) {
+		for (Orders order : orders) {
+			BigDecimal originorderprice = order.getPrice();//data from user.
+			BigDecimal originorderpostage = order.getPostage();//data from user.
+			BigDecimal calculatedorderprice = BigDecimal.ZERO;//data calculated based on goods info.
+			BigDecimal calculatedorderpostage = BigDecimal.ZERO;//as above.
+			
+			List<OrderGoods> goods = order.getGoods();
+			for (OrderGoods orderGoods : goods) {
+				BigDecimal pprice = orderGoods.getPprice();//data from user.
+				BigDecimal price = orderGoods.getPrice();//data from user.
+				BigDecimal postage = orderGoods.getPostage();//data from user.
+				int count = orderGoods.getCount();//data from user.
+				BigDecimal actualprice = (Objects.nonNull(pprice) && pprice.compareTo(BigDecimal.ZERO) > 0)?
+									pprice : price;
+				calculatedorderprice = calculatedorderprice.add(actualprice.multiply(BigDecimal.valueOf(count)).setScale(2, RoundingMode.HALF_UP));
+				calculatedorderpostage = calculatedorderpostage.add(postage);
+			}
+			//包邮
+			if(calculatedorderprice.compareTo(FREE_SHIPPING_THRESHOLD) >= 0){
+				calculatedorderpostage = BigDecimal.ZERO;
+			}
+			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
+			if(calculatedorderprice.compareTo(originorderprice) != 0
+					|| calculatedorderpostage.compareTo(originorderpostage) != 0){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private List<Orders> populateOrderData(PurchaseRequestVO purchase,
+			HttpSession session) throws Exception {
 		
 		List<PurchaseOrderVO> ordervos = purchase.getOrders();
 		List<Orders> orders = new ArrayList<Orders>();
@@ -101,47 +184,41 @@ public class OrderController {
 				orderGoods.setUID(order.getUID());
 				orderGoodses.add(orderGoods);
 			}
-			order.setPrice(orderGoodses.stream()
-					.map(x->x.getPrice())
-					.reduce(new BigDecimal(0), (x,y)->x.add(y))
-					);
+			
 			order.setGoods(orderGoodses);
 			orders.add(order);
 		}
 		
-		setOrdersGoodsFinalPrice(couponID, couponType, UID, orders);
-		
-		orderContextService.save(orders);
-		
-		session.removeAttribute(CartController.GOODS_IN_CART_TO_CLEARING);
-		return Result.ok(purchase);
+		return orders;
 	}
-
-	private void setOrdersGoodsFinalPrice(String couponID, String couponType, String UID,
-			List<Orders> orders) throws Exception{
+	
+	//计算订单，及订单中每件商品的实际支付价格(剔除使用优惠卡券后的价格)
+	private boolean calculateOrdersGoodsPayout(String couponID, String couponType, String UID,
+											List<Orders> orders) throws Exception{
 		if(StringUtils.hasText(couponType) && StringUtils.hasText(couponID)){
-			BigDecimal originprice = orders.stream()
+			BigDecimal origintotalprice = orders.stream()
 										.map(x->x.getPrice())
 										.reduce(new BigDecimal(0), (x,y)->x.add(y));
 			ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
-			Result<BigDecimal> finalpricer = couponStrategyService.calculate(UID, couponID, originprice);
-			if(finalpricer.isBad()) return;//illegal coupon
+			Result<BigDecimal> finalpricer = couponStrategyService.calculate(UID, couponID, origintotalprice);
+			if(finalpricer.isBad()) return false;//illegal coupon
 			
 			BigDecimal finalprice = finalpricer.getBody();
 			orders.forEach(order -> {
 				BigDecimal orderprice = order.getPrice();
-				BigDecimal orderpricepercent = orderprice.divide(originprice, 2, RoundingMode.HALF_UP);
-				BigDecimal neworderprice = finalprice.multiply(orderpricepercent);
+				//优惠百分比
+				BigDecimal orderpricepercent = orderprice.divide(origintotalprice, 6, RoundingMode.HALF_UP);
+				BigDecimal neworderprice = finalprice.multiply(orderpricepercent).setScale(2, RoundingMode.HALF_UP);
 				order.setPayout(neworderprice);
 				List<OrderGoods> goodses = order.getGoods();
 				goodses.forEach(goods -> {
 					BigDecimal origingoodspprice = goods.getPprice();//促销价
 					BigDecimal origingoodsprice = goods.getPrice();
-					origingoodsprice = 
+					origingoodsprice = //如果促销价不为空，则使用促销价
 							(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(new BigDecimal(0)) > 0)?
 							origingoodspprice : origingoodsprice;
-					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 2, RoundingMode.HALF_UP);
-					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice);
+					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 6, RoundingMode.HALF_UP);
+					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice).setScale(2, RoundingMode.HALF_UP);
 					goods.setPayout(finalgoodsprice);
 					goods.setCouponReduce(origingoodsprice.subtract(finalgoodsprice));
 				});
@@ -156,25 +233,11 @@ public class OrderController {
 				});
 			});
 		}
+		return true;
 	}
 	
-	@AuthBeforeOperation
-	@RequestMapping(
-			value="/api/orders/cancellation",
-			method=RequestMethod.PUT,
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Result<String> cancel(@Valid @RequestBody OIDWithNoteVO cancellation,
-			BindingResult valid, HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			return Result.fail("您提交的订单信息有误！");
-		}
-		if(!orderContextService.cancel(cancellation.getOid(), cancellation.getNote())){
-			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
-		}
-		return Result.ok();
-	}
 	
+
 	private static class OIDWithNoteVO{
 		@NotNull
 		private String oid;
@@ -196,12 +259,4 @@ public class OrderController {
 		}
 	}
 	
-	@AuthBeforeOperation
-	@RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
-	public Result<String> remove(@PathVariable String id) throws Exception{
-		
-		orderContextService.remove(id);
-		
-		return Result.ok(id);
-	}
 }

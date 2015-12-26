@@ -18,6 +18,7 @@ public class GoodsInCartEntity {
 	
 	private int stock;
 	private String imgpath;
+	private BigDecimal postage;
 	
 	public String getID() {
 		return ID;
@@ -96,5 +97,11 @@ public class GoodsInCartEntity {
 	}
 	public void setPprice(BigDecimal pprice) {
 		this.pprice = pprice;
+	}
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
 	}
 }
