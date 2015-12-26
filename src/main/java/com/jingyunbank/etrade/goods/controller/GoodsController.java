@@ -280,7 +280,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/hotgoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/hot/list", method = RequestMethod.GET)
 	public Result<List<HotGoodsVO>> listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		List<HotGoods> goodslist = goodsService.listHotGoods();
@@ -339,7 +339,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/hot24goods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/hot24/list", method = RequestMethod.GET)
 	public Result<Hot24GoodsVO> listHot24Goods() throws Exception {
 		List<Hot24Goods> goodslist = goodsService.listHot24Goods();
 		Hot24GoodsVO hot24GoodsVO = new Hot24GoodsVO();
@@ -410,7 +410,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/honeygoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/honey/list", method = RequestMethod.GET)
 	public Result<List<HoneyGoodsVO>> listHoneyGoods() throws Exception {
 		List<HoneyGoods> goodslist = goodsService.listHoneyGoods();
 		List<HoneyGoodsVO> list = goodslist.stream().map(bo -> {
