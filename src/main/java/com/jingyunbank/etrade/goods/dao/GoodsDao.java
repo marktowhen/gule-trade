@@ -44,7 +44,7 @@ public interface GoodsDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<GoodsDaoEntity> selectBrandsThree() throws Exception;
+	public List<GoodsDaoEntity> selectBrandsThree(Map<String, Object> map) throws Exception;
 
 	/**
 	 * 查询所有类型
@@ -97,14 +97,6 @@ public interface GoodsDao {
 	 */
 	public List<GoodsMerchantEntity> selectMerchantByWhere(Map<String, Object> map) throws Exception;
 
-	/**
-	 * 查询店铺的关联产品(4条)
-	 * 
-	 * @param map
-	 * @return
-	 * @throws Exception
-	 */
-	public List<GoodsDaoEntity> selectMerchantByWhereGoods4(Map<String, Object> map) throws Exception;
 
 	/**
 	 * 查询店铺的关联产品(全部显示)
