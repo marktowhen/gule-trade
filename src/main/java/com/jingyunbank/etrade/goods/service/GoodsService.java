@@ -21,7 +21,6 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
-import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
@@ -295,20 +294,6 @@ public class GoodsService implements IGoodsService {
 			return bo;
 		}).collect(Collectors.toList());
 		return showGoodsList;
-	}
-
-	@Override
-	public List<SalesRecord> listSalesRecords(String gid, Range range) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("gid", gid);
-		map.put("from", (int) range.getFrom());
-		map.put("size", (int) range.getTo());
-		List<SalesRecord> saleList = goodsDao.selectSalesRecords(map).stream().map(dao -> {
-			SalesRecord bo = new SalesRecord();
-			BeanUtils.copyProperties(dao, bo);
-			return bo;
-		}).collect(Collectors.toList());
-		return saleList;
 	}
 
 	@Override

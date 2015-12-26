@@ -8,23 +8,16 @@ public class SalesRecordEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String ID;
-	private String OID;
 	private String UID;
 	private String uname;
 	private String GID;
 	private int count;
-	private Date sales_date;
+	private Date salesDate;
 	public String getID() {
 		return ID;
 	}
 	public void setID(String iD) {
 		ID = iD;
-	}
-	public String getOID() {
-		return OID;
-	}
-	public void setOID(String oID) {
-		OID = oID;
 	}
 	public String getUID() {
 		return UID;
@@ -50,13 +43,10 @@ public class SalesRecordEntity implements Serializable{
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public Date getSales_date() {
-		return sales_date;
+	public Date getSalesDate() {
+		return salesDate;
 	}
-	public void setSales_date(Date sales_date) {
-		this.sales_date = sales_date;
+	public void setSalesDate(Date salesDate) {
+		this.salesDate = salesDate;
 	}
-	
-	
-	
 }

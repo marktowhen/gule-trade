@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.goods.dao.SalesRecordsDao">
+	
+	<resultMap type="com.jingyunbank.etrade.goods.entity.SalesRecordEntity" id="salesrecordsMap">
+		<result column="id" property="ID" />
+		<result column="uid" property="UID" />
+		<result column="uname" property="uname" />
+		<result column="gid" property="GID" />
+		<result column="count" property="count" />
+		<result column="sales_date" property="salesDate" />
+	</resultMap>
+	<sql id="salesrecords_columns">
+		`id`, `uid`, `uname`, `gid`, `count`, `sales_date` 
+	</sql>
+	<!-- 查询商品的交易记录 -->
+	<select id="select"  parameterType="java.util.Map" resultMap="salesrecordsMap">
+		SELECT <include refid="salesrecords_columns"/>
+		FROM `sales_records`
+		WHERE 1=1 AND `gid` = #{gid}
+		ORDER BY `sales_date` DESC
+		LIMIT #{from}, #{size}
+	</select>
+	<insert id="insert" parameterType="com.jingyunbank.etrade.goods.entity.SalesRecordEntity">
+		insert into sales_records (<include refid="salesrecords_columns"/>)
+		values (#{ID}, #{UID}, #{uname}, #{GID}, #{count}, #{salesDate})
+	</insert>
+	
+</mapper>
