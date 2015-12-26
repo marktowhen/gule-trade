@@ -91,9 +91,12 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/brand/list_three", method = RequestMethod.GET)
-	public Result<List<GoodsBrandVO>> queryBrandsThree(HttpServletRequest request) throws Exception {
-		List<GoodsBrandVO> list = goodsService.listBrandsThree().stream().map(bo -> {
+	@RequestMapping(value = "/brand/{from}/{size}/list", method = RequestMethod.GET)
+	public Result<List<GoodsBrandVO>> queryBrandsThree(HttpServletRequest request,
+			@PathVariable int from,
+			@PathVariable int size
+			) throws Exception {
+		List<GoodsBrandVO> list = goodsService.listBrandsThree(new Range(from, size)).stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -244,41 +247,18 @@ public class GoodsController {
 		return Result.ok(list);
 	}
 
+
 	/**
-	 * 店铺相关商品 (点击X件相关产品 MID ) 显示4条
+	 * 店铺相关产品(分页)
 	 * 
 	 * @param request
 	 * @param goodshowvo
 	 * @return
 	 * @throws Exception
 	 */
-	// @RequestMapping(value = "/merchantGoodsByWhere4/list", method =
-	// RequestMethod.GET)
-	@RequestMapping(value = "/merchantgoods4/list", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoods(HttpServletRequest request,
-			GoodsShowVO goodshowvo) throws Exception {
-		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
-		// 接收价格区间
-		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
-
-		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods4(goodshowBO).stream().map(bo -> {
-			CommonGoodsVO vo = new CommonGoodsVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
-		return Result.ok(list);
-	}
-
-	/**
-	 * 店铺相关商品 更多相关产品(分页)
-	 * 
-	 * @param request
-	 * @param goodshowvo
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/merchantgoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/{mid}/list", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request,
+			@PathVariable String mid,
 			GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
@@ -388,7 +368,7 @@ public class GoodsController {
 	 * @param vo
 	 * @return
 	 */
-	@RequestMapping(value = "/byresult/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/result/list", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
 		// ----分页条件 [待修改]
 		Range range = new Range();

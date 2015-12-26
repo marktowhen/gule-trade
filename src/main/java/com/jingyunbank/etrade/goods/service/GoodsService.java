@@ -155,22 +155,6 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<ShowGoods> listMerchantByWhereGoods4(GoodsShow show) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("brandArr", show.getBrands());
-		map.put("typeArr", show.getTypes());
-		map.put("beginprice", show.getBeginPrice());
-		map.put("endprice", show.getEndPrice());
-		map.put("mid", show.getMID());
-		List<ShowGoods> list = goodsDao.selectMerchantByWhereGoods4(map).stream().map(dao -> {
-			ShowGoods bo = new ShowGoods();
-			BeanUtils.copyProperties(dao, bo);
-			return bo;
-		}).collect(Collectors.toList());
-		return list;
-	}
-
-	@Override
 	public List<ShowGoods> listMerchantByWhereGoodsMax(GoodsShow show, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("brandArr", show.getBrands());
@@ -312,8 +296,11 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<ShowGoods> listBrandsThree() throws Exception {
-		List<ShowGoods> brandslist = goodsDao.selectBrandsThree().stream().map(dao -> {
+	public List<ShowGoods> listBrandsThree(Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		List<ShowGoods> brandslist = goodsDao.selectBrandsThree(map).stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;

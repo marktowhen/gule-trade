@@ -169,11 +169,11 @@
 		brandname, b.desc branddesc FROM goods_brand b ORDER BY b.admin_sort
 	</select>
 	
-	<select id="selectBrandsThree" resultMap="baseGoodsMap">
+	<select id="selectBrandsThree" resultMap="baseGoodsMap" parameterType="java.util.Map">
 	<![CDATA[
 		SELECT b.id bid, b.name brandname, b.desc branddesc 
 		FROM goods_brand b WHERE b.admin_sort <> 0 ORDER BY b.admin_sort 
-		LIMIT 0,3
+		LIMIT #{from},#{size}
 	]]>
 	</select>
 	<!-- 查询类型 -->
@@ -335,23 +335,6 @@
 		g.state=1
 		<include refid="where" />
 		GROUP BY merchantname LIMIT #{from} , #{size}
-	</select>
-	<!--查询店铺相关产品4条 -->
-	<select id="selectMerchantByWhereGoods4" parameterType="java.util.Map"
-		resultMap="baseGoodsMap">
-		SELECT
-		<include refid="commentGoods" />
-				FROM goods g
-				LEFT JOIN goods_detail d ON d.gid = g.id
-				LEFT JOIN goods_img i ON i.gid = g.id
-				LEFT JOIN merchant m ON m.id=g.mid
-				LEFT JOIN goods_brand b ON b.id=g.`bid`
-				LEFT JOIN goods_type t ON t.id=g.tid
-				LEFT JOIN COMMENT c ON c.gid=g.id
-				WHERE 1=1 AND g.state=1  AND m.id = #{mid}
-		<include refid="where" />
-		GROUP BY g.id
-		LIMIT 0,4
 	</select>
 	<!--查询店铺相关产品->>更多相关产品 -->
 	<select id="selectMerchantByWhereGoodsMax" parameterType="java.util.Map"
