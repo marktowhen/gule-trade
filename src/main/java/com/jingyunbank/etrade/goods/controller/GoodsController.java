@@ -23,7 +23,6 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
-import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
@@ -36,7 +35,6 @@ import com.jingyunbank.etrade.goods.bean.HoneyGoodsVO;
 import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
-import com.jingyunbank.etrade.goods.bean.SaleRecordVO;
 
 /**
  * Title: 商品controller
@@ -280,7 +278,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/hotgoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/hot/list", method = RequestMethod.GET)
 	public Result<List<HotGoodsVO>> listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		List<HotGoods> goodslist = goodsService.listHotGoods();
@@ -339,7 +337,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/hot24goods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/hot24/list", method = RequestMethod.GET)
 	public Result<Hot24GoodsVO> listHot24Goods() throws Exception {
 		List<Hot24Goods> goodslist = goodsService.listHot24Goods();
 		Hot24GoodsVO hot24GoodsVO = new Hot24GoodsVO();
@@ -410,32 +408,11 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/honeygoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/honey/list", method = RequestMethod.GET)
 	public Result<List<HoneyGoodsVO>> listHoneyGoods() throws Exception {
 		List<HoneyGoods> goodslist = goodsService.listHoneyGoods();
 		List<HoneyGoodsVO> list = goodslist.stream().map(bo -> {
 			HoneyGoodsVO vo = new HoneyGoodsVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
-		return Result.ok(list);
-	}
-
-	/**
-	 * 获取商品的购买记录
-	 * 
-	 * @param gid
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "/salesrecords/list/{gid}", method = RequestMethod.GET)
-	public Result<List<SaleRecordVO>> querySalesRecords(@PathVariable String gid, Page page) throws Exception {
-		Range range = new Range();
-		range.setFrom(page.getOffset());
-		range.setTo(page.getSize());
-		List<SalesRecord> salelist = goodsService.listSalesRecords(gid, range);
-		List<SaleRecordVO> list = salelist.stream().map(bo -> {
-			SaleRecordVO vo = new SaleRecordVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
