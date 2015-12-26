@@ -504,7 +504,7 @@ public class TrackController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/othergoods/list/{pcount}/{pfrom}", method = RequestMethod.GET)
+	@RequestMapping(value = "/othergoods/list/{gid}/{pcount}/{pfrom}", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> listOtherGoods(HttpServletRequest request,@PathVariable String gid,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
 			String uid = ServletBox.getLoginUID(request);
 			//获取展示条数

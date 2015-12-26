@@ -19,14 +19,6 @@ import com.jingyunbank.etrade.TestCaseBase;
 public class GoodsControllerTest extends TestCaseBase{
 
 	@Test
-	public void test0() throws Exception {
-		getMockMvc().perform(get("/api/goods/百年堂").characterEncoding("utf-8"))
-					.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(jsonPath("$.code").value("200")).andDo(print());
-	}
-	
-	@Test
 	public void testAll() throws Exception {
 		getMockMvc().perform(get("/api/goods/all/list").characterEncoding("utf-8")
 				.param("offset", 0+"")
@@ -38,7 +30,7 @@ public class GoodsControllerTest extends TestCaseBase{
 	 
 	@Test
 	public void test1() throws Exception {
-		getMockMvc().perform(get("/api/goods/brand/list").characterEncoding("utf-8"))
+		getMockMvc().perform(get("/api/goods/brand/list_three").characterEncoding("utf-8"))
 					.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
@@ -143,7 +135,7 @@ public class GoodsControllerTest extends TestCaseBase{
 	}
 	@Test
 	public void test9() throws Exception {
-		getMockMvc().perform(get("/api/goods//queryid/1")
+		getMockMvc().perform(get("/api/goods//1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
 		.andExpect(status().isOk())
@@ -151,6 +143,15 @@ public class GoodsControllerTest extends TestCaseBase{
 		.andDo(MockMvcResultHandlers.print())  
 		.andReturn();
 	}
-
+	@Test
+	public void test10() throws Exception {
+		getMockMvc().perform(get("/api/goods/salesrecords/list/7uIBoJ03TneGthDFteMe6w")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+		.andDo(MockMvcResultHandlers.print())  
+		.andReturn();
+	}
 
 }
