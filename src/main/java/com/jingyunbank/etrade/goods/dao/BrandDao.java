@@ -50,11 +50,20 @@ public interface BrandDao {
 	 * @throws Exception
 	 */
 	public List<GoodsBrandEntity> selectbrand(String mid) throws Exception;
-	
+
 	/**
 	 * 查询所有brands
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	public List<GoodsBrandEntity> selectAllBrands() throws Exception;
+
+	/**
+	 * 删除品牌
+	 * @param bid
+	 * @return
+	 * @throws Exception
+	 */
+	public int delBrand(String bid) throws Exception;
 }
