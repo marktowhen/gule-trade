@@ -22,9 +22,9 @@ public class OrderPaymentRequestVO {
 	private String pipelineName;
 	@NotBlank
 	private String bankCode;
-	@NotBlank
-	@Size(min=6)
-	private String tradepwd;
+	//@NotBlank
+	//@Size(min=6)
+	//private String tradepwd;
 
 	@Valid
 	@NotNull
@@ -36,12 +36,6 @@ public class OrderPaymentRequestVO {
 	}
 	public void setPayments(List<OrderPaymentVO> payments) {
 		this.payments = payments;
-	}
-	public String getTradepwd() {
-		return tradepwd;
-	}
-	public void setTradepwd(String tradepwd) {
-		this.tradepwd = tradepwd;
 	}
 	public String getPipelineCode() {
 		return pipelineCode;
