@@ -44,6 +44,15 @@ public interface GoodsDao {
 	 * @throws Exception
 	 */
 	public List<GoodsDaoEntity> selectBrandsThree(Map<String, Object> map) throws Exception;
+	
+	
+	/**
+	 * 查询3个品牌 用于首页菜单
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsDaoEntity> selectTypesThree(Map<String, Object> map) throws Exception;
 
 	/**
 	 * 查询所有类型
@@ -155,4 +164,7 @@ public interface GoodsDao {
 	 * @throws Exception
 	 */
 	public List<SalesRecordEntity> selectSalesRecords(Map<String, Object> map) throws Exception;
+	
+	
+
 }
