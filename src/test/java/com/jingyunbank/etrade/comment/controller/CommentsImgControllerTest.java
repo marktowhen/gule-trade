@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class CommentsImgControllerTest extends TestCaseBase{
