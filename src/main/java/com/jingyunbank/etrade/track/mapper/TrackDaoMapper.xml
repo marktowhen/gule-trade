@@ -82,6 +82,7 @@
 		<result column="collect_time" property="collectTime" />
 		<!-- 商家信息 -->
 		<result column="merchant_name" property="merchantName" />
+		<result column="mid" property="MID" />
 		<result column="tel" property="tel" />
 		<result column="img_path" property="imgPath" />
 		<result column="merchant_desc" property="merchantDesc" />

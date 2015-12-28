@@ -109,6 +109,20 @@ public class HelpCenterDetailController {
 	}
 	
 	/**
+	 * 根据类别查看
+	 * @return
+	 * 2015年12月11日 qxs
+	 */
+	@RequestMapping(value="/first/{parentID}", method=RequestMethod.GET)
+	public Result<HelpCenterDetailVO> getFirstByParentID(@PathVariable String parentID){
+		List<HelpCenterDetail> list = helpCenterDetailService.listAllValid(parentID);
+		if(list!=null && !list.isEmpty()){
+			return Result.ok(getVOFromBo(helpCenterDetailService.single(list.get(0).getID()).get()));
+		}
+		return Result.fail("未找到");
+	}
+	
+	/**
 	 * 查看单个类别
 	 * @return
 	 * 2015年12月11日 qxs
