@@ -92,10 +92,7 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/info",method=RequestMethod.PUT)
 	public Result<UserInfoVO> updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
-		if(!StringUtils.isEmpty(userInfoVO.getBirthdayStr())){
-			/*Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
-			userInfoVO.setBirthday(date);*/
-		}
+		
 		UserInfo userInfo=new UserInfo();
 		String id = ServletBox.getLoginUID(request);
 		userInfoVO.setUID(id);

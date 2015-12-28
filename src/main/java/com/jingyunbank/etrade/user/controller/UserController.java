@@ -65,8 +65,8 @@ public class UserController {
 	 * @param phone
 	 * @return
 	 */
-	@RequestMapping(value="/phone/exists/{key}",method=RequestMethod.GET)
-	public Result<Integer> existsPhone(@PathVariable String key){
+	@RequestMapping(value="/key/exists",method=RequestMethod.GET)
+	public Result<Integer> existsPhone(@RequestParam String key){
 		int count;
 		if(!userService.exists(key)){
 			//该手机号不存在
