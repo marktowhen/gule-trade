@@ -39,7 +39,7 @@ public class InformationSiteController {
 	
 	@RequestMapping(value="/api/information/site",method=RequestMethod.PUT)
 	@ResponseBody
-	public Result saveSite(InformationSiteVO informationSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<InformationSiteVO> saveSite(InformationSiteVO informationSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
 		informationSiteVO.setID(KeyGen.uuid());;
 		InformationSite adviceSite=new InformationSite();
 		BeanUtils.copyProperties(informationSiteVO, adviceSite);
@@ -76,7 +76,7 @@ public class InformationSiteController {
 	 */
 	@RequestMapping(value="/api/information/sitesSchool/{name}",method=RequestMethod.GET)
 	@ResponseBody
-	public Result selectSitesByName(@PathVariable String name,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<InformationSiteVO> selectSitesByName(@PathVariable String name,HttpServletRequest request,HttpSession session) throws Exception{
 		Optional<InformationSite> optional= informationSiteService.singleSitesByName(name);
 		InformationSiteVO informationSiteVO=new InformationSiteVO();
 		InformationSite informationSite=optional.get();

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,7 +69,7 @@ public class CommentsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments",method=RequestMethod.POST)
 	@ResponseBody
-	public Result saveComments(@RequestParam("oid") String oid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<String> saveComments(@RequestParam("oid") String oid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
 		commentVO.setID(KeyGen.uuid());
 		Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
 		OrderGoods	orderGoods =optional.get();
@@ -96,7 +95,7 @@ public class CommentsController {
 				//修改订单商品的状态
 				orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);
 			//修改订单的状态
-			if(orderGoodsService.getByOID(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
+			if(orderGoodsService.count(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
 				List<String> oids=new ArrayList<String>();
 				oids.add(orderGoods.getOID());
 				orderService.refreshStatus(oids, OrderStatusDesc.COMMENTED);
@@ -197,7 +196,7 @@ public class CommentsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
-	public Result remove(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<String> remove(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
 			commentService.remove(id);
 			return Result.ok("删除成功");
 	}

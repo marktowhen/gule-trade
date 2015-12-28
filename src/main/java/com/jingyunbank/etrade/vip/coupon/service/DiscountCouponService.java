@@ -19,7 +19,6 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.vip.coupon.dao.DiscountCouponDao;
 import com.jingyunbank.etrade.vip.coupon.entity.DiscountCouponEntity;
 
@@ -79,7 +78,7 @@ public class DiscountCouponService implements IDiscountCouponService{
 		if(entity.isUsed()){
 			return Result.fail("该卡已被使用");
 		}
-		if(entity.getEnd().before(EtradeUtil.getNowDate())){
+		if(entity.getEnd().before(new Date())){
 			return Result.fail("已过期");
 		}
 		return Result.ok(getBoFromEntity(entity));

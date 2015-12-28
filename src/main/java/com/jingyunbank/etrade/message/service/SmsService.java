@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.message.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -8,7 +7,6 @@ import com.jingyunbank.core.msg.MessagerManager;
 import com.jingyunbank.core.msg.sms.SmsSender;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
-import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 
 /**
@@ -18,7 +16,6 @@ import com.jingyunbank.etrade.base.util.SystemConfigProperties;
 public class SmsService implements ISyncNotifyService {
 
 	private SmsSender sender;
-	@Autowired private IUserService userService;
 	
 	public SmsService() {
 		try {

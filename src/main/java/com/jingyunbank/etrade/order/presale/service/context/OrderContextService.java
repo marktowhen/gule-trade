@@ -132,21 +132,32 @@ public class OrderContextService implements IOrderContextService {
 		//刷新支付记录状态
 		payService.refreshStatus(extransno, true);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		List<OrderGoods> goods = new ArrayList<OrderGoods>();
 		for (Orders order : orders) {
 			createOrderTrace(order, OrderStatusDesc.PAID);
 			traces.addAll(order.getTraces());
+			goods.addAll(order.getGoods());
 		}
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAID);
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
-		//更新库存
-		//goodsOperationService.refreshGoodsVolume(gid, count);
 		//更新优惠卡券状态
-		Orders fo = orders.get(0);
-		if(StringUtils.hasText(fo.getCouponID()) && StringUtils.hasText(fo.getCouponType())){
-			couponStrategyResolver.resolve(fo.getCouponType())
-							.consume(fo.getUID(), fo.getCouponID());
+		List<String> consumedcouponids = orders.stream().map(x->x.getCouponID()).collect(Collectors.toList()); 
+		for (Orders order : orders) {
+			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
+				if(consumedcouponids.contains(order.getCouponID())) continue;
+				consumedcouponids.add(order.getCouponID());
+				couponStrategyResolver.resolve(order.getCouponType())
+								.consume(order.getUID(), order.getCouponID());
+			}
+		}
+		Orders o = orders.get(0);
+		String uid = o.getUID();
+		String uname = o.getUname();
+		//更新库存
+		for (OrderGoods gs : goods) {
+			goodsOperationService.refreshGoodsVolume(uid, uname, gs.getGID(), gs.getCount());
 		}
 	}
 

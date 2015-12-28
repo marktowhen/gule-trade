@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.user.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -92,10 +90,7 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/info",method=RequestMethod.PUT)
 	public Result<UserInfoVO> updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
-		if(!StringUtils.isEmpty(userInfoVO.getBirthdayStr())){
-			/*Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
-			userInfoVO.setBirthday(date);*/
-		}
+		
 		UserInfo userInfo=new UserInfo();
 		String id = ServletBox.getLoginUID(request);
 		userInfoVO.setUID(id);

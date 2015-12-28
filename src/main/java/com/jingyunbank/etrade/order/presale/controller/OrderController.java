@@ -67,7 +67,9 @@ public class OrderController {
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
 		String UID = ServletBox.getLoginUID(session);
+		String uname = ServletBox.getLoginUname(session);
 		purchase.setUID(UID);
+		purchase.setUname(uname);
 
 		String couponID = purchase.getCouponID();
 		String couponType = purchase.getCouponType();

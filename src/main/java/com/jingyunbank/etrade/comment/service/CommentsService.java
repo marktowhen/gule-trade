@@ -10,23 +10,18 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.comment.bo.Comments;
-import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.comment.dao.CommentsDao;
-import com.jingyunbank.etrade.comment.dao.CommentsImgDao;
 import com.jingyunbank.etrade.comment.entity.CommentsEntity;
-import com.jingyunbank.etrade.comment.entity.CommentsImgEntity;
 @Service("commentService")
 public class CommentsService implements ICommentService{
 	
 	@Autowired
 	private CommentsDao commentsDao;
-	@Autowired
-	private CommentsImgDao commentsImgDao;
+
 	/**
 	 * 保存评论的信息和图片
 	 */
