@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.goods.bo.BaseGoodsOperation;
@@ -252,21 +254,6 @@ public class GoodsOperationController {
 		}
 		return Result.fail("fail");
 
-	}
-
-	/**
-	 * 修改库存和销量
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/updateVolume", method = RequestMethod.POST)
-	public Result goodsUp(HttpServletRequest request) throws Exception {
-		String gid = request.getParameter("gid");
-		int count = Integer.valueOf(request.getParameter("count"));
-		boolean flag = goodsOperationService.refreshGoodsVolume(gid, count);
-		return Result.ok(flag);
 	}
 
 	/**

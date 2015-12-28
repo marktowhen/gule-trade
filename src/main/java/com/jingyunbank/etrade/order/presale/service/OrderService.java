@@ -169,6 +169,11 @@ public class OrderService implements IOrderService{
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo, "goods");
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						BeanUtils.copyProperties(ge, og);
+						bo.getGoods().add(og);
+					});
 					return bo;
 				}).collect(Collectors.toList());
 	}
