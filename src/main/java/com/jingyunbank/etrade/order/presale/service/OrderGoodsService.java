@@ -83,7 +83,7 @@ public class OrderGoodsService implements IOrderGoodsService {
 	}
 
 	@Override
-	public int getByOID(String oid, OrderStatusDesc status) {
+	public int count(String oid, OrderStatusDesc status) {
 		
 		
 		return orderGoodsDao.count(oid, status);

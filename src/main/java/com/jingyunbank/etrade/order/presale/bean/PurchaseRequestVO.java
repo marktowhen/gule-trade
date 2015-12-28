@@ -36,6 +36,7 @@ public class PurchaseRequestVO {
 	@Pattern(regexp="[0-9]{6}")
 	private String zipcode;
 	private String UID;//下单人
+	private String uname;
 	@Size(min=1, max=12, message="支付类型错误。")
 	@NotNull
 	private String paytypeCode;//支付方式 code
@@ -124,5 +125,11 @@ public class PurchaseRequestVO {
 	}
 	public void setCouponType(String couponType) {
 		this.couponType = couponType;
+	}
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
 	}
 }

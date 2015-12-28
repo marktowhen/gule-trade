@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.goods.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +11,18 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.goods.bo.BaseGoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.GoodsOperation;
-import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
+import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
+import com.jingyunbank.etrade.api.goods.service.ISalesRecordsService;
 import com.jingyunbank.etrade.goods.dao.GoodsOperationDao;
-import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDetailEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;
@@ -27,6 +32,8 @@ import com.jingyunbank.etrade.goods.entity.GoodsOperationEntity;
 public class GoodsOperationService implements IGoodsOperationService {
 	@Resource
 	private GoodsOperationDao goodsOperationDao;
+	@Autowired
+	private ISalesRecordsService salesRecordsService;
 
 	@Override
 	public boolean save(GoodsOperation goodsOperation) {
@@ -99,15 +106,23 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
-	public boolean refreshGoodsVolume(String gid, int count) throws Exception {
+	public void refreshGoodsVolume(String uid, String uname, String gid, int count)  throws DataSavingException, DataRefreshingException{
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("gid", gid);
 		map.put("count", count);
-		int result = goodsOperationDao.updateGoodsVolume(map);
-		if (result > 0) {
-			return true;
+		try {
+			goodsOperationDao.updateGoodsVolume(map);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
 		}
-		return false;
+		SalesRecord record = new SalesRecord();
+		record.setCount(count);
+		record.setGID(gid);
+		record.setID(KeyGen.uuid());
+		record.setSalesDate(new Date());
+		record.setUID(uid);
+		record.setUname(uname);
+		salesRecordsService.save(record);
 	}
 
 	@Override

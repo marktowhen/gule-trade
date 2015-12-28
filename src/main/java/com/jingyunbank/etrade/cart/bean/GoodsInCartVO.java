@@ -15,6 +15,7 @@ public class GoodsInCartVO implements Serializable {
 	private String cartID;
 	private Date addtime;
 	private String UID;
+	private String uname;
 	
 	@NotNull
 	//@Size(min=22, max=22)
@@ -121,5 +122,10 @@ public class GoodsInCartVO implements Serializable {
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
 	}
-		
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
+	}
 }

@@ -7,6 +7,7 @@ public class GoodsInCartEntity {
 	private String ID;
 	private String cartID;
 	private String UID;
+	private String uname;
 	private String GID;
 	private String gname;
 	private String MID;
@@ -103,5 +104,11 @@ public class GoodsInCartEntity {
 	}
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
+	}
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
 	}
 }

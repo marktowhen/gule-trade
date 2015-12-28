@@ -10,6 +10,7 @@ public class OrderEntity {
 	private String ID;
 	private long orderno;
 	private String UID;//下单人
+	private String uname;//
 	private String MID;
 	private String mname;
 	private String receiver;//收货人
@@ -235,6 +236,12 @@ public class OrderEntity {
 	}
 	public void setInvoiceTitle(String invoiceTitle) {
 		this.invoiceTitle = invoiceTitle;
+	}
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
 	}
 	
 }

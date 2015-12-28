@@ -100,7 +100,9 @@ public class CartController {
 		}
 		String cid = ServletBox.getLoginCartID(session);
 		String uid = ServletBox.getLoginUID(session);
+		String uname = ServletBox.getLoginUname(session);
 		goods.setUID(uid);
+		goods.setUname(uname);
 		goods.setCartID(cid);
 		goods.setID(KeyGen.uuid());
 		goods.setAddtime(new Date());
