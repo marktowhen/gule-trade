@@ -35,7 +35,7 @@ public class TradePasswordController {
 	@RequestMapping(value="/",method=RequestMethod.PUT)
 	public Result<UserVO> updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
-		if(EtradeUtil.effectiveTime(session)){
+		if(EtradeUtil.effectiveTime(session.getAttribute(UserController.CHECK_CODE_PASS_DATE))){
 			if(userVO.getTradepwd()!=null){
 				if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
 					return Result.fail("交易密码必须是8-20位");
@@ -62,7 +62,7 @@ public class TradePasswordController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
 	public Result<UserVO> installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		if(EtradeUtil.effectiveTime(session)){
+		if(EtradeUtil.effectiveTime(session.getAttribute(UserController.CHECK_CODE_PASS_DATE))){
 			if(userVO.getTradepwd()!=null){
 				if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
 					return Result.fail("交易密码必须是8-20位");

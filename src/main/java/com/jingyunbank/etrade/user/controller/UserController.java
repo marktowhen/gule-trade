@@ -91,7 +91,7 @@ public class UserController {
 	@RequestMapping(value="/phone",method=RequestMethod.PUT)
 	public Result<String> refreshPhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
-		if(EtradeUtil.effectiveTime(request.getSession())){
+		if(EtradeUtil.effectiveTime(request.getSession().getAttribute(UserController.CHECK_CODE_PASS_DATE))){
 			Users users=new Users();
 			users.setMobile(mobile);
 			users.setID(ServletBox.getLoginUID(request));
@@ -123,7 +123,7 @@ public class UserController {
 	@RequestMapping(value="/email",method=RequestMethod.PUT)
 	public Result<String> refreshEmail(@RequestParam("email") String email, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
-		if(EtradeUtil.effectiveTime(request.getSession())){
+		if(EtradeUtil.effectiveTime(request.getSession().getAttribute(UserController.CHECK_CODE_PASS_DATE))){
 			Users users=new Users();
 			users.setEmail(email);
 			users.setID(ServletBox.getLoginUID(request));
