@@ -7,8 +7,6 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 /**
  * 
  * Title: 商品录入VO

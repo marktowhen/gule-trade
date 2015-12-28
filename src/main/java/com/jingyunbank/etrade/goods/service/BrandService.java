@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.goods.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.etrade.api.goods.bo.BaseGoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.Brand;
 import com.jingyunbank.etrade.api.goods.service.IBrandService;
 import com.jingyunbank.etrade.goods.dao.BrandDao;
