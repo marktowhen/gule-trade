@@ -8,10 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -25,11 +21,7 @@ import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 public class GoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void testAddGoods() throws Exception {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		GoodsOperationVO vo = new GoodsOperationVO();
-		
-		//vo.setUpTime(format.parse("2015-01-01 00:00:00"));
-
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		getMockMvc()
