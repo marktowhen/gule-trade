@@ -70,7 +70,6 @@ public class PayControllerTest extends TestCaseBase{
 		OrderPaymentRequestVO vo = new OrderPaymentRequestVO();
 		vo.setPayments(pvos);
 		vo.setPipelineCode("LLPAY");
-		vo.setTradepwd("XXXXXX");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);

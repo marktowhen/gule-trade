@@ -35,6 +35,7 @@ public class GoodsInCartVO implements Serializable {
 	
 	private int stock;//库存
 	private String imgpath;//图片路径
+	private BigDecimal postage;
 	
 	public String getGID() {
 		return GID;
@@ -113,6 +114,12 @@ public class GoodsInCartVO implements Serializable {
 	}
 	public void setPprice(BigDecimal pprice) {
 		this.pprice = pprice;
+	}
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
 	}
 		
 }

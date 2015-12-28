@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.user.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;

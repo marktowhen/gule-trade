@@ -21,7 +21,6 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
-import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
@@ -148,22 +147,6 @@ public class GoodsService implements IGoodsService {
 
 		List<GoodsMerchant> list = goodsDao.selectMerchantByWhere(map).stream().map(dao -> {
 			GoodsMerchant bo = new GoodsMerchant();
-			BeanUtils.copyProperties(dao, bo);
-			return bo;
-		}).collect(Collectors.toList());
-		return list;
-	}
-
-	@Override
-	public List<ShowGoods> listMerchantByWhereGoods4(GoodsShow show) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("brandArr", show.getBrands());
-		map.put("typeArr", show.getTypes());
-		map.put("beginprice", show.getBeginPrice());
-		map.put("endprice", show.getEndPrice());
-		map.put("mid", show.getMID());
-		List<ShowGoods> list = goodsDao.selectMerchantByWhereGoods4(map).stream().map(dao -> {
-			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
@@ -298,22 +281,11 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<SalesRecord> listSalesRecords(String gid, Range range) throws Exception {
+	public List<ShowGoods> listBrandsThree(Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("gid", gid);
 		map.put("from", (int) range.getFrom());
 		map.put("size", (int) range.getTo());
-		List<SalesRecord> saleList = goodsDao.selectSalesRecords(map).stream().map(dao -> {
-			SalesRecord bo = new SalesRecord();
-			BeanUtils.copyProperties(dao, bo);
-			return bo;
-		}).collect(Collectors.toList());
-		return saleList;
-	}
-
-	@Override
-	public List<ShowGoods> listBrandsThree() throws Exception {
-		List<ShowGoods> brandslist = goodsDao.selectBrandsThree().stream().map(dao -> {
+		List<ShowGoods> brandslist = goodsDao.selectBrandsThree(map).stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;

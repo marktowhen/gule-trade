@@ -22,7 +22,7 @@
 		
 		<result column="stock" property="stock" jdbcType="INTEGER"/>
 		<result column="imgpath" property="imgpath" javaType="String"/>
-
+		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 	</resultMap>
 	<sql id="cart_columns">
 		id, uid
@@ -33,7 +33,7 @@
 	<sql id="goods_in_cart_columns_to_show">
 		gic.id, gic.cart_id, gic.uid, gic.gid, gic.gname, gic.mid, 
 		gic.mname, gic.addtime, gic.price, gic.count, gic.pprice,
-		gs.count as stock, gimg.thumb_path_1 as imgpath
+		gs.count as stock, gimg.thumb_path_1 as imgpath, gs.postage as postage
 	</sql>
 	<select id="selectOne" parameterType="String" resultMap="CartEntityResultMap">
 		select <include refid="cart_columns"/> from cart where uid = #{uid} limit 1;

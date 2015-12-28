@@ -166,14 +166,17 @@
 	<!-- 查询品牌 -->
 	<select id="selectBrands" resultMap="baseGoodsMap">
 		SELECT b.id bid, b.name
-		brandname, b.desc branddesc FROM goods_brand b ORDER BY b.admin_sort
+		brandname, b.desc branddesc FROM goods_brand b
+	    WHERE b.status=1 
+	    ORDER BY b.admin_sort
 	</select>
 	
-	<select id="selectBrandsThree" resultMap="baseGoodsMap">
+	<select id="selectBrandsThree" resultMap="baseGoodsMap" parameterType="java.util.Map">
 	<![CDATA[
 		SELECT b.id bid, b.name brandname, b.desc branddesc 
-		FROM goods_brand b WHERE b.admin_sort <> 0 ORDER BY b.admin_sort 
-		LIMIT 0,3
+		FROM goods_brand b WHERE b.admin_sort <> 0 AND b.status=1  
+		ORDER BY b.admin_sort
+		LIMIT #{from},#{size}
 	]]>
 	</select>
 	<!-- 查询类型 -->
@@ -336,23 +339,6 @@
 		<include refid="where" />
 		GROUP BY merchantname LIMIT #{from} , #{size}
 	</select>
-	<!--查询店铺相关产品4条 -->
-	<select id="selectMerchantByWhereGoods4" parameterType="java.util.Map"
-		resultMap="baseGoodsMap">
-		SELECT
-		<include refid="commentGoods" />
-				FROM goods g
-				LEFT JOIN goods_detail d ON d.gid = g.id
-				LEFT JOIN goods_img i ON i.gid = g.id
-				LEFT JOIN merchant m ON m.id=g.mid
-				LEFT JOIN goods_brand b ON b.id=g.`bid`
-				LEFT JOIN goods_type t ON t.id=g.tid
-				LEFT JOIN COMMENT c ON c.gid=g.id
-				WHERE 1=1 AND g.state=1  AND m.id = #{mid}
-		<include refid="where" />
-		GROUP BY g.id
-		LIMIT 0,4
-	</select>
 	<!--查询店铺相关产品->>更多相关产品 -->
 	<select id="selectMerchantByWhereGoodsMax" parameterType="java.util.Map"
 		resultMap="baseGoodsMap">
@@ -508,22 +494,4 @@
 		]]>
 	</select>
 	
-	
-	<resultMap type="com.jingyunbank.etrade.goods.entity.SalesRecordEntity" id="salesrecordsMap">
-		<result column="gid" property="ID" />
-		<result column="goodsname" property="OID" />
-		<result column="price" property="UID" />
-		<result column="now_price" property="uname" />
-		<result column="now_price" property="GID" />
-		<result column="thumb_path_1" property="count" />
-		<result column="thumb_path_1" property="sales_date" />
-	</resultMap>
-	<!-- 查询商品的交易记录 -->
-	<select id="selectSalesRecords"  parameterType="java.util.Map" resultMap="salesrecordsMap">
-		SELECT s.`id`,s.`oid`,s.`uid`, s.`uname`,s.`gid`, s.`count`,s.`sales_date` 
-		FROM `sales_records` s
-		WHERE 1=1 AND s.`gid` =#{gid}
-		ORDER BY s.`sales_date`DESC
-		LIMIT #{from}, #{size}
-	</select>
 </mapper>

@@ -29,7 +29,6 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.IInboxService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.message.bean.MessageVO;
 
 @RestController
@@ -60,7 +59,7 @@ public class MessageController {
 						.collect(Collectors.joining(" ; ")));
 		}
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
-		messageVO.setAddip(EtradeUtil.getIpAddr(request));
+		messageVO.setAddip(ServletBox.getIP(request));
 		messageVO.setSentUID(ServletBox.getLoginUID(request));
 		messageVO.setStatus(IInboxService.STATUS_SUC);
 		messageVO.setType(IInboxService.TYPE_LETTER);

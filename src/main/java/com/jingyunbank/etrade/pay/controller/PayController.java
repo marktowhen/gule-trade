@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -21,13 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
-import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.pay.bean.OrderPaymentRequestVO;
 import com.jingyunbank.etrade.pay.bean.OrderPaymentVO;
@@ -106,12 +102,12 @@ public class PayController {
 		String pipelineName = payvo.getPipelineName();
 		String bankCode = payvo.getBankCode();
 		
-		String tradepwd = payvo.getTradepwd();
-		String tradepwdmd5 = MD5.digest(tradepwd);
-		Optional<Users> ou = userService.getByUID(ServletBox.getLoginUID(session));
-		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
-			return Result.fail("支付密码错误！");
-		}
+//		String tradepwd = payvo.getTradepwd();
+//		String tradepwdmd5 = MD5.digest(tradepwd);
+//		Optional<Users> ou = userService.getByUID(ServletBox.getLoginUID(session));
+//		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
+//			return Result.fail("支付密码错误！");
+//		}
 		Map<String, String> payinfo = payContextService.refreshAndResolvePipeline(
 				payvo.getPayments()
 				.stream().map(x->{

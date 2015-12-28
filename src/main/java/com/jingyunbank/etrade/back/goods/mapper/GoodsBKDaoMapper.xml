@@ -75,6 +75,7 @@
 	<!-- 商品概要信息查询字段 用于多条件搜索和商品展示 -->
 	<sql id="commentGoods">
 		g.id gid, g.name goodsname,g.title goodstitle,d.weight weight,d.unit unit,g.price price ,
+		g.code code,
 		g.promotion_price promotion_price,
 		g.price,g.state as state,
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
@@ -89,7 +90,8 @@
 		LEFT JOIN goods_img i ON g.id = i.gid
 		LEFT JOIN goods_brand b ON b.id=g.bid
 		left join merchant mt on g.mid = mt.id
-		WHERE 1 = 1   
+		WHERE 1 = 1  
+		AND g.state = #{state} 
 		AND g.name LIKE CONCAT(CONCAT('%', #{name}), '%')
 		LIMIT #{from} , #{size}
 	</select>

@@ -22,7 +22,6 @@ import com.jingyunbank.etrade.api.vip.coupon.bo.CashCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.UserCashCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.ICashCouponService;
 import com.jingyunbank.etrade.api.vip.coupon.service.IUserCashCouponService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.vip.coupon.dao.UserCashCouponDao;
 import com.jingyunbank.etrade.vip.coupon.entity.CashCouponEntity;
 import com.jingyunbank.etrade.vip.coupon.entity.UserCashCouponEntity;
@@ -128,7 +127,7 @@ public class UserCashCouponService  implements IUserCashCouponService {
 			return  Result.fail("该券已被删除");
 		}
 		
-		Date nowDate = EtradeUtil.getNowDate();
+		Date nowDate = new Date();
 		if(cashCoupon.getStart().after(nowDate)){
 			return Result.fail("未到使用时间");
 		}

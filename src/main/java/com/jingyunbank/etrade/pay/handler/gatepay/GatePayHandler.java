@@ -50,7 +50,7 @@ public class GatePayHandler implements IPayHandler {
 
 		//non required
 		result.put("bank_code", bankCode);
-		result.put("pay_type", "1");
+		//result.put("pay_type", "8");支付类型，1表示借记卡，8表示信用卡，不写表示都支持
 		result.put("url_return", return_url);
 		
 		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, key)));
