@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.order.presale.entity.OrderEntity;
 
 public interface OrderDao{
@@ -14,12 +13,6 @@ public interface OrderDao{
 	
 	public void insertOne(OrderEntity order) throws Exception ;
 
-	public List<OrderEntity> selectAll();
-
-	public List<OrderEntity> selectBetween(@Param(value="start") Date start, @Param(value="end") Date end) ;
-
-	public List<OrderEntity> selectByUID(String uid);
-	
 	public List<OrderEntity> selectWithCondition(
 			@Param("uid") String uid, 
 			@Param("statuscode") String statuscode,
@@ -35,9 +28,9 @@ public interface OrderDao{
 			@Param("from") long from, 
 			@Param("size") int size);
 	
-	public void delete(String id) throws Exception;
-
-	public void updateStatus(@Param("oids") List<String> oids, @Param("status") OrderStatusDesc status) throws Exception;
+	public void updateStatus(@Param("oids") List<String> oids, 
+							@Param("statuscode") String statuscode,
+							@Param("statusname") String statusname) throws Exception;
 
 	public List<OrderEntity> selectByExtranso(String extransno);
 
@@ -50,5 +43,8 @@ public interface OrderDao{
 			@Param("statuscode") String statuscode,
 			@Param("fromdate") String fromdate,
 			@Param("keywords") String keywords);
+	
+	public List<OrderEntity> selectBefore(@Param("deadline") Date deadline, @Param("statuscode") String statuscode);
+	
 
 }

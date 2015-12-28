@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class PayControllerTest extends TestCaseBase{
 	
 	@Test
 	public void testSubmit() throws Exception{
-		List<Orders> orders = orderService.list("USER-ID").stream().filter(x->x.getAddtime().toInstant().plusSeconds(Orders.VALID_TIME_IN_SECOND).isAfter(Instant.now())).collect(Collectors.toList());
+		List<Orders> orders = orderService.list(Arrays.asList("USER-ID")).stream().filter(x->x.getAddtime().toInstant().plusSeconds(Orders.VALID_TIME_IN_SECOND).isAfter(Instant.now())).collect(Collectors.toList());
 		List<PayOrderVO> povo = new ArrayList<PayOrderVO>();
 		orders.forEach(bo -> {
 			PayOrderVO vo = new PayOrderVO();

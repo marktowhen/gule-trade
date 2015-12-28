@@ -86,19 +86,10 @@
 			)
 		</foreach>
 	</insert>
-	<select id="selectByUID" parameterType="String" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
-		from order_goods og
-		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
-		where o.uid = #{uid} order by o.addtime desc
-	</select>
 	<select id="selectByOIDs" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
-		from order_goods og
-		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
-		where o.id in 
+		select <include refid="orders_columns"/> 
+		from orders
+		where id in 
 			<foreach collection="oids" item="oid" open="(" separator="," close=")">
 				#{oid}
 			</foreach>
@@ -189,22 +180,9 @@
 		limit #{from}, #{size}
 	</select>
 	
-	<select id="selectBetween" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
-		from order_goods og
-		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
-		where o.addtime between #{start} and #{end}
-	</select>
-	<select id="select" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
-		from order_goods og
-		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
-	</select>
 	<update id="updateStatus">
 		update orders
-		set status_code = #{status.code}, status_name = #{status.name}
+		set status_code = #{statuscode}, status_name = #{statusname}
 		where id in 
 		<foreach collection="oids" item="oid" open="(" separator="," close=")">
 			#{oid}
@@ -218,4 +196,10 @@
 		where p.extransno = #{extransno}
 	</select>
 	
+	<select id="selectBefore" resultMap="OrderEntityResultMap">
+		select o.id
+		from orders o
+		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
+		where ot.addtime is not null and ot.addtime &lt;= #{deadline} and o.status_code = #{statuscode}
+	</select>
 </mapper>

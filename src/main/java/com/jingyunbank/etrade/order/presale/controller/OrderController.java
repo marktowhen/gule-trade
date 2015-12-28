@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.order.presale.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -104,7 +105,7 @@ public class OrderController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单信息有误！");
 		}
-		if(!orderContextService.cancel(cancellation.getOid(), cancellation.getNote())){
+		if(!orderContextService.cancel(Arrays.asList(cancellation.getOid()), cancellation.getNote())){
 			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
 		}
 		return Result.ok();
