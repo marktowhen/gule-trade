@@ -136,16 +136,19 @@ public class CommentsController {
 			CommentsVO commentsVO=new CommentsVO();
 			UserVO userVO = new UserVO();
 			UserInfoVO userinfoVO = new UserInfoVO();
-			Users users=userService.getByUID(comments.get(i).getUID()).get();
-			UserInfo userInfo=userInfoService.getByUid(comments.get(i).getUID()).get();
-			BeanUtils.copyProperties(comments.get(i),commentsVO);
-			BeanUtils.copyProperties(users, userVO);
-			BeanUtils.copyProperties(userInfo, userinfoVO);
-			commentsVO.setUserVO(userVO);
-			commentsVO.setUserInfoVO(userinfoVO);
-			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getID());
-			commentsVO.setImgs(commentsImgs);
-			commentVOs.add(commentsVO);
+			if(userService.getByUID(comments.get(i).getUID()).isPresent()){
+				Users users=userService.getByUID(comments.get(i).getUID()).get();
+				UserInfo userInfo=userInfoService.getByUid(comments.get(i).getUID()).get();
+				BeanUtils.copyProperties(comments.get(i),commentsVO);
+				BeanUtils.copyProperties(users, userVO);
+				BeanUtils.copyProperties(userInfo, userinfoVO);
+				commentsVO.setUserVO(userVO);
+				commentsVO.setUserInfoVO(userinfoVO);
+				List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getID());
+				commentsVO.setImgs(commentsImgs);
+				commentVOs.add(commentsVO);
+			}
+			
 		}
 		return commentVOs;
 	}
