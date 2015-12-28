@@ -78,6 +78,15 @@ public class BrandService implements IBrandService {
 		return brands;
 	}
 
+	@Override
+	public boolean delBrand(String bid) throws Exception {
+		int i = brandDao.delBrand(bid);
+		if (i > 0) {
+			return true;
+		}
+		return false;
+	}
+
 
 
 }

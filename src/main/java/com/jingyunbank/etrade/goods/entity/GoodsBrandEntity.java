@@ -21,6 +21,18 @@ public class GoodsBrandEntity implements Serializable {
 	private String desc;
 	/**管理员排序*/
 	private int admin_sort;
+	
+	private boolean status;
+
+	
+	
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 
 	public String getID() {
 		return ID;

@@ -91,10 +91,10 @@ public class GoodsController {
 	 */
 	@RequestMapping(value = "/brand/{from}/{size}/list", method = RequestMethod.GET)
 	public Result<List<GoodsBrandVO>> queryBrandsThree(HttpServletRequest request,
-			@PathVariable int from,
-			@PathVariable int size
+			@PathVariable String from,
+			@PathVariable String size
 			) throws Exception {
-		List<GoodsBrandVO> list = goodsService.listBrandsThree(new Range(from, size)).stream().map(bo -> {
+		List<GoodsBrandVO> list = goodsService.listBrandsThree(new Range(Integer.parseInt(from), Integer.parseInt(size))).stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;

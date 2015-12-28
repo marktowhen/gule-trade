@@ -61,7 +61,7 @@ public class BrandController {
 		BeanUtils.copyProperties(vo, brand);
 		brand.setID(KeyGen.uuid());
 		brand.setAdmin_sort(0);
-
+		brand.setStatus(true);
 		if (brandService.save(brand)) {
 			return Result.ok("success");
 		} else {
@@ -124,6 +124,16 @@ public class BrandController {
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
+	}
+	
+	
+	
+	@RequestMapping(value = "/{bid}", method = RequestMethod.PUT)
+	public Result delBrand(@PathVariable String bid) throws Exception{
+		if(brandService.delBrand(bid)){
+			return Result.ok("success");
+		}
+		return Result.fail("fail");
 	}
 	
 	
