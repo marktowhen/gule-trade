@@ -21,7 +21,7 @@ public class CommonGoodsVO implements Serializable{
 	private String specifications;// 规格
 	private String weight;// 重量
 	private String unit;// 单位
-	private String thumb_path_1; // 缩略图
+	private String thumbpath1; // 缩略图
 	private String goodsTitle; //宝贝标题
 	private int comment; //商品评论数
 	
@@ -88,11 +88,12 @@ public class CommonGoodsVO implements Serializable{
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-	public String getThumb_path_1() {
-		return thumb_path_1;
+	
+	public String getThumbpath1() {
+		return thumbpath1;
 	}
-	public void setThumb_path_1(String thumb_path_1) {
-		this.thumb_path_1 = thumb_path_1;
+	public void setThumbpath1(String thumbpath1) {
+		this.thumbpath1 = thumbpath1;
 	}
 	public String getGoodsTitle() {
 		return goodsTitle;

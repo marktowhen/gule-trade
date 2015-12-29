@@ -19,12 +19,16 @@
 		<result column="name" property="goodsName"/>
 		<result column="price" property="price"/>
 		<result column="now_price" property="nowPrice"/>
-		<result column="thumb_path_1" property="thumb_path_1"/>
+		<result column="thumb_path_1" property="thumbpath1"/>
 	</resultMap>
 	<!-- 查询我的足迹商品列表 　 -->
 	<select id="selectFootprintGoods"  resultMap="selectFootprintGoods">
 	SELECT 
-	*
+	v.uid, v.gid, v.visit_time, 
+	x.id, x.mid, x.bid, x.name, x.code, x.tid, x.price, x.promotion_price, x.now_price, x.state, x.up_time, 
+	x.down_time, x.count, x.volume, x.addtime, x.postage, x.sub_volume_type, x.barCode, x.desc, x.title, x.admin_sort,
+	 x.merchant_sort, x.expand_sort, x.record_sort, x.pro_start, x.pro_end, x.pro_flag,
+	 i.id as iid, i.thumb_path_1, i.thumb_path_2, i.thumb_path_3, i.thumb_path_4, i.thumb_path_5, i.content
 			 from (
 		select uid,gid,MAX(visit_time) as visit_time 
 		from footprint
@@ -70,7 +74,7 @@
 		<result column="price" property="price" />
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
@@ -159,17 +163,19 @@
 	     <id column="id" property="ID"/>
 	</resultMap>
 	<select id = "selectAdDetails" resultMap="rlt_addetail" >
-	select a.* from ad_detail a ,ad_module b
+	select 
+	a.id,a.ad_module_id,a.name,a.imgpath,a.linkpath,a.description,a.sort_num,a.attr1,a.attr2,a.attr3,a.attr4
+	 from ad_detail a ,ad_module b
 	where a.ad_module_id = b.id
 	and b.code = #{code} order by a.sort_num asc;
 	</select>
 	<!-- 通过id查询广告模块的信息 -->
  	<select id="selectAdmoduleById" resultMap="rlt_admodule">
- 			select * from ad_module where id=#{id}
+ 			select id,code,name,imgpath,description from ad_module where id=#{id}
  	</select>
  	<!-- 通过id查询广告模块的信息 -->
  	<select id="selectAddetailById" resultMap="rlt_addetail">
- 			select * from ad_detail where id=#{id}
+ 			select id,ad_module_id,name,imgpath,linkpath,description,sort_num,attr1,attr2,attr3,attr4 from ad_detail where id=#{id}
  	</select>
  	<!--添加广告模块信息 -->
 	<insert id="insertAdModule" parameterType="com.jingyunbank.etrade.track.entity.AdModuleEntity">
@@ -210,7 +216,7 @@
 	<!--根据条件查询所有广告模块列表 -->
 	<select id="selectModulesByCondition" parameterType="java.util.Map"
 		resultMap="rlt_admodule">
-		select * from ad_module  t
+		select id,code,name,imgpath,description from ad_module  t
 		<if test="name !='' and name !=null ">
 			 where t.name LIKE CONCAT(CONCAT('%', #{name}), '%')
 		</if>
@@ -221,7 +227,9 @@
 	<!--根据条件查询所有广告模块列表 -->
 	<select id="selectAddetailsByCondition" parameterType="java.util.Map"
 		resultMap="rlt_addetail">
-		select d.*,m.`name` as ad_module_name  From ad_module m ,ad_detail d 
+		select 
+		d.id,d.ad_module_id,d.name,d.imgpath,d.linkpath,d.description,d.sort_num,d.attr1,d.attr2,d.attr3,d.attr4,
+		m.`name` as ad_module_name  From ad_module m ,ad_detail d 
 		where m.id = d.ad_module_id
 		and d.name LIKE CONCAT(CONCAT('%', #{name}), '%')
 		and d.ad_module_id = #{adModuleId}
@@ -275,7 +283,11 @@
 		<result column="pro_flag" property="onSale" />
 	</resultMap>
 	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
-			select g.*,i.thumb_path_1 as thumb_path_1,d.specifications from goods g left join goods_detail d 
+			select 
+			g.id, g.mid, g.bid, g.name, g.code, g.tid, g.price, g.promotion_price, g.now_price, g.state, g.up_time, 
+			g.down_time, g.count, g.volume, g.addtime, g.postage, g.sub_volume_type, g.barCode, g.desc, g.title, g.admin_sort,
+			 g.merchant_sort, g.expand_sort, g.record_sort, g.pro_start, g.pro_end, g.pro_flag,
+			i.thumb_path_1 as thumb_path_1,d.specifications from goods g left join goods_detail d 
 			on g.id = d.gid
 			LEFT JOIN goods_img i ON g.id=i.gid
 			where 1=1 
@@ -299,7 +311,11 @@
 	</resultMap>
 	<select id="selectOtherGoods"  resultMap="rltOtherGoods" parameterType="java.util.Map">
 	<![CDATA[
-		 select g.* from (
+		 select 
+		 g.id, g.mid, g.bid, g.name, g.code, g.tid, g.price, g.promotion_price, g.now_price, g.state, g.up_time, 
+			g.down_time, g.count, g.volume, g.addtime, g.postage, g.sub_volume_type, g.barCode, g.desc, g.title, g.admin_sort,
+			 g.merchant_sort, g.expand_sort, g.record_sort, g.pro_start, g.pro_end, g.pro_flag 
+		 from (
 			select a.uid,a.gid, sum(count) as r_count From sales_records a where  exists
 			(
 			select 1 from sales_records b where gid = #{gid}

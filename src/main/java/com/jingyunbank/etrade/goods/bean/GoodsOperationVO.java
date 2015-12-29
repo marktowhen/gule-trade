@@ -33,7 +33,7 @@ public class GoodsOperationVO implements Serializable {
 	@DecimalMin(value = "0.00", inclusive = false)
 	private BigDecimal promotionPrice;// 商品促销价格
 	@DecimalMin(value = "0.00", inclusive = false)
-	private BigDecimal now_price;// 商品现价
+	private BigDecimal nowprice;// 商品现价
 	private boolean state;// 是否上架0否1是
 	private String upTime;// 上架时间
 	private String downTime;// 下架时间
@@ -126,11 +126,12 @@ public class GoodsOperationVO implements Serializable {
 	public void setPromotionPrice(BigDecimal promotionPrice) {
 		this.promotionPrice = promotionPrice;
 	}
-	public BigDecimal getNow_price() {
-		return now_price;
+	
+	public BigDecimal getNowprice() {
+		return nowprice;
 	}
-	public void setNow_price(BigDecimal now_price) {
-		this.now_price = now_price;
+	public void setNowprice(BigDecimal nowprice) {
+		this.nowprice = nowprice;
 	}
 	public boolean isState() {
 		return state;

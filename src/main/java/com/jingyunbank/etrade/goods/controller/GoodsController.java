@@ -439,5 +439,7 @@ public class GoodsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+	
+
 
 }

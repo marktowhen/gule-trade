@@ -320,4 +320,8 @@
 	<select id="selectMerchant" parameterType="String"  resultMap="baseGoodsMap">
 		SELECT id mid, name merchantname  FROM merchant 
 	</select>
+	
+	<update id="updateCount" parameterType="java.util.Map" >
+		UPDATE `goods` g SET g.`count`  =  #{count}  WHERE g.id = #{gid}
+	</update>
 </mapper>

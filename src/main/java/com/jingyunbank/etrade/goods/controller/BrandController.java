@@ -59,7 +59,7 @@ public class BrandController {
 		Brand brand = new Brand();
 		BeanUtils.copyProperties(vo, brand);
 		brand.setID(KeyGen.uuid());
-		brand.setAdmin_sort(0);
+		brand.setAdminsort(0);
 		brand.setStatus(true);
 		if (brandService.save(brand)) {
 			return Result.ok("success");

@@ -42,12 +42,19 @@ public class OrderEntity {
 		private int count;
 		private BigDecimal price;
 		private String statusCode;
+		private String OID;
 		
 		public String getID() {
 			return ID;
 		}
 		public void setID(String iD) {
 			ID = iD;
+		}
+		public String getOID() {
+			return OID;
+		}
+		public void setOID(String oID) {
+			OID = oID;
 		}
 		public String getGID() {
 			return GID;

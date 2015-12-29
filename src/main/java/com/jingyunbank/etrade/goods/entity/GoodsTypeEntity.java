@@ -16,7 +16,7 @@ public class GoodsTypeEntity implements Serializable {
 	private String name;
 	
 	private boolean status;
-	private int admin_sort;
+	private int adminsort;
 	
 	
 	
@@ -26,11 +26,12 @@ public class GoodsTypeEntity implements Serializable {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public int getAdmin_sort() {
-		return admin_sort;
+	
+	public int getAdminsort() {
+		return adminsort;
 	}
-	public void setAdmin_sort(int admin_sort) {
-		this.admin_sort = admin_sort;
+	public void setAdminsort(int adminsort) {
+		this.adminsort = adminsort;
 	}
 	public String getID() {
 		return ID;

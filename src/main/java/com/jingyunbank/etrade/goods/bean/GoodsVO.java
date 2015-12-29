@@ -62,11 +62,11 @@ public class GoodsVO implements Serializable{
 		private int comment; //商品评论数
 		
 		//----------------商品图片属性-----------------//
-		private String thumb_path_1; // 展示图片
-		private String thumb_path_2; // 展示图片
-		private String thumb_path_3; // 展示图片
-		private String thumb_path_4; // 展示图片
-		private String thumb_path_5; // 展示图片
+		private String thumbpath1; // 展示图片
+		private String thumbpath2; // 展示图片
+		private String thumbpath3; // 展示图片
+		private String thumbpath4; // 展示图片
+		private String thumbpath5; // 展示图片
 		private String content;  //图片展示html代码
 		
 
@@ -284,35 +284,36 @@ public class GoodsVO implements Serializable{
 		public void setComment(int comment) {
 			this.comment = comment;
 		}
-		public String getThumb_path_1() {
-			return thumb_path_1;
+		
+		public String getThumbpath1() {
+			return thumbpath1;
 		}
-		public void setThumb_path_1(String thumb_path_1) {
-			this.thumb_path_1 = thumb_path_1;
+		public void setThumbpath1(String thumbpath1) {
+			this.thumbpath1 = thumbpath1;
 		}
-		public String getThumb_path_2() {
-			return thumb_path_2;
+		public String getThumbpath2() {
+			return thumbpath2;
 		}
-		public void setThumb_path_2(String thumb_path_2) {
-			this.thumb_path_2 = thumb_path_2;
+		public void setThumbpath2(String thumbpath2) {
+			this.thumbpath2 = thumbpath2;
 		}
-		public String getThumb_path_3() {
-			return thumb_path_3;
+		public String getThumbpath3() {
+			return thumbpath3;
 		}
-		public void setThumb_path_3(String thumb_path_3) {
-			this.thumb_path_3 = thumb_path_3;
+		public void setThumbpath3(String thumbpath3) {
+			this.thumbpath3 = thumbpath3;
 		}
-		public String getThumb_path_4() {
-			return thumb_path_4;
+		public String getThumbpath4() {
+			return thumbpath4;
 		}
-		public void setThumb_path_4(String thumb_path_4) {
-			this.thumb_path_4 = thumb_path_4;
+		public void setThumbpath4(String thumbpath4) {
+			this.thumbpath4 = thumbpath4;
 		}
-		public String getThumb_path_5() {
-			return thumb_path_5;
+		public String getThumbpath5() {
+			return thumbpath5;
 		}
-		public void setThumb_path_5(String thumb_path_5) {
-			this.thumb_path_5 = thumb_path_5;
+		public void setThumbpath5(String thumbpath5) {
+			this.thumbpath5 = thumbpath5;
 		}
 		public String getContent() {
 			return content;

@@ -53,11 +53,11 @@
 		<result column="factoryaddr" property="factoryAddr" />
 		<result column="factorytel" property="factoryTel" />
 		<!-- 商品图片信息 -->
-		<result column="thumb_path_1" property="thumb_path_1" />
-		<result column="thumb_path_2" property="thumb_path_2" />
-		<result column="thumb_path_3" property="thumb_path_3" />
-		<result column="thumb_path_4" property="thumb_path_4" />
-		<result column="thumb_path_5" property="thumb_path_5" />
+		<result column="thumb_path_1" property="thumbpath1" />
+		<result column="thumb_path_2" property="thumbpath2" />
+		<result column="thumb_path_3" property="thumbpath3" />
+		<result column="thumb_path_4" property="thumbpath4" />
+		<result column="thumb_path_5" property="thumbpath5" />
 		<result column="content" property="content" />
 		<!-- 店铺信息 -->
 		<result column="mid" property="MID" />
@@ -96,7 +96,7 @@
 		<result column="price" property="price" />
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
@@ -492,7 +492,7 @@
 		<result column="goodsname" property="goodsName" />
 		<result column="price" property="price" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 	</resultMap>
 	<!-- 查询商品详情页的宝贝排行  -->
 	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity">

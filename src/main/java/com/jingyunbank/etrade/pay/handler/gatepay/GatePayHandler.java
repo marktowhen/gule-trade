@@ -41,7 +41,7 @@ public class GatePayHandler implements IPayHandler {
 		result.put("user_id", payments.get(0).getUID());
 		result.put("timestamp", timestamp);
 		result.put("sign_type", pipeline.getSigntype().toUpperCase());
-		result.put("busi_partner", "101001");//商户业务类型，实物：109001， 虚拟：101001
+		result.put("busi_partner", "109001");//商户业务类型，实物：109001， 虚拟：101001
 		result.put("no_order", orderno);//订单号
 		result.put("dt_order", timestamp);
 		result.put("name_goods", payments.get(0).getMname());

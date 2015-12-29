@@ -140,7 +140,7 @@ public class GoodsOperationControllerTest extends TestCaseBase {
 		vo.setName("测试品牌添加-2");
 		vo.setMID("2");
 		vo.setDesc("测试品牌添加测试品牌添加-2");
-		vo.setAdmin_sort(0);
+		vo.setAdminsort(0);
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		getMockMvc().perform(post("/api/brand/update/BZPAEhpaQkiweDTSLTGJ2A").characterEncoding("utf-8")

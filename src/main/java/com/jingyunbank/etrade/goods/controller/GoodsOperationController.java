@@ -290,4 +290,14 @@ public class GoodsOperationController {
 		return Result.ok(list);
 	}
 
+	@RequestMapping(value = "/modfiycount/{gid}/{count}", method = RequestMethod.PUT)
+	public Result<String> modfiyCount(
+			@PathVariable String gid,
+			@PathVariable String count )throws Exception
+	{
+		if(goodsOperationService.refreshCount(gid,count)){
+			return Result.ok("success");
+		}
+		return Result.fail("fail");
+	}
 }
