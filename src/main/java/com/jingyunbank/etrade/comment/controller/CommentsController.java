@@ -122,7 +122,7 @@ public class CommentsController {
 		Range range = new Range();
 		range.setFrom(from);
 		range.setTo(from+size);
-		List<Comments> comments=commentService.selectCommentGradeByGid(gid,commentGrade,picture,range);
+		List<Comments> comments=commentService.list(gid,commentGrade,picture,range);
 		List<CommentsVO> commentVOs=convert(comments);
 		return Result.ok(commentVOs);
 		
@@ -143,7 +143,7 @@ public class CommentsController {
 				BeanUtils.copyProperties(userInfo, userinfoVO);
 				commentsVO.setUserVO(userVO);
 				commentsVO.setUserInfoVO(userinfoVO);
-				List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getID());
+				List<CommentsImg> commentsImgs=	commentImgService.list(comments.get(i).getID());
 				commentsVO.setImgs(commentsImgs);
 				commentVOs.add(commentsVO);
 			}
@@ -164,7 +164,7 @@ public class CommentsController {
 	@RequestMapping(value="/api/commentImgs/getbygid",method=RequestMethod.GET)
 	@ResponseBody
 	public Result<List<CommentsVO>> getCommentImgs(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
-		List<Comments> comments=commentService.getCommentsByGid(gid);
+		List<Comments> comments=commentService.list(gid);
 		List<CommentsVO> commentVOs=convertImg(comments);
 		return Result.ok(commentVOs);
 		
@@ -175,7 +175,7 @@ public class CommentsController {
 		for(int i=0;i<comments.size();i++){
 			CommentsVO commentsVO=new CommentsVO();
 			BeanUtils.copyProperties(comments.get(i),commentsVO);
-			List<CommentsImg> commentsImgs=	commentImgService.getById(comments.get(i).getID());
+			List<CommentsImg> commentsImgs=	commentImgService.list(comments.get(i).getID());
 			commentsVO.setImgs(commentsImgs);
 			/*for(int j=0;j<commentsImgs.size();j++){
 				CommentsImgVO vo = new CommentsImgVO();
@@ -201,34 +201,6 @@ public class CommentsController {
 			return Result.ok("删除成功");
 	}
 	/**
-	 * 修改评论的状态
-	 * @param commentsVO
-	 * @param request
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/api/comments/update/status",method=RequestMethod.POST)
-	@ResponseBody
-	public Result<CommentsVO> updateStatus(CommentsVO commentsVO,HttpServletRequest request,HttpSession session) throws Exception{
-		
-		Optional<Comments> optionComments=commentService.getById(commentsVO.getID());
-		Comments comments=	optionComments.get();
-	
-		if(!StringUtils.isEmpty(comments.getGoodsComment())){
-			//如果已经评价就把设置为2
-			
-			comments.setCommentStatus(2);
-			commentService.refreshStatus(comments);
-			
-			BeanUtils.copyProperties(comments, commentsVO);
-			return Result.ok(commentsVO);
-		}
-		return Result.fail("请重试");
-		
-	}
-	/**
 	 * 通过gid查出评论商品的总级别
 	 * @param gid
 	 * @return
@@ -238,7 +210,7 @@ public class CommentsController {
 		int gradeCount=0;
 		float zongjibie =0;
 		int personCount=0;
-		List<Comments> comments=commentService.getCommentsByGid(gid);
+		List<Comments> comments=commentService.list(gid);
 		if(comments.size()==0){
 			zongjibie=0;
 		}
@@ -273,7 +245,7 @@ public class CommentsController {
 		float level = 0;
 		int personCount=0;
 		
-		List<Comments> comments=commentService.getCommentsByGid(gid);
+		List<Comments> comments=commentService.list(gid);
 		if(comments.size()==0){
 			level=0;
 		}
@@ -307,22 +279,23 @@ public class CommentsController {
 	public Result<CommentsVO> getCommentDetails(@PathVariable String oid){
 		float personalGrade=0;
 		CommentsVO commentsVO=new CommentsVO();
-		Optional<Comments> optional=commentService.selectCommentByOid(oid);
-		if(optional.get().getCommentGrade()==0&&optional.get().getServiceGrade()==0&&optional.get().getLogisticsGrade()==0){
-			 personalGrade=0;
-		}
-		BeanUtils.copyProperties(optional.get(), commentsVO);
-		List<CommentsImg> commentsImgs=	commentImgService.getById(optional.get().getID());
-		commentsVO.setImgs(commentsImgs);
-		 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
+		Optional<Comments> optional=commentService.singleByOid(oid);
+	
+			if(optional.get().getCommentGrade()==0&&optional.get().getServiceGrade()==0&&optional.get().getLogisticsGrade()==0){
+				 personalGrade=0;
+			}
+			BeanUtils.copyProperties(optional.get(), commentsVO);
+			List<CommentsImg> commentsImgs=	commentImgService.list(optional.get().getID());
+			commentsVO.setImgs(commentsImgs);
+			 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
 			commentsVO.setPersonalGrade(personalGrade);
-		return Result.ok(commentsVO);		
+			return Result.ok(commentsVO);		
 	}
 	
 	@RequestMapping(value="/api/allcomments",method=RequestMethod.GET)
 	public Result<List<CommentsVO>> getComment(){
 		
-		return Result.ok(commentService.selectComment().stream().map(bo ->{
+		return Result.ok(commentService.list().stream().map(bo ->{
 			CommentsVO vo=new CommentsVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;

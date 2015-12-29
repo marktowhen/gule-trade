@@ -18,10 +18,6 @@
 			#{ID},#{informationID},#{name}
 			)
 		</insert>
-		<!-- 通过site_id查出对应的多个标题 -->
-		<select id="selectSitesBySiteid" parameterType="String" resultMap="InformationSiteResultMap">
-			select id,information_id,name from information_site where information_id=#{informationID}
-		</select>
 		<select id="selectSitesByName" parameterType="String" resultMap="InformationSiteResultMap">
 			select id,information_id,name from information_site where name=#{name}
 		</select>

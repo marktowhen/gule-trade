@@ -46,7 +46,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid查询产品的平评论
 	 */
 	@Override
-	public List<Comments> getCommentsByGid(String gid) {
+	public List<Comments> list(String gid) {
 		return commentsDao.selectCommentByGid(gid)
 				.stream().map(entity -> {
 					Comments bo=new Comments();
@@ -58,7 +58,7 @@ public class CommentsService implements ICommentService{
 	 * 通过id查出对应的评论信息
 	 */
 	@Override
-	public Optional<Comments> getById(String id) {
+	public Optional<Comments> single(String id) {
 		// TODO Auto-generated method stub
 		
 		CommentsEntity commentsEntity=commentsDao.selectById(id);
@@ -81,31 +81,9 @@ public class CommentsService implements ICommentService{
 		}
 	}
 	@Override
-	public void refreshStatus(Comments comments) throws DataRefreshingException {
-		// TODO Auto-generated method stub
-		CommentsEntity commentsEntity=new CommentsEntity();
-		BeanUtils.copyProperties(comments, commentsEntity);
-		try {
-			commentsDao.updateStatus(commentsEntity);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			throw new DataRefreshingException(e);
-		}
-		
-	}
-	
-	@Override
 	public void refreshStatus(String[] ids, Comments comments) throws DataRefreshingException {
 		// TODO Auto-generated method stub
 		
-	}
-	@Override
-	public Optional<Comments> selectCommentByOid(String oid) {
-		// TODO Auto-generated method stub
-		CommentsEntity commentsEntity=commentsDao.selectCommentByOid(oid);
-		Comments comments=new Comments();
-		BeanUtils.copyProperties(commentsEntity, comments);
-		return Optional.of(comments);
 	}
 	/**
 	 * 通过gid查出总共的评论条数
@@ -118,7 +96,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid和评论的级别查询好评或中评或差评
 	 */
 	@Override
-	public List<Comments> selectCommentGradeByGid(String gid, int commentGrade,int picture, Range range) {
+	public List<Comments> list(String gid, int commentGrade,int picture, Range range) {
 		return commentsDao.selectCommentGradeByGid(gid,commentGrade,picture,range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity -> {
 					Comments bo=new Comments();
@@ -130,7 +108,7 @@ public class CommentsService implements ICommentService{
 	 * 查出所有的评价信息
 	 */
 	@Override
-	public List<Comments> selectComment() {
+	public List<Comments> list() {
 		return	commentsDao.selectComment().stream().map(entity ->{
 			Comments bo=new Comments();
 			BeanUtils.copyProperties(entity, bo);
@@ -138,5 +116,14 @@ public class CommentsService implements ICommentService{
 		}).collect(Collectors.toList());
 		 
 	}
+	@Override
+	public Optional<Comments> singleByOid(String oid) {
+		
+		CommentsEntity commentsEntity=commentsDao.selectCommentByOid(oid);
+		Comments comments=new Comments();
+		BeanUtils.copyProperties(commentsEntity, comments);
+		return Optional.of(comments);
+	}
+	
 	
 }

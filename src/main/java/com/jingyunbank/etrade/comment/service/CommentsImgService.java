@@ -40,8 +40,8 @@ public class CommentsImgService implements ICommentImgService{
 	}
 
 	@Override
-	public List<CommentsImg> getById(String id) {
-		return commentsImgDao.selectById(id)
+	public List<CommentsImg> list(String commentID) {
+		return commentsImgDao.selectById(commentID)
 				.stream().map(entity -> {
 				CommentsImg bo=new CommentsImg();
 				BeanUtils.copyProperties(entity, bo);

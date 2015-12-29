@@ -71,7 +71,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	}
 	//通过siteid查询对应的多条信息内容
 	@Override
-	public List<InformationDetails> getDeailsBySiteid(String sid,Range range) {
+	public List<InformationDetails> list(String sid,Range range) {
 		// TODO Auto-generated method stub
 		
 		return informationDetailsDao.selectDetailsBySid(sid,range.getFrom(),range.getTo()-range.getFrom()).stream().map(entity -> {
@@ -82,7 +82,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	}
 	//通过id查询出对应的一条信息的详细内容
 	@Override
-	public Optional<InformationDetails> getDetailByid(String id) {
+	public Optional<InformationDetails> single(String id) {
 		// TODO Auto-generated method stub
 		InformationDetailsEntity informationDetailsEntity=new InformationDetailsEntity();
 		informationDetailsEntity=informationDetailsDao.selectDetailByid(id);
@@ -95,7 +95,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	 * 查出所有的详情信息
 	 */
 	@Override
-	public List<InformationDetails> getDeailBySiteid(String sid) {
+	public List<InformationDetails> list(String sid) {
 		return informationDetailsDao.selectDetailBySid(sid).stream().map(entity -> {
 			InformationDetails informationDetails=new InformationDetails();
 			BeanUtils.copyProperties(entity, informationDetails);
@@ -106,7 +106,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	 * 查出添加资讯的所有信息
 	 */
 	@Override
-	public List<InformationDetails> selectDetail() {
+	public List<InformationDetails> list() {
 		
 		return informationDetailsDao.selectDetail().stream().map(entity ->{
 			InformationDetails bo=new InformationDetails();

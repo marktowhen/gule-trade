@@ -100,7 +100,7 @@ public class UserController {
 			
 			
 			if(checkResult.isOk()){
-				if(userService.getByPhone(mobile).isPresent()){
+				if(userService.getByKey(mobile).isPresent()){
 					return Result.fail("该手机号已被使用");
 				}
 				userService.refresh(users);
@@ -131,7 +131,7 @@ public class UserController {
 			Result<String> checkResult = checkCode(code, request, UserController.EMAIL_MESSAGE);
 			
 			if(checkResult.isOk()){
-				if(userService.getByEmail(email).isPresent()){
+				if(userService.getByKey(email).isPresent()){
 					return Result.fail("该邮箱已被使用");
 				}
 				userService.refresh(users); 

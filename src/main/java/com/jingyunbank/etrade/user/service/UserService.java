@@ -42,29 +42,6 @@ public class UserService implements IUserService{
 		return getUsersByEntity(userEntity);
 	}
 
-	@Override
-	public Optional<Users> getByPhone(String phone) {
-		UserEntity userEntity = new UserEntity();
-		userEntity.setMobile(phone);
-		userEntity = userDao.selectUser(userEntity);
-		return getUsersByEntity(userEntity);
-	}
-
-	@Override
-	public Optional<Users> getByUname(String username) {
-		UserEntity userEntity = new UserEntity();
-		userEntity.setUsername(username);
-		userEntity = userDao.selectUser(userEntity);
-		return getUsersByEntity(userEntity);
-	}
-
-	@Override
-	public Optional<Users> getByEmail(String email) {
-		UserEntity user = new UserEntity();
-		user.setEmail(email);
-		UserEntity userEntity = userDao.selectUser(user);
-		return getUsersByEntity(userEntity);
-	}
 	/**
 	 * equals to(phoneExists(key) | unameExists(uname) | emailExists(email))
 	 * @param key (username | phone | email)
@@ -132,45 +109,6 @@ public class UserService implements IUserService{
 	@Override
 	public List<Users> list(Date start, Date end) {
 		return null;
-	}
-    //判断用户是否存在
-	@Override
-	public boolean phoneExists(String phone) {
-		int result=0;
-		boolean flag=false;
-		result=userDao.phoneExists(phone);
-		if(result>0){
-			flag=true;
-		}else{
-			flag=false;
-		}
-		return flag;
-	}
-	//判断用户名是否存在
-	@Override
-	public boolean unameExists(String uname) {
-		int result=0;
-		boolean flag=false;
-		result=userDao.unameExists(uname);
-		if(result>0){
-			flag=true;
-		}else{
-			flag=false;
-		}
-		return flag;
-	}
-   //判断邮箱是否存在
-	@Override
-	public boolean emailExists(String email) {
-		int result=0;
-		boolean flag=false;
-		result=userDao.emailExists(email);
-		if(result>0){
-			flag=true;
-		}else{
-			flag=false;
-		}
-		return flag;
 	}
 
 	@Override

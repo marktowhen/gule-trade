@@ -61,7 +61,7 @@ public class RegisterController {
 						.collect(Collectors.joining(" ; ")));
 		}
 		//验证用户名是否已存在
-		if(userService.unameExists(userVO.getUsername())){
+		if(userService.exists(userVO.getUsername())){
 			return Result.fail("该用户名已存在。");
 		}
 		Result<String> checkResult = null;
@@ -70,14 +70,14 @@ public class RegisterController {
 		}
 		//验证手机号是否存在
 		if(!StringUtils.isEmpty(userVO.getMobile())){
-			if(userService.phoneExists(userVO.getMobile())){
+			if(userService.exists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
 			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
 		}
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getEmail())){
-			if(userService.emailExists(userVO.getEmail())){
+			if(userService.exists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
 			}
 			checkResult = checkCode(userVO.getCode(), request, EMAIL_MESSAGE);

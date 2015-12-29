@@ -22,9 +22,9 @@ public interface CommentsDao {
 	
 	public boolean refreshReadStatus(CommentsEntity commentsEntity) throws Exception;
 	
-	public CommentsEntity selectCommentByOid(String oid);
-	
 	public int commentCount(String gid);
+	
+	public CommentsEntity selectCommentByOid(String oid);
 	
 	public List<CommentsEntity> selectComment();
 }

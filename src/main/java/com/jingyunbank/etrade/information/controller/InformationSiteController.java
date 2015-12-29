@@ -50,23 +50,6 @@ public class InformationSiteController {
 		
 	}
 	/**
-	 * 通过siteid查出所有的子集
-	 * @param siteid
-	 * @param request
-	 * @param session
-	 * @return
-	 */
-	@RequestMapping(value="/api/information/sites/{siteid}",method=RequestMethod.GET)
-	@ResponseBody
-	public Result<List<InformationSiteVO>> selectSitesById(@PathVariable String siteid,HttpServletRequest request,HttpSession session) throws Exception{
-		return Result.ok(informationSiteService.getSitesBySiteid(siteid).stream().map(bo ->{
-			InformationSiteVO informationSiteVO=new InformationSiteVO();
-			BeanUtils.copyProperties(bo, informationSiteVO);
-			return informationSiteVO;
-		}).collect(Collectors.toList()));
-		
-	}
-	/**
 	 * 通过name查出对象
 	 * @param name
 	 * @param request
@@ -99,7 +82,7 @@ public class InformationSiteController {
 		Range range =new Range();
 		range.setFrom(from);
 		range.setTo(from+size);
-		return Result.ok(informationSiteService.getSite(informationID, range).stream().map(bo ->{
+		return Result.ok(informationSiteService.list(informationID, range).stream().map(bo ->{
 			InformationSiteVO vo=new InformationSiteVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;

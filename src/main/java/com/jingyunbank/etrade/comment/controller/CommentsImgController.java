@@ -31,7 +31,7 @@ public class CommentsImgController{
 	@ResponseBody
 	public Result<List<CommentsImgVO>> selectById(@PathVariable String imgid,HttpSession session) throws Exception{
 		
-		return Result.ok(commentImgService.getById(imgid)
+		return Result.ok(commentImgService.list(imgid)
 				.stream().map(bo -> {
 				CommentsImgVO vo = new CommentsImgVO();
 				BeanUtils.copyProperties(bo, vo);

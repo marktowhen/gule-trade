@@ -38,17 +38,6 @@ public class InformationSiteService implements IInformationSiteService{
 		}
 		return flag;
 	}
-	//通过siteid查出所对应的标题
-	@Override
-	public List<InformationSite> getSitesBySiteid(String informationID) {
-		// TODO Auto-generated method stub
-		/*List<InformationSiteEntity> InformationSiteEntitys=InformationSiteDao.selectSitesBySiteid(siteid);*/
-		return informationSiteDao.selectSitesBySiteid(informationID).stream().map(entity -> {
-			InformationSite informationSite=new InformationSite();
-			BeanUtils.copyProperties(entity, informationSite);
-			return informationSite;
-		}).collect(Collectors.toList());
-	}
 	@Override
 	public Optional<InformationSite> singleSitesByName(String name) {
 		InformationSite informationSite=new InformationSite();
@@ -57,7 +46,7 @@ public class InformationSiteService implements IInformationSiteService{
 		return Optional.of(informationSite);
 	}
 	@Override
-	public List<InformationSite> getSite(String informationID, Range range) {
+	public List<InformationSite> list(String informationID, Range range) {
 		
 		return informationSiteDao.select(informationID, range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity ->{

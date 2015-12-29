@@ -104,7 +104,7 @@ public class InformationDetailsController {
 		Range range = new Range();
 		range.setFrom(from);
 		range.setTo(from+size);
-		return Result.ok(informationDetailsService.getDeailsBySiteid(sid,range)
+		return Result.ok(informationDetailsService.list(sid,range)
 			.stream().map(bo -> {
 			
 			InformationDetailsVO vo=new InformationDetailsVO();
@@ -125,7 +125,7 @@ public class InformationDetailsController {
 	@ResponseBody
 	public Result<List<InformationDetailsVO>> selectDetailsBySid(@RequestParam String sid,HttpServletRequest request,HttpSession session) throws Exception{
 	
-		return Result.ok(informationDetailsService.getDeailBySiteid(sid)
+		return Result.ok(informationDetailsService.list(sid)
 			.stream().map(bo -> {
 			
 			InformationDetailsVO vo=new InformationDetailsVO();
@@ -141,7 +141,7 @@ public class InformationDetailsController {
 	 */
 	@RequestMapping(value="/api/information/detail/{id}",method=RequestMethod.GET)
 	public Result<InformationDetailsVO> selectDetailByid(@PathVariable String id) throws Exception{
-	Optional<InformationDetails> informationDetails=informationDetailsService.getDetailByid(id);
+	Optional<InformationDetails> informationDetails=informationDetailsService.single(id);
 	InformationDetails adviceDetails=informationDetails.get();
 	InformationDetailsVO adviceDetailsVO=new InformationDetailsVO();
 	BeanUtils.copyProperties(adviceDetails, adviceDetailsVO);
@@ -154,7 +154,7 @@ public class InformationDetailsController {
 	 */
 	@RequestMapping(value="/api/information/alldetail",method=RequestMethod.GET)
 	public Result<List<InformationDetailsVO>> selectDetails() throws Exception{
-		return Result.ok(informationDetailsService.selectDetail()
+		return Result.ok(informationDetailsService.list()
 				.stream().map(bo -> {
 				
 				InformationDetailsVO vo=new InformationDetailsVO();
