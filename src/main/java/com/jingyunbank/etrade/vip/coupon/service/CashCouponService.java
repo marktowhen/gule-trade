@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.vip.coupon.service;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,11 +9,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.util.UniqueSequence;
+import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -32,7 +34,16 @@ public class CashCouponService implements ICashCouponService{
 	public boolean save(CashCoupon cashCoupon, Users manager) throws DataSavingException {
 		
 		try {
-			return cashCouponDao.insert(getEntityFromBo(cashCoupon));
+			cashCoupon.setID(KeyGen.uuid());
+			cashCoupon.setLocked(true);
+			while(true){
+				cashCoupon.setCardNum(getNewCardNum(cashCoupon.getValue()));
+				cashCoupon.setCode(new String(new RndBuilder().length(10).hasletter(true).next()));
+				if(cashCouponDao.insert(getEntityFromBo(cashCoupon))){
+					return true;
+				}
+			}
+			
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
@@ -43,14 +54,10 @@ public class CashCouponService implements ICashCouponService{
 	public boolean saveMuti(CashCoupon cashCoupon, Users manager, int amount) throws DataSavingException {
 		
 		try {
-			List<CashCouponEntity> list = new ArrayList<CashCouponEntity>();
 			for (int i = 0; i < amount; i++) {
-				CashCouponEntity entity = getEntityFromBo(cashCoupon);
-				entity.setID(KeyGen.uuid());
-				entity.setCode(String.valueOf(UniqueSequence.next18()));
-				list.add(entity);
+				save(cashCoupon, manager);
 			}
-			return cashCouponDao.insertMuti(list);
+			return true;
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
@@ -81,9 +88,12 @@ public class CashCouponService implements ICashCouponService{
 		if(entity.isUsed()){
 			return Result.fail("该卡已被使用");
 		}
-		if(entity.getEnd().before(new Date())){
-			return Result.fail("已过期");
+		if(entity.isLocked()){
+			return Result.fail("该卡未解锁");
 		}
+//		if(entity.getEnd().before(new Date())){
+//			return Result.fail("已过期");
+//		}
 		return Result.ok(getBofromEntity(entity));
 	}
 
@@ -169,6 +179,108 @@ public class CashCouponService implements ICashCouponService{
 	public int count(Date addTimeFrom, Date addTimeTo) {
 		return cashCouponDao.countByAddTime(addTimeFrom, addTimeTo);
 	}
+	
+	
+	/**
+	 * 获取新的卡号
+	 * @param value
+	 * @return
+	 * @throws Exception
+	 * 2015年12月29日 qxs
+	 */
+	private String getNewCardNum(BigDecimal value) throws Exception{
+		StringBuffer cardNum = new StringBuffer();
+		cardNum.append(getCardNumPrifix(value));
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		cardNum.append(format.format(new Date()));
+		return cardNum.append(getNewIndex(value)).toString();
+	}
+	/**
+	 * 获取新的卡号后缀
+	 * @param value
+	 * @return
+	 * 2015年12月29日 qxs
+	 * @throws Exception 
+	 */
+	private long getNewIndex(BigDecimal value) throws Exception{
+		StringBuffer cardNum = new StringBuffer();
+		cardNum.append(getCardNumPrifix(value));
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		cardNum.append(format.format(new Date()));
+		String lastCardNum = getLastCardNum(cardNum.toString());
+		if(StringUtils.isEmpty(lastCardNum)){
+			return ICashCouponService.CARD_NUM_SUFFIX_START;
+		}
+		//数据库中的最大的序号
+		String index = lastCardNum.substring(cardNum.toString().length());
+		return Long.parseLong(index)+1;
+	}
 
+	/**
+	 * 获取数据库中的最大卡号
+	 * @param cardNum
+	 * @return
+	 * 2015年12月29日 qxs
+	 */
+	private String getLastCardNum(String cardNum){
+		List<CashCouponEntity> list = cashCouponDao.selectListByCardNum(cardNum, 0, 1);
+		if(list!=null && !list.isEmpty()){
+			return list.get(0).getCardNum();
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * 获取购物金卡号前缀
+	 * @param value
+	 * @return
+	 * @throws Exception
+	 * 2015年12月29日 qxs
+	 */
+	private String getCardNumPrifix(BigDecimal value) throws Exception{
+		if(new BigDecimal("1000").compareTo(value)==0){
+			return (ICashCouponService.CARD_NUM_PRIFIX_1000);
+		}else if(new BigDecimal("500").compareTo(value)==0){
+			return (ICashCouponService.CARD_NUM_PRIFIX_500);
+		}else if(new BigDecimal("200").compareTo(value)==0){
+			return (ICashCouponService.CARD_NUM_PRIFIX_200);
+		}else{
+			throw new Exception("购物金面值仅限1000,500,200元");
+		}
+	}
+
+	@Override
+	public List<CashCoupon> list(String cardNum, BigDecimal value,
+			Boolean locked, Range range) {
+		CashCouponEntity condition = new CashCouponEntity();
+		condition.setCardNum(cardNum);
+		condition.setValue(value);
+		if(locked!=null){
+			condition.setNeedLocked(true);
+			condition.setLocked(locked);
+		}
+		return cashCouponDao.selectList(condition, range.getFrom(), range.getTo()-range.getFrom())
+				.stream().map(entity->{
+						return (getBofromEntity(entity));
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public int count(String cardNum, BigDecimal value, Boolean locked) {
+		CashCouponEntity condition = new CashCouponEntity();
+		condition.setCardNum(cardNum);
+		condition.setValue(value);
+		if(locked!=null){
+			condition.setNeedLocked(true);
+			condition.setLocked(locked);
+		}
+		return cashCouponDao.count(condition);
+	}
+
+	@Override
+	public boolean unlock(String[] ids) {
+		return cashCouponDao.updateLocked(ids, false);
+	}
 	
 }

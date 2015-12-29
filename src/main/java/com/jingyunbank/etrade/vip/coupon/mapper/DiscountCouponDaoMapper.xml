@@ -16,26 +16,27 @@
 		<result column="threshhold" property="threshhold" javaType="DECIMAL" />
 		<result column="del" property="del" javaType="BOOLEAN" />
 		<result column="remark" property="remark" javaType="String" />
+		<result column="locked" property="locked" javaType="BOOLEAN" />
+		<result column="card_num" property="cardNum" javaType="String" />
 	</resultMap>
 	<sql id="column_list">
-		 id,code,discount,value,addtime,start,end,used,usedtime,threshhold,del,remark 
+		 id,code,discount,value,addtime,start,end,used,usedtime,threshhold,del,remark ,card_num,locked
 	</sql>
 	<insert id="insert">
 		insert into discount_coupon(<include refid="column_list"/>) 
-		values(#{ID},#{code},#{discount},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},#{del},#{remark})
+		values(#{ID},#{code},#{discount},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},#{del},#{remark},#{cardNum},#{locked})
 	</insert>
 	
 	<insert id="insertMuti" >
 		insert into discount_coupon(<include refid="column_list"/>) 
 		values
 			<foreach collection="list" item="item"   open="" close="" separator=",">
-				(#{item.ID},#{item.code},#{item.discount},#{item.value},now(),#{item.start},#{item.end},#{item.used},#{item.usedtime},#{item.threshhold},#{item.del},#{item.remark})
+				(#{item.ID},#{item.code},#{item.discount},#{item.value},now(),#{item.start},#{item.end},#{item.used},#{item.usedtime},#{item.threshhold},#{item.del},#{item.remark},#{item.cardNum},#{item.locked})
 			</foreach>
 		
 	</insert>
 	
-	<select id="selectList" resultMap="DiscountCouponEntityResultMap"
-		parameterType="com.jingyunbank.etrade.vip.coupon.entity.DiscountCouponEntity" >
+	<select id="selectList" resultMap="DiscountCouponEntityResultMap" >
 		select 
 			<include refid="column_list"></include>
 		from 	discount_coupon 
@@ -43,47 +44,54 @@
 			<include refid="base_condition"></include>
 		</where>
 		order by addtime,usedtime desc
+		limit #{offset,javaType=LONG},#{size,javaType=LONG}
 	</select>
 	
-	<select id="selectAmount" resultType="int" parameterType="com.jingyunbank.etrade.vip.coupon.entity.DiscountCouponEntity" >
+	<select id="selectAmount" resultType="int" >
 		select count(1) from discount_coupon 
 		<where>
 			<include refid="base_condition"></include>
 		</where>
 	</select>
 	<sql id="base_condition">
-		<if test="ID!=null and ID!=''" >
-				and id =#{ID}
+		<if test="entity.ID!=null and entity.ID!=''" >
+				and id =#{entity.ID}
 		</if>
-		<if test="code!=null and code!=''" >
-			and code =#{code}
+		<if test="entity.code!=null and entity.code!=''" >
+			and code =#{entity.code}
 		</if>
-		<if test="discount!=null and discount!=''" >
-			and discount =#{discount}
+		<if test="entity.discount!=null and entity.discount!=''" >
+			and discount =#{entity.discount}
 		</if>
-		<if test="value!=null and value!=''" >
-			and value =#{value}
+		<if test="entity.value!=null and entity.value!=''" >
+			and value =#{entity.value}
 		</if>
-		<if test="addtimeStart!=null">
-			and addtime &gt;=addtimeStart
+		<if test="entity.addtimeStart!=null">
+			and addtime &gt;=entity.addtimeStart
 		</if>
-		<if test="addtiemEnd!=null">
-			and addtime &lt;=addtiemEnd
+		<if test="entity.addtiemEnd!=null">
+			and addtime &lt;=entity.addtiemEnd
 		</if>
-		<if test="validTime">
+		<if test="entity.validTime">
 			and now() between start and end
 		</if>
-		<if test="needUsed">
-			and used = #{used}
+		<if test="entity.needUsed">
+			and used = #{entity.used}
 		</if>
-		<if test="needDelete">
-			and del = #{del}
+		<if test="entity.needDelete">
+			and del = #{entity.del}
 		</if>
-		<if test="threshholdLow!=null">
-			and threshhold &gt;=threshholdLow
+		<if test="entity.threshholdLow!=null">
+			and threshhold &gt;=entity.threshholdLow
 		</if>
-		<if test="threshholdHigh!=null">
-			and threshhold &lt;=threshholdHigh
+		<if test="entity.threshholdHigh!=null">
+			and threshhold &lt;=entity.threshholdHigh
+		</if>
+		<if test="entity.needLocked">
+			and locked = #{entity.locked}
+		</if>
+		<if test="entity.cardNum!=null and entity.cardNum!=''" >
+			and card_num like CONCAT('%',#{entity.cardNum},'%')
 		</if>
 	</sql>
 	<!-- 修改删除状态 -->
@@ -120,5 +128,22 @@
 		select count(1)
 		from discount_coupon where addtime between #{from} and #{to}
 	</select>
+	
+	<select id="selectListByCardNum" resultMap="DiscountCouponEntityResultMap">
+		select 
+			<include refid="column_list"></include>
+		from 	discount_coupon 
+		where card_num like CONCAT('%',#{cardNum},'%')
+			order by card_num desc
+			limit #{offset},#{size}
+	</select>
+	<update id="updateLocked">
+		update discount_coupon  set 
+			locked =#{locked}
+		where id in 
+		 <foreach collection="ids" item="id" open="(" close=")" separator=",">
+		 	#{id}
+		 </foreach>
+	</update>
 	
 </mapper>
