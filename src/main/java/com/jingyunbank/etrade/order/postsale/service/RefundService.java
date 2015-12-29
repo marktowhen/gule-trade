@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.postsale.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,10 +48,10 @@ public class RefundService implements IRefundService {
 	}
 	
 	@Override
-	public void refreshStatus(String RID, RefundStatusDesc status)
+	public void refreshStatus(List<String> RIDs, RefundStatusDesc status)
 			throws DataRefreshingException {
 		try {
-			refundDao.updateStatus(RID, status);
+			refundDao.updateStatus(RIDs, status);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
@@ -98,5 +99,25 @@ public class RefundService implements IRefundService {
 		Refund bo = new Refund();
 		BeanUtils.copyProperties(entity, bo, "certificates");
 		return Optional.of(bo);
+	}
+
+	@Override
+	public List<Refund> list(List<String> rids) {
+		return refundDao.selectByRIDs(rids)
+				.stream().map(entity -> {
+					Refund bo = new Refund();
+					BeanUtils.copyProperties(entity, bo, "certificates");
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Refund> listBefore(Date deadline, RefundStatusDesc status) {
+		return refundDao.selectBefore(deadline, status.getCode())
+				.stream().map(entity -> {
+					Refund bo = new Refund();
+					BeanUtils.copyProperties(entity, bo, "certificates");
+					return bo;
+				}).collect(Collectors.toList());
 	}
 }

@@ -60,31 +60,6 @@ public class OrderContextService implements IOrderContextService {
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public void save(Orders order) throws DataSavingException {
-		try{
-			List<Orders> orders = new ArrayList<Orders>();
-			orders.add(order);
-			//保存订单信息
-			orderService.save(orders);
-			//保存订单支付状态
-			List<OrderPayment> payments = new ArrayList<OrderPayment>();
-			createPayment(order, payments);
-			payService.save(payments);
-			//保存订单的详情（每笔订单的商品信息）
-			orderGoodsService.save(order.getGoods());
-			
-			createOrderTrace(order, OrderStatusDesc.NEW);
-			//保存订单状态追踪信息
-			orderTraceService.save(order.getTraces());
-			//将下订单的商品从购物车中删除掉
-			cartService.remove(order.getGoods().stream().map(x->x.getGID()).collect(Collectors.toList()), order.getUID());
-		}catch(Exception e){
-			throw new DataSavingException(e);
-		}
-	}
-	
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
 	public void save(List<Orders> orders) throws DataSavingException {
 		try{
 			//保存订单信息
@@ -95,8 +70,7 @@ public class OrderContextService implements IOrderContextService {
 			List<OrderPayment> payments = new ArrayList<OrderPayment>();
 			for (Orders order : orders) {
 				goods.addAll(order.getGoods());
-				createOrderTrace(order, OrderStatusDesc.NEW);
-				traces.addAll(order.getTraces());
+				traces.add(createOrderTrace(order, OrderStatusDesc.NEW));
 				createPayment(order, payments);
 			}
 			//保存订单的详情（每笔订单的商品信息）
@@ -134,8 +108,7 @@ public class OrderContextService implements IOrderContextService {
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		List<OrderGoods> goods = new ArrayList<OrderGoods>();
 		for (Orders order : orders) {
-			createOrderTrace(order, OrderStatusDesc.PAID);
-			traces.addAll(order.getTraces());
+			traces.add(createOrderTrace(order, OrderStatusDesc.PAID));
 			goods.addAll(order.getGoods());
 		}
 		//刷新订单商品的状态
@@ -175,8 +148,7 @@ public class OrderContextService implements IOrderContextService {
 		payService.refreshStatus(extransno, false);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
-			createOrderTrace(order, OrderStatusDesc.PAYFAIL);
-			traces.addAll(order.getTraces());
+			traces.add(createOrderTrace(order, OrderStatusDesc.PAYFAIL));
 		}
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAYFAIL);
@@ -202,8 +174,7 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.ACCEPT);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
-			createOrderTrace(order, OrderStatusDesc.ACCEPT);
-			traces.addAll(order.getTraces());
+			traces.add(createOrderTrace(order, OrderStatusDesc.ACCEPT));
 		}
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
@@ -226,8 +197,7 @@ public class OrderContextService implements IOrderContextService {
 		orderLogisticService.save(logistic);
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.DELIVERED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
-		createOrderTrace(order, OrderStatusDesc.DELIVERED);
-		traces.addAll(order.getTraces());
+		traces.add(createOrderTrace(order, OrderStatusDesc.DELIVERED));
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.DELIVERED);
@@ -247,8 +217,7 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
-			createOrderTrace(order, OrderStatusDesc.RECEIVED);
-			traces.addAll(order.getTraces());
+			traces.add(createOrderTrace(order, OrderStatusDesc.RECEIVED));
 		}
 		traces.forEach(trace->trace.setNote(note));
 		orderTraceService.save(traces);
@@ -271,8 +240,7 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.CLOSED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
-			createOrderTrace(order, OrderStatusDesc.CLOSED);
-			traces.addAll(order.getTraces());
+			traces.add(createOrderTrace(order, OrderStatusDesc.CLOSED));
 		}
 		//set note reason
 		traces.forEach(trace->trace.setNote(reason));
@@ -305,8 +273,7 @@ public class OrderContextService implements IOrderContextService {
 		
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
-		createOrderTrace(order, OrderStatusDesc.REMOVED);
-		traces.addAll(order.getTraces());
+		traces.add(createOrderTrace(order, OrderStatusDesc.REMOVED));
 		//set note reason
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
@@ -315,7 +282,7 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	//创建订单新建追踪状态
-	private void createOrderTrace(Orders order, OrderStatusDesc status) {
+	private OrderTrace createOrderTrace(Orders order, OrderStatusDesc status) {
 		OrderTrace trace = new OrderTrace();
 		trace.setAddtime(new Date());
 		trace.setID(KeyGen.uuid());
@@ -325,7 +292,7 @@ public class OrderContextService implements IOrderContextService {
 		trace.setStatusCode(status.getCode());
 		trace.setStatusName(status.getName());
 		trace.setNote(status.getDescription());
-		order.getTraces().add(trace);
+		return trace;
 	}
 	private void createPayment(Orders order, List<OrderPayment> payments){
 		if(PayType.ONLINE_CODE.equals(order.getPaytypeCode())){
@@ -344,7 +311,7 @@ public class OrderContextService implements IOrderContextService {
 	@Override
 	public boolean refund(String oid, String ogid)
 			throws DataRefreshingException, DataSavingException {
-		orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.REFUNDING);
+		orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.REFUNDING);
 		return true;
 	}
 
@@ -354,15 +321,15 @@ public class OrderContextService implements IOrderContextService {
 		Optional<Orders> candidate = orderService.single(oid);
 		if(candidate.isPresent()){
 			Orders o = candidate.get();
-			orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.resolve(o.getStatusCode()));
+			orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.resolve(o.getStatusCode()));
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void refundDone(String oid, String ogid)
+	public void refundDone(List<String> ogids)
 			throws DataRefreshingException, DataSavingException {
-		orderGoodsService.refreshGoodStatus(ogid, OrderStatusDesc.REFUNDED);
+		orderGoodsService.refreshGoodStatus(ogids, OrderStatusDesc.REFUNDED);
 	}
 }

@@ -140,7 +140,7 @@
 	</select>
 	<!-- 查询我的收藏数量 -->
 	<select id="selectMerchantFavoritesCount" parameterType="java.util.Map" resultType="int">
-		select count(*) from 
+		select count(1) from 
 		favorites c
 		where c.type = #{type} 
 		 and uid = #{uid} 

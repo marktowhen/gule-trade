@@ -47,7 +47,10 @@
 	<update id="updateStatus">
 		update refunds
 		set status_code = #{status.code}, status_name = #{status.name}
-		where id = #{RID}
+		where id in 
+		<foreach collection="RIDs" item="rid" open="(" separator="," close=")">
+			#{rid}
+		</foreach>
 	</update>
 	
 	<update id="update" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
@@ -76,6 +79,14 @@
 		select <include refid="refund_columns"/> 
 		from refunds
 		where id = #{rid}
+	</select>
+	<select id="selectByRIDs" resultMap="RefundEntityResultMap">
+		select <include refid="refund_columns"/> 
+		from refunds
+		where id in 
+			<foreach collection="rids" item="rid" open="(" separator="," close=")">
+				#{rid}
+			</foreach>
 	</select>
 	<select id="selectOneByOGID" parameterType="String" resultMap="RefundEntityResultMap">
 		select <include refid="refund_columns"/> 
@@ -143,5 +154,12 @@
 			</if>
 		order by r.addtime desc 
 		limit #{from}, #{size}
+	</select>
+	
+	<select id="selectBefore" resultMap="RefundEntityResultMap">
+		select r.id
+		from refunds r
+		inner join refund_trace rt on r.id = rt.rid and rt.status_code = #{statuscode}
+		where rt.addtime is not null and rt.addtime &lt;= #{deadline} and r.status_code = #{statuscode}
 	</select>
 </mapper>

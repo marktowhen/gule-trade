@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.comment.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,9 +69,9 @@ public class CommentsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments",method=RequestMethod.POST)
 	@ResponseBody
-	public Result<String> saveComments(@RequestParam("oid") String oid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<String> saveComments(@RequestParam("ogid") String ogid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request) throws Exception{
 		commentVO.setID(KeyGen.uuid());
-		Optional<OrderGoods> optional	=orderGoodsService.singleOrderGoods(oid);
+		Optional<OrderGoods> optional = orderGoodsService.singleOrderGoods(ogid);
 		OrderGoods	orderGoods =optional.get();
 		commentVO.setGID(orderGoods.getGID());
 		commentVO.setOID(orderGoods.getOID());
@@ -93,7 +93,7 @@ public class CommentsController {
 				commentImgService.save(commentsImg);
 				/*}*/
 				//修改订单商品的状态
-				orderGoodsService.refreshGoodStatus(oid, OrderStatusDesc.COMMENTED);
+				orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.COMMENTED);
 			//修改订单的状态
 			if(orderGoodsService.count(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
 				List<String> oids=new ArrayList<String>();

@@ -74,9 +74,9 @@ public class OrderGoodsService implements IOrderGoodsService {
 		}
 	}
 	@Override
-	public void refreshGoodStatus(String id, OrderStatusDesc status) throws DataRefreshingException{
+	public void refreshGoodStatus(List<String> ids, OrderStatusDesc status) throws DataRefreshingException{
 		try {
-			orderGoodsDao.updateGoodStatus(id, status);
+			orderGoodsDao.updateGoodStatus(ids, status);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
