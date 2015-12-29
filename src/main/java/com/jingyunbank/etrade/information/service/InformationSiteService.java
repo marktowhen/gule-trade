@@ -38,17 +38,22 @@ public class InformationSiteService implements IInformationSiteService{
 		}
 		return flag;
 	}
-	@Override
-	public Optional<InformationSite> singleSitesByName(String name) {
-		InformationSite informationSite=new InformationSite();
-		InformationSiteEntity informationSiteEntity=informationSiteDao.selectSitesByName(name);
-		BeanUtils.copyProperties(informationSiteEntity, informationSite);
-		return Optional.of(informationSite);
-	}
+
 	@Override
 	public List<InformationSite> list(String informationID, Range range) {
 		
 		return informationSiteDao.select(informationID, range.getFrom(),range.getTo()-range.getFrom())
+				.stream().map(entity ->{
+					InformationSite bo=new InformationSite();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+					
+				}).collect(Collectors.toList());
+	}
+	@Override
+	public List<InformationSite> list(String informationID) {
+		// TODO Auto-generated method stub
+		return informationSiteDao.selectSites(informationID)
 				.stream().map(entity ->{
 					InformationSite bo=new InformationSite();
 					BeanUtils.copyProperties(entity, bo);

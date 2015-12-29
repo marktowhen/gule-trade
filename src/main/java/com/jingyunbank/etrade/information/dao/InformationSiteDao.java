@@ -11,7 +11,7 @@ public interface InformationSiteDao {
 	
 	public boolean insert(InformationSiteEntity informationSiteEntity) throws Exception;
 	
-	public InformationSiteEntity selectSitesByName(String name);
+	public List<InformationSiteEntity> selectSites(String informationID);
 	
 	public List<InformationSiteEntity> select(@Param(value="informationID") String informationID,@Param(value="from") long from,@Param(value="size") long size);
 }
