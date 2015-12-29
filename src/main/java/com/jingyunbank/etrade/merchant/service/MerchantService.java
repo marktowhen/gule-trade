@@ -12,16 +12,12 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
-import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.goods.bo.GoodsList;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
