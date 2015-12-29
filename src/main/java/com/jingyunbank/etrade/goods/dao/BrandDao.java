@@ -1,9 +1,7 @@
 package com.jingyunbank.etrade.goods.dao;
 
-import java.util.Collection;
 import java.util.List;
 
-import com.jingyunbank.etrade.api.goods.bo.Brand;
 import com.jingyunbank.etrade.goods.entity.GoodsBrandEntity;
 
 /**

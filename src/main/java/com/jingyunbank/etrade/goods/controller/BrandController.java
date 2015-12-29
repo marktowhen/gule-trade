@@ -30,7 +30,6 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.goods.bo.Brand;
 import com.jingyunbank.etrade.api.goods.service.IBrandService;
 import com.jingyunbank.etrade.goods.bean.BrandVO;
-import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 
 @RestController
 @RequestMapping("/api/brand")
@@ -48,7 +47,7 @@ public class BrandController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Result saveBrand(HttpServletRequest request, @RequestBody @Valid BrandVO vo, BindingResult valid)
+	public Result<String> saveBrand(HttpServletRequest request, @RequestBody @Valid BrandVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
@@ -77,7 +76,7 @@ public class BrandController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateveiw/{bid}", method = RequestMethod.GET)
-	public Result queryBrandById(@PathVariable String bid) throws Exception {
+	public Result<BrandVO> queryBrandById(@PathVariable String bid) throws Exception {
 		BrandVO brand = null;
 		Optional<Brand> bo = brandService.singleById(bid);
 		if (Objects.nonNull(bo)) {
@@ -89,7 +88,7 @@ public class BrandController {
 	
 	
 	@RequestMapping(value = "/update/{bid}", method = RequestMethod.POST)
-	public Result updateBrand(HttpServletRequest request,@PathVariable String bid,  @RequestBody @Valid BrandVO vo, BindingResult valid)
+	public Result<String> updateBrand(HttpServletRequest request,@PathVariable String bid,  @RequestBody @Valid BrandVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
@@ -129,7 +128,7 @@ public class BrandController {
 	
 	
 	@RequestMapping(value = "/{bid}", method = RequestMethod.PUT)
-	public Result delBrand(@PathVariable String bid) throws Exception{
+	public Result<String> delBrand(@PathVariable String bid) throws Exception{
 		if(brandService.delBrand(bid)){
 			return Result.ok("success");
 		}

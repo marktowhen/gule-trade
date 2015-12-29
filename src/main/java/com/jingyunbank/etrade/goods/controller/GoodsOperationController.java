@@ -74,7 +74,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Result saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
+	public Result<String> saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
@@ -148,7 +148,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateveiw/{gid}", method = RequestMethod.GET)
-	public Result queryGoodsById(@PathVariable String gid) throws Exception {
+	public Result<GoodsOperationShowVO> queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsOperationShowVO vo = null;
 		Optional<BaseGoodsOperation> showbo = goodsOperationService.singleById(gid);
 		if (Objects.nonNull(showbo)) {
@@ -169,7 +169,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/update/{gid}", method = RequestMethod.PUT)
-	public Result updateGoods(@PathVariable String gid, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
+	public Result<String> updateGoods(@PathVariable String gid, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
@@ -232,7 +232,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/up/{gid}", method = RequestMethod.PUT)
-	public Result goodsUp(@PathVariable String gid) throws Exception {
+	public Result<String> goodsUp(@PathVariable String gid) throws Exception {
 		if (goodsOperationService.refreshGoodsUp(gid)) {
 			return Result.ok("success");
 		}
@@ -248,7 +248,7 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/down/{gid}", method = RequestMethod.PUT)
-	public Result goodsDown(@PathVariable String gid) throws Exception {
+	public Result<String> goodsDown(@PathVariable String gid) throws Exception {
 		if (goodsOperationService.refreshGoodsDown(gid)) {
 			return Result.ok("success");
 		}

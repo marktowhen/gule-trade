@@ -3,7 +3,6 @@ package com.jingyunbank.etrade.goods.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsDetailEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;

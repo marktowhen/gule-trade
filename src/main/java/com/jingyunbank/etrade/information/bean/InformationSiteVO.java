@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.information.bean;
 
-import com.jingyunbank.etrade.information.entity.InformationDetailsEntity;
 
 public class InformationSiteVO {
 	private String ID;

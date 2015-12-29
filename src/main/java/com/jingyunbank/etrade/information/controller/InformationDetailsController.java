@@ -12,7 +12,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,7 +67,7 @@ public class InformationDetailsController {
 	 */
 	@RequestMapping(value="/api/information/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
-	public Result deleteDetails(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<String> deleteDetails(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
 		informationDetailsService.remove(id);
 		return Result.ok("删除成功");
 		

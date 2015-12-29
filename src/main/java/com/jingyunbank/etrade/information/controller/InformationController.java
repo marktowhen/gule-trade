@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.information.controller;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class InformationController {
 	
 	@RequestMapping(value="/api/information/save",method=RequestMethod.PUT)
 	@ResponseBody
-	public Result saveInformation(InformationVO informationVO,HttpServletRequest request,HttpSession session) throws Exception{
+	public Result<InformationVO> saveInformation(InformationVO informationVO,HttpServletRequest request,HttpSession session) throws Exception{
 		informationVO.setID(KeyGen.uuid());
 		Information information=new Information();
 		BeanUtils.copyProperties(informationVO, information);
@@ -36,7 +37,7 @@ public class InformationController {
 	}
 	@RequestMapping(value="/api/information/gets",method=RequestMethod.GET)
 	@ResponseBody
-	public Result getList(HttpServletRequest request,HttpSession session){
+	public Result<List<InformationVO>> getList(HttpServletRequest request,HttpSession session){
 		return Result.ok(informationService.getInformation().stream().map(bo ->{
 			InformationVO informationVO=new InformationVO();
 			BeanUtils.copyProperties(bo, informationVO);
