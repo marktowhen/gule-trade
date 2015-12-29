@@ -9,7 +9,7 @@
 		<result column="mid_" property="MID" />
 		<result column="name_" property="name" />
 		<result column="desc_" property="desc" />
-		<result column="sort" property="admin_sort" />
+		<result column="sort" property="adminsort" />
 		<result column="status" property="status" />
 	</resultMap>
 	
@@ -24,7 +24,7 @@
 	<insert id="insertBrand" parameterType="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity">
 	INSERT INTO `goods_brand` ( `id`,`mid`,`name`,`desc`,`admin_sort`,status) VALUES
   	(
-  	#{ID},#{MID},#{name},#{desc},#{admin_sort},#{status}
+  	#{ID},#{MID},#{name},#{desc},#{adminsort},#{status}
   	)
 	</insert>
 	
@@ -46,7 +46,7 @@
 			  b.`desc` =  #{desc},
 		 </if>
 		<if test="admin_sort >= 0 ">
-			    b.`admin_sort` = #{admin_sort},
+			    b.`admin_sort` = #{adminsort},
 		 </if>
 		b.`id` = #{ID}
 		WHERE `id` = #{ID}

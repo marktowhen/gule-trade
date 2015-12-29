@@ -17,7 +17,7 @@ public class RecommendGoods extends BaseGoods{
 	private String GID; //商品id
 	private String goodsName; //商品名称
 	private String merchantName; //商家名称
-	private String thumb_path_1 ;//推荐展示图片
+	private String thumbpath1 ;//推荐展示图片
 	public String getGID() {
 		return GID;
 	}
@@ -36,12 +36,13 @@ public class RecommendGoods extends BaseGoods{
 	public void setMerchantName(String merchantName) {
 		this.merchantName = merchantName;
 	}
-	public String getThumb_path_1() {
-		return thumb_path_1;
+	public String getThumbpath1() {
+		return thumbpath1;
 	}
-	public void setThumb_path_1(String thumb_path_1) {
-		this.thumb_path_1 = thumb_path_1;
+	public void setThumbpath1(String thumbpath1) {
+		this.thumbpath1 = thumbpath1;
 	}
+	
 	
 	
 	
