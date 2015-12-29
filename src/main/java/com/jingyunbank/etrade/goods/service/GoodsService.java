@@ -293,4 +293,17 @@ public class GoodsService implements IGoodsService {
 		return brandslist;
 	}
 
+	@Override
+	public List<ShowGoods> listTypesThree(Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		List<ShowGoods> typeslist = goodsDao.selectTypesThree(map).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return typeslist;
+	}
+
 }

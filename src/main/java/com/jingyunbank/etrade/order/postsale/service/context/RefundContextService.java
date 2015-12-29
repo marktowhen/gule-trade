@@ -38,15 +38,16 @@ public class RefundContextService implements IRefundContextService{
 	
 	@Override
 	@Transactional
-	public void request(Refund refund) throws DataSavingException, DataRefreshingException{
+	public void request(Refund refund, String operator) throws DataSavingException, DataRefreshingException{
 		refundService.save(refund);
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.REQUEST, operator, "申请退款"));
 		refundCertificateService.save(refund.getCertificates());
 		orderContextService.refund(refund.getOID(), refund.getOGID());
 	}
 	
 	@Override
 	@Transactional
-	public void refresh(Refund refund) throws DataSavingException, DataRefreshingException, DataRemovingException{
+	public void refresh(Refund refund, String operator) throws DataSavingException, DataRefreshingException, DataRemovingException{
 		refundService.refresh(refund);
 		refundCertificateService.remove(refund.getID());
 		refundCertificateService.save(refund.getCertificates());
@@ -55,19 +56,19 @@ public class RefundContextService implements IRefundContextService{
 
 	@Override
 	@Transactional
-	public void cancel(String RID, String note) throws DataRefreshingException, DataSavingException {
+	public void cancel(String RID, String operator, String note) throws DataRefreshingException, DataSavingException {
 		Optional<Refund> candidate = refundService.single(RID);
 		if(!candidate.isPresent()){
 			return;
 		}
 		Refund refund = candidate.get();
 		refundService.refreshStatus(RID, RefundStatusDesc.CANCEL);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.CANCEL, note));
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.CANCEL, operator, note));
 		orderContextService.cancelRefund(refund.getOID(), refund.getOGID());
 	}
 
 	@Override
-	public void accept(String RID, String note) throws DataRefreshingException, DataSavingException {
+	public void accept(String RID, String operator, String note) throws DataRefreshingException, DataSavingException {
 		Optional<Refund> candidate = refundService.single(RID);
 		if(!candidate.isPresent()){
 			return;
@@ -76,55 +77,55 @@ public class RefundContextService implements IRefundContextService{
 		boolean returnGoods = refund.isReturnGoods();
 		if(returnGoods){
 			refundService.refreshStatus(RID, RefundStatusDesc.ACCEPT);
-			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, note));
+			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, operator, note));
 		}else{
 			refundService.refreshStatus(RID, RefundStatusDesc.DONE);
-			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, note));
+			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, operator, note));
 		}
 	}
 
 	@Override
-	public void deny(String RID, String note) throws DataRefreshingException, DataSavingException {
+	public void deny(String RID, String operator, String note) throws DataRefreshingException, DataSavingException {
 		Optional<Refund> candidate = refundService.single(RID);
 		if(!candidate.isPresent()){
 			return;
 		}
 		Refund refund = candidate.get();
 		refundService.refreshStatus(RID, RefundStatusDesc.DENIED);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DENIED, note));
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DENIED, operator, note));
 	}
 
 	@Override
-	public void doReturn(RefundLogistic logistic) throws DataSavingException, DataRefreshingException {
+	public void doReturn(RefundLogistic logistic, String operator) throws DataSavingException, DataRefreshingException {
 		Optional<Refund> candidate = refundService.single(logistic.getRID());
 		if(!candidate.isPresent()){
 			return;
 		}
 		Refund refund = candidate.get();
 		refundService.refreshStatus(refund.getID(), RefundStatusDesc.RETURN);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.RETURN, logistic.getReceiver()));
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.RETURN, operator, logistic.getReceiver()));
 		refundLogisticService.save(logistic);
 	}
 
 	@Override
-	public void done(String RID) throws DataRefreshingException, DataSavingException {
+	public void done(String RID, String operator) throws DataRefreshingException, DataSavingException {
 		Optional<Refund> candidate = refundService.single(RID);
 		if(!candidate.isPresent()){
 			return;
 		}
 		Refund refund = candidate.get();
 		refundService.refreshStatus(RID, RefundStatusDesc.DONE);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, ""));
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, operator, ""));
 		orderContextService.refundDone(refund.getOID(), refund.getOGID());
 	}
 	
 	//创建订单新建追踪状态
-	private RefundTrace createRefundTrace(Refund refund, RefundStatusDesc status, String note) {
+	private RefundTrace createRefundTrace(Refund refund, RefundStatusDesc status, String operator, String note) {
 		RefundTrace trace = new RefundTrace();
 		trace.setAddtime(new Date());
 		trace.setID(KeyGen.uuid());
 		trace.setRID(refund.getID());
-		trace.setOperator(refund.getUID());
+		trace.setOperator(operator);
 		trace.setStatusCode(status.getCode());
 		trace.setStatusName(status.getName());
 		trace.setNote(note);

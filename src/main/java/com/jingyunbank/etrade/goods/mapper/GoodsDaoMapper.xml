@@ -179,6 +179,18 @@
 		LIMIT #{from},#{size}
 	]]>
 	</select>
+	
+	
+	<select id="selectTypesThree" resultMap="baseGoodsMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT t.id tid,t.`name` typename FROM goods_type t 
+			WHERE t.`status`= 1 AND 
+		    t.`admin_sort` <> 0 
+		    ORDER BY t.`admin_sort`
+		    LIMIT #{from},#{size}
+		]]>
+	</select>
+	
 	<!-- 查询类型 -->
 	<select id="selectTypes" resultMap="baseGoodsMap">
 		SELECT t.id tid,t.name
@@ -493,5 +505,7 @@
 		ORDER BY g.volume desc limit 0,4
 		]]>
 	</select>
+	
+
 	
 </mapper>

@@ -49,7 +49,8 @@ public class GoodsController {
 	@Resource
 	protected IGoodsService goodsService;
 
-	
+		
+
 	/*
 	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname,
@@ -96,6 +97,26 @@ public class GoodsController {
 			) throws Exception {
 		List<GoodsBrandVO> list = goodsService.listBrandsThree(new Range(Integer.parseInt(from), Integer.parseInt(size))).stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+	
+	
+	/**
+	 * 首页商品分类 ----显示3条类别
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/type/{from}/{size}/list", method = RequestMethod.GET)
+	public Result<List<GoodsTypesVO>> queryTypesThree(HttpServletRequest request,
+			@PathVariable String from,
+			@PathVariable String size
+			) throws Exception {
+		List<GoodsTypesVO> list = goodsService.listTypesThree(new Range(Integer.parseInt(from), Integer.parseInt(size))).stream().map(bo -> {
+			GoodsTypesVO vo = new GoodsTypesVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());

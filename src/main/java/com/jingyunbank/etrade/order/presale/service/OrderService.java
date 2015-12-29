@@ -73,90 +73,20 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public List<Orders> list(String uid) {
-		return orderDao.selectByUID(uid)
-			.stream().map(entity -> {
-				Orders bo = new Orders();
-				BeanUtils.copyProperties(entity, bo, "goods");
-				entity.getGoods().forEach(ge -> {
-					OrderGoods og = new OrderGoods();
-					BeanUtils.copyProperties(ge, og);
-					bo.getGoods().add(og);
-				});
-				return bo;
-			}).collect(Collectors.toList());
-	}
-	
-	@Override
 	public List<Orders> list(List<String> oids) {
 		return orderDao.selectByOIDs(oids)
 			.stream().map(entity -> {
 				Orders bo = new Orders();
 				BeanUtils.copyProperties(entity, bo, "goods");
-				entity.getGoods().forEach(ge -> {
-					OrderGoods og = new OrderGoods();
-					BeanUtils.copyProperties(ge, og);
-					bo.getGoods().add(og);
-				});
 				return bo;
 			}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<Orders> list(String uid, Range range) {
-		return orderDao.selectWithCondition(uid, "", "", "", range.getFrom(), (int)(range.getTo()-range.getFrom()))
-				.stream().map(entity -> {
-					Orders bo = new Orders();
-					BeanUtils.copyProperties(entity, bo, "goods");
-					entity.getGoods().forEach(ge -> {
-						OrderGoods og = new OrderGoods();
-						BeanUtils.copyProperties(ge, og);
-						bo.getGoods().add(og);
-					});
-					return bo;
-				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<Orders> list(Date start, Date end) {
-		return orderDao.selectBetween(start, end)
-				.stream().map(entity -> {
-					Orders bo = new Orders();
-					BeanUtils.copyProperties(entity, bo, "goods");
-					entity.getGoods().forEach(ge -> {
-						OrderGoods og = new OrderGoods();
-						BeanUtils.copyProperties(ge, og);
-						bo.getGoods().add(og);
-					});
-					return bo;
-				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<Orders> list() {
-		return orderDao.selectAll()
-				.stream().map(entity -> {
-					Orders bo = new Orders();
-					BeanUtils.copyProperties(entity, bo, "goods");
-					entity.getGoods().forEach(ge -> {
-						OrderGoods og = new OrderGoods();
-						BeanUtils.copyProperties(ge, og);
-						bo.getGoods().add(og);
-					});
-					return bo;
-				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<Orders> listOrder(String uid, OrderStatusDesc status) {
-		return null;
 	}
 
 	@Override
 	public void refreshStatus(List<String> oids, OrderStatusDesc status)
 			throws DataRefreshingException {
 		try {
-			orderDao.updateStatus(oids, status);
+			orderDao.updateStatus(oids, status.getCode(), status.getName());
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
@@ -211,6 +141,16 @@ public class OrderService implements IOrderService{
 						BeanUtils.copyProperties(ge, og);
 						bo.getGoods().add(og);
 					});
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Orders> listBefore(Date deadline, OrderStatusDesc status) {
+		return orderDao.selectBefore(deadline, status.getCode())
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo, "goods");
 					return bo;
 				}).collect(Collectors.toList());
 	}

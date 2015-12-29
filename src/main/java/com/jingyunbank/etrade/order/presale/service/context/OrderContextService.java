@@ -236,47 +236,58 @@ public class OrderContextService implements IOrderContextService {
 
 	@Override
 	@Transactional
-	public boolean received(String oid) throws DataRefreshingException, DataSavingException{
-		Optional<Orders> candidate = orderService.single(oid);
-		if(!candidate.isPresent()){
+	public boolean received(List<String> oids, String note) throws DataRefreshingException, DataSavingException{
+		List<Orders> orders = orderService.list(oids);
+		if(orders.size() == 0){
 			return false;
 		}
-		Orders order = candidate.get();
-		if(!OrderStatusDesc.DELIVERED_CODE.equals(order.getStatusCode())){
+		if(orders.stream().anyMatch(order -> !OrderStatusDesc.DELIVERED_CODE.equals(order.getStatusCode()))){
 			return false;
 		}
-		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
-		createOrderTrace(order, OrderStatusDesc.RECEIVED);
-		orderTraceService.save(order.getTraces());
+		orderService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		for (Orders order : orders) {
+			createOrderTrace(order, OrderStatusDesc.RECEIVED);
+			traces.addAll(order.getTraces());
+		}
+		traces.forEach(trace->trace.setNote(note));
+		orderTraceService.save(traces);
 		//刷新订单商品的状态
-		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
+		orderGoodsService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
 		return true;
 	}
 
 	@Override
 	@Transactional
-	public boolean cancel(String oid, String reason) throws DataRefreshingException, DataSavingException{
-		Optional<Orders> candidateorder = orderService.single(oid);
-		if(!candidateorder.isPresent()){
+	public boolean cancel(List<String> oids, String reason) throws DataRefreshingException, DataSavingException{
+		List<Orders> orders = orderService.list(oids);
+		if(orders.size() == 0){
 			return false;
 		}
-		Orders order = candidateorder.get();
-		if(!OrderStatusDesc.NEW_CODE.equals(order.getStatusCode())){
+		if(orders.stream().anyMatch(order -> !OrderStatusDesc.NEW_CODE.equals(order.getStatusCode()))){
 			return false;
 		}
 		
-		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CLOSED);
+		orderService.refreshStatus(oids, OrderStatusDesc.CLOSED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
-		createOrderTrace(order, OrderStatusDesc.CLOSED);
-		traces.addAll(order.getTraces());
+		for (Orders order : orders) {
+			createOrderTrace(order, OrderStatusDesc.CLOSED);
+			traces.addAll(order.getTraces());
+		}
 		//set note reason
 		traces.forEach(trace->trace.setNote(reason));
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
-		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.CLOSED);
-		if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
-			couponStrategyResolver.resolve(order.getCouponType())
-							.unlock(order.getUID(), order.getCouponID());
+		orderGoodsService.refreshStatus(oids, OrderStatusDesc.CLOSED);
+		//更新优惠卡券状态
+		List<String> consumedcouponids = orders.stream().map(x->x.getCouponID()).collect(Collectors.toList()); 
+		for (Orders order : orders) {
+			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
+				if(consumedcouponids.contains(order.getCouponID())) continue;
+				consumedcouponids.add(order.getCouponID());
+				couponStrategyResolver.resolve(order.getCouponType())
+								.unlock(order.getUID(), order.getCouponID());
+			}
 		}
 		return true;
 	}

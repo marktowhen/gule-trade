@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.presale.controller;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +101,7 @@ public class OrderLogisticController {
 			return Result.fail("支付密码错误！");
 		}
 		
-		if(!orderContextService.received(oidswithpwd.getOid())){
+		if(!orderContextService.received(Arrays.asList(oidswithpwd.getOid()), "买家主动确认收货")){
 			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
 		}
 		return Result.ok();

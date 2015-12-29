@@ -83,8 +83,8 @@ public class MessageController {
 	 * @throws DataRefreshingException 
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result<MessageVO> getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
-		Optional<Message> messageOption = inboxService.getSingle(id);
+	public Result<MessageVO> single(@PathVariable String id, HttpServletRequest request)throws Exception{
+		Optional<Message> messageOption = inboxService.single(id);
 		if(messageOption.isPresent()){
 			//如果未读则置为已读
 			if(!messageOption.get().isHasRead()){
@@ -129,8 +129,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getAmountUID(@PathVariable String uid , HttpServletRequest request) throws Exception{
-		return Result.ok( inboxService.getAmount(uid));
+	public Result<Integer> count(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.count(uid));
 	}
 	
 	/**
@@ -165,8 +165,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/unread/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getUnreadAmount(@PathVariable String uid , HttpServletRequest request) throws Exception{
-		return Result.ok( inboxService.getAmountUnread(uid));
+	public Result<Integer> countUnread(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.countUnread(uid));
 	}
 	
 	/**
@@ -201,8 +201,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/read/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getReadAmount(@PathVariable String uid , HttpServletRequest request) throws Exception{
-		return Result.ok( inboxService.getAmountRead(uid));
+	public Result<Integer> countRead(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.countRead(uid));
 	}
 	
 	/**

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -49,6 +50,7 @@ public class RefundController {
 		}
 		
 		String UID = ServletBox.getLoginUID(session);
+		String uname = ServletBox.getLoginUname(session);
 		refundvo.setID(KeyGen.uuid());
 		refundvo.setUID(UID);
 		refundvo.setAddtime(new Date());
@@ -65,7 +67,7 @@ public class RefundController {
 			rc.setRID(refund.getID());
 			refund.getCertificates().add(rc);
 		});
-		refundContextService.request(refund);
+		refundContextService.request(refund, uname);
 		
 		return Result.ok(refundvo);
 	}
@@ -81,7 +83,7 @@ public class RefundController {
 		if(valid.hasErrors() || StringUtils.isEmpty(refundvo.getID())){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		
+		String uname = ServletBox.getLoginUname(session);
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
 		refundvo.setStatusName(RefundStatusDesc.REQUEST.getName());
 		
@@ -94,7 +96,7 @@ public class RefundController {
 			rc.setRID(refund.getID());
 			refund.getCertificates().add(rc);
 		});
-		refundContextService.refresh(refund);
+		refundContextService.refresh(refund, uname);
 		
 		return Result.ok(refundvo);
 	}
@@ -110,14 +112,14 @@ public class RefundController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		
-		refundContextService.cancel(cancellation.getRid(), cancellation.getNote());
+		String uname = ServletBox.getLoginUname(session);
+		refundContextService.cancel(cancellation.getRid(), uname, cancellation.getNote());
 		
 		return Result.ok();
 	}
 	
 	private static class RIDWithNoteVO{
-		@NotNull
+		@NotBlank
 		private String rid;
 		@NotNull
 		private String note;
@@ -144,7 +146,7 @@ public class RefundController {
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<String> accept(@RequestParam(required=true) String rid, @RequestParam(required=true) String note, HttpSession session) throws Exception{
 		
-		refundContextService.accept(rid, note);
+		refundContextService.accept(rid, "卖家", note);
 		return Result.ok();
 	}
 	
@@ -155,7 +157,7 @@ public class RefundController {
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<String> deny(@RequestParam(required=true) String rid, @RequestParam(required=true) String note, HttpSession session) throws Exception{
 		
-		refundContextService.deny(rid, note);
+		refundContextService.deny(rid, "卖家", note);
 		return Result.ok();
 	}
 	
@@ -166,7 +168,7 @@ public class RefundController {
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<String> done(@RequestParam(required=true) String rid, HttpSession session) throws Exception{
 		
-		refundContextService.done(rid);
+		refundContextService.done(rid, "卖家");
 		return Result.ok();
 	}
 
@@ -177,16 +179,19 @@ public class RefundController {
 	 * @return
 	 * @throws Exception
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/refund/logistic", method=RequestMethod.PUT)
-	public Result<String> dispatch(@Valid @RequestBody RefundLogisticVO logisticvo, BindingResult valid) throws Exception{
+	public Result<String> dispatch(@Valid @RequestBody RefundLogisticVO logisticvo, 
+			BindingResult valid, HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的物流信息有误！");
 		}
+		String uname = ServletBox.getLoginUname(session);
 		RefundLogistic logistic = new RefundLogistic();
 		BeanUtils.copyProperties(logisticvo, logistic);
 		logistic.setAddtime(new Date());
 		logistic.setID(KeyGen.uuid());
-		refundContextService.doReturn(logistic);
+		refundContextService.doReturn(logistic, uname);
 		return Result.ok();
 	}
 }

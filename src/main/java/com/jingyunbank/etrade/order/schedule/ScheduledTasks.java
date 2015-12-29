@@ -1,15 +1,26 @@
 package com.jingyunbank.etrade.order.schedule;
 
-import java.util.Date;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderRobotService;
 
 @Component
 public class ScheduledTasks {
 
-	@Scheduled(fixedDelay=(60000*5))//5 minutes
-	public void checkOrderStatus(){
-		System.out.println("are you kiding me?"+new Date()+"++++++++++++++++++++++++++++++");
+	@Autowired
+	private IOrderRobotService orderRobotService;
+	//关闭过期的未付款的订单
+	@Scheduled(fixedDelay=(5*60*1000))//5 minutes
+	public void closeExpiredUnpaidOrder() throws DataRefreshingException, DataSavingException{
+		orderRobotService.closeUnpaid();
+	}
+	//关闭过期的未付款的订单
+	@Scheduled(fixedDelay=(30*60*1000))//30 minutes
+	public void autoReceive() throws DataRefreshingException, DataSavingException{
+		orderRobotService.autoReceive();
 	}
 }
