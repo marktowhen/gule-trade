@@ -31,7 +31,7 @@ public class GatePayHandler implements IPayHandler {
 		String money = "0.01";//payments.stream().map(x->x.getMoney()).reduce(new BigDecimal(0), (a, b)->a.add(b)).toString();
 		String orderno = String.valueOf(payments.get(0).getExtransno());
 		String notify_url = pipeline.getNoticeUrl();
-		String return_url = pipeline.getReturnUrl();
+		//String return_url = pipeline.getReturnUrl();
 		String key = pipeline.getSignkey();
 		String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		
@@ -51,7 +51,7 @@ public class GatePayHandler implements IPayHandler {
 		//non required
 		result.put("bank_code", bankCode);
 		//result.put("pay_type", "8");支付类型，1表示借记卡，8表示信用卡，不写表示都支持
-		result.put("url_return", return_url);
+		//result.put("url_return", return_url);
 		
 		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, key)));
 		//result.put("userreq_ip", "192.168.1.1");
