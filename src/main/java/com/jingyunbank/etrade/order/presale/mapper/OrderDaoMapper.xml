@@ -37,7 +37,7 @@
 			<result column="count" property="count" jdbcType="INTEGER"/>
 			<result column="gprice" property="price" jdbcType="DECIMAL"/>
 			<result column="gstatuscode" property="statusCode" javaType="String"/>
-			<result column="oid" property="oid" javaType="String"/>
+			<result column="oid" property="OID" javaType="String"/>
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
