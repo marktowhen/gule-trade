@@ -19,7 +19,7 @@
 		<result column="name" property="goodsName"/>
 		<result column="price" property="price"/>
 		<result column="now_price" property="nowPrice"/>
-		<result column="thumb_path_1" property="thumb_path_1"/>
+		<result column="thumb_path_1" property="thumbpath1"/>
 	</resultMap>
 	<!-- 查询我的足迹商品列表 　 -->
 	<select id="selectFootprintGoods"  resultMap="selectFootprintGoods">
@@ -74,7 +74,7 @@
 		<result column="price" property="price" />
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
