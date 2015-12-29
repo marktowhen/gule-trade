@@ -111,6 +111,7 @@ public interface GoodsOperationDao {
 
 	/**
 	 * 获取所有的店铺信息
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -124,4 +125,13 @@ public interface GoodsOperationDao {
 	 * @throws Exception
 	 */
 	public List<GoodsOperationEntity> selectBrandsByMid(String mid) throws Exception;
+	
+	/**
+	 * 根据商品ID 修改库存
+	 * @param gid
+	 * @param count
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateCount(Map<String, Object> map) throws Exception;
 }

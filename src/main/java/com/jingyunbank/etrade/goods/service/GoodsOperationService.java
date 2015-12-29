@@ -163,4 +163,18 @@ public class GoodsOperationService implements IGoodsOperationService {
 		return merchantlist;
 	}
 
+	@Override
+	public boolean refreshCount(String gid, String count) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gid", gid);
+		map.put("count", count);
+		int result = goodsOperationDao.updateCount(map);
+		if (result > 0) {
+			return true;
+		}
+		return false;
+
+	}
+
+
 }
