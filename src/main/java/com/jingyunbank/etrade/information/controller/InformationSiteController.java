@@ -49,24 +49,15 @@ public class InformationSiteController {
 		return Result.fail("保存失败");
 		
 	}
-	/**
-	 * 通过name查出对象
-	 * @param name
-	 * @param request
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/api/information/sitesSchool/{name}",method=RequestMethod.GET)
-	@ResponseBody
-	public Result<InformationSiteVO> selectSitesByName(@PathVariable String name,HttpServletRequest request,HttpSession session) throws Exception{
-		Optional<InformationSite> optional= informationSiteService.singleSitesByName(name);
-		InformationSiteVO informationSiteVO=new InformationSiteVO();
-		InformationSite informationSite=optional.get();
-		BeanUtils.copyProperties(informationSite, informationSiteVO);
+	@RequestMapping(value="api/information/sites/{siteid}",method=RequestMethod.GET)
+	public Result<List<InformationSiteVO>> selectGetSites(@PathVariable String siteid,HttpServletRequest request,HttpSession session){
 		
-		return Result.ok(informationSiteVO);
-
+		return Result.ok(informationSiteService.list(siteid).stream().map(bo ->{
+			InformationSiteVO vo=new InformationSiteVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
+		
 	}
 	/**
 	 * 首页的显示（得到name和标题）
