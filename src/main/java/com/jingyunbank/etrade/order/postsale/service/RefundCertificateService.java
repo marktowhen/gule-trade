@@ -7,6 +7,8 @@ import java.util.List;
 
 
 
+import java.util.Objects;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ public class RefundCertificateService implements IRefundCertificateService {
 	@Override
 	@Transactional
 	public void save(List<RefundCertificate> bos) throws DataSavingException {
+		if(Objects.isNull(bos) || bos.size() == 0) return;
+		
 		List<RefundCertificateEntity> entities = new ArrayList<RefundCertificateEntity>();
 		bos.forEach(bo->{
 			RefundCertificateEntity entity = new RefundCertificateEntity();

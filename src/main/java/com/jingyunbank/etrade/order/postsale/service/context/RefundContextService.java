@@ -40,6 +40,7 @@ public class RefundContextService implements IRefundContextService{
 	@Transactional
 	public void request(Refund refund) throws DataSavingException, DataRefreshingException{
 		refundService.save(refund);
+		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.REQUEST, ""));
 		refundCertificateService.save(refund.getCertificates());
 		orderContextService.refund(refund.getOID(), refund.getOGID());
 	}

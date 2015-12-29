@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -117,7 +118,7 @@ public class RefundController {
 	}
 	
 	private static class RIDWithNoteVO{
-		@NotNull
+		@NotBlank
 		private String rid;
 		@NotNull
 		private String note;
