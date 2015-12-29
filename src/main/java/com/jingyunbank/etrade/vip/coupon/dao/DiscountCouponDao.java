@@ -55,4 +55,50 @@ public interface DiscountCouponDao {
 	
 	public int countByAddtime(@Param(value="from") Date addTimeFrom,@Param(value="to") Date addTimeTo);
 
+
+	/**
+	 * 根据卡号模糊查询
+	 * @param cardNum
+	 * @param offset
+	 * @param size
+	 * @return
+	 * 2015年12月29日 qxs
+	 */
+	public List<DiscountCouponEntity> selectListByCardNum(
+			@Param(value="cardNum") String cardNum,
+			@Param(value="offset") long offset, 
+			@Param(value="size") long size); 
+	
+	
+	/**
+	 * 列表
+	 * @param entity
+	 * @param offset
+	 * @param size
+	 * @return
+	 * 2015年12月29日 qxs
+	 */
+	public List<DiscountCouponEntity> selectList(
+			@Param(value="entity") DiscountCouponEntity entity,
+			@Param(value="offset") long offset, 
+			@Param(value="size") long size); 
+
+	/**
+	 * 数量
+	 * @param entity
+	 * @return
+	 * 2015年12月29日 qxs
+	 */
+	public int count(@Param(value="entity") DiscountCouponEntity entity);
+
+	/**
+	 * 修改锁定状态
+	 * @param ids
+	 * @param locked
+	 * @return
+	 * 2015年12月29日 qxs
+	 */
+	public boolean updateLocked(@Param(value="ids")String[] ids,@Param(value="locked") boolean locked); 
+
+
 }

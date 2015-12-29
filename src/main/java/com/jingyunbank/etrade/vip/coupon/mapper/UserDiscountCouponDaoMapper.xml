@@ -18,6 +18,7 @@
 			<result column="start" property="start" javaType="java.util.Date"/>
 			<result column="end" property="end" javaType="java.util.Date"/>
 			<result column="threshhold" property="threshhold" javaType="DECIMAL" />
+			<result column="card_num" property="cardNum" javaType="String" />
 		</association>
 	</resultMap>
 	<sql id="column_list">
@@ -25,7 +26,7 @@
 	</sql>
 	<sql id="user_discount_join_discount_column_list">
 		u.id,u.uid,u.coupon_id,u.add_time,u.consume_time,u.consumed,u.locked,
-		c.code,c.value,c.start,c.end,c.threshhold ,c.discount
+		c.code,c.value,c.start,c.end,c.threshhold ,c.discount,c.card_num 
 	</sql>
 	<insert id="insert">
 		insert into user_discount_coupon (<include refid="column_list"/>)
