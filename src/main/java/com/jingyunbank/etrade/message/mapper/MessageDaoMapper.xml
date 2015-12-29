@@ -101,7 +101,7 @@
 	
 	
 	
-	<select id="getAmount" resultType="int">
+	<select id="count" resultType="int">
 		select count(1) from message m where 1=1 <include refid="baseCondition"/>
 	</select>
 	

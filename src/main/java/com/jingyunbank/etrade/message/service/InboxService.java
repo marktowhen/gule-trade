@@ -101,7 +101,7 @@ public class InboxService implements IInboxService {
 	}
 
 	@Override
-	public Optional<Message> getSingle(String ID) {
+	public Optional<Message> single(String ID) {
 		MessageEntity entity = messageDao.selectSingle(ID);
 		if(entity!=null){
 			return Optional.of(copyEntityToBo(entity, new Message()));
@@ -127,11 +127,11 @@ public class InboxService implements IInboxService {
 	 * 2015年11月13日 qxs
 	 */
 	@Override
-	public int getAmount(String receiveUID) {
+	public int count(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
 		entity.setStatus(STATUS_SUC);
-		return messageDao.getAmount(entity);
+		return messageDao.count(entity);
 	}
 
 	@Override
@@ -147,23 +147,23 @@ public class InboxService implements IInboxService {
 					}).collect(Collectors.toList());
 	}
 	@Override
-	public int getAmountUnread(String receiveUID) {
+	public int countUnread(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
 		entity.setStatus(STATUS_SUC);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(false);
-		return messageDao.getAmount(entity);
+		return messageDao.count(entity);
 	}
 	
 	@Override
-	public int getAmountRead(String receiveUID) {
+	public int countRead(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
 		entity.setStatus(STATUS_SUC);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(true);
-		return messageDao.getAmount(entity);
+		return messageDao.count(entity);
 	}
 
 	@Override
