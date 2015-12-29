@@ -410,7 +410,7 @@
 		<result column="name" property="goodsName" />
 		<result column="price" property="price" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 	</resultMap>
 	<!-- 查询24小时热卖推荐商品列表 -->
 	<select id="selectHot24Goods" resultMap="hot24GoodsEntity">
