@@ -79,7 +79,7 @@
 		g.promotion_price promotion_price,
 		g.price,g.state as state,
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
-		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,b.name as brandname,mt.merchant_name as merchantname
+		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,b.name as brandname,mt.name as merchantname
 	</sql>
 	<select id="selectGoodsByCondition" parameterType="java.util.Map"
 		resultMap="baseGoodsMap">

@@ -33,7 +33,7 @@
 	</select>
 	<!--添加商家信息 -->
 	<insert id="insertMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
-			INSERT INTO merchant(id,merchant_name,merchant_ename,merchant_code,merchant_address,merchant_scale,employee_num,tel,
+			INSERT INTO merchant(id,name,ename,code,address,scale,employee_num,tel,
 			zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level)
 			VALUES 
 			(#{ID},#{merchantName},#{merchantEname},#{merchantCode},#{merchantAddress},#{merchantScale},#{employeeNum},#{tel},
@@ -52,11 +52,11 @@
 	<!--修改商家信息 -->
 	<update id="updateMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
 			update merchant set
-			merchant_name = #{merchantName},
-			merchant_ename = #{merchantEname},
-			merchant_code = #{merchantCode},
-			merchant_address = #{merchantAddress},
-			merchant_scale = #{merchantScale},
+			name = #{merchantName},
+			ename = #{merchantEname},
+			code = #{merchantCode},
+			address = #{merchantAddress},
+			scale = #{merchantScale},
 			employee_num = #{employeeNum},
 			tel = #{tel},
 			zipcode = #{zipcode},
@@ -113,13 +113,13 @@
 	<select id="selectMerchantsByCondition" parameterType="java.util.Map"
 		resultMap="rlt_merchant">
 		select * from merchant  m
-		where m.merchant_name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
+		where m.name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
 		LIMIT #{from} , #{size}
 	</select>
 	<!-- 查询商家数量 -->
 	<select id="selectMerchantsCount" parameterType="java.util.Map" resultType="int">
 		select count(*) from 
 		merchant m
-		where m.merchant_name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
+		where m.name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
 	</select>
 </mapper>

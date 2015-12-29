@@ -220,7 +220,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
 		map.put("size", (int) range.getTo());
-		map.put("merchantName", merchant.getMerchantName());
+		map.put("merchantName", merchant.getName());
 		List<Merchant> showMerchantList = merchantDao.selectMerchantsByCondition(map).stream().map(eo -> {
 			Merchant bo = new Merchant();
 			BeanUtils.copyProperties(eo, bo);
@@ -231,7 +231,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	@Override
 	public int countMerchants(Merchant merchant) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("merchantName", merchant.getMerchantName());
+		map.put("merchantName", merchant.getName());
 		int count = merchantDao.selectMerchantsCount(map);
 		return count;
 	}

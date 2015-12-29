@@ -91,7 +91,7 @@
 		cid as id,g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name,
 		g.price,g.now_price now_price , g.count count, g.volume volume
 		,g.addtime addtime,g.collect_time,g.promotion_price,g.pro_flag,d.specifications,
-		m.merchant_name,m.tel,m.img_path,m.merchant_desc,
+		m.name as merchant_name,m.tel,m.img_path,m.merchant_desc,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>

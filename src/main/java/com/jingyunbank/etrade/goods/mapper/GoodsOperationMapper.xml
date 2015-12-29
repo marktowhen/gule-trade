@@ -122,7 +122,7 @@
 	g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
 	g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
 	g.`title` goodstitle,g.`desc` goodsdesc,
-	m.`merchant_name` merchantname ,b.`name` brandname,t.`name` typename,
+	m.`name` merchantname ,b.`name` brandname,t.`name` typename,
 	
 	d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
 	d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
@@ -318,6 +318,6 @@
 	</select>
 	<!-- 查询所有的店铺 商家 -->
 	<select id="selectMerchant" parameterType="String"  resultMap="baseGoodsMap">
-		SELECT id mid, merchant_name merchantname  FROM merchant 
+		SELECT id mid, name merchantname  FROM merchant 
 	</select>
 </mapper>
