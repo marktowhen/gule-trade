@@ -53,13 +53,13 @@
 	</update>
 	
 	<select id="selectbrand" resultMap="querybrandMap" parameterType="string">
-		SELECT m.merchant_name mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
+		SELECT m.name as mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
 		LEFT JOIN merchant m ON b.mid = m.id
  			WHERE MID=#{mid} AND b.status=1
 	</select>
 	
 	<select id="selectAllBrands" resultMap="querybrandMap">
-		SELECT m.merchant_name mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
+		SELECT m.name as mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
 		LEFT JOIN merchant m ON b.mid = m.id
 		WHERE b.status=1
 	</select>

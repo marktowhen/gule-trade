@@ -200,7 +200,7 @@ public class MerchantController {
 		range.setTo(page.getSize());
 		Merchant merchant = new Merchant();
 		BeanUtils.copyProperties(merchantSearchVO, merchant);
-		
+		merchant.setName(merchantSearchVO.getMerchantName());
 		List<MerchantVO> merchantlist = merchantService.listMerchantsByCondition(merchant, range).stream().map(bo -> {
 			MerchantVO vo = new MerchantVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -214,6 +214,7 @@ public class MerchantController {
 	public Result<Integer> countMerchants(MerchantSearchVO merchantSearchVO) throws Exception {
 		Merchant merchant = new Merchant();
 		BeanUtils.copyProperties(merchantSearchVO, merchant);
+		merchant.setName(merchantSearchVO.getMerchantName());
 		int count = merchantService.countMerchants(merchant);
 		return Result.ok(count);
 	}

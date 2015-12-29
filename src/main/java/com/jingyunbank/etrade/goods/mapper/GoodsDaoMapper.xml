@@ -124,7 +124,7 @@
 		g.`state` state,g.`count` counts,g.`up_time` up_time, 
 		g.`down_time` down_time,g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
 		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
-		g.`title` goodstitle,m.`merchant_name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
+		g.`title` goodstitle,m.`name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
 		<include refid="imgAttr"/>
 		d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
 		d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
@@ -203,7 +203,7 @@
 	<sql id="hotGoodsWhere">
 		g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name as goodsname,
 		g.price,g.now_price now_price , g.count count, g.volume volume,mt.img_path as img_path
-		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,mt.merchant_name as merchant_name,
+		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,mt.name as merchant_name,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
@@ -301,7 +301,7 @@
 	<!-- 根据商品 推荐序号 查询 宝贝推荐的商品 -->
 	<select id="selectRecommend" parameterType="java.util.Map" resultMap="baseGoodsMap">
 	<![CDATA[	
-		SELECT g.id gid,g.name goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
+		SELECT g.id gid,g.name goodsname, m.name as merchantname, i.Thumb_path_1 thumb_path_1
 		,g.price,g.pro_flag,g.promotion_price,d.specifications
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
@@ -337,7 +337,7 @@
 	<!-- 根据商品条件搜索关联店铺 -->
 	<select id="selectMerchantByWhere" parameterType="java.util.Map"
 		resultMap="GoodsMerchantMap">
-		SELECT m.`id` mid ,m.`merchant_name` merchantname,m.img_path m_img, <include refid="nowprice"/>
+		SELECT m.`id` mid ,m.`name` merchantname,m.img_path m_img, <include refid="nowprice"/>
 		m.merchant_desc m_desc, COUNT(g.id) counts FROM goods g
 		LEFT JOIN
 		goods_detail d ON d.gid = g.id
@@ -498,7 +498,7 @@
 	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity">
 	<![CDATA[	
 		SELECT g.id gid,g.name goodsname,g.price,g.promotion_price as promotionPrice,g.now_price,
-		g.volume as volume, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1,g.pro_flag
+		g.volume as volume, m.name merchantname, i.Thumb_path_1 thumb_path_1,g.pro_flag
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
 		LEFT JOIN goods_img i ON i.gid = g.id
