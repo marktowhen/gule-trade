@@ -51,7 +51,7 @@ public interface MessageDao {
 	 * @return
 	 * 2015年11月13日 qxs
 	 */
-	public int getAmount(@Param(value="entity") MessageEntity entity);
+	public int count(@Param(value="entity") MessageEntity entity);
 	
 	
 }

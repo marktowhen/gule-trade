@@ -90,7 +90,7 @@ public class MerchantController {
 		merchantVO.setID(KeyGen.uuid());
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);
-		if(merchantContextService.saveMerchant(merchant)){
+		if(merchantContextService.save(merchant)){
 			return Result.ok(merchantVO);
 		}
 		return Result.ok(merchantVO);
@@ -134,7 +134,7 @@ public class MerchantController {
 		Merchant merchant=Merchant.getInstance();
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型
-		if(this.merchantContextService.updateMerchant(merchant)){
+		if(this.merchantContextService.refresh(merchant)){
 			return Result.ok(merchantVO);
 		}
 		return Result.ok(merchantVO);
@@ -173,7 +173,7 @@ public class MerchantController {
 	 */
 	@RequestMapping(value="/info/{mid}",method=RequestMethod.GET)
 	public Result<?> getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws Exception{
-		Optional<Merchant> merchant= merchantContextService.getMerchantInfoByMid(mid);
+		Optional<Merchant> merchant= merchantContextService.singleByMID(mid);
 		if(merchant.isPresent()){
 			Merchant bo = merchant.get();
 			MerchantVO vo = new MerchantVO();
