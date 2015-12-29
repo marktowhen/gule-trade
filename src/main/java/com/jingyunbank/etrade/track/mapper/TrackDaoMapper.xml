@@ -314,7 +314,7 @@
 		 select 
 		 g.id, g.mid, g.bid, g.name, g.code, g.tid, g.price, g.promotion_price, g.now_price, g.state, g.up_time, 
 			g.down_time, g.count, g.volume, g.addtime, g.postage, g.sub_volume_type, g.barCode, g.desc, g.title, g.admin_sort,
-			 g.merchant_sort, g.expand_sort, g.record_sort, g.pro_start, g.pro_end, g.pro_flag,
+			 g.merchant_sort, g.expand_sort, g.record_sort, g.pro_start, g.pro_end, g.pro_flag 
 		 from (
 			select a.uid,a.gid, sum(count) as r_count From sales_records a where  exists
 			(

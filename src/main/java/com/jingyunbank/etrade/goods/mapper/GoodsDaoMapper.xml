@@ -492,7 +492,7 @@
 		<result column="goodsname" property="goodsName" />
 		<result column="price" property="price" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 	</resultMap>
 	<!-- 查询商品详情页的宝贝排行  -->
 	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity">

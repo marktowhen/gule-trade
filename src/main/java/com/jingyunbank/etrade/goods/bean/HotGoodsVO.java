@@ -73,6 +73,7 @@ public class HotGoodsVO {
 		this.MID = goods.getMID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
 		this.merchantVO.setID(goods.getMID());
+		this.merchantVO.setName(goods.getMerchantName());
 		this.goodsList = goodslist.stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			try {
