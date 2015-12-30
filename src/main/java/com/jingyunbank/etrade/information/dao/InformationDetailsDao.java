@@ -23,6 +23,6 @@ public interface InformationDetailsDao {
 	
 	public InformationDetailsEntity selectDetailByid(String id);
 	
-	public List<InformationDetailsEntity> selectDetail();
+	public List<InformationDetailsEntity> selectDetail(@Param(value="from") long from,@Param(value="size") long size);
 	
 }
