@@ -25,6 +25,7 @@ public class RedisConfig {
 		JedisConnectionFactory rcf = new JedisConnectionFactory(config);
 		rcf.setHostName("101.200.215.25");
 		rcf.setPort(6379);
+		rcf.setPassword("testredisserver");
 		return rcf;
 	}
 

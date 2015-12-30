@@ -1,7 +1,12 @@
 package com.jingyunbank.etrade.order.postsale.service.context;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,26 +67,43 @@ public class RefundContextService implements IRefundContextService{
 			return;
 		}
 		Refund refund = candidate.get();
-		refundService.refreshStatus(RID, RefundStatusDesc.CANCEL);
+		refundService.refreshStatus(Arrays.asList(RID), RefundStatusDesc.CANCEL);
 		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.CANCEL, operator, note));
 		orderContextService.cancelRefund(refund.getOID(), refund.getOGID());
 	}
 
 	@Override
-	public void accept(String RID, String operator, String note) throws DataRefreshingException, DataSavingException {
-		Optional<Refund> candidate = refundService.single(RID);
-		if(!candidate.isPresent()){
-			return;
+	public boolean accept(List<String> RIDs, String operator, String note) throws DataRefreshingException, DataSavingException {
+		List<Refund> refunds = refundService.list(RIDs);
+		if(refunds.size() == 0){
+			return false;
 		}
-		Refund refund = candidate.get();
-		boolean returnGoods = refund.isReturnGoods();
-		if(returnGoods){
-			refundService.refreshStatus(RID, RefundStatusDesc.ACCEPT);
-			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.ACCEPT, operator, note));
-		}else{
-			refundService.refreshStatus(RID, RefundStatusDesc.DONE);
-			refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, operator, note));
+		if(refunds.stream().anyMatch(refund -> !RefundStatusDesc.REQUEST_CODE.equals(refund.getStatusCode()))){
+			return false;
 		}
+		List<Refund> returns = refunds.stream().filter(refund->refund.isReturnGoods()).collect(Collectors.toList());
+		//退货
+		if(Objects.nonNull(returns) && returns.size() > 0){
+			List<String> rids = returns.stream().map(x->x.getID()).collect(Collectors.toList());
+			refundService.refreshStatus(rids, RefundStatusDesc.ACCEPT);
+			List<RefundTrace> traces = new ArrayList<RefundTrace>();
+			for (Refund refund : returns) {
+				traces.add(createRefundTrace(refund, RefundStatusDesc.ACCEPT, operator, note));
+			}
+			refundTraceService.save(traces);
+		}
+		//退款
+		refunds = refunds.stream().filter(refund->!refund.isReturnGoods()).collect(Collectors.toList());
+		if(Objects.nonNull(refunds) && refunds.size() > 0){
+			List<String> rids = returns.stream().map(x->x.getID()).collect(Collectors.toList());
+			refundService.refreshStatus(rids, RefundStatusDesc.DONE);
+			List<RefundTrace> traces = new ArrayList<RefundTrace>();
+			for (Refund refund : returns) {
+				traces.add(createRefundTrace(refund, RefundStatusDesc.DONE, operator, note));
+			}
+			refundTraceService.save(traces);
+		}
+		return true;
 	}
 
 	@Override
@@ -91,7 +113,7 @@ public class RefundContextService implements IRefundContextService{
 			return;
 		}
 		Refund refund = candidate.get();
-		refundService.refreshStatus(RID, RefundStatusDesc.DENIED);
+		refundService.refreshStatus(Arrays.asList(RID), RefundStatusDesc.DENIED);
 		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DENIED, operator, note));
 	}
 
@@ -102,21 +124,30 @@ public class RefundContextService implements IRefundContextService{
 			return;
 		}
 		Refund refund = candidate.get();
-		refundService.refreshStatus(refund.getID(), RefundStatusDesc.RETURN);
+		refundService.refreshStatus(Arrays.asList(refund.getID()), RefundStatusDesc.RETURN);
 		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.RETURN, operator, logistic.getReceiver()));
 		refundLogisticService.save(logistic);
 	}
 
 	@Override
-	public void done(String RID, String operator) throws DataRefreshingException, DataSavingException {
-		Optional<Refund> candidate = refundService.single(RID);
-		if(!candidate.isPresent()){
-			return;
+	public boolean done(List<String> RIDs, String operator) throws DataRefreshingException, DataSavingException {
+		List<Refund> refunds = refundService.list(RIDs);
+		if(refunds.size() == 0){
+			return false;
 		}
-		Refund refund = candidate.get();
-		refundService.refreshStatus(RID, RefundStatusDesc.DONE);
-		refundTraceService.save(createRefundTrace(refund, RefundStatusDesc.DONE, operator, ""));
-		orderContextService.refundDone(refund.getOID(), refund.getOGID());
+		if(refunds.stream().anyMatch(refund -> !RefundStatusDesc.RETURN_CODE.equals(refund.getStatusCode()))){
+			return false;
+		}
+		List<String> rids = refunds.stream().map(x->x.getID()).collect(Collectors.toList());
+		refundService.refreshStatus(rids, RefundStatusDesc.DONE);
+		List<RefundTrace> traces = new ArrayList<RefundTrace>();
+		for (Refund refund : refunds) {
+			traces.add(createRefundTrace(refund, RefundStatusDesc.DONE, operator, ""));
+		}
+		refundTraceService.save(traces);
+		List<String> ogids = refunds.stream().map(x->x.getOGID()).collect(Collectors.toList());
+		orderContextService.refundDone(ogids);
+		return true;
 	}
 	
 	//创建订单新建追踪状态

@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.postsale.controller;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -146,7 +147,7 @@ public class RefundController {
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<String> accept(@RequestParam(required=true) String rid, @RequestParam(required=true) String note, HttpSession session) throws Exception{
 		
-		refundContextService.accept(rid, "卖家", note);
+		refundContextService.accept(Arrays.asList(rid), "卖家", note);
 		return Result.ok();
 	}
 	
@@ -168,7 +169,7 @@ public class RefundController {
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<String> done(@RequestParam(required=true) String rid, HttpSession session) throws Exception{
 		
-		refundContextService.done(rid, "卖家");
+		refundContextService.done(Arrays.asList(rid), "卖家");
 		return Result.ok();
 	}
 

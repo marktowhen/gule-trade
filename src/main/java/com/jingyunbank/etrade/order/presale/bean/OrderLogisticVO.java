@@ -2,8 +2,9 @@ package com.jingyunbank.etrade.order.presale.bean;
 
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * 订单物流信息，卖家将发送的快递单号填入该
@@ -12,18 +13,18 @@ import javax.validation.constraints.Size;
 public class OrderLogisticVO {
 	
 	private String ID;
-	@NotNull
+	@NotBlank
 	@Size(min=22, max=22)
 	private String OID;
-	@NotNull
-	@Size(max=20)
+	@NotBlank
+	@Size(max=20, min=10)
 	private String expressno;
-	@NotNull
+	@NotBlank
 	private String expressName;
 	private Date addtime;
-	@NotNull
+	@NotBlank
 	private String typeCode;
-	@NotNull
+	@NotBlank
 	private String typeName;
 	
 	public String getID() {

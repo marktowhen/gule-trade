@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.order.postsale.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -13,7 +14,7 @@ public interface RefundDao {
 
 	public void update(RefundEntity entity) throws Exception;
 	
-	public void updateStatus(@Param("RID")String rID, @Param("status") RefundStatusDesc status) throws Exception;
+	public void updateStatus(@Param("RIDs")List<String> rIDs, @Param("status") RefundStatusDesc status) throws Exception;
 
 	public RefundEntity selectOne(String rid);
 
@@ -39,5 +40,9 @@ public interface RefundDao {
 	 * @return
 	 */
 	public RefundEntity selectOneByOGID(String ogid);
+
+	public List<RefundEntity> selectByRIDs(@Param("rids")List<String> rids);
+
+	public List<RefundEntity> selectBefore(@Param("deadline")Date deadline, @Param("statuscode")String code);
 	
 }

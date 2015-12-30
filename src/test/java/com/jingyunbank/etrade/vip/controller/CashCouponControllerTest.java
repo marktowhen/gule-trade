@@ -31,10 +31,10 @@ public class CashCouponControllerTest extends TestCaseBase{
 		public void testSave() throws Exception{
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			CashCouponVO vo = new CashCouponVO();
-			vo.setValue(new BigDecimal(100));
+			vo.setValue(new BigDecimal(1000));
 			vo.setStart(format.parse("2015-01-01 00:00:00"));
-			vo.setEnd(format.parse("2025-1-1 00:00:00"));
-			vo.setThreshhold(new BigDecimal(100));
+			vo.setEnd(format.parse("2025-12-31 23:59:59"));
+			vo.setThreshhold(new BigDecimal(0));
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
@@ -60,14 +60,14 @@ public class CashCouponControllerTest extends TestCaseBase{
 		public void testSaveMuti() throws Exception{
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			CashCouponVO vo = new CashCouponVO();
-			vo.setValue(new BigDecimal(50));
+			vo.setValue(new BigDecimal(200));
 			vo.setStart(format.parse("2015-01-01 00:00:00"));
-			vo.setEnd(format.parse("2025-1-1 00:00:00"));
-			vo.setThreshhold(new BigDecimal(100));
+			vo.setEnd(format.parse("2025-12-31 23:59:59"));
+			vo.setThreshhold(new BigDecimal(0));
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/vip/coupon/cashcoupon/20")
+					 post("/api/vip/coupon/cashcoupon/500")
 					 .content(json)
 					.sessionAttr(ServletBox.LOGIN_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)

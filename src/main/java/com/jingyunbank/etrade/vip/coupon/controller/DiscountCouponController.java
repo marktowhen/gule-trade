@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.vip.coupon.controller;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -21,13 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jingyunbank.core.KeyGen;
-import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -80,8 +80,6 @@ public class DiscountCouponController {
 				|| vo.getEnd().before(new Date())){
 			return Result.fail("有效期限设置错误");
 		}
-		vo.setID(KeyGen.uuid());
-		vo.setCode(String.valueOf(UniqueSequence.next18()));
 		Users manager = new Users();
 		manager.setID(ServletBox.getLoginUID(request));
 		discountCouponService.save(getBoFromVo(vo), manager);
@@ -160,6 +158,9 @@ public class DiscountCouponController {
 		return Result.fail("未知错误");
 	}
 	
+	
+	
+	
 	/**
 	 * 列表查询
 	 * @param vo
@@ -167,20 +168,22 @@ public class DiscountCouponController {
 	 * @return
 	 * 2015年11月19日 qxs
 	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/list", method=RequestMethod.GET)
-	public Result<List<DiscountCouponVO>> getList(Date addtimeFrom, Date addtimeTo, Page page){
-		Range range = null;
-		if(page!=null){
-			range = new Range();
-			range.setFrom(page.getOffset());
-			range.setTo(page.getOffset()+page.getSize());
-		}
-		return Result.ok(discountCouponService.list(addtimeFrom, addtimeTo, range)
+	@RequestMapping(value="/list/{from}/{size}", method=RequestMethod.GET)
+	public Result<List<DiscountCouponVO>> list(
+			@PathVariable long from,
+			@PathVariable long size,
+			@RequestParam(required=false) String cardNum,
+			@RequestParam(required=false) BigDecimal value,
+			@RequestParam(required=false) Boolean locked){
+		Range range =  new Range();
+		range.setFrom(from);
+		range.setTo(from + size);
+		return Result.ok(discountCouponService.list(cardNum, value,locked , range)
 		 	.stream().map( bo ->{
 		 		return getVoFromBo(bo);
 		 	}).collect(Collectors.toList()));
 	}
+	
 	/**
 	 * 查询数量
 	 * @param vo
@@ -188,10 +191,28 @@ public class DiscountCouponController {
 	 * @return
 	 * 2015年11月19日 qxs
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value="/amount", method=RequestMethod.GET)
-	public Result<Integer> getAmount(Date addtimeFrom, Date addtimeTo){
-		return Result.ok(discountCouponService.count(addtimeFrom, addtimeTo));
+	public Result<Integer> getAmount(
+			@RequestParam(required=false) String cardNum,
+			@RequestParam(required=false) BigDecimal value,
+			@RequestParam(required=false) boolean locked){
+		return Result.ok(discountCouponService.count(cardNum, value,locked));
+	}
+	
+	/**
+	 * 解锁
+	 * @param ids
+	 * @return
+	 * 2015年12月29日 qxs
+	 */
+	@RequestMapping(value="/unlock/{ids}", method=RequestMethod.PUT)
+	public Result<String> unlock(@PathVariable String ids){
+		if(!StringUtils.isEmpty(ids)){
+			discountCouponService.unlock(ids.split(","));
+			return Result.ok("");
+		}
+		
+		return Result.fail("请选择要解锁的券信息");
 	}
 	private DiscountCoupon getBoFromVo(DiscountCouponVO vo) {
 		if(vo!=null){
