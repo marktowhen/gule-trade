@@ -38,7 +38,7 @@ public class GoodsVO implements Serializable{
 		private BigDecimal nowPrice; // 现价
 		private String disCount; // 折扣
 		private BigDecimal discountPrice; // 折扣价
-		private String count; // 库存
+		private int count; // 库存
 		private String volume; // 销量
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date addTime;// 商品添加时间
@@ -194,10 +194,11 @@ public class GoodsVO implements Serializable{
 		public void setDiscountPrice(BigDecimal discountPrice) {
 			this.discountPrice = discountPrice;
 		}
-		public String getCount() {
+		
+		public int getCount() {
 			return count;
 		}
-		public void setCount(String count) {
+		public void setCount(int count) {
 			this.count = count;
 		}
 		public String getVolume() {
