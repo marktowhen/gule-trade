@@ -14,7 +14,7 @@ public class GoodsStockShowVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private String GID; 
-	private String count;
+	private int count;
 	
 	public String getGID() {
 		return GID;
@@ -22,13 +22,13 @@ public class GoodsStockShowVO implements Serializable{
 	public void setGID(String gID) {
 		GID = gID;
 	}
-	public String getCount() {
+	public int getCount() {
 		return count;
 	}
-	public void setCount(String count) {
+	public void setCount(int count) {
 		this.count = count;
 	}
-	
+
 	
 	
 	
