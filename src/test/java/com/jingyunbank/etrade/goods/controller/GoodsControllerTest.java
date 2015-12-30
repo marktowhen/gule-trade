@@ -76,6 +76,15 @@ public class GoodsControllerTest extends TestCaseBase{
 		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 		.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
+	
+	@Test
+	public void test11() throws Exception {
+		getMockMvc().perform(get("/api/goods/stock/list").characterEncoding("utf-8")
+				.param("gids", "1").param("gids", "2"))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+		.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
 	@Test
 	public void test6() throws Exception {
 		getMockMvc().perform(get("/api/goods/merchantGoodsByWhere4/list").characterEncoding("utf-8")

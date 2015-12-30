@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.goods.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity;
 import com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity;
@@ -165,6 +167,12 @@ public interface GoodsDao {
 	 */
 	public List<SalesRecordEntity> selectSalesRecords(Map<String, Object> map) throws Exception;
 	
-	
+	/**
+	 * 获取商品的库存  by gid
+	 * @param gids
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsDaoEntity> selectGoodsStock(@Param("gids") List<String> gids) throws Exception;
 
 }
