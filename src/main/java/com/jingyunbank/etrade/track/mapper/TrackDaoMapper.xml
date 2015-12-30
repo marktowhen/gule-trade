@@ -281,6 +281,7 @@
 		<result column="id" property="GID"/>
 		<result column="name" property="goodsName"/>
 		<result column="pro_flag" property="onSale" />
+		<result column="thumb_path_1" property="thumbpath1" />
 	</resultMap>
 	<select id="selectRecommendGoods"  resultMap="rltRecommendGoods">
 			select 
