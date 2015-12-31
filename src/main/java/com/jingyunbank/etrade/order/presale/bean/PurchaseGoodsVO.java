@@ -28,8 +28,6 @@ public class PurchaseGoodsVO {
 	@Min(value=1)
 	private int count;
 	
-	private int point;
-	
 	public String getMID() {
 		return MID;
 	}
@@ -71,11 +69,5 @@ public class PurchaseGoodsVO {
 	}
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
-	}
-	public int getPoint() {
-		return point;
-	}
-	public void setPoint(int point) {
-		this.point = point;
 	}
 }

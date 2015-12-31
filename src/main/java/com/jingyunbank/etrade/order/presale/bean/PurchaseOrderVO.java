@@ -33,8 +33,6 @@ public class PurchaseOrderVO {
 	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal price = new BigDecimal(0);
 	
-	private int point = 0;//赚取积分
-
 	private Date addtime;
 	
 	private String note;
@@ -130,13 +128,5 @@ public class PurchaseOrderVO {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
-	}
-
-	public int getPoint() {
-		return point;
-	}
-
-	public void setPoint(int point) {
-		this.point = point;
 	}
 }

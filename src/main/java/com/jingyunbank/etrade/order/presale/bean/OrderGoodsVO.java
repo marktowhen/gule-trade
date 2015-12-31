@@ -21,8 +21,6 @@ public class OrderGoodsVO {
 	private BigDecimal couponReduce;//优惠减免价格
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
-	private int point;//赚取积分
-	
 	//to show
 	private String MID;
 	private String mname;
@@ -130,11 +128,5 @@ public class OrderGoodsVO {
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
-	}
-	public int getPoint() {
-		return point;
-	}
-	public void setPoint(int point) {
-		this.point = point;
 	}
 }

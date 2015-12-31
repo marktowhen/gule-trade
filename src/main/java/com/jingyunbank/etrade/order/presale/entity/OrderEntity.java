@@ -33,7 +33,6 @@ public class OrderEntity {
 	private BigDecimal postage;
 	private BigDecimal payout;
 	private String note;
-	private int point;//赚取积分
 	private List<OrderGoodsEntity> goods = new ArrayList<OrderGoodsEntity>();
 	
 	public String getID() {
@@ -191,12 +190,6 @@ public class OrderEntity {
 	}
 	public void setUname(String uname) {
 		this.uname = uname;
-	}
-	public int getPoint() {
-		return point;
-	}
-	public void setPoint(int point) {
-		this.point = point;
 	}
 	public BigDecimal getCouponReduce() {
 		return couponReduce;

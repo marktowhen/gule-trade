@@ -30,7 +30,6 @@
 		<result column="payout" property="payout" jdbcType="DECIMAL"/>
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
-		<result column="point" property="point"  jdbcType="INTEGER"/>
 		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderGoodsEntity">
 			<result column="ogid" property="ID" javaType="String"/>
 			<result column="gid" property="GID" javaType="String"/>
@@ -48,7 +47,7 @@
 	<sql id="orders_columns">
 		id, orderno, receiver, uid, uname, mid, mname, address, mobile, zipcode, addtime, 
 		paytype_code, paytype_name, deliverytype_code, deliverytype_name, coupon_id, coupon_type, coupon_reduce,
-		status_code, status_name, price, payout, postage, note, invoice_type, invoice_title, point
+		status_code, status_name, price, payout, postage, note, invoice_type, invoice_title
 	</sql>
 	<sql id="payments_join_orders_columns">
 		o.id, o.orderno, o.receiver, o.uid, o.uname, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
@@ -74,7 +73,7 @@
 				 #{mobile}, #{zipcode}, #{addtime}, #{paytypeCode}, #{paytypeName}, 
 				 #{deliveryTypeCode}, #{deliveryTypeName}, #{couponID}, #{couponType}, #{couponReduce},
 				 #{statusCode}, #{statusName}, #{price}, #{payout}, #{postage}, #{note},
-				 #{invoiceType}, #{invoiceTitle}, #{point}
+				 #{invoiceType}, #{invoiceTitle}
 			 )
 	</insert>
 	<insert id="insertMany">
@@ -87,7 +86,7 @@
 			 #{order.mobile}, #{order.zipcode}, #{order.addtime},  #{order.paytypeCode}, #{order.paytypeName}, 
 			 #{order.deliveryTypeCode}, #{order.deliveryTypeName}, #{order.couponID}, #{order.couponType}, #{order.couponReduce},
 			 #{order.statusCode}, #{order.statusName}, #{order.price}, #{order.payout}, #{order.postage}, #{order.note},
-			 #{order.invoiceType}, #{order.invoiceTitle}, #{order.point}
+			 #{order.invoiceType}, #{order.invoiceTitle}
 			)
 		</foreach>
 	</insert>

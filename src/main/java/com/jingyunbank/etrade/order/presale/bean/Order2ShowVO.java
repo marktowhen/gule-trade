@@ -30,7 +30,6 @@ public class Order2ShowVO {
 	private String statusCode;
 	private String statusName;
 	private String note;
-	private int point;//赚取积分
 	private List<OrderGoodsVO> goods = new ArrayList<OrderGoodsVO>();//商品图片路径
 	
 	public String getID() {
@@ -170,12 +169,6 @@ public class Order2ShowVO {
 	}
 	public void setInvoiceTitle(String invoiceTitle) {
 		this.invoiceTitle = invoiceTitle;
-	}
-	public int getPoint() {
-		return point;
-	}
-	public void setPoint(int point) {
-		this.point = point;
 	}
 	public BigDecimal getCouponReduce() {
 		return couponReduce;
