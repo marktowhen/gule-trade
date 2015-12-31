@@ -1,6 +1,8 @@
 package com.jingyunbank.etrade.goods.bean;
 
 import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
 /**
  *  
 * Title: 商品类型VO
@@ -10,19 +12,37 @@ import java.io.Serializable;
 public class GoodsTypesVO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private String TID; // 所属属性id
-	private String typeName; // 所属类型
-	public String getTID() {
-		return TID;
+	/**主键*/
+	private String ID;
+	/**类型名称*/
+	@NotNull(message="类别名称不能为空")
+	private String name;
+	
+	private boolean status;
+	private int adminsort;
+	public String getID() {
+		return ID;
 	}
-	public void setTID(String tID) {
-		TID = tID;
+	public void setID(String iD) {
+		ID = iD;
 	}
-	public String getTypeName() {
-		return typeName;
+	public String getName() {
+		return name;
 	}
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
+	public void setName(String name) {
+		this.name = name;
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	public int getAdminsort() {
+		return adminsort;
+	}
+	public void setAdminsort(int adminsort) {
+		this.adminsort = adminsort;
 	}
 	
 	

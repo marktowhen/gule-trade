@@ -79,7 +79,7 @@
 	<insert id="insertGoods" parameterType="com.jingyunbank.etrade.goods.entity.GoodsEntity">
 		INSERT INTO `goods` (<include refid="goodsSql"/>)
 		VALUES(
-			#{ID},#{MID},#{BID},#{name},#{code},#{tid},#{price},#{promotionPrice},#{now_price},#{state},
+			#{ID},#{MID},#{BID},#{name},#{code},#{tid},#{price},#{promotionPrice},#{nowprice},#{state},
 			#{upTime},#{downTime},#{count},#{volume},#{addTime},#{postage},#{subVolumeType},#{barCode},
 			#{goodsDesc},#{goodsTitle},#{adminSort},#{merchantSort},#{expandSort},#{recordSort},
 			#{onSaleBeginTime},#{onSaleEndTime},#{onSale}

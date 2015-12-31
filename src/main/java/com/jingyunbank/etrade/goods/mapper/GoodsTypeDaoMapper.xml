@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.goods.dao.GoodsTypeDao">
+	
+	<resultMap type="com.jingyunbank.etrade.goods.entity.GoodsTypeEntity" id="goodsTypeMap">
+		<result column="id" property="ID" />
+		<result column="name" property="name" />
+		<result column="status" property="status" />
+		<result column="admin_sort" property="adminsort" />
+	</resultMap>
+	<insert id="insertGoodsType" parameterType="com.jingyunbank.etrade.goods.entity.GoodsTypeEntity">
+	INSERT INTO `goods_type` ( `id`,`name`,`status`,`admin_sort`) VALUES
+  	(
+  	#{ID},#{name},#{status},#{adminsort}
+  	)
+	</insert>
+	
+	<select id="selectOneGoodsType" parameterType="string" resultMap="goodsTypeMap">
+		SELECT t.`id` id, t.`name` name, t.`status` status, t.`admin_sort` admin_sort 
+		FROM goods_type  t WHERE t.id= #{tid}
+	</select>
+	
+	<update id="updateGoodsType" parameterType="com.jingyunbank.etrade.goods.entity.GoodsTypeEntity">
+		UPDATE `goods_type` t SET
+		 <if test="name !=null and name !=''">
+			 t.`name` =  #{name},
+		 </if>
+		  <if test="status !=null and status !=''">
+			  t.`status` =  #{status},
+		 </if>
+		 <if test="adminsort >= 0 ">
+			    t.`admin_sort` = #{adminsort}
+		 </if>
+		WHERE `id` = #{ID}
+	</update>
+	
+	<select id="selectGoodsTypes" resultMap="goodsTypeMap" parameterType="string">
+		SELECT  id,name,status,admin_sort from goods_type
+ 			WHERE name LIKE CONCAT(CONCAT('%', #{name}), '%')
+ 			and status = '1'
+	</select>
+	
+	<select id="selectAllGoodsTypes" resultMap="goodsTypeMap">
+		SELECT  id,name,status,admin_sort from goods_type
+ 			WHERE status = '1'
+	</select>
+
+
+	<update id="delGoodsType" parameterType="string">
+		UPDATE `goods_type` b SET  b.`status` = FALSE
+		WHERE `id` = #{tid}
+	</update>
+</mapper>

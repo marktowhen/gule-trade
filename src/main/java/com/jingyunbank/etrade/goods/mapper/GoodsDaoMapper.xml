@@ -506,6 +506,18 @@
 		]]>
 	</select>
 	
-
+	<!-- 获取商品的库存 -->
+	<select id="selectGoodsStock" parameterType="string"
+		resultMap="baseGoodsMap">
+		SELECT g.id gid,g.count counts  FROM goods g
+		WHERE 1=1 
+		<if test="gids !='' and gids !=null ">
+					AND g.id IN
+					<foreach collection="gids" index="index" item="item"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+		</if>
+	</select>
 	
 </mapper>
