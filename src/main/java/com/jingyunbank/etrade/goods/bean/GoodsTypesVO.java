@@ -18,6 +18,9 @@ public class GoodsTypesVO implements Serializable{
 	@NotNull(message="类别名称不能为空")
 	private String name;
 	
+	private String TID;
+	private String typeName;
+	
 	private boolean status;
 	private int adminsort;
 	public String getID() {
@@ -43,6 +46,18 @@ public class GoodsTypesVO implements Serializable{
 	}
 	public void setAdminsort(int adminsort) {
 		this.adminsort = adminsort;
+	}
+	public String getTID() {
+		return TID;
+	}
+	public void setTID(String tID) {
+		TID = tID;
+	}
+	public String getTypeName() {
+		return typeName;
+	}
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
 	}
 	
 	
