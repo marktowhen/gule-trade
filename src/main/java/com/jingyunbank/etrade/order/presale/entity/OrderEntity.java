@@ -26,12 +26,14 @@ public class OrderEntity {
 	private String invoiceTitle;
 	private String couponID;
 	private String couponType;
+	private BigDecimal couponReduce;
 	private BigDecimal price;//订单总价
 	private String statusCode;//订单状态id
 	private String statusName;
 	private BigDecimal postage;
 	private BigDecimal payout;
 	private String note;
+	private int point;//赚取积分
 	private List<OrderGoodsEntity> goods = new ArrayList<OrderGoodsEntity>();
 	
 	public String getID() {
@@ -190,5 +192,16 @@ public class OrderEntity {
 	public void setUname(String uname) {
 		this.uname = uname;
 	}
-	
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
+	public BigDecimal getCouponReduce() {
+		return couponReduce;
+	}
+	public void setCouponReduce(BigDecimal couponReduce) {
+		this.couponReduce = couponReduce;
+	}
 }

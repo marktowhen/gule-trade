@@ -32,6 +32,8 @@ public class PurchaseOrderVO {
 	@NotNull//订单使用卡券前的总价（包含邮费）
 	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal price = new BigDecimal(0);
+	
+	private int point = 0;//赚取积分
 
 	private Date addtime;
 	
@@ -128,5 +130,13 @@ public class PurchaseOrderVO {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+
+	public void setPoint(int point) {
+		this.point = point;
 	}
 }
