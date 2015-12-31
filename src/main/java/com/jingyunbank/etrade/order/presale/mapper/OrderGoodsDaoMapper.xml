@@ -52,7 +52,7 @@
 		from order_goods og
 		left join goods_img img on og.gid = img.gid
 		left join orders o on og.oid = o.id
-		where og.id = #{ID}
+		where og.id=#{id}	
 	</select>
 	<update id="updateStatus">
 		update order_goods og
@@ -65,7 +65,10 @@
 	<update id="updateGoodStatus">
 		update order_goods og
 		set og.status_code = #{status.code}
-		where og.id = #{ID}
+		where og.id in
+		<foreach collection="IDs" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
 	</update>
 	<select id="count" resultType="int">
 		select count(id)

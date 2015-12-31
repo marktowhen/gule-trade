@@ -67,10 +67,7 @@ public class UserInfoController {
 	public Result<UserInfoVO> selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
 		String uid = ServletBox.getLoginUID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
-		
-		
 		if(userinfo.isPresent()){
-			
 			UserInfo userInfo=userinfo.get();
 			UserInfoVO userInfoVO=new UserInfoVO();
 			BeanUtils.copyProperties(userInfo, userInfoVO);

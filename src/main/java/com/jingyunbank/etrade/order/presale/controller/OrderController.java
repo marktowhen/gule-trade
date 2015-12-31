@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -28,6 +29,8 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
+import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
@@ -46,6 +49,8 @@ public class OrderController {
 	private IOrderContextService orderContextService;
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
+	@Autowired
+	private IGoodsService goodsService;
 	
 	/**
 	 * 订单确认并提交<br>
@@ -76,7 +81,16 @@ public class OrderController {
 		String couponType = purchase.getCouponType();
 		
 		List<Orders> orders = populateOrderData(purchase, session);
-		
+		List<String> gids = new ArrayList<String>();
+		for (Orders order : orders) {
+			List<String> igids = order.getGoods().stream().map(gs -> gs.getGID()).collect(Collectors.toList());
+			gids.addAll(igids);
+		}
+		List<ShowGoods> g = goodsService.listGoodsStcok(gids);
+		List<Integer> gstock = g.stream().map(x->x.getCount()).collect(Collectors.toList());
+		if(gstock.stream().anyMatch(x->x <= 0)){
+			return Result.fail("部分商品暂时无货，请检查后重新提交订单。");
+		}
 		//订单价格简单校验
 		//订单价应担匹配商品总价及邮费计算规则
 		boolean goodData = verifyOrderData(orders);

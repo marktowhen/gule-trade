@@ -45,7 +45,7 @@
 		  <if test="desc !=null and desc !=''">
 			  b.`desc` =  #{desc},
 		 </if>
-		<if test="admin_sort >= 0 ">
+		<if test="adminsort >= 0 ">
 			    b.`admin_sort` = #{adminsort},
 		 </if>
 		b.`id` = #{ID}

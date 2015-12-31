@@ -306,4 +306,14 @@ public class GoodsService implements IGoodsService {
 		return typeslist;
 	}
 
+	@Override
+	public List<ShowGoods> listGoodsStcok(List<String> gids) throws Exception {
+		List<ShowGoods> stocklist = goodsDao.selectGoodsStock(gids).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return stocklist;
+	}
+
 }

@@ -153,8 +153,11 @@ public class InformationDetailsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/information/alldetail",method=RequestMethod.GET)
-	public Result<List<InformationDetailsVO>> selectDetails() throws Exception{
-		return Result.ok(informationDetailsService.list()
+	public Result<List<InformationDetailsVO>> selectDetails(@RequestParam int from,@RequestParam int size) throws Exception{
+		Range range = new Range();
+		range.setFrom(from);
+		range.setTo(from+size);
+		return Result.ok(informationDetailsService.list(range)
 				.stream().map(bo -> {
 				
 				InformationDetailsVO vo=new InformationDetailsVO();
