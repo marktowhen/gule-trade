@@ -1,8 +1,6 @@
 package com.jingyunbank.etrade.vip.coupon.controller;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +11,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +29,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
+import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponAddVO;
 import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponVO;
 
 @RestController
@@ -42,20 +38,6 @@ public class DiscountCouponController {
 
 	@Autowired
 	private IDiscountCouponService discountCouponService;
-	/**
-	 * 将形如yyyy-MM-dd HH:mm:ss的时间格式转正date类型
-	 * @param request
-	 * @param binder
-	 * @throws Exception
-	 * 2015年11月16日 qxs
-	 */
-	@InitBinder  
-    protected void initBinder(HttpServletRequest request,  
-            ServletRequestDataBinder binder) throws Exception {  
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-            CustomDateEditor editor = new CustomDateEditor(df, false);  
-            binder.registerCustomEditor(Date.class, editor);  
-    } 
 	
 	/**
 	 * 新增一张券
@@ -68,7 +50,7 @@ public class DiscountCouponController {
 	 */
 	//@AuthBeforeOperation
 	@RequestMapping(value = "/" ,method= RequestMethod.POST)
-	public Result<String> add(HttpServletRequest request, @RequestBody @Valid DiscountCouponVO vo,BindingResult valid) throws Exception{
+	public Result<String> add(HttpServletRequest request, @RequestBody @Valid DiscountCouponAddVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -101,7 +83,7 @@ public class DiscountCouponController {
 	//@AuthBeforeOperation
 	@RequestMapping(value = "/{amount}" ,method= RequestMethod.POST)
 	public Result<String> addMuti(HttpServletRequest request
-			,@RequestBody @Valid DiscountCouponVO vo
+			,@RequestBody @Valid DiscountCouponAddVO vo
 			,BindingResult valid
 			,@PathVariable int amount) throws Exception{
 		if(valid.hasErrors()){
@@ -220,7 +202,7 @@ public class DiscountCouponController {
 		
 		return Result.fail("请选择要解锁的券信息");
 	}
-	private DiscountCoupon getBoFromVo(DiscountCouponVO vo) {
+	private DiscountCoupon getBoFromVo(DiscountCouponAddVO vo) {
 		if(vo!=null){
 			DiscountCoupon bo = new DiscountCoupon();
 			BeanUtils.copyProperties(vo, bo);

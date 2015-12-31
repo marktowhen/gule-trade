@@ -43,7 +43,7 @@
 		<where>
 			<include refid="base_condition"></include>
 		</where>
-		order by addtime,usedtime desc
+		order by addtime desc
 		limit #{offset,javaType=LONG},#{size,javaType=LONG}
 	</select>
 	

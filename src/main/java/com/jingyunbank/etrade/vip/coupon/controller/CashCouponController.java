@@ -41,20 +41,6 @@ public class CashCouponController {
 	private ICashCouponService cashCouponService;
 	
 	/**
-	 * 将形如yyyy-MM-dd HH:mm:ss的时间格式转正date类型
-	 * @param request
-	 * @param binder
-	 * @throws Exception
-	 * 2015年11月16日 qxs
-	 */
-//	@InitBinder  
-//    protected void initBinder(HttpServletRequest request,  
-//            ServletRequestDataBinder binder) throws Exception {  
-//            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-//            CustomDateEditor editor = new CustomDateEditor(df, false);  
-//            binder.registerCustomEditor(Date.class, editor);  
-//    } 
-	/**
 	 * 新增一张券
 	 * @param request
 	 * @param vo

@@ -7,8 +7,6 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 /**
  * 现金购物金（代金券）<br>
  * <strong>规则：</strong><br>
@@ -32,20 +30,16 @@ public class CashCouponVO extends BaseCouponVO implements Serializable {
 	@DecimalMin(value="0.01", message="价值不能低于1分")
 	private BigDecimal value;//
 	
-	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
 	
 	//@NotNull(message="开始时间不能为空")
-	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date start;
 	
 	//@NotNull(message="结束时间不能为空")
-	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date end;
 	
 	private boolean used;
 	
-	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date usedtime;
 	
 	@NotNull(message="使用门槛不能为空")
