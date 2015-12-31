@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.vip.coupon.service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -90,11 +91,9 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 			return  Result.fail("该券已被删除");
 		}
 		Date nowDate = new Date();
-		if(discountCoupon.getStart().after(nowDate)){
-			return Result.fail("未到使用时间");
-		}
-		if(discountCoupon.getEnd().before(nowDate)){
-			return Result.fail("已失效");
+		if(discountCoupon.getStart().after(nowDate) || discountCoupon.getEnd().before(nowDate)){
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			return Result.fail("请在"+format.format(discountCoupon.getStart())+"到"+format.format(discountCoupon.getEnd())+"期间使用");
 		}
 		if(orderPrice==null || orderPrice.compareTo(discountCoupon.getThreshhold())==-1){
 			return Result.fail("未到使用门槛:"+discountCoupon.getThreshhold().doubleValue());
