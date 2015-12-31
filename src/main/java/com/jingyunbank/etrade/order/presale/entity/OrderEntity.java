@@ -32,67 +32,7 @@ public class OrderEntity {
 	private BigDecimal postage;
 	private BigDecimal payout;
 	private String note;
-	private List<GoodsEntity> goods = new ArrayList<GoodsEntity>();//商品图片路径
-	
-	public static class GoodsEntity {
-		private String ID;
-		private String GID;
-		private String gname;
-		private String imgpath;
-		private int count;
-		private BigDecimal price;
-		private String statusCode;
-		private String OID;
-		
-		public String getID() {
-			return ID;
-		}
-		public void setID(String iD) {
-			ID = iD;
-		}
-		public String getOID() {
-			return OID;
-		}
-		public void setOID(String oID) {
-			OID = oID;
-		}
-		public String getGID() {
-			return GID;
-		}
-		public void setGID(String gID) {
-			GID = gID;
-		}
-		public String getImgpath() {
-			return imgpath;
-		}
-		public void setImgpath(String imgpath) {
-			this.imgpath = imgpath;
-		}
-		public String getGname() {
-			return gname;
-		}
-		public void setGname(String gname) {
-			this.gname = gname;
-		}
-		public int getCount() {
-			return count;
-		}
-		public void setCount(int count) {
-			this.count = count;
-		}
-		public BigDecimal getPrice() {
-			return price;
-		}
-		public void setPrice(BigDecimal price) {
-			this.price = price;
-		}
-		public String getStatusCode() {
-			return statusCode;
-		}
-		public void setStatusCode(String statusCode) {
-			this.statusCode = statusCode;
-		}
-	}
+	private List<OrderGoodsEntity> goods = new ArrayList<OrderGoodsEntity>();
 	
 	public String getID() {
 		return ID;
@@ -208,10 +148,10 @@ public class OrderEntity {
 	public void setDeliveryTypeName(String deliveryTypeName) {
 		this.deliveryTypeName = deliveryTypeName;
 	}
-	public List<GoodsEntity> getGoods() {
+	public List<OrderGoodsEntity> getGoods() {
 		return goods;
 	}
-	public void setGoods(List<GoodsEntity> goods) {
+	public void setGoods(List<OrderGoodsEntity> goods) {
 		this.goods = goods;
 	}
 	public String getCouponID() {

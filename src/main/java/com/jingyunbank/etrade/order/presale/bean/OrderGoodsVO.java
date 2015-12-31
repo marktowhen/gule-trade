@@ -16,11 +16,13 @@ public class OrderGoodsVO {
 	private BigDecimal price;//订单生成时的商品价格
 	private int count;
 	private String statusCode;//状态id，用户支持订单中某个商品的退款
+	private String statusName;
 	private BigDecimal payout;//实际付款
 	private BigDecimal couponReduce;//优惠减免价格
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
 	
+	//to show
 	private String MID;
 	private String mname;
 	private String imgpath;
@@ -121,5 +123,11 @@ public class OrderGoodsVO {
 	}
 	public void setMID(String mID) {
 		MID = mID;
+	}
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 }
