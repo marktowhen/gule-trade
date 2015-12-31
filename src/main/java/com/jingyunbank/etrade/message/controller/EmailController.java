@@ -160,8 +160,19 @@ public class EmailController {
 			request.getSession().setAttribute(EMAIL_MESSAGE, code);
 			Message message = new Message();
 			message.setTitle(subTitle);
-			message.setContent("您的验证码是:"+code);
 			message.getReceiveUser().setEmail(email);
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append("<div style=\"margin:0 40px;  padding:0;font-size:14px; color:#6a6a6a; line-height:28px; font-family:'微软雅黑';width: 700px;\">");
+			sb.append("<p style='margin:0; padding:8px 0;'><strong>尊敬的用户您好:</strong></p>");
+			sb.append("<p style='margin:0; padding:8px 0;'>您的验证码： <strong style='color:#c00'>"+code+"</strong> 与邮箱绑定后，可以用邮箱地址直接登录</p>");
+			sb.append("<p style='margin:0; padding:8px 0;' align='right'>中华阿胶网<br>");
+			sb.append("<span style='border-bottom:1px dashed #ccc;' t='5' times=' 11:08'>通讯地址： 山东省济南市历下区泉城路世茂国际A座1010室</span> <br>");
+			//手机号码 qq邮箱会把它处理，标签撑破了
+			//sb.append("<span style='border-bottom:1px dashed #ccc;' t='5' times=' 11:08'>联系电话：400-800-0815</span> ");
+			sb.append("</p>");
+			sb.append("</div>");
+			message.setContent(sb.toString());
 			emailService.inform(message);
 			request.getSession().setAttribute(email, new Date());
 			System.out.println("-----------------"+"您的验证码是:"+code);
