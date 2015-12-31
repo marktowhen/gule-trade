@@ -29,7 +29,7 @@
 		<result column="payout" property="payout" jdbcType="DECIMAL"/>
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
-		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderEntity$GoodsEntity">
+		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderGoodsEntity">
 			<result column="ogid" property="ID" javaType="String"/>
 			<result column="gid" property="GID" javaType="String"/>
 			<result column="gname" property="gname" javaType="String"/>
@@ -37,6 +37,7 @@
 			<result column="count" property="count" jdbcType="INTEGER"/>
 			<result column="gprice" property="price" jdbcType="DECIMAL"/>
 			<result column="gstatuscode" property="statusCode" javaType="String"/>
+			<result column="gstatusname" property="statusName" javaType="String"/>
 			<result column="oid" property="OID" javaType="String"/>
 		</collection>
 	</resultMap>
@@ -58,7 +59,7 @@
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
 		img.thumb_path_1 as imgpath, img.gid as gid, 
 		og.gname as gname, og.count as count, 
-		og.price as gprice, og.id as ogid, og.status_code as gstatuscode
+		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.presale.entity.OrderEntity">
 		insert into orders

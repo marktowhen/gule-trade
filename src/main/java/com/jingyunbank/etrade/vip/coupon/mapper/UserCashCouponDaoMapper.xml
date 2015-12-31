@@ -58,7 +58,7 @@
 				and c.del=false
 				and u.consumed=false
 				and u.locked=false
-				and now() &lt;= c.`end`
+				<!-- and now() &lt;= c.`end` -->
 	</sql>
 	
 	<!-- 用户已消费的券 -->
@@ -137,7 +137,7 @@
 				and u.uid=#{UID}
 				and u.consumed=false
 				and u.locked=false
-				and now() between c.start and c.`end`
+				<!-- and now() between c.start and c.`end` -->
 				<if test="orderPrice!=null">
 					and c.threshhold &lt;= #{orderPrice}
 				</if>

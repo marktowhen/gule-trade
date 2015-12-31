@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 折扣抵用券<br>
  * <strong>规则：</strong><br>
@@ -15,7 +17,7 @@ import javax.validation.constraints.NotNull;
  * 一张抵用券只能在一张订单中使用，且不找零；<br>
  * 抵用券不可与优惠券购物金叠加使用。
  */
-public class DiscountCouponVO extends BaseCouponVO implements Serializable{
+public class DiscountCouponAddVO extends BaseCouponVO implements Serializable{
 	
 	
 	/**
@@ -29,9 +31,11 @@ public class DiscountCouponVO extends BaseCouponVO implements Serializable{
 	
 	private Date addtime;
 	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss" ,locale="zh", timezone="GMT+8")
 	@NotNull(message="开始时间不能为空")
 	private Date start;
 	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss" ,locale="zh", timezone="GMT+8")
 	@NotNull(message="结束时间不能为空")
 	private Date end;
 	
