@@ -66,7 +66,7 @@ public class DiscountCouponController {
 	 * 2015年11月16日 qxs
 	 * @throws DataSavingException 
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value = "/" ,method= RequestMethod.POST)
 	public Result<String> add(HttpServletRequest request, @RequestBody @Valid DiscountCouponVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -80,6 +80,8 @@ public class DiscountCouponController {
 				|| vo.getEnd().before(new Date())){
 			return Result.fail("有效期限设置错误");
 		}
+		vo.setDiscount(new BigDecimal("0.2"));
+		vo.setValue(new BigDecimal("50"));
 		Users manager = new Users();
 		manager.setID(ServletBox.getLoginUID(request));
 		discountCouponService.save(getBoFromVo(vo), manager);
@@ -96,7 +98,7 @@ public class DiscountCouponController {
 	 * @throws Exception
 	 * 2015年12月9日 qxs
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value = "/{amount}" ,method= RequestMethod.POST)
 	public Result<String> addMuti(HttpServletRequest request
 			,@RequestBody @Valid DiscountCouponVO vo
@@ -112,6 +114,8 @@ public class DiscountCouponController {
 				|| vo.getEnd().before(new Date())){
 			return Result.fail("有效期限设置错误");
 		}
+		vo.setDiscount(new BigDecimal("0.2"));
+		vo.setValue(new BigDecimal("50"));
 		if(amount<=0){
 			return Result.fail("请设置正确数量");
 		}
@@ -180,7 +184,9 @@ public class DiscountCouponController {
 		range.setTo(from + size);
 		return Result.ok(discountCouponService.list(cardNum, value,locked , range)
 		 	.stream().map( bo ->{
-		 		return getVoFromBo(bo);
+		 		DiscountCouponVO vo = new DiscountCouponVO();
+				BeanUtils.copyProperties(bo, vo,"code");
+				return vo;
 		 	}).collect(Collectors.toList()));
 	}
 	
@@ -195,7 +201,7 @@ public class DiscountCouponController {
 	public Result<Integer> getAmount(
 			@RequestParam(required=false) String cardNum,
 			@RequestParam(required=false) BigDecimal value,
-			@RequestParam(required=false) boolean locked){
+			@RequestParam(required=false) Boolean locked){
 		return Result.ok(discountCouponService.count(cardNum, value,locked));
 	}
 	
@@ -219,15 +225,6 @@ public class DiscountCouponController {
 			DiscountCoupon bo = new DiscountCoupon();
 			BeanUtils.copyProperties(vo, bo);
 			return bo;
-		}
-		return null;
-	}
-	
-	private DiscountCouponVO getVoFromBo(DiscountCoupon bo){
-		if(bo!=null){
-			DiscountCouponVO vo = new DiscountCouponVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
 		}
 		return null;
 	}

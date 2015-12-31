@@ -50,7 +50,7 @@
 			limit #{offset,javaType=LONG},#{size,javaType=LONG}
 	</select>
 	
-	<select id="selectAmount" resultType="int" parameterType="com.jingyunbank.etrade.vip.coupon.entity.CashCouponEntity" >
+	<select id="count" resultType="int" parameterType="com.jingyunbank.etrade.vip.coupon.entity.CashCouponEntity" >
 		select count(1) from cash_coupon 
 		<where>
 			<include refid="base_condition"></include>

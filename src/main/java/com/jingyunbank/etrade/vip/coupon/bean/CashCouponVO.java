@@ -35,11 +35,11 @@ public class CashCouponVO extends BaseCouponVO implements Serializable {
 	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;
 	
-	@NotNull(message="开始时间不能为空")
+	//@NotNull(message="开始时间不能为空")
 	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date start;
 	
-	@NotNull(message="结束时间不能为空")
+	//@NotNull(message="结束时间不能为空")
 	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date end;
 	

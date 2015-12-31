@@ -47,7 +47,7 @@
 		limit #{offset,javaType=LONG},#{size,javaType=LONG}
 	</select>
 	
-	<select id="selectAmount" resultType="int" >
+	<select id="count" resultType="int" >
 		select count(1) from discount_coupon 
 		<where>
 			<include refid="base_condition"></include>

@@ -1,9 +1,8 @@
 package com.jingyunbank.etrade.vip.coupon.controller;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,12 +12,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,13 +47,13 @@ public class CashCouponController {
 	 * @throws Exception
 	 * 2015年11月16日 qxs
 	 */
-	@InitBinder  
-    protected void initBinder(HttpServletRequest request,  
-            ServletRequestDataBinder binder) throws Exception {  
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-            CustomDateEditor editor = new CustomDateEditor(df, false);  
-            binder.registerCustomEditor(Date.class, editor);  
-    } 
+//	@InitBinder  
+//    protected void initBinder(HttpServletRequest request,  
+//            ServletRequestDataBinder binder) throws Exception {  
+//            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//            CustomDateEditor editor = new CustomDateEditor(df, false);  
+//            binder.registerCustomEditor(Date.class, editor);  
+//    } 
 	/**
 	 * 新增一张券
 	 * @param request
@@ -67,7 +63,6 @@ public class CashCouponController {
 	 * 2015年11月16日 qxs
 	 * @throws DataSavingException 
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value = "/" ,method= RequestMethod.POST)
 	public Result<String> add(HttpServletRequest request,@RequestBody @Valid CashCouponVO vo,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -97,7 +92,6 @@ public class CashCouponController {
 	 * 2015年11月16日 qxs
 	 * @throws DataSavingException 
 	 */
-	@AuthBeforeOperation
 	@RequestMapping(value = "/{amount}" ,method= RequestMethod.POST)
 	public Result<String> addMuti(HttpServletRequest request,@RequestBody @Valid CashCouponVO vo,BindingResult valid,@PathVariable int amount) throws Exception{
 		if(valid.hasErrors()){
@@ -106,10 +100,10 @@ public class CashCouponController {
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		if(vo.getStart().after(vo.getEnd())
-				|| vo.getEnd().before(new Date())){
-			return Result.fail("有效期限设置错误");
-		}
+		vo.setStart(new Date());
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.YEAR, 100);
+		vo.setEnd(c.getTime());
 		if(amount<=0){
 			return Result.fail("请设置正确数量");
 		}
@@ -175,7 +169,9 @@ public class CashCouponController {
 		range.setTo(from + size);
 		return Result.ok(cashCouponService.list(cardNum, value,locked , range)
 		 	.stream().map( bo ->{
-		 		return getVoFromBo(bo);
+		 		CashCouponVO vo = new CashCouponVO();
+				BeanUtils.copyProperties(bo, vo, "code");
+		 		return vo;
 		 	}).collect(Collectors.toList()));
 	}
 	
@@ -190,7 +186,7 @@ public class CashCouponController {
 	public Result<Integer> getAmount(
 			@RequestParam(required=false) String cardNum,
 			@RequestParam(required=false) BigDecimal value,
-			@RequestParam(required=false) boolean locked){
+			@RequestParam(required=false) Boolean locked){
 		return Result.ok(cashCouponService.count(cardNum, value,locked));
 	}
 	
@@ -222,13 +218,6 @@ public class CashCouponController {
 		return null;
 	}
 	
-	private CashCouponVO getVoFromBo(CashCoupon bo){
-		if(bo!=null){
-			CashCouponVO vo = new CashCouponVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}
-		return null;
-	}
+	
 
 }
