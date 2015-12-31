@@ -151,40 +151,6 @@ public class CommentsController {
 		}
 		return commentVOs;
 	}
-	
-	/**
-	 * 通过gid查出所有的图片信息
-	 * @param gid
-	 * @param request
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@AuthBeforeOperation
-	@RequestMapping(value="/api/commentImgs/getbygid",method=RequestMethod.GET)
-	@ResponseBody
-	public Result<List<CommentsVO>> getCommentImgs(@RequestParam("gid") String gid,HttpServletRequest request,HttpSession session) throws Exception{
-		List<Comments> comments=commentService.list(gid);
-		List<CommentsVO> commentVOs=convertImg(comments);
-		return Result.ok(commentVOs);
-		
-		}
-	private List<CommentsVO> convertImg(List<Comments> comments){
-	
-		List<CommentsVO> commentVOs=new ArrayList<CommentsVO>();
-		for(int i=0;i<comments.size();i++){
-			CommentsVO commentsVO=new CommentsVO();
-			BeanUtils.copyProperties(comments.get(i),commentsVO);
-			List<CommentsImg> commentsImgs=	commentImgService.list(comments.get(i).getID());
-			commentsVO.setImgs(commentsImgs);
-			/*for(int j=0;j<commentsImgs.size();j++){
-				CommentsImgVO vo = new CommentsImgVO();
-				BeanUtils.copyProperties(commentsImgs.get(j), vo);
-			}*/
-			commentVOs.add(commentsVO);
-		}
-		return commentVOs;
-	}
 	/**
 	 * 测试通过id删除自己添加的商品评价，别人的评论没有权限删除
 	 * @param id
