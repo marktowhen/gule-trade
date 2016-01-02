@@ -49,7 +49,9 @@ public class RefundController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		
+		if(refundvo.getMoney().compareTo(refundvo.getOmoney())>0){
+			return Result.fail("退款金额不得高于实际订单价格。");
+		}
 		String UID = ServletBox.getLoginUID(session);
 		String uname = ServletBox.getLoginUname(session);
 		refundvo.setID(KeyGen.uuid());

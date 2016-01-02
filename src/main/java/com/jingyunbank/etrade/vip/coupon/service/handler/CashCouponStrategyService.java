@@ -33,7 +33,11 @@ public class CashCouponStrategyService  implements ICouponStrategyService {
 		Result<UserCashCoupon> r = userCashCouponService.canConsume(couponID, UID, originprice);
 		if(r.isBad()) return Result.fail(r.getMessage());
 		CashCoupon coupon = r.getBody().getCashCoupon();
-		return Result.ok(originprice.compareTo(coupon.getThreshhold()) >= 0? originprice.subtract(coupon.getValue()): originprice);
+		if(originprice.compareTo(coupon.getThreshhold()) >= 0){
+			BigDecimal result = originprice.subtract(coupon.getValue());
+			return Result.ok(result.compareTo(BigDecimal.ZERO)>0? result: BigDecimal.ZERO);
+		}
+		return Result.ok(originprice);
 	}
 
 	@Override

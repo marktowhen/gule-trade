@@ -237,8 +237,10 @@ public class OrderController {
 							origingoodspprice : origingoodsprice;
 					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 6, RoundingMode.HALF_UP);
 					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice).setScale(2, RoundingMode.HALF_UP);
-					goods.setPayout(finalgoodsprice);
-					goods.setCouponReduce(origingoodsprice.subtract(finalgoodsprice));
+					BigDecimal payout = finalgoodsprice.multiply(new BigDecimal(goods.getCount()));
+					BigDecimal origintotal = origingoodsprice.multiply(new BigDecimal(goods.getCount()));
+					goods.setPayout(payout);
+					goods.setCouponReduce(origintotal.subtract(payout));
 				});
 			});
 		}else{
