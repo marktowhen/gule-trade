@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.order.postsale.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundCertificate;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundLogistic;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundStatusDesc;
+import com.jingyunbank.etrade.api.order.postsale.service.IRefundService;
 import com.jingyunbank.etrade.api.order.postsale.service.context.IRefundContextService;
 import com.jingyunbank.etrade.order.postsale.bean.RefundLogisticVO;
 import com.jingyunbank.etrade.order.postsale.bean.RefundRequestVO;
@@ -37,6 +39,8 @@ public class RefundController {
 	
 	@Autowired
 	private IRefundContextService refundContextService;
+	@Autowired
+	private IRefundService refundService;
 	
 	@AuthBeforeOperation
 	@RequestMapping(
@@ -54,23 +58,40 @@ public class RefundController {
 		}
 		String UID = ServletBox.getLoginUID(session);
 		String uname = ServletBox.getLoginUname(session);
-		refundvo.setID(KeyGen.uuid());
 		refundvo.setUID(UID);
 		refundvo.setAddtime(new Date());
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
 		refundvo.setStatusName(RefundStatusDesc.REQUEST.getName());
-		refundvo.setRefundno(UniqueSequence.next18());
-		
-		Refund refund = new Refund();
-		BeanUtils.copyProperties(refundvo, refund, "certificates");
-		refundvo.getCertificates().forEach(cer->{
-			RefundCertificate rc = new RefundCertificate();
-			rc.setID(KeyGen.uuid());
-			rc.setPath(cer);
-			rc.setRID(refund.getID());
-			refund.getCertificates().add(rc);
-		});
-		refundContextService.request(refund, uname);
+		Optional<Refund> candidate = refundService.singleByOGID(refundvo.getOGID());
+		if(candidate.isPresent()){//该商品重新申请退款
+			Refund refund = candidate.get();
+			refundvo.setID(refund.getID());
+			refundvo.setRefundno(refund.getRefundno());
+			BeanUtils.copyProperties(refundvo, refund, "certificates");
+			refund.getCertificates().clear();
+			refundvo.getCertificates().forEach(cer->{
+				RefundCertificate rc = new RefundCertificate();
+				rc.setID(KeyGen.uuid());
+				rc.setPath(cer);
+				rc.setRID(refund.getID());
+				refund.getCertificates().add(rc);
+			});
+			refundContextService.refresh(refund, uname);
+		}else{
+			refundvo.setID(KeyGen.uuid());
+			refundvo.setRefundno(UniqueSequence.next18());
+			Refund refund = new Refund();
+			BeanUtils.copyProperties(refundvo, refund, "certificates");
+			refundvo.getCertificates().forEach(cer->{
+				RefundCertificate rc = new RefundCertificate();
+				rc.setID(KeyGen.uuid());
+				rc.setPath(cer);
+				rc.setRID(refund.getID());
+				refund.getCertificates().add(rc);
+			});
+			refundContextService.request(refund, uname);
+			
+		}
 		
 		return Result.ok(refundvo);
 	}

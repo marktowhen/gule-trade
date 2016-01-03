@@ -76,7 +76,7 @@ public class RefundQueryController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/refund", method=RequestMethod.GET)
 	public Result<Refund2ShowVO> queryWithOgid (@RequestParam(required=true) String ogid) throws Exception{
-		Optional<Refund> candidate = refundService.latestOneByOGID(ogid);
+		Optional<Refund> candidate = refundService.singleByOGID(ogid);
 		if(candidate.isPresent()){
 			Refund refund = candidate.get();
 			Refund2ShowVO vo = new Refund2ShowVO();

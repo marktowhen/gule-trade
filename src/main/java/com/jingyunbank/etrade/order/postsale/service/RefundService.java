@@ -91,7 +91,7 @@ public class RefundService implements IRefundService {
 	}
 
 	@Override
-	public Optional<Refund> latestOneByOGID(String ogid) {
+	public Optional<Refund> singleByOGID(String ogid) {
 		RefundEntity entity = refundDao.selectOneByOGID(ogid);
 		if(Objects.isNull(entity)){
 			return Optional.ofNullable(null);
