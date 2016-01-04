@@ -58,7 +58,7 @@ public class AlipayHandler implements IPayHandler {
 		
 		String signkey = pipeline.getSignkey();
 		
-		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, signkey)));
+		result.put("sign", MD5.digest(compositeAlipayKeyValuePaires(result, signkey)));
 		result.put("sign_type", pipeline.getSigntype().toUpperCase());
 		
 		result.put("payurl", pipeline.getPayUrl());
@@ -66,7 +66,7 @@ public class AlipayHandler implements IPayHandler {
 		return result;
 	}
 
-	private String compositeGatewayKeyValuePaires(Map<String, String> result, String key) {
+	private String compositeAlipayKeyValuePaires(Map<String, String> result, String key) {
 		StringBuilder builder = new StringBuilder();
 		result.entrySet().stream().sorted((x, y)->x.getKey().compareToIgnoreCase(y.getKey())).forEach((x)->{
 			builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
