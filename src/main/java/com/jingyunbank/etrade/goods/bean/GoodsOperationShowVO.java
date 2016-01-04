@@ -47,6 +47,7 @@ public class GoodsOperationShowVO implements Serializable{
 	private String barCode; //条形码
 	private String goodsDesc; //宝贝描述
 	private String goodsTitle; //宝贝标题
+	
 	private int adminSort;//管理员排序字段
 	private int merchantSort;//商家排序字段
 	private int expandSort;//推广排序字段
