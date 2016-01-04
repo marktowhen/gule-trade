@@ -35,7 +35,9 @@ public class CommentsVO {
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
 	private String picture;
-	private String imgPath;
+	private String imgPath1;
+	private String imgPath2;
+	private String imgPath3;
 	
 	
 	
@@ -64,11 +66,25 @@ public class CommentsVO {
 	public void setLevelGrade(int levelGrade) {
 		this.levelGrade = levelGrade;
 	}
-	public String getImgPath() {
-		return imgPath;
+
+	public String getImgPath1() {
+		return imgPath1;
 	}
-	public void setImgPath(String imgPath) {
-		this.imgPath = imgPath;
+
+	public void setImgPath1(String imgPath1) {
+		this.imgPath1 = imgPath1;
+	}
+	public String getImgPath2() {
+		return imgPath2;
+	}
+	public void setImgPath2(String imgPath2) {
+		this.imgPath2 = imgPath2;
+	}
+	public String getImgPath3() {
+		return imgPath3;
+	}
+	public void setImgPath3(String imgPath3) {
+		this.imgPath3 = imgPath3;
 	}
 	public int getAllLevel() {
 		return allLevel;
