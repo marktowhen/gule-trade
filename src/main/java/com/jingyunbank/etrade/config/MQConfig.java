@@ -15,7 +15,7 @@ public class MQConfig {
 	@Scope("singleton")
 	public DefaultMQProducer producer() throws MQClientException{
 		DefaultMQProducer producer = new DefaultMQProducer("etrade-producer-group");
-		producer.setNamesrvAddr("124.128.245.162:9876");
+		producer.setNamesrvAddr("101.200.215.25:9876");
 		producer.setInstanceName(String.valueOf(System.currentTimeMillis()));
 		producer.start();
 		return producer;
@@ -25,7 +25,7 @@ public class MQConfig {
 	@Scope("prototype")
 	public DefaultMQPushConsumer pushConsumer() throws MQClientException{
 		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("etrade-consumer-group");
-		consumer.setNamesrvAddr("124.128.245.162:9876");
+		consumer.setNamesrvAddr("101.200.215.25:9876");
 		consumer.setInstanceName(String.valueOf(System.currentTimeMillis()));
 		return consumer;
 	}

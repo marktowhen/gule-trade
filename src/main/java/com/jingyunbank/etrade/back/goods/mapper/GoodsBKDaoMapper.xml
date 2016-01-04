@@ -93,8 +93,12 @@
 		WHERE 1 = 1  
 		AND g.state = #{state} 
 		AND g.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		<if test="mid !=null and mid !=''">
 		AND g.mid = #{mid}
+		</if>
+		<if test="bid !=null and bid !=''">
 		AND g.bid = #{bid}
+		</if>
 		LIMIT #{from} , #{size}
 	</select>
 </mapper>

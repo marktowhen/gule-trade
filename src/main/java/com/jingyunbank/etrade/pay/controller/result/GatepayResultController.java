@@ -59,16 +59,15 @@ public class GatepayResultController {
         	String key = pipeline.getSignkey();
             if (!sign.equalsIgnoreCase(MD5.digest(compositeGatewayKeyValuePaires(payresult, key))))
             {
-            	orderContextService.payfail(extransno);
+            	orderContextService.payfail(extransno, "支付结果的签名校验失败："+payresult+":"+sign);
             	result.put("ret_code", "9999");
             	result.put("ret_msg", "签名校验失败");
             	OutputStream opstream = response.getOutputStream();
             	opstream.write(new ObjectMapper().writeValueAsBytes(result));
             	opstream.close();
             }
-        } catch (Exception e)
-        {
-        	orderContextService.payfail(extransno);
+        } catch (Exception e){
+        	orderContextService.payfail(extransno, e.getMessage().substring(0, 250));
         	result.put("ret_code", "9999");
         	result.put("ret_msg", "签名校验失败");
         	OutputStream opstream = response.getOutputStream();

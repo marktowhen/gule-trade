@@ -24,12 +24,14 @@
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
 		<result column="addtime" property="addTime" />
-		
 		<result column="pro_flag" property="onSale" />
 		<result column="pro_start" property="onSaleBeginTime" />
 		<result column="pro_end" property="onSaleEndTime" />
-
-		
+		<!-- 用于商品序号的字段 -->
+		<result column="adminSort" property="adminSort" />
+		<result column="merchantSort" property="merchantSort" />
+		<result column="expandSort" property="expandSort" />
+		<result column="recordSort" property="recordSort" />
 		
 		<result column="postage" property="postage" />
 		<result column="subvolumeType" property="subVolumeType" />
@@ -123,8 +125,11 @@
 	g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
 	g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
 	g.`title` goodstitle,g.`desc` goodsdesc,
-	m.`name` merchantname ,b.`name` brandname,t.`name` typename,
 	
+	g.`admin_sort` adminSort, g.`merchant_sort` merchantSort,
+	g.`expand_sort` expandSort, g.`record_sort` recordSort,
+	
+	m.`name` merchantname ,b.`name` brandname,t.`name` typename,
 	d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
 	d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
 	d.`ingredients` ingredients,d.`food_additives` food_additives,d.`specifications` specifications,
@@ -201,6 +206,20 @@
 		<if test="onSaleEndTime !=null and onSaleEndTime != ''">
 			g.`pro_end` = #{onSaleEndTime},
 		</if>
+		<!-- 排序字段begin -->
+		<if test="adminSort > 0 ">
+			g.`admin_sort` = #{adminSort},
+		</if>
+		<if test="merchantSort > 0 ">
+			g.`merchant_sort` = #{merchantSort},
+		</if>
+		<if test="expandSort > 0 ">
+			g.`expand_sort` = #{expandSort},
+		</if>
+		<if test="recordSort > 0 ">
+			g.`record_sort` = #{recordSort},
+		</if>
+		<!-- 排序字段end -->
 		g.`state` = #{state},g.`pro_flag` = #{onSale},g.id = #{ID}
 		 WHERE id = #{ID}
 	</update>
