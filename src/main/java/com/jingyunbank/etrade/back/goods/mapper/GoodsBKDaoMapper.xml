@@ -93,6 +93,8 @@
 		WHERE 1 = 1  
 		AND g.state = #{state} 
 		AND g.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+		AND g.mid = #{mid}
+		AND g.bid = #{bid}
 		LIMIT #{from} , #{size}
 	</select>
 </mapper>
