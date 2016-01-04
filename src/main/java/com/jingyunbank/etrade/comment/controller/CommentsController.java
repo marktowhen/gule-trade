@@ -88,13 +88,16 @@ public class CommentsController {
 			picture.add(commentVO.getImgPath1());
 			picture.add(commentVO.getImgPath2());
 			picture.add(commentVO.getImgPath3());
-			for(int i=0;i<picture.size();i++){
-				CommentsImg commentsImg=new CommentsImg();
-				commentsImg.setID(KeyGen.uuid());
-				commentsImg.setPicture(picture.get(i));
-				commentsImg.setCommentID(commentVO.getID());;
-				commentImgService.save(commentsImg);
+			if(picture.size()!=0){
+				for(int i=0;i<picture.size();i++){
+					CommentsImg commentsImg=new CommentsImg();
+					commentsImg.setID(KeyGen.uuid());
+					commentsImg.setPicture(picture.get(i));
+					commentsImg.setCommentID(commentVO.getID());;
+					commentImgService.save(commentsImg);
+				}
 			}
+			
 				//修改订单商品的状态
 				orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.COMMENTED);
 			//修改订单的状态
@@ -244,21 +247,24 @@ public class CommentsController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/comments/details/{oid}",method=RequestMethod.GET)
-	public Result<CommentsVO> getCommentDetails(@PathVariable String oid){
+	@RequestMapping(value="/api/comments/details/{oid}/{gid}",method=RequestMethod.GET)
+	public Result<CommentsVO> getCommentDetails(@PathVariable String oid,@PathVariable String gid){
 		float personalGrade=0;
 		CommentsVO commentsVO=new CommentsVO();
-		Optional<Comments> optional=commentService.singleByOid(oid);
-	
-			if(optional.get().getCommentGrade()==0&&optional.get().getServiceGrade()==0&&optional.get().getLogisticsGrade()==0){
-				 personalGrade=0;
+		Optional<Comments> optional=commentService.singleByOid(oid,gid);
+			if(optional.isPresent()){
+				if(optional.get().getCommentGrade()==0&&optional.get().getServiceGrade()==0&&optional.get().getLogisticsGrade()==0){
+					 personalGrade=0;
+				}
+				BeanUtils.copyProperties(optional.get(), commentsVO);
+				List<CommentsImg> commentsImgs=	commentImgService.list(optional.get().getID());
+				commentsVO.setImgs(commentsImgs);
+				 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
+				commentsVO.setPersonalGrade(personalGrade);
+				return Result.ok(commentsVO);		
 			}
-			BeanUtils.copyProperties(optional.get(), commentsVO);
-			List<CommentsImg> commentsImgs=	commentImgService.list(optional.get().getID());
-			commentsVO.setImgs(commentsImgs);
-			 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
-			commentsVO.setPersonalGrade(personalGrade);
-			return Result.ok(commentsVO);		
+			return Result.fail("没添加任何评价信息");
+			
 	}
 	
 	@RequestMapping(value="/api/allcomments",method=RequestMethod.GET)
