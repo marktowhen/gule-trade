@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.user.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.KeyGen;
-import com.jingyunbank.core.Range;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
@@ -35,7 +35,7 @@ public class UserService implements IUserService{
 	
 	
 	@Override
-	public Optional<Users> getByUID(String id) {
+	public Optional<Users> single(String id) {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setID(id);
 		userEntity = userDao.selectUser(userEntity);
@@ -48,8 +48,8 @@ public class UserService implements IUserService{
 	 * @return
 	 */
 	@Override
-	public Optional<Users> getByKey(String key) {
-		UserEntity userEntity = userDao.selectUserByLoginKey(key);
+	public Optional<Users> singleByKey(String key) {
+		UserEntity userEntity = userDao.selectOneByKey(key);
 		//entity转bo
 		return getUsersByEntity(userEntity);
 	}
@@ -102,18 +102,8 @@ public class UserService implements IUserService{
 	}
 
 	@Override
-	public List<Users> list(Range range) {
-		return null;
-	}
-
-	@Override
-	public List<Users> list(Date start, Date end) {
-		return null;
-	}
-
-	@Override
 	public boolean exists(String key) {
-		UserEntity userEntity = userDao.selectUserByLoginKey(key);
+		UserEntity userEntity = userDao.selectOneByKey(key);
 		if(userEntity!=null){
 			return true;
 		}
@@ -131,6 +121,16 @@ public class UserService implements IUserService{
 			return Optional.of(users);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<Users> list(List<String> uids) {
+		List<UserEntity> entities = userDao.selectMany(uids);
+		return entities.stream().map(entity -> {
+			Users bo = new Users();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
 	}
 
 }

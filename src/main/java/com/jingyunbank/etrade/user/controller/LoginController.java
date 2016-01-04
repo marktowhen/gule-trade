@@ -66,7 +66,7 @@ public class LoginController {
 			}
 		}
 		//2、根据用户名/手机号/邮箱查询用户信息
-		Optional<Users> usersOptional =  userService.getByKey(user.getKey());
+		Optional<Users> usersOptional =  userService.singleByKey(user.getKey());
 		//是否存在该用户
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
@@ -101,7 +101,9 @@ public class LoginController {
 		//将uid写入cookie
 		Cookie cookie = new Cookie(ServletBox.LOGIN_ID, users.getID());
 		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
+		
 		
 		UserVO vo = new UserVO();
 		BeanUtils.copyProperties(users, vo);

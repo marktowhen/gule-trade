@@ -74,7 +74,7 @@ public class SMSController {
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("参数缺失:手机/邮箱/用户名");
 		}
-		Optional<Users> usersOptional = userService.getByKey(key);
+		Optional<Users> usersOptional = userService.singleByKey(key);
 		if(usersOptional.isPresent()){
 			Users users=usersOptional.get();
 			if(!StringUtils.isEmpty(users.getMobile())){
@@ -99,7 +99,7 @@ public class SMSController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/user",method=RequestMethod.GET)
 	public Result<String> sendCodeToUserMobile(HttpServletRequest request) throws Exception{
-		 Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
+		 Optional<Users> userOption = userService.single(ServletBox.getLoginUID(request));
 		 //验证码
 		 String code = new String(new RndBuilder().length(4).hasletter(false).next());
 		 return sendCodeToMobile(userOption.get().getMobile(), code, request);

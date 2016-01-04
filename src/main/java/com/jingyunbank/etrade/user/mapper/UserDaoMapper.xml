@@ -71,7 +71,7 @@
 	</select> 
 	
 	<!-- 根据登录信息查询用户 -->
-	<select id="selectUserByLoginKey" resultType="com.jingyunbank.etrade.user.entity.UserEntity" 
+	<select id="selectOneByKey" resultType="com.jingyunbank.etrade.user.entity.UserEntity" 
 		parameterType="String">
 			select  
 			  <include refid="column_list" />
@@ -81,11 +81,19 @@
 				or t.email = #{key}
 	
 	</select> 
-	<select id="selectUserByid" resultType="com.jingyunbank.etrade.user.entity.UserEntity">
+	<select id="selectOne" resultType="com.jingyunbank.etrade.user.entity.UserEntity">
 			select  
 			  <include refid="column_list" />
 			from users where id=#{ID}
 	
+	</select>
+	
+	<select id="selectMany" resultType="com.jingyunbank.etrade.user.entity.UserEntity">
+		select <include refid="column_list"/>
+		from users where id in 
+			<foreach collection="uids" item="uid" open="(" separator="," close=")">
+				#{uid}
+			</foreach>
 	</select>
 	
 	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.UserEntity">

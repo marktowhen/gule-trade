@@ -46,5 +46,7 @@ public interface OrderDao{
 	
 	public List<OrderEntity> selectBefore(@Param("deadline") Date deadline, @Param("statuscode") String statuscode);
 	
+	public List<OrderEntity> selectBetween(@Param("from") Date from, @Param("to") Date to, 
+			@Param("statuscode") String statuscode);
 
 }

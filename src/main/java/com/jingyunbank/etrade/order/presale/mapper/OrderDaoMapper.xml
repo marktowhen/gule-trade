@@ -61,7 +61,7 @@
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
 		img.thumb_path_1 as imgpath, img.gid as gid, 
-		og.gname as gname, og.count as count, og.pprice as og.gpprice, og.payout as gpayout,
+		og.gname as gname, og.count as count, og.pprice as gpprice, og.payout as gpayout,
 		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.presale.entity.OrderEntity">
@@ -206,4 +206,14 @@
 		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
 		where ot.addtime is not null and ot.addtime &lt;= #{deadline} and o.status_code = #{statuscode}
 	</select>
+	
+	<select id="selectBetween" resultMap="OrderEntityResultMap">
+		select o.id, o.uid
+		from orders o
+		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
+		where 
+			(ot.addtime is not null and ot.addtime &lt;= #{to} and ot.addtime &gt;= #{from})
+			and o.status_code = #{statuscode}
+	</select>
+	
 </mapper>
