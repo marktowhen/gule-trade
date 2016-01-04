@@ -119,11 +119,11 @@ public class OrderContextService implements IOrderContextService {
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
 		//更新优惠卡券状态
-		List<String> consumedcouponids = orders.stream().map(x->x.getCouponID()).collect(Collectors.toList()); 
+		List<String> temp = new ArrayList<String>();
 		for (Orders order : orders) {
 			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
-				if(consumedcouponids.contains(order.getCouponID())) continue;
-				consumedcouponids.add(order.getCouponID());
+				if(temp.contains(order.getCouponID())) continue;
+				temp.add(order.getCouponID());
 				couponStrategyResolver.resolve(order.getCouponType())
 								.consume(order.getUID(), order.getCouponID());
 			}
@@ -254,11 +254,11 @@ public class OrderContextService implements IOrderContextService {
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.CLOSED);
 		//更新优惠卡券状态
-		List<String> consumedcouponids = orders.stream().map(x->x.getCouponID()).collect(Collectors.toList()); 
+		List<String> temp = new ArrayList<String>(); 
 		for (Orders order : orders) {
 			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
-				if(consumedcouponids.contains(order.getCouponID())) continue;
-				consumedcouponids.add(order.getCouponID());
+				if(temp.contains(order.getCouponID())) continue;
+				temp.add(order.getCouponID());
 				couponStrategyResolver.resolve(order.getCouponType())
 								.unlock(order.getUID(), order.getCouponID());
 			}
