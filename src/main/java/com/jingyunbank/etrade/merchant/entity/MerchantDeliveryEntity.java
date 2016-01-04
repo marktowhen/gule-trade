@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.merchant.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 /**
  * 商家快递类型表
  * @author liug

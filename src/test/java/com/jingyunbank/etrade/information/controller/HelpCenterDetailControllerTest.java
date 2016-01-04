@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.information.bean.HelpCenterDetailVO;
+import com.jingyunbank.etrade.posts.bean.HelpCenterDetailVO;
 
 public class HelpCenterDetailControllerTest extends TestCaseBase {
 	

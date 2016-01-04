@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.posts.dao.InformationDetailsDao">
+		<resultMap type="com.jingyunbank.etrade.posts.entity.InformationDetailsEntity" id="InformationDetailsResultMap">
+			<id column="id" property="ID"/>
+			<result column="sid" property="SID"/>
+			<result column="name" property="name"/>
+			<result column="title" property="title"/>
+			<result column="abstract" property="abstracts"/>
+			<result column="content" property="content"/>
+			<result column="picture" property="picture"/>
+			<result column="addtime" property="addtime"/>
+			<result column="recipe" property="recipe"/>
+			<result column="function" property="function"/>
+			<result column="status" property="status"/>
+			<result column="orders" property="orders" />
+			
+			<result column="sitename" property="sitename"/>
+		</resultMap>
+	<sql id="details_list">
+		d.id,d.sid,d.name,d.title,d.abstract,d.picture,d.addtime,d.status,d.recipe,d.function,d.orders
+	</sql>
+	<!-- 增加详情内容 -->
+		<insert id="insert" parameterType="com.jingyunbank.etrade.posts.entity.InformationDetailsEntity">
+			insert into information_details(
+				id,sid,name,title,abstract,content,picture,addtime,recipe,function,status,orders
+			)values(
+				#{ID},#{SID},#{name},#{title},#{abstracts},#{content},#{picture},#{addtime},#{recipe},#{function},#{status},#{orders}
+			)
+		</insert>
+		<!-- 通过id删除对应的信息 -->
+		<delete id="delete" parameterType="String">
+			delete from information_details d where d.id=#{ID}	
+		</delete>
+		<!-- 通过id修改对应属性的值 -->
+		<update id="update" parameterType="com.jingyunbank.etrade.posts.entity.InformationDetailsEntity">
+			update information_details d 
+			set 
+			<if test="SID!=null and SID!=''">
+			d.sid=#{SID},
+			</if>
+			<if test="name!=null and name!=''">
+			d.name=#{name},
+			</if>
+			<if test="title!=null and title!=''">
+			d.title=#{title},
+			</if>
+			<if test="abstracts!=null and abstracts!=''">
+			d.abstract=#{abstracts},
+			</if>
+			<if test="content!=null and content!=''">
+			d.content=#{content},
+			</if>
+			<if test="recipe!=null and recipe!=''">
+			d.recipe=#{recipe},
+			</if>
+			<if test="function!=null and function!=''">
+			d.function=#{function},
+			</if>
+			<if test="picture!=null and picture!=''">
+			d.picture=#{picture},
+			</if>
+			<if test="status!=null and status!=''">
+			d.status=#{status},
+			</if>
+			<if test="orders!=null and orders!=''">
+			d.orders=#{orders},
+			</if>
+			d.id=#{ID}
+			where d.id=#{ID}
+		</update>
+		<!-- 通过sid查出对应多个详情内容 -->
+		<select id="selectDetailsBySid" resultMap="InformationDetailsResultMap">
+			select <include refid="details_list"></include>
+			from information_details d where
+			d.sid=#{SID}
+			order by d.orders desc,d.addtime desc
+			LIMIT #{from} , #{size}
+		</select>
+		<select id="selectDetailBySid" resultMap="InformationDetailsResultMap">
+			select <include refid="details_list"></include>
+			from information_details d where
+			d.sid=#{SID}
+			order by d.orders desc,d.addtime desc
+		</select>
+		<!-- 通过id查出每一条信息的详细内容啊 -->
+		<select id="selectDetailByid" parameterType="String" resultMap="InformationDetailsResultMap">
+			select 
+			id,sid,name,title,abstract,content,picture,addtime,status,recipe,function,orders
+			from information_details where
+			id=#{ID}
+		</select>
+		<!-- 查出添加的所有的资讯详情 -->
+		<select id="selectDetail" resultMap="InformationDetailsResultMap">
+			select <include refid="details_list"></include>,s.name as sitename
+			from information_details d
+			left join information_site s on d.sid=s.id
+			order by d.orders desc,d.addtime desc
+			LIMIT #{from} , #{size}
+		</select>
+		<!-- <select id="selectInfo" resultMap="">
+			select <include refid="details_list"></include>
+		</select> -->
+	</mapper>
+	
+	
+	
