@@ -84,14 +84,17 @@ public class CommentsController {
 
 		if(commentService.save(comments)){
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
-			/*for (int i=0;i<commentVO.getPicture().size();i++){*/
+			List<String> picture = new ArrayList<String>();
+			picture.add(commentVO.getImgPath1());
+			picture.add(commentVO.getImgPath2());
+			picture.add(commentVO.getImgPath3());
+			for(int i=0;i<picture.size();i++){
 				CommentsImg commentsImg=new CommentsImg();
 				commentsImg.setID(KeyGen.uuid());
-				commentsImg.setPicture(commentVO.getImgPath());
+				commentsImg.setPicture(picture.get(i));
 				commentsImg.setCommentID(commentVO.getID());;
-				
 				commentImgService.save(commentsImg);
-				/*}*/
+			}
 				//修改订单商品的状态
 				orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.COMMENTED);
 			//修改订单的状态
