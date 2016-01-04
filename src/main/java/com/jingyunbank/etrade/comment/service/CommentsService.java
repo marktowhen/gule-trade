@@ -117,9 +117,9 @@ public class CommentsService implements ICommentService{
 		 
 	}
 	@Override
-	public Optional<Comments> singleByOid(String oid) {
+	public Optional<Comments> singleByOid(String oid,String gid) {
 		
-		CommentsEntity commentsEntity=commentsDao.selectCommentByOid(oid);
+		CommentsEntity commentsEntity=commentsDao.selectCommentByOid(oid,gid);
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentsEntity, comments);
 		return Optional.of(comments);

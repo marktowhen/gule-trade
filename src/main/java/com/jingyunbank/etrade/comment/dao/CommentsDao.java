@@ -24,7 +24,7 @@ public interface CommentsDao {
 	
 	public int commentCount(String gid);
 	
-	public CommentsEntity selectCommentByOid(String oid);
+	public CommentsEntity selectCommentByOid(@Param(value="oid") String oid,@Param(value="gid") String gid);
 	
 	public List<CommentsEntity> selectComment();
 }
