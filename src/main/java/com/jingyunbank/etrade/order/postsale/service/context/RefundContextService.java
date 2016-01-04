@@ -95,10 +95,10 @@ public class RefundContextService implements IRefundContextService{
 		//退款
 		refunds = refunds.stream().filter(refund->!refund.isReturnGoods()).collect(Collectors.toList());
 		if(Objects.nonNull(refunds) && refunds.size() > 0){
-			List<String> rids = returns.stream().map(x->x.getID()).collect(Collectors.toList());
+			List<String> rids = refunds.stream().map(x->x.getID()).collect(Collectors.toList());
 			refundService.refreshStatus(rids, RefundStatusDesc.DONE);
 			List<RefundTrace> traces = new ArrayList<RefundTrace>();
-			for (Refund refund : returns) {
+			for (Refund refund : refunds) {
 				traces.add(createRefundTrace(refund, RefundStatusDesc.DONE, operator, note));
 			}
 			refundTraceService.save(traces);
