@@ -2,9 +2,8 @@ package com.jingyunbank.etrade.information.bean;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -13,7 +12,7 @@ public class InformationDetailsVO {
 	private String ID;
 	private String SID;
 	private String name;//主要的信息
-	@NotEmpty
+	@NotNull(message="标题不能为空")
 	private String title;//标题
 	private String content;//内容
 	private String picture;
@@ -21,8 +20,7 @@ public class InformationDetailsVO {
 	private Date addtime;//添加时间
 	private String status;
 	private int orders;//按order排序
-	@NotEmpty
-	@Size(max=200)
+	@Size(max=200,message="摘要不得超过200字")
 	private String abstracts;
 	private String recipe;//古方医药的处方
 	private String function;//古方医药的主治功能

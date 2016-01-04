@@ -72,6 +72,7 @@ public class GoodsOperationVO implements Serializable {
 	private String ingredients;// 配料表
 	private String foodAdditives;// 食品添加剂
 	private String specifications;// 具体规格
+	private String taste; //口味
 	private String functions;// 功能及功效
 	private String ingredient; // 成分含量
 	private String note;// 注意事项
@@ -396,6 +397,12 @@ public class GoodsOperationVO implements Serializable {
 	}
 	public void setFactoryTel(String factoryTel) {
 		this.factoryTel = factoryTel;
+	}
+	public String getTaste() {
+		return taste;
+	}
+	public void setTaste(String taste) {
+		this.taste = taste;
 	}
 	
 	

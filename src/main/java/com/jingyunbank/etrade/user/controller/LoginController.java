@@ -101,7 +101,9 @@ public class LoginController {
 		//将uid写入cookie
 		Cookie cookie = new Cookie(ServletBox.LOGIN_ID, users.getID());
 		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
+		
 		
 		UserVO vo = new UserVO();
 		BeanUtils.copyProperties(users, vo);

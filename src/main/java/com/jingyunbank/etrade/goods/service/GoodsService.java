@@ -272,6 +272,8 @@ public class GoodsService implements IGoodsService {
 		map.put("size", (int) range.getTo());
 		map.put("name", goodsSearch.getName());
 		map.put("state", goodsSearch.getState());
+		map.put("mid", goodsSearch.getMID());
+		map.put("bid", goodsSearch.getBID());
 		List<GoodsList> showGoodsList = goodsBKDao.selectGoodsByCondition(map).stream().map(dao -> {
 			GoodsList bo = new GoodsList();
 			BeanUtils.copyProperties(dao, bo);
