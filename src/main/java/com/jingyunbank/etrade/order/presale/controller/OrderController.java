@@ -227,6 +227,7 @@ public class OrderController {
 				BigDecimal orderpricepercent = orderprice.divide(origintotalprice, 6, RoundingMode.HALF_UP);
 				BigDecimal neworderprice = finalprice.multiply(orderpricepercent).setScale(2, RoundingMode.HALF_UP);
 				order.setPayout(neworderprice);
+				order.setCouponReduce(orderprice.subtract(neworderprice));
 				List<OrderGoods> goodses = order.getGoods();
 				goodses.forEach(goods -> {
 					BigDecimal origingoodspprice = goods.getPprice();//促销价
@@ -236,8 +237,10 @@ public class OrderController {
 							origingoodspprice : origingoodsprice;
 					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 6, RoundingMode.HALF_UP);
 					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice).setScale(2, RoundingMode.HALF_UP);
-					goods.setPayout(finalgoodsprice);
-					goods.setCouponReduce(origingoodsprice.subtract(finalgoodsprice));
+					BigDecimal payout = finalgoodsprice.multiply(new BigDecimal(goods.getCount()));
+					BigDecimal origintotal = origingoodsprice.multiply(new BigDecimal(goods.getCount()));
+					goods.setPayout(payout);
+					goods.setCouponReduce(origintotal.subtract(payout));
 				});
 			});
 		}else{

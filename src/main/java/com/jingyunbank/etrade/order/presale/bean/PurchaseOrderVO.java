@@ -32,7 +32,7 @@ public class PurchaseOrderVO {
 	@NotNull//订单使用卡券前的总价（包含邮费）
 	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal price = new BigDecimal(0);
-
+	
 	private Date addtime;
 	
 	private String note;

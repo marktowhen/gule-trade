@@ -35,6 +35,7 @@ import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
+import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
@@ -57,6 +58,8 @@ public class OrderContextService implements IOrderContextService {
 	private IGoodsOperationService goodsOperationService;
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
+	@Autowired
+	private IPointContextService pointContextService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -132,6 +135,9 @@ public class OrderContextService implements IOrderContextService {
 		for (OrderGoods gs : goods) {
 			goodsOperationService.refreshGoodsVolume(uid, uname, gs.getGID(), gs.getCount());
 		}
+		
+		//add point async
+		//pointContextService.addPoint(uid, o.getPoint(), "");
 	}
 
 	@Override

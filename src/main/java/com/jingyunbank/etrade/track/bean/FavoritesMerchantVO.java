@@ -74,6 +74,7 @@ public class FavoritesMerchantVO {
 		this.MID = goods.getMID();
 		this.ID = goods.getID();
 		BeanUtils.copyProperties(goods,this.merchantVO);
+		this.merchantVO.setName(goods.getMerchantName());
 		this.goodsList = goodslist.stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			try {

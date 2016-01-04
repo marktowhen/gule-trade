@@ -23,31 +23,35 @@
 		<result column="invoice_title" property="invoiceTitle" javaType="String"/>
 		<result column="coupon_id" property="couponID" javaType="String"/>
 		<result column="coupon_type" property="couponType" javaType="String"/>
+		<result column="coupon_reduce" property="couponReduce" jdbcType="DECIMAL"/>
 		<result column="status_code" property="statusCode" javaType="String"/>
 		<result column="status_name" property="statusName" javaType="String"/>
 		<result column="price" property="price" jdbcType="DECIMAL"/>
 		<result column="payout" property="payout" jdbcType="DECIMAL"/>
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
-		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderEntity$GoodsEntity">
+		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderGoodsEntity">
 			<result column="ogid" property="ID" javaType="String"/>
 			<result column="gid" property="GID" javaType="String"/>
 			<result column="gname" property="gname" javaType="String"/>
 			<result column="imgpath" property="imgpath" javaType="String"/>
 			<result column="count" property="count" jdbcType="INTEGER"/>
 			<result column="gprice" property="price" jdbcType="DECIMAL"/>
+			<result column="gpprice" property="pprice" jdbcType="DECIMAL"/>
+			<result column="gpayout" property="payout" jdbcType="DECIMAL"/>
 			<result column="gstatuscode" property="statusCode" javaType="String"/>
+			<result column="gstatusname" property="statusName" javaType="String"/>
 			<result column="oid" property="OID" javaType="String"/>
 		</collection>
 	</resultMap>
 	<sql id="orders_columns">
 		id, orderno, receiver, uid, uname, mid, mname, address, mobile, zipcode, addtime, 
-		paytype_code, paytype_name, deliverytype_code, deliverytype_name, coupon_id, coupon_type,
+		paytype_code, paytype_name, deliverytype_code, deliverytype_name, coupon_id, coupon_type, coupon_reduce,
 		status_code, status_name, price, payout, postage, note, invoice_type, invoice_title
 	</sql>
 	<sql id="payments_join_orders_columns">
 		o.id, o.orderno, o.receiver, o.uid, o.uname, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
-		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, o.coupon_id, o.coupon_type,
+		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, o.coupon_id, o.coupon_type, o.coupon_reduce,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.invoice_type, o.invoice_title,
 		og.id as ogid, og.gid, og.count, og.gname, og.oid
 	</sql>
@@ -57,8 +61,8 @@
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
 		img.thumb_path_1 as imgpath, img.gid as gid, 
-		og.gname as gname, og.count as count, 
-		og.price as gprice, og.id as ogid, og.status_code as gstatuscode
+		og.gname as gname, og.count as count, og.pprice as gpprice, og.payout as gpayout,
+		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.presale.entity.OrderEntity">
 		insert into orders
@@ -67,7 +71,7 @@
 			(
 				#{ID}, #{orderno}, #{receiver}, #{UID}, #{uname}, #{MID}, #{mname}, #{address},
 				 #{mobile}, #{zipcode}, #{addtime}, #{paytypeCode}, #{paytypeName}, 
-				 #{deliveryTypeCode}, #{deliveryTypeName}, #{couponID}, #{couponType},
+				 #{deliveryTypeCode}, #{deliveryTypeName}, #{couponID}, #{couponType}, #{couponReduce},
 				 #{statusCode}, #{statusName}, #{price}, #{payout}, #{postage}, #{note},
 				 #{invoiceType}, #{invoiceTitle}
 			 )
@@ -80,7 +84,7 @@
 			(
 			 #{order.ID}, #{order.orderno}, #{order.receiver}, #{order.UID}, #{order.uname}, #{order.MID}, #{order.mname}, #{order.address},
 			 #{order.mobile}, #{order.zipcode}, #{order.addtime},  #{order.paytypeCode}, #{order.paytypeName}, 
-			 #{order.deliveryTypeCode}, #{order.deliveryTypeName}, #{order.couponID}, #{order.couponType},
+			 #{order.deliveryTypeCode}, #{order.deliveryTypeName}, #{order.couponID}, #{order.couponType}, #{order.couponReduce},
 			 #{order.statusCode}, #{order.statusName}, #{order.price}, #{order.payout}, #{order.postage}, #{order.note},
 			 #{order.invoiceType}, #{order.invoiceTitle}
 			)
@@ -202,4 +206,14 @@
 		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
 		where ot.addtime is not null and ot.addtime &lt;= #{deadline} and o.status_code = #{statuscode}
 	</select>
+	
+	<select id="selectBetween" resultMap="OrderEntityResultMap">
+		select o.id, o.uid
+		from orders o
+		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
+		where 
+			(ot.addtime is not null and ot.addtime &lt;= #{to} and ot.addtime &gt;= #{from})
+			and o.status_code = #{statuscode}
+	</select>
+	
 </mapper>

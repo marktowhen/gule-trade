@@ -73,9 +73,6 @@
 		<if test="entity.addtiemEnd!=null">
 			and addtime &lt;=entity.addtiemEnd
 		</if>
-		<if test="entity.validTime">
-			and now() between start and end
-		</if>
 		<if test="entity.needUsed">
 			and used = #{entity.used}
 		</if>

@@ -96,7 +96,7 @@ public class OrderLogisticController {
 		
 		String tradepwd = oidswithpwd.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
-		Optional<Users> ou = userService.getByUID(ServletBox.getLoginUID(session));
+		Optional<Users> ou = userService.single(ServletBox.getLoginUID(session));
 		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 			return Result.fail("支付密码错误！");
 		}

@@ -21,6 +21,7 @@ public class Order2ShowVO {
 	private String paytypeName;
 	private String deliveryTypeCode;
 	private String deliveryTypeName;
+	private BigDecimal couponReduce;
 	private String invoiceType;
 	private String invoiceTitle;
 	private BigDecimal price;//订单总价
@@ -168,5 +169,11 @@ public class Order2ShowVO {
 	}
 	public void setInvoiceTitle(String invoiceTitle) {
 		this.invoiceTitle = invoiceTitle;
+	}
+	public BigDecimal getCouponReduce() {
+		return couponReduce;
+	}
+	public void setCouponReduce(BigDecimal couponReduce) {
+		this.couponReduce = couponReduce;
 	}
 }

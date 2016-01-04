@@ -23,6 +23,7 @@ public class OrderGoodsEntity implements Serializable{
 	private BigDecimal price;//订单生成时的商品价格
 	private int count;
 	private String statusCode;//状态id，用户支持订单中某个商品的退款
+	private String statusName;
 	private BigDecimal payout;//实际付款
 	private BigDecimal couponReduce;//优惠减免价格
 	private Date addtime;
@@ -127,5 +128,11 @@ public class OrderGoodsEntity implements Serializable{
 	}
 	public void setCouponReduce(BigDecimal couponReduce) {
 		this.couponReduce = couponReduce;
+	}
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 }

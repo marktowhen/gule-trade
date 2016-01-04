@@ -138,8 +138,8 @@ public class CommentsController {
 			CommentsVO commentsVO=new CommentsVO();
 			UserVO userVO = new UserVO();
 			UserInfoVO userinfoVO = new UserInfoVO();
-			if(userService.getByUID(comments.get(i).getUID()).isPresent()){
-				Users users=userService.getByUID(comments.get(i).getUID()).get();
+			if(userService.single(comments.get(i).getUID()).isPresent()){
+				Users users=userService.single(comments.get(i).getUID()).get();
 				UserInfo userInfo=userInfoService.getByUid(comments.get(i).getUID()).get();
 				BeanUtils.copyProperties(comments.get(i),commentsVO);
 				BeanUtils.copyProperties(users, userVO);

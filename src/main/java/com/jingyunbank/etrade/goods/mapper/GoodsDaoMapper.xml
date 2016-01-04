@@ -145,7 +145,7 @@
 		<include refid="nowprice"/>
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
 		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,
-		COUNT(c.goods_comment) comment
+		COUNT(c.id) comment
 	</sql>
 
 	<!-- 根据名称like查询商品 -->
