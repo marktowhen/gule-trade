@@ -47,12 +47,6 @@ public class GoodsSearchVO  {
 	private int expandSort;
 	/** 推荐排序 */
 	private int recordSort;
-	/** 促销开始时间 */
-	private Date pro_start;
-	/** 促销结束时间 */
-	private Date pro_end;
-	/** 是否促销标志 */
-	private int pro_flag;
 	/** 邮费 */
 	private BigDecimal postage;
 	/** 减库存方式 (拍下减库存 0 付款减库存1) */
@@ -177,24 +171,6 @@ public class GoodsSearchVO  {
 	}
 	public void setRecordSort(int recordSort) {
 		this.recordSort = recordSort;
-	}
-	public Date getPro_start() {
-		return pro_start;
-	}
-	public void setPro_start(Date pro_start) {
-		this.pro_start = pro_start;
-	}
-	public Date getPro_end() {
-		return pro_end;
-	}
-	public void setPro_end(Date pro_end) {
-		this.pro_end = pro_end;
-	}
-	public int getPro_flag() {
-		return pro_flag;
-	}
-	public void setPro_flag(int pro_flag) {
-		this.pro_flag = pro_flag;
 	}
 	public BigDecimal getPostage() {
 		return postage;
