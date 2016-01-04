@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.base.util;
+package com.jingyunbank.etrade.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component("systemConfigProperties")
 @Scope("singleton")
-public final class SystemConfigProperties {
+public final class PropsConfig {
 
 	
-	private final static String PROPERTIES_FILE_LOCATION = "system.properties";
+	private final static String PROPERTIES_FILE_LOCATION = "config.properties";
 	
 	public final static String GOBAL_SEPARATOR = "global.separator";
 	//The key name of the values which specify the mobiles of the admin.
@@ -29,34 +29,7 @@ public final class SystemConfigProperties {
 	public final static String EMAIL_REMINDER_ENABLED = "email.reminder.enabled";
 	public final static String EMAIL_PROVIDER = "email.provider";
 	
-	public final static String MAX_LEVEL_OF_HIERARCHY = "max.level.of.hierarchy";
-	
-	public final static String REGISTER_BONUS_ENABLED = "register.bonus.enabled";
-	public final static String REGISTER_BONUS_LEVEL = "register.bonus.level";
-	public final static String REGISTER_BONUS_MONEY = "register.bonus.money";
-	
-	public final static String REALNAME_BONUS_ENABLED = "realname.bonus.enabled";
-	public final static String REALNAME_BONUS_LEVEL = "realname.bonus.level";
-	public final static String REALNAME_BONUS_MONEY = "realname.bonus.money.";
-	
-	public final static String PURCHASE_BONUS_ENABLED = "purchase.bonus.enabled";
-	public final static String PURCHASE_BONUS_LEVEL = "purchase.bonus.level";
-	
-	public final static String DEFAULT_1ST_LEVEL_RATE = "default.first.level.rate";
-	public final static String DEFAULT_2ND_LEVEL_RATE = "default.second.level.rate";
-	public final static String DEFAULT_3RD_LEVEL_RATE = "default.third.level.rate";
-	/**
-	 * 邮箱/短信身份认证的超时时间 单位：分钟
-	 */
-	public final static String EFFECTIVE_TIME = "effective.time";
-	/**
-	 * 前台根目录 用于用户点击验证邮箱的链接时的跳转路径
-	 */
-	public final static String ROOT_WEB_URL = "root.web.url";
-	
-	public final static String EMAIL_VERIFY_VALID_TIME = "email.verify.valid.time";
-	
-	public final static ClassLoader RESOURCE_LOADER = SystemConfigProperties.class.getClassLoader();
+	public final static ClassLoader RESOURCE_LOADER = PropsConfig.class.getClassLoader();
 	
 	public static String getString(String key){
 		return refresh().getProperty(key, "");

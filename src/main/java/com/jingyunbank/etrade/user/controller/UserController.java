@@ -22,7 +22,6 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.api.vip.coupon.service.IUserCashCouponService;
 import com.jingyunbank.etrade.api.vip.coupon.service.IUserDiscountCouponService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/user")
@@ -37,14 +36,6 @@ public class UserController {
 	private IUserCashCouponService userCashCouponService;
 	@Autowired
 	private IUserDiscountCouponService userDiscountCouponService;
-	/**
-	 * 邮箱/短信 成功验证身份的时间
-	 */
-	public static final String CHECK_CODE_PASS_DATE="CHECK_CODE_PASS_DATE";
-	/**
-	 * 邮箱验证码在session中的key
-	 */
-	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 	/**
 	 * 获得已登录的user
@@ -91,12 +82,12 @@ public class UserController {
 	@RequestMapping(value="/phone",method=RequestMethod.PUT)
 	public Result<String> refreshPhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
-		if(EtradeUtil.effectiveTime(request.getSession().getAttribute(UserController.CHECK_CODE_PASS_DATE))){
+		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
 			Users users=new Users();
 			users.setMobile(mobile);
 			users.setID(ServletBox.getLoginUID(request));
 			//手机验证码
-			Result<String> checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+			Result<String> checkResult = checkCode(code, request, ServletBox.SMS_CODE_KEY_IN_SESSION);
 			
 			
 			if(checkResult.isOk()){
@@ -123,12 +114,12 @@ public class UserController {
 	@RequestMapping(value="/email",method=RequestMethod.PUT)
 	public Result<String> refreshEmail(@RequestParam("email") String email, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
-		if(EtradeUtil.effectiveTime(request.getSession().getAttribute(UserController.CHECK_CODE_PASS_DATE))){
+		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
 			Users users=new Users();
 			users.setEmail(email);
 			users.setID(ServletBox.getLoginUID(request));
 			//邮箱验证码
-			Result<String> checkResult = checkCode(code, request, UserController.EMAIL_MESSAGE);
+			Result<String> checkResult = checkCode(code, request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 			
 			if(checkResult.isOk()){
 				if(userService.singleByKey(email).isPresent()){

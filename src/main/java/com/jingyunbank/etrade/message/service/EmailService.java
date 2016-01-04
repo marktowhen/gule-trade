@@ -7,7 +7,7 @@ import com.jingyunbank.core.msg.MessagerManager;
 import com.jingyunbank.core.msg.email.EmailSender;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
-import com.jingyunbank.etrade.base.util.SystemConfigProperties;
+import com.jingyunbank.etrade.config.PropsConfig;
 
 @Service("emailService")
 public class EmailService implements ISyncNotifyService {
@@ -17,12 +17,12 @@ public class EmailService implements ISyncNotifyService {
 
 	public EmailService() {
 		try {
-			String providername = SystemConfigProperties.getString(SystemConfigProperties.EMAIL_PROVIDER);
+			String providername = PropsConfig.getString(PropsConfig.EMAIL_PROVIDER);
 			Class.forName(providername);
 		} catch (ClassNotFoundException e) {
 //			logger.error(e);
 		}
-		sender = MessagerManager.getEmailSender(SystemConfigProperties.toMap());
+		sender = MessagerManager.getEmailSender(PropsConfig.toMap());
 	}
 	
 	@Override

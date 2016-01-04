@@ -59,7 +59,7 @@ public class MessageController {
 						.collect(Collectors.joining(" ; ")));
 		}
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
-		messageVO.setAddip(ServletBox.getIP(request));
+		messageVO.setAddip(ServletBox.ip(request));
 		messageVO.setSentUID(ServletBox.getLoginUID(request));
 		messageVO.setStatus(IInboxService.STATUS_SUC);
 		messageVO.setType(IInboxService.TYPE_LETTER);

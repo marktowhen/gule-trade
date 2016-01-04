@@ -18,7 +18,6 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -39,8 +38,8 @@ public class PasswordController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/password",method=RequestMethod.PUT)
 	public Result<UserVO> updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		if(EtradeUtil.effectiveTime(request.getSession().getAttribute(UserController.CHECK_CODE_PASS_DATE))){
-		//验证登录密码有效性
+		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+			//验证登录密码有效性
 			if(userVO.getPassword()!=null){
 				if(userVO.getPassword().length()<7||userVO.getPassword().length()>20){
 					return Result.fail("密码必须是8-20位");
@@ -70,7 +69,7 @@ public class PasswordController {
 		 */
 		@RequestMapping(value="/forgetpwd/checkcode",method=RequestMethod.PUT)
 		public Result<String> forgetpwdCheck(HttpServletRequest request, HttpSession session,@RequestParam("key") String key, @RequestParam("password") String password) throws Exception{
-			if(EtradeUtil.effectiveTime(request.getSession().getAttribute(UserController.CHECK_CODE_PASS_DATE))){
+			if(ServletBox.checkIfEmailMobileOK(request.getSession())){
 				if(password.length()<7||password.length()>20){
 					return Result.fail("登录密码必须是8-20位");
 				}

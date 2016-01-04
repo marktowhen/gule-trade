@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.message.controller;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -19,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.util.RndBuilder;
+import com.jingyunbank.core.util.Times;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.user.controller.UserController;
 
 @RestController
 @RequestMapping("/api/sms")
@@ -118,9 +117,9 @@ public class SMSController {
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
 	public Result<String> chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
 		
-		Result<String>	checkResult = checkCode(code, request, ServletBox.SMS_MESSAGE);
+		Result<String>	checkResult = checkCode(code, request, ServletBox.SMS_CODE_KEY_IN_SESSION);
 		if(checkResult.isOk()){
-			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
+			ServletBox.verifyMobile(request);
 			return Result.ok("手机验证成功");
 		}
 		return checkResult;
@@ -137,8 +136,8 @@ public class SMSController {
 	 */
 	private Result<String> sendCodeToMobile(String mobile, String code, HttpServletRequest request) throws Exception{
 		//距离上次发送时间是否超过1分钟
-		if(checkSendTime(request.getSession(), mobile)){
-			request.getSession().setAttribute(ServletBox.SMS_MESSAGE, code);
+		if(Times.gone(60L, request.getSession().getAttribute(mobile))){
+			request.getSession().setAttribute(ServletBox.SMS_CODE_KEY_IN_SESSION, code);
 			Message message = new Message();
 			message.setContent("您好，您的验证码是"+code);
 			message.getReceiveUser().setMobile(mobile);
@@ -149,25 +148,6 @@ public class SMSController {
 			return Result.ok();
 		}
 		return Result.fail("发送过于频繁,请稍后再试");
-	}
-	/**
-	 * 验证发送间隔是否超过1分钟
-	 * @param session
-	 * @return
-	 * 2015年12月8日 qxs
-	 */
-	private boolean checkSendTime(HttpSession session, String mobile){
-		Object objLastTime = session.getAttribute(mobile);
-		if(objLastTime!=null && objLastTime instanceof Date){
-			Date lastTime = (Date)objLastTime;
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(lastTime);
-			calendar.add(Calendar.MINUTE, 1);
-			if(calendar.after(Calendar.getInstance())){
-				return false;
-			}
-		}
-		return true;
 	}
 	
 	/**

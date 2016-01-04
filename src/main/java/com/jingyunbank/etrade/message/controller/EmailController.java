@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.message.controller;
 
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -20,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.util.RndBuilder;
+import com.jingyunbank.core.util.Times;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.user.controller.UserController;
 
 
 @RestController
@@ -37,11 +36,6 @@ public class EmailController {
 	private IUserService userService;
 	@Resource
 	private ISyncNotifyService emailService;
-	/**
-	 * 邮箱验证码在session中的key
-	 */
-	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
-	
 
 	/**
 	 * 为传入的邮箱发送验证码
@@ -115,9 +109,10 @@ public class EmailController {
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
 	public Result<String> checkEmailCode(HttpServletRequest request,@RequestParam String code,HttpSession session) {
 		
-		Result<String> checkResul = checkCode(code, request, EMAIL_MESSAGE);
+		Result<String> checkResul = checkCode(code, request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 		if(checkResul.isOk()){
-			session.setAttribute(UserController.CHECK_CODE_PASS_DATE, new Date());
+			ServletBox.verifyEmail(request);
+			session.setAttribute(ServletBox.SMS_EMAIL_VERIFICATION_TIME_KEY_IN_SESSION, new Date());
 		}
 		return checkResul;
 	}
@@ -156,8 +151,8 @@ public class EmailController {
 	 */
 	private Result<String> sendCodeToEmail(String email, String subTitle, String code, HttpServletRequest request) throws Exception{
 		//距离上次发送时间是否超过1分钟
-		if(checkSendTime(request.getSession(), email)){
-			request.getSession().setAttribute(EMAIL_MESSAGE, code);
+		if(Times.gone(60L, request.getSession().getAttribute(email))){
+			request.getSession().setAttribute(ServletBox.EMAIL_CODE_KEY_IN_SESSION, code);
 			Message message = new Message();
 			message.setTitle(subTitle);
 			message.getReceiveUser().setEmail(email);
@@ -180,27 +175,6 @@ public class EmailController {
 		}
 		return Result.fail("发送过于频繁,请稍后再试");
 	}
-	
-	/**
-	 * 验证发送间隔是否超过1分钟
-	 * @param session
-	 * @return
-	 * 2015年12月8日 qxs
-	 */
-	private boolean checkSendTime(HttpSession session, String email){
-		Object objLastTime = session.getAttribute(email);
-		if(objLastTime!=null && objLastTime instanceof Date){
-			Date lastTime = (Date)objLastTime;
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(lastTime);
-			calendar.add(Calendar.MINUTE, 1);
-			if(calendar.after(Calendar.getInstance())){
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	
 	/**
 	 * 发送验证链接到用户输入的邮箱

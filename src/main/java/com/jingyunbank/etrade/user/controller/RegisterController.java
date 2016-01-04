@@ -73,7 +73,7 @@ public class RegisterController {
 			if(userService.exists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
-			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_CODE_KEY_IN_SESSION);
 		}
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getEmail())){
