@@ -44,11 +44,11 @@ public class FastpayResultController {
 				// 此处加入商户系统的逻辑处理（例如判断金额，判断支付状态(20成功,30失败)，更新订单状态等等）......
 				orderContextService.paysuccess(v_oid);
 			}else{
-				orderContextService.payfail(v_oid);
+				orderContextService.payfail(v_oid, "支付失败状态码："+v_pstatus);
 			}
 		}else{
 			//支付失败
-			orderContextService.payfail(v_oid);
+			orderContextService.payfail(v_oid, "支付结果校验失败："+v_md5str+":"+v_md5text+":"+text);
 		}
 	}
 }

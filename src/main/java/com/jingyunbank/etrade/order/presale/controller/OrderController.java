@@ -196,7 +196,8 @@ public class OrderController {
 				orderGoods.setID(KeyGen.uuid());
 				orderGoods.setOID(order.getID());
 				orderGoods.setOrderno(order.getOrderno());
-				orderGoods.setStatusCode(OrderStatusDesc.NEW_CODE);
+				orderGoods.setStatusCode(order.getStatusCode());
+				orderGoods.setStatusName(order.getStatusName());
 				orderGoods.setAddtime(new Date());
 				orderGoods.setUID(order.getUID());
 				orderGoodses.add(orderGoods);
