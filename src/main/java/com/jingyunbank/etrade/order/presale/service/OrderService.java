@@ -155,5 +155,15 @@ public class OrderService implements IOrderService{
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Orders> listBetween(Date from, Date to, OrderStatusDesc status) {
+		return orderDao.selectBetween(from, to, status.getCode())
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo, "goods");
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
 
 }

@@ -69,7 +69,7 @@ public class TradePasswordController {
 				}
 			}
 			String uid = ServletBox.getLoginUID(request);
-			Optional<Users> optional=userService.getByUID(uid);
+			Optional<Users> optional=userService.single(uid);
 			Users users=optional.get();
 			/*if(StringUtils.isEmpty(users.getTradepwd())){*/
 					userVO.setID(uid);

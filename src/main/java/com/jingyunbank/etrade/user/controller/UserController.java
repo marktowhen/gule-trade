@@ -56,7 +56,7 @@ public class UserController {
 	@RequestMapping(value="/current",method=RequestMethod.GET)
 	public Result<UserVO> getCurrentUser(UserVO userVO,HttpServletRequest request){
 		String id = ServletBox.getLoginUID(request);
-		Users users=userService.getByUID(id).get();
+		Users users=userService.single(id).get();
 		BeanUtils.copyProperties(users, userVO);
 		return Result.ok(userVO);
 	}
@@ -100,7 +100,7 @@ public class UserController {
 			
 			
 			if(checkResult.isOk()){
-				if(userService.getByKey(mobile).isPresent()){
+				if(userService.singleByKey(mobile).isPresent()){
 					return Result.fail("该手机号已被使用");
 				}
 				userService.refresh(users);
@@ -131,7 +131,7 @@ public class UserController {
 			Result<String> checkResult = checkCode(code, request, UserController.EMAIL_MESSAGE);
 			
 			if(checkResult.isOk()){
-				if(userService.getByKey(email).isPresent()){
+				if(userService.singleByKey(email).isPresent()){
 					return Result.fail("该邮箱已被使用");
 				}
 				userService.refresh(users); 
@@ -157,7 +157,7 @@ public class UserController {
 			return Result.fail("请输入用户名/手机/邮箱");
 		}
 		//根据用户名/手机号/邮箱查询用户信息
-		Optional<Users> usersOptional =  userService.getByKey(key);
+		Optional<Users> usersOptional =  userService.singleByKey(key);
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
 			return Result.ok(getUserVoFromBo(users));
@@ -177,7 +177,7 @@ public class UserController {
 	@RequestMapping(value="/safety/level/{uid}",method=RequestMethod.GET)
 	public Result<Integer> getSafetyLevel(@PathVariable String uid) throws Exception {
 		int level = 0;
-		Optional<Users> userOption = userService.getByUID(uid);
+		Optional<Users> userOption = userService.single(uid);
 		if(userOption.isPresent()){
 			Users users = userOption.get();
 			//已验证邮箱

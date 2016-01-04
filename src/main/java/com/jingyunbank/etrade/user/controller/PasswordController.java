@@ -74,7 +74,7 @@ public class PasswordController {
 				if(password.length()<7||password.length()>20){
 					return Result.fail("登录密码必须是8-20位");
 				}
-				Optional<Users> usersOptionals = userService.getByKey(key);
+				Optional<Users> usersOptionals = userService.singleByKey(key);
 				Users users=usersOptionals.get();
 				users.setPassword(password);
 				userService.refresh(users);

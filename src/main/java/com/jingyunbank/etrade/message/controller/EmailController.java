@@ -77,7 +77,7 @@ public class EmailController {
 		if(StringUtils.isEmpty(key)){
 			return Result.fail("手机/邮箱");
 		}
-		Optional<Users> usersOptional = userService.getByKey(key);
+		Optional<Users> usersOptional = userService.singleByKey(key);
 		Users users=usersOptional.get();
 		if(users.getEmail()!=null){
 			String code = new String(new RndBuilder().length(4).hasletter(false).next());
@@ -98,7 +98,7 @@ public class EmailController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/user",method=RequestMethod.GET)
 	public Result<String> sendCodeToEmail(HttpServletRequest request) throws Exception {
-		Optional<Users> userOption = userService.getByUID(ServletBox.getLoginUID(request));
+		Optional<Users> userOption = userService.single(ServletBox.getLoginUID(request));
 		String code = new String(new RndBuilder().length(4).hasletter(false).next());
 		return  sendCodeToEmail(userOption.get().getEmail(), "验证码", code, request);
 	}
