@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.information.bo.HelpCenterDetail;
-import com.jingyunbank.etrade.api.information.service.IHelpCenterDetailService;
+import com.jingyunbank.etrade.api.posts.bo.HelpCenterDetail;
+import com.jingyunbank.etrade.api.posts.service.IHelpCenterDetailService;
 import com.jingyunbank.etrade.posts.bean.HelpCenterDetailVO;
 
 @RestController

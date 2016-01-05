@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.cart.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -172,6 +173,41 @@ public class CartController {
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
 	public Result<CartVO> clearing(@Valid @RequestBody CartVO cart,
 					BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的订单信息有误，请核实后重新提交。");
+		}
+		
+		List<OrdersInCartVO> orders = cart.getOrders();
+		BigDecimal cartprice = BigDecimal.ZERO;
+		BigDecimal cartpricewithoutpostage = BigDecimal.ZERO;
+		for (OrdersInCartVO order : orders) {
+			//纯订单价格
+			BigDecimal orderprice = BigDecimal.ZERO;
+			//纯邮费
+			BigDecimal orderpostage = BigDecimal.ZERO;
+			List<GoodsInCartVO> goods = order.getGoods();
+			for (GoodsInCartVO gs : goods) {
+				BigDecimal gspprice = gs.getPprice();
+				BigDecimal gsprice = gs.getPrice();
+				int gscount = gs.getCount();
+				gs.setPostage(Objects.isNull(gs.getPostage())?BigDecimal.ZERO:gs.getPostage());
+				BigDecimal gspostage = gs.getPostage();
+				orderprice = orderprice.add(
+							(Objects.nonNull(gspprice)?gspprice:gsprice)
+									.multiply(BigDecimal.valueOf(gscount)).setScale(2)
+						);
+				orderpostage = orderpostage.add(gspostage);
+			}
+			//满99包邮
+			orderpostage = (orderprice.compareTo(BigDecimal.valueOf(99)) >= 0 ? BigDecimal.ZERO : orderpostage);
+            order.setPostage(orderpostage);
+            order.setPrice(orderprice.add(orderpostage));
+            cartprice = cartprice.add(order.getPrice());
+            cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
+		}
+		cart.setTotalPrice(cartprice);
+		cart.setTotalPriceWithoutPostage(cartpricewithoutpostage);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		session.setAttribute(GOODS_IN_CART_TO_CLEARING, mapper.writeValueAsString(cart));
 		return Result.ok(cart);

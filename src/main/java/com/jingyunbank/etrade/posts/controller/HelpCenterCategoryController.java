@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.information.bo.HelpCenterCategory;
-import com.jingyunbank.etrade.api.information.service.IHelpCenterCategoryService;
+import com.jingyunbank.etrade.api.posts.bo.HelpCenterCategory;
+import com.jingyunbank.etrade.api.posts.service.IHelpCenterCategoryService;
 import com.jingyunbank.etrade.posts.bean.HelpCenterCategoryVO;
 
 @RestController

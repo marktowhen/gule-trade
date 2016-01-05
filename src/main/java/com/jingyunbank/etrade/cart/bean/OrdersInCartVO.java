@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 /**
  * @see CartController.list()
  */
@@ -17,20 +20,20 @@ public class OrdersInCartVO implements Serializable{
 	private static final long serialVersionUID = -3657800214838173712L;
 	private String ID;
 	private long orderno;
-	@NotNull
-	@Size(min=22, max=22)
+	@NotBlank
+	@Size(min=1, max=22)
 	private String MID;
-	@NotNull
+	@NotBlank
 	private String mname;
 	@NotNull
 	@DecimalMin(value="0.00", inclusive=true)
 	private BigDecimal postage = new BigDecimal(0);
-	@NotNull
-	@DecimalMin(value="0.00", inclusive=false)
+	
 	private BigDecimal price;
 	private Date addtime;
 	
 	private String note;
+	@Valid
 	@NotNull
 	@Size(min=1)
 	private List<GoodsInCartVO> goods = new ArrayList<>();

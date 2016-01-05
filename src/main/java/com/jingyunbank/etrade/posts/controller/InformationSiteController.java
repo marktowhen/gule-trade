@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.information.bo.InformationSite;
-import com.jingyunbank.etrade.api.information.service.IInformationSiteService;
+import com.jingyunbank.etrade.api.posts.bo.InformationSite;
+import com.jingyunbank.etrade.api.posts.service.IInformationSiteService;
 import com.jingyunbank.etrade.posts.bean.InformationSiteVO;
 
 @RestController

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.information.bo.Information;
-import com.jingyunbank.etrade.api.information.service.IInformationService;
+import com.jingyunbank.etrade.api.posts.bo.Information;
+import com.jingyunbank.etrade.api.posts.service.IInformationService;
 import com.jingyunbank.etrade.posts.bean.InformationVO;
 @Controller
 public class InformationController {

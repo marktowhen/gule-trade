@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.information.bo.Information;
-import com.jingyunbank.etrade.api.information.service.IInformationService;
+import com.jingyunbank.etrade.api.posts.bo.Information;
+import com.jingyunbank.etrade.api.posts.service.IInformationService;
 import com.jingyunbank.etrade.posts.dao.InformationDao;
 import com.jingyunbank.etrade.posts.entity.InformationEntity;
 @Service

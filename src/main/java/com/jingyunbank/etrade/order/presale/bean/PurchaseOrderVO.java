@@ -18,7 +18,7 @@ public class PurchaseOrderVO {
 	private String ID;
 	private long orderno;
 	@NotNull
-	@Size(min=22, max=22)
+	@Size(min=1, max=22)
 	private String MID;
 	@NotNull
 	private String mname;

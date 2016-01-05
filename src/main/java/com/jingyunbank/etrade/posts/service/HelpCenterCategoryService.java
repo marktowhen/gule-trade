@@ -14,9 +14,9 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.information.bo.HelpCenterCategory;
-import com.jingyunbank.etrade.api.information.service.IHelpCenterCategoryService;
-import com.jingyunbank.etrade.api.information.service.IHelpCenterDetailService;
+import com.jingyunbank.etrade.api.posts.bo.HelpCenterCategory;
+import com.jingyunbank.etrade.api.posts.service.IHelpCenterCategoryService;
+import com.jingyunbank.etrade.api.posts.service.IHelpCenterDetailService;
 import com.jingyunbank.etrade.posts.dao.HelpCenterCategoryDao;
 import com.jingyunbank.etrade.posts.entity.HelpCenterCategoryEntity;
 

@@ -14,7 +14,7 @@ public class PurchaseGoodsVO {
 
 	private String MID;
 	@NotNull
-	@Size(min=22, max=22)
+	@Size(min=1, max=22)
 	private String GID;
 	private String gname;
 	private BigDecimal pprice;//商品下单时的促销价

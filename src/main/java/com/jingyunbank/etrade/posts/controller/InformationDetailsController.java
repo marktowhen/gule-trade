@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.information.bo.InformationDetails;
-import com.jingyunbank.etrade.api.information.service.IInformationDetailsService;
+import com.jingyunbank.etrade.api.posts.bo.InformationDetails;
+import com.jingyunbank.etrade.api.posts.service.IInformationDetailsService;
 import com.jingyunbank.etrade.posts.bean.InformationDetailsVO;
 @RestController
 public class InformationDetailsController {

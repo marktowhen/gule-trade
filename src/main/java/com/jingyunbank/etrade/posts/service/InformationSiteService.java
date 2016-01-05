@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.information.bo.InformationSite;
-import com.jingyunbank.etrade.api.information.service.IInformationSiteService;
+import com.jingyunbank.etrade.api.posts.bo.InformationSite;
+import com.jingyunbank.etrade.api.posts.service.IInformationSiteService;
 import com.jingyunbank.etrade.posts.dao.InformationSiteDao;
 import com.jingyunbank.etrade.posts.entity.InformationSiteEntity;
 @Service
