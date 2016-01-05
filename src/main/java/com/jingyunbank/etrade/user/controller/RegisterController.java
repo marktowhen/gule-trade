@@ -38,7 +38,6 @@ public class RegisterController {
  	@Autowired
 	private ICartService cartService;
  	
-	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
 	
 	
 
@@ -80,7 +79,7 @@ public class RegisterController {
 			if(userService.exists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
 			}
-			checkResult = checkCode(userVO.getCode(), request, EMAIL_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 		}
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
