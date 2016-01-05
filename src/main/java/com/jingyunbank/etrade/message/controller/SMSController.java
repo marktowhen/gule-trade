@@ -120,7 +120,6 @@ public class SMSController {
 		Result<String>	checkResult = checkCode(code, request, ServletBox.SMS_CODE_KEY_IN_SESSION);
 		if(checkResult.isOk()){
 			ServletBox.verifyMobile(request);
-			return Result.ok("手机验证成功");
 		}
 		return checkResult;
 	}

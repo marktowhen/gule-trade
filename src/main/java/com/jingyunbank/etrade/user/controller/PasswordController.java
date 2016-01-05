@@ -26,8 +26,6 @@ public class PasswordController {
 	@Autowired
 	private IUserService userService;
 
-	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
-	
 	/**
 	 * 2修改登录密码
 	 * @param userVO

@@ -112,7 +112,6 @@ public class EmailController {
 		Result<String> checkResul = checkCode(code, request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 		if(checkResul.isOk()){
 			ServletBox.verifyEmail(request);
-			session.setAttribute(ServletBox.SMS_EMAIL_VERIFICATION_TIME_KEY_IN_SESSION, new Date());
 		}
 		return checkResul;
 	}
