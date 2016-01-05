@@ -83,7 +83,7 @@ public class RegisterController {
 		user.setID(KeyGen.uuid());//generate uid here to make view visible
 		
 		UserInfo userInfo=new UserInfo();
-		userInfo.setRegip(request.getRemoteAddr());
+		userInfo.setRegip(ServletBox.ip(request));
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
 			userService.save(user, userInfo);
