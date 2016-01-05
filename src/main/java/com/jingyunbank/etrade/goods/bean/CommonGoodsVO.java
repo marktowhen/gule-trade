@@ -25,7 +25,6 @@ public class CommonGoodsVO implements Serializable{
 	private String goodsTitle; //宝贝标题
 	private int comment; //商品评论数
 	
-	
 	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date onSaleBeginTime;  //促销开始时间
 	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")

@@ -143,7 +143,7 @@
 	<!-- 商品概要信息查询字段 用于多条件搜索和商品展示 -->
 	<sql id="commentGoods">
 		g.id gid, g.name goodsname,g.title goodstitle,d.weight weight,d.unit unit,g.price price ,
-		g.promotion_price promotion_price,
+		g.promotion_price promotion_price,d.specifications specifications,
 		<include refid="nowprice"/>
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
 		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,
