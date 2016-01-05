@@ -2,7 +2,6 @@ package com.jingyunbank.etrade.user.bean;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
@@ -21,10 +20,8 @@ public class UserVO {
 	private String mobile;//11位数字的有效手机号
 	@Email(regexp=Patterns.INTERNAL_EMAIL_PATTERN,message="邮箱格式不正确")
 	private String email;//有效的邮箱
-	@Size(max=20,min=8,message="密码必须是8-20位")
 	@NotNull(message="密码不能为空")
 	private String password;
-	@Size(max=20,min=8,message="密码必须是8-20位")
 	private String tradepwd;
 	private String nickname;
 	//private UserInfo uinfo;

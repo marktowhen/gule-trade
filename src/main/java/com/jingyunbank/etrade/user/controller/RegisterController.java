@@ -37,11 +37,6 @@ public class RegisterController {
 	private IUserService userService;
  	@Autowired
 	private ICartService cartService;
- 	
-	public static final String EMAIL_MESSAGE = "EMAIL_MESSAGE";
-	
-	
-
 	/**
 	 * 判断验证码是否输入正确
 	 * @param userVO
@@ -80,14 +75,14 @@ public class RegisterController {
 			if(userService.exists(userVO.getEmail())){
 			return Result.fail("该邮箱已存在");
 			}
-			checkResult = checkCode(userVO.getCode(), request, EMAIL_MESSAGE);
+			checkResult = checkCode(userVO.getCode(), request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 		}
 		Users user=new Users();
 		BeanUtils.copyProperties(userVO, user);
 		user.setID(KeyGen.uuid());//generate uid here to make view visible
 		
 		UserInfo userInfo=new UserInfo();
-		userInfo.setRegip(request.getRemoteAddr());
+		userInfo.setRegip(ServletBox.ip(request));
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
 			userService.save(user, userInfo);
