@@ -61,10 +61,8 @@ public class UserService implements IUserService{
 		UserEntity userEntity=new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
 		
-		/*info.getRegip();*/
-		//密码加密
-		userEntity.setPassword(MD5.digest(user.getPassword()));
-		userEntity.setTradepwd(MD5.digest(user.getTradepwd()));
+		//密码 前台加密
+		userEntity.setTradepwd(userEntity.getPassword());
 		try {
 			userDao.insert(userEntity);
 		} catch (Exception e) {
