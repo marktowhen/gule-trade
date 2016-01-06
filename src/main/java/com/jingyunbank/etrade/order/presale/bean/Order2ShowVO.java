@@ -16,6 +16,7 @@ public class Order2ShowVO {
 	private String mobile ;//收货人电话
 	private String zipcode;
 	private String UID;//下单人
+	private String uname;//
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 id
 	private String paytypeName;
@@ -175,5 +176,11 @@ public class Order2ShowVO {
 	}
 	public void setCouponReduce(BigDecimal couponReduce) {
 		this.couponReduce = couponReduce;
+	}
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
 	}
 }
