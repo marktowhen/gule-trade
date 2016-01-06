@@ -113,7 +113,7 @@
 		where 
 			o.uid = #{uid}
 			<if test="statuscode != null and !''.equals(statuscode)">
-				and o.status_code = #{statuscode}
+				and (o.status_code = #{statuscode} or og.status_code = #{statuscode})
 			</if>
 			<if test="fromdate != null and !''.equals(fromdate)">
 				and o.addtime &gt;= #{fromdate}
@@ -163,7 +163,7 @@
 				o.mid = #{mid}
 			</if>
 			<if test="statuscode != null and !''.equals(statuscode)">
-				and o.status_code = #{statuscode}
+				and (o.status_code = #{statuscode} or og.status_code = #{statuscode})
 			</if>
 			<if test="fromdate != null and !''.equals(fromdate)">
 				and o.addtime &gt;= #{fromdate}
