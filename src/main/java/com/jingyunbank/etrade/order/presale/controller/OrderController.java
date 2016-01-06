@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -137,9 +138,18 @@ public class OrderController {
 				orderGoods.setStatusName(order.getStatusName());
 				orderGoods.setAddtime(new Date());
 				orderGoods.setUID(order.getUID());
+				BigDecimal origingoodspprice = orderGoods.getPprice();//促销价
+				BigDecimal origingoodsprice = orderGoods.getPrice();
+				BigDecimal count = BigDecimal.valueOf(orderGoods.getCount());
+				origingoodsprice = //如果促销价不为空，则使用促销价
+						(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(BigDecimal.ZERO) > 0)?
+						origingoodspprice : origingoodsprice;
+				orderGoods.setPayout(origingoodsprice.multiply(count));
+				orderGoods.setCouponReduce(BigDecimal.ZERO);
 				orderGoodses.add(orderGoods);
 			}
 			
+			order.setPayout(order.getPrice());
 			order.setGoods(orderGoodses);
 			orders.add(order);
 		}
@@ -182,8 +192,11 @@ public class OrderController {
 	//计算订单，及订单中每件商品的实际支付价格(剔除使用优惠卡券后的价格)
 	private boolean calculateOrdersGoodsPayout(String couponID, String couponType, String UID,
 											List<Orders> orders) throws Exception{
-		ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
-		return couponStrategyService.calculate(UID, couponID, orders);
+		if(StringUtils.hasText(couponType)){
+			ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
+			return couponStrategyService.calculate(UID, couponID, orders);
+		}
+		return !StringUtils.hasText(couponID);
 	}
 	
 

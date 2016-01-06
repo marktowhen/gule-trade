@@ -94,13 +94,14 @@ public class CashCouponStrategyService  implements ICouponStrategyService {
 				goodses.forEach(goods -> {
 					BigDecimal origingoodspprice = goods.getPprice();//促销价
 					BigDecimal origingoodsprice = goods.getPrice();
+					BigDecimal count = BigDecimal.valueOf(goods.getCount());
 					origingoodsprice = //如果促销价不为空，则使用促销价
-							(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(new BigDecimal(0)) > 0)?
+							(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(BigDecimal.ZERO) > 0)?
 							origingoodspprice : origingoodsprice;
 					BigDecimal origingoodspricepercent = origingoodsprice.divide(orderprice, 6, RoundingMode.HALF_UP);
 					BigDecimal finalgoodsprice = origingoodspricepercent.multiply(neworderprice).setScale(2, RoundingMode.HALF_UP);
-					BigDecimal payout = finalgoodsprice.multiply(new BigDecimal(goods.getCount()));
-					BigDecimal origintotal = origingoodsprice.multiply(new BigDecimal(goods.getCount()));
+					BigDecimal payout = finalgoodsprice.multiply(count);
+					BigDecimal origintotal = origingoodsprice.multiply(count);
 					goods.setPayout(payout);
 					goods.setCouponReduce(origintotal.subtract(payout));
 				});
@@ -110,7 +111,13 @@ public class CashCouponStrategyService  implements ICouponStrategyService {
 				order.setPayout(order.getPrice());
 				List<OrderGoods> goodses = order.getGoods();
 				goodses.forEach(goods -> {
-					goods.setPayout(goods.getPrice());
+					BigDecimal origingoodspprice = goods.getPprice();//促销价
+					BigDecimal origingoodsprice = goods.getPrice();
+					BigDecimal count = BigDecimal.valueOf(goods.getCount());
+					origingoodsprice = //如果促销价不为空，则使用促销价
+							(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(BigDecimal.ZERO) > 0)?
+							origingoodspprice : origingoodsprice;
+					goods.setPayout(origingoodsprice.multiply(count));
 					goods.setCouponReduce(BigDecimal.ZERO);
 				});
 			});
