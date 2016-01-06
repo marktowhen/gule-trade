@@ -85,9 +85,16 @@ public class CommentsController {
 		if(commentService.save(comments)){
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
 			List<String> picture = new ArrayList<String>();
-			picture.add(commentVO.getImgPath1());
-			picture.add(commentVO.getImgPath2());
-			picture.add(commentVO.getImgPath3());
+			if(commentVO.getImgPath1()!=null){
+				picture.add(commentVO.getImgPath1());
+			}
+			if(commentVO.getImgPath2()!=null){
+				picture.add(commentVO.getImgPath2());
+			}
+			if(commentVO.getImgPath3()!=null){
+				picture.add(commentVO.getImgPath3());
+			}
+			
 			if(picture.size()!=0){
 				for(int i=0;i<picture.size();i++){
 					CommentsImg commentsImg=new CommentsImg();
@@ -99,7 +106,7 @@ public class CommentsController {
 			}
 			
 				//修改订单商品的状态
-				orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.COMMENTED);
+			orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.COMMENTED);
 			//修改订单的状态
 			if(orderGoodsService.count(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
 				List<String> oids=new ArrayList<String>();
@@ -150,7 +157,9 @@ public class CommentsController {
 				commentsVO.setUserVO(userVO);
 				commentsVO.setUserInfoVO(userinfoVO);
 				List<CommentsImg> commentsImgs=	commentImgService.list(comments.get(i).getID());
-				commentsVO.setImgs(commentsImgs);
+				
+					commentsVO.setImgs(commentsImgs);
+				
 				commentVOs.add(commentsVO);
 			}
 			
@@ -258,7 +267,9 @@ public class CommentsController {
 				}
 				BeanUtils.copyProperties(optional.get(), commentsVO);
 				List<CommentsImg> commentsImgs=	commentImgService.list(optional.get().getID());
-				commentsVO.setImgs(commentsImgs);
+				if(commentsImgs.size()!=0){
+					commentsVO.setImgs(commentsImgs);
+				}
 				 personalGrade=(optional.get().getCommentGrade()+optional.get().getServiceGrade()+optional.get().getLogisticsGrade())/3;
 				commentsVO.setPersonalGrade(personalGrade);
 				return Result.ok(commentsVO);		
