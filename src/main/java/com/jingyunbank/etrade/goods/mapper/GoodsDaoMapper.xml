@@ -124,7 +124,7 @@
 		g.`promotion_price` promotion_price,<include refid="nowprice"/>
 		g.`state` state,g.`count` counts,g.`up_time` up_time, 
 		g.`down_time` down_time,g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
-		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
+		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME, g.`desc` goodsdesc,
 		g.`title` goodstitle,m.`name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
 		<include refid="imgAttr"/>
 		d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
