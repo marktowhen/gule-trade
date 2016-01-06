@@ -106,22 +106,9 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 					goods.setCouponReduce(origintotal.subtract(payout));
 				});
 			});
-		}else{
-			orders.forEach(order->{
-				order.setPayout(order.getPrice());
-				List<OrderGoods> goodses = order.getGoods();
-				goodses.forEach(goods -> {
-					BigDecimal origingoodspprice = goods.getPprice();//促销价
-					BigDecimal origingoodsprice = goods.getPrice();
-					BigDecimal count = BigDecimal.valueOf(goods.getCount());
-					origingoodsprice = //如果促销价不为空，则使用促销价
-							(Objects.nonNull(origingoodspprice) && origingoodspprice.compareTo(new BigDecimal(0)) > 0)?
-							origingoodspprice : origingoodsprice;
-					goods.setPayout(origingoodsprice.multiply(count));
-					goods.setCouponReduce(BigDecimal.ZERO);
-				});
-			});
+			return true;
 		}
-		return true;
+		
+		return false;
 	}
 }

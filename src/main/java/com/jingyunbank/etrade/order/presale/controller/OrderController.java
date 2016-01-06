@@ -100,7 +100,7 @@ public class OrderController {
 		
 		boolean legalCoupon = calculateOrdersGoodsPayout(couponID, couponType, UID, orders);
 		if(!legalCoupon){
-			return Result.fail("无效的订单优惠卡券，请检查订单信息后重新提交。");
+			return Result.fail("优惠卡券信息不正确，请检查订单信息后重新提交。");
 		}
 		
 		orderContextService.save(orders);
