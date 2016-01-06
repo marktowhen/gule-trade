@@ -28,15 +28,16 @@ public class UserInfoVO {
 	private String regip;//注册ip
 	private Device regdevice;//注册设备
 	private String picture;//头像文件名
-	private String birthdayStr;
+	
+	private boolean isPoint;//是否有积分
 	
 	
-	public String getBirthdayStr() {
-		
-		return birthdayStr;
+	
+	public boolean isPoint() {
+		return isPoint;
 	}
-	public void setBirthdayStr(String birthdayStr) {
-		this.birthdayStr = birthdayStr;
+	public void setPoint(boolean isPoint) {
+		this.isPoint = isPoint;
 	}
 	public String getPicture() {
 		return picture;
