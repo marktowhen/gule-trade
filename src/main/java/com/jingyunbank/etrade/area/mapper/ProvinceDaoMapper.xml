@@ -7,14 +7,15 @@
 		<id column="province_id" property="provinceID"/>
 		<result column="province_name" property="provinceName" />
 		<result column="country_id" property="countryID" />
+		<result column="faraway" property="faraway" />
 	</resultMap>
 	<sql id="province_column">
-		province_id,province_name,country_id
+		province_id,province_name,country_id,faraway
 	</sql>
 	
 	<insert id="insert">
 		insert province(<include refid="province_column"/>)
-		values(#{provinceID},#{provinceName},#{countryID})
+		values(#{provinceID},#{provinceName},#{countryID},#{faraway})
 	</insert>
 	<delete id="delete">
 		delete  from province where province_id = #{provinceID}
