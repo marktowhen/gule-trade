@@ -79,6 +79,7 @@ public class CartController {
 			}
 			GoodsInCartVO goodsVo = new GoodsInCartVO();
 			BeanUtils.copyProperties(goods, goodsVo);
+			goodsVo.setCount(goodsVo.getStock() < goodsVo.getCount()?goodsVo.getStock():goodsVo.getCount());
 			order.getGoods().add(goodsVo);
 		});
 		return cart;
