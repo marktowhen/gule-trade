@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -25,6 +26,8 @@ import com.jingyunbank.core.lang.Patterns;
  */
 public class PurchaseRequestVO {
 
+	@Min(1)
+	private int province;
 	@NotNull
 	private String receiver;//收货人姓名
 	@NotNull
@@ -131,5 +134,11 @@ public class PurchaseRequestVO {
 	}
 	public void setUname(String uname) {
 		this.uname = uname;
+	}
+	public int getProvince() {
+		return province;
+	}
+	public void setProvince(int province) {
+		this.province = province;
 	}
 }

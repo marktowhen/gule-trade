@@ -22,9 +22,6 @@ public class PurchaseGoodsVO {
 	@DecimalMin(value="0.00", inclusive=false)
 	private BigDecimal price;//商品下单时的单价
 	@NotNull
-	@DecimalMin(value="0.00", inclusive=true)
-	private BigDecimal postage = new BigDecimal(0);//商品邮费,用作数据校验不做存储
-	@NotNull
 	@Min(value=1)
 	private int count;
 	
@@ -63,11 +60,5 @@ public class PurchaseGoodsVO {
 	}
 	public void setPprice(BigDecimal pprice) {
 		this.pprice = pprice;
-	}
-	public BigDecimal getPostage() {
-		return postage;
-	}
-	public void setPostage(BigDecimal postage) {
-		this.postage = postage;
 	}
 }
