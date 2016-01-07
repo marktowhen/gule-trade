@@ -28,7 +28,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
@@ -72,8 +72,8 @@ public class OrderController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
-		String UID = ServletBox.getLoginUID(session);
-		String uname = ServletBox.getLoginUname(session);
+		String UID = Login.UID(session);
+		String uname = Login.Uname(session);
 		purchase.setUID(UID);
 		purchase.setUname(uname);
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -46,7 +47,7 @@ public class UserController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/current",method=RequestMethod.GET)
 	public Result<UserVO> getCurrentUser(UserVO userVO,HttpServletRequest request){
-		String id = ServletBox.getLoginUID(request);
+		String id = Login.UID(request);
 		Users users=userService.single(id).get();
 		BeanUtils.copyProperties(users, userVO);
 		return Result.ok(userVO);
@@ -85,7 +86,7 @@ public class UserController {
 		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
 			Users users=new Users();
 			users.setMobile(mobile);
-			users.setID(ServletBox.getLoginUID(request));
+			users.setID(Login.UID(request));
 			//手机验证码
 			Result<String> checkResult = checkCode(code, request, ServletBox.SMS_CODE_KEY_IN_SESSION);
 			
@@ -117,7 +118,7 @@ public class UserController {
 		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
 			Users users=new Users();
 			users.setEmail(email);
-			users.setID(ServletBox.getLoginUID(request));
+			users.setID(Login.UID(request));
 			//邮箱验证码
 			Result<String> checkResult = checkCode(code, request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 			

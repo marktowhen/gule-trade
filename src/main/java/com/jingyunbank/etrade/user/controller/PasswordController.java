@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
@@ -37,7 +38,7 @@ public class PasswordController {
 	@RequestMapping(value="/password",method=RequestMethod.PUT)
 	public Result<UserVO> updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
-			String uid = ServletBox.getLoginUID(request);
+			String uid = Login.UID(request);
 			userVO.setID(uid);
 			Users users=new Users();
 			BeanUtils.copyProperties(userVO, users);

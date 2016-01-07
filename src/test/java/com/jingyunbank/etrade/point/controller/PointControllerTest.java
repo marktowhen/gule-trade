@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 
@@ -28,7 +28,7 @@ public class PointControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		getMockMvc().perform(
 				 get("/point/2")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

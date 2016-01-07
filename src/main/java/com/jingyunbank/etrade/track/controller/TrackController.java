@@ -26,7 +26,7 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.track.bo.AdDetail;
 import com.jingyunbank.etrade.api.track.bo.AdModule;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
@@ -64,7 +64,7 @@ public class TrackController {
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
-			String uid = ServletBox.getLoginUID(request);
+			String uid = Login.UID(request);
 			List<FootprintGoods> goodslist = trackService.listFootprintGoods(from,count,uid);
 			FootprintGoodsVO footprintGoodsVO = new FootprintGoodsVO();
 			footprintGoodsVO.init(goodslist);
@@ -79,7 +79,7 @@ public class TrackController {
 	 */
 	@RequestMapping(value = "/footprint/save/{gid}", method = RequestMethod.GET)
 	public Result<?> saveFootprintGoods(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		if(uid == null || "".equals(uid)){
 			return null;
 		}
@@ -101,7 +101,7 @@ public class TrackController {
 	@AuthBeforeOperation
 	public Result<?> saveMerchantFavorites(HttpServletRequest request, HttpSession session, @PathVariable String mid) throws Exception {
 		boolean flag = false;
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		flag = trackService.isFavoritesExists(uid, mid, "1");
 		if (flag) {
 			return Result.fail("您已经收藏过该商家！");
@@ -124,7 +124,7 @@ public class TrackController {
 	@AuthBeforeOperation
 	public Result<?> saveGoodsFavorites(HttpServletRequest request, HttpSession session,@PathVariable String gid) throws Exception {
 		boolean flag = false;
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		flag = trackService.isFavoritesExists(uid, gid, "2");
 		if (flag) {
 			return Result.fail("您已经收藏过该商品！");
@@ -145,7 +145,7 @@ public class TrackController {
 	 */
 	@RequestMapping(value = "/favorites/listmerchantfavorites/{pcount}/{pfrom}", method = RequestMethod.GET)
 	public Result<FavoritesMerchantFacadeVO> listMerchantFavorites(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		//获取展示条数
 		int count = Integer.valueOf(pcount);
 		int from = Integer.valueOf(pfrom);
@@ -205,7 +205,7 @@ public class TrackController {
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
-			String uid = ServletBox.getLoginUID(request);
+			String uid = Login.UID(request);
 			List<FavoritesGoodsVO> rltlist = new ArrayList<FavoritesGoodsVO>();
 			List<FavoritesGoods> goodslist = trackService.listMerchantFavorites(uid, "2" ,from,count);
 			if (goodslist != null && goodslist.size() > 0) {// 将业务对象转换为页面VO对象
@@ -485,7 +485,7 @@ public class TrackController {
 	 */
 	@RequestMapping(value = "/recommend/list/{pcount}/{pfrom}", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> listRecommendGoods(HttpServletRequest request,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
-			String uid = ServletBox.getLoginUID(request);
+			String uid = Login.UID(request);
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);
@@ -506,7 +506,7 @@ public class TrackController {
 	 */
 	@RequestMapping(value = "/othergoods/list/{gid}/{pcount}/{pfrom}", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> listOtherGoods(HttpServletRequest request,@PathVariable String gid,@PathVariable String pcount,@PathVariable String pfrom) throws Exception {
-			String uid = ServletBox.getLoginUID(request);
+			String uid = Login.UID(request);
 			//获取展示条数
 			int count = Integer.valueOf(pcount);
 			int from = Integer.valueOf(pfrom);

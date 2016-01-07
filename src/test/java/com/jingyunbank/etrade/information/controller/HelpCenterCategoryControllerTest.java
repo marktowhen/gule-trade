@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.posts.bean.HelpCenterCategoryVO;
 
@@ -35,7 +35,7 @@ public class HelpCenterCategoryControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 post("/api/help/center/")
 				 .content(json)
-				.sessionAttr(ServletBox.LOGIN_ID, "2")
+				.sessionAttr(Login.LOGIN_ID, "2")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 					
@@ -61,7 +61,7 @@ public class HelpCenterCategoryControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 put("/api/help/center/hb6hQsxbSEyFGfc6jwzNTQ")
 				 .content(json)
-				.sessionAttr(ServletBox.LOGIN_ID, "2")
+				.sessionAttr(Login.LOGIN_ID, "2")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 					
@@ -81,7 +81,7 @@ public class HelpCenterCategoryControllerTest extends TestCaseBase {
 	public void testDel() throws Exception{
 		getMockMvc().perform(
 				 delete("/api/help/center/hb6hQsxbSEyFGfc6jwzNTQ")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -100,7 +100,7 @@ public class HelpCenterCategoryControllerTest extends TestCaseBase {
 	public void testList() throws Exception{
 		getMockMvc().perform(
 				 get("/api/help/center/list")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
