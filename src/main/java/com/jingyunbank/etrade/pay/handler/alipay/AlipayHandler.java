@@ -30,7 +30,7 @@ public class AlipayHandler implements IPayHandler {
 		//合作身份者ID，以2088开头由16位纯数字组成的字符串
         result.put("partner", pipeline.getPartner());
         // 收款支付宝账号，一般情况下收款账号就是签约账号
-        result.put("seller_email", "devops@jingyunbank.com");
+        result.put("seller_email", "devops@legu.co");
         result.put("_input_charset", "utf-8");
         //支付类型,1 商品购买
 		result.put("payment_type", "1");

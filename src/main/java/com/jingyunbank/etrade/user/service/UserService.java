@@ -90,8 +90,6 @@ public class UserService implements IUserService{
 	public void refresh(Users user) throws DataRefreshingException {
 		UserEntity entity  =  new UserEntity();
 		BeanUtils.copyProperties(user, entity);
-		entity.setPassword(MD5.digest(user.getPassword()));
-		entity.setTradepwd(MD5.digest(user.getTradepwd()));
 		try {
 			userDao.update(entity);
 		} catch (Exception e) {
