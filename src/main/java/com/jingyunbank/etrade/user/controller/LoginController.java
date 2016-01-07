@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
+import com.jingyunbank.core.web.Security;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -88,17 +89,18 @@ public class LoginController {
 		Users users = usersOptional.get();
 		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
 		candidatecart.ifPresent(cart->{
-			ServletBox.setLoginCartID(session, cart.getID());
+			Login.CartID(session, cart.getID());
 		});
 		
-		ServletBox.setLoginUID(session, users.getID());
-		ServletBox.setLoginUname(session, users.getUsername());
+		Login.UID(session, users.getID());
+		Login.Uname(session, users.getUsername());
+		Security.authenticate(session);
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(ServletBox.LOGIN_ID, users.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_ID, users.getID());
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);

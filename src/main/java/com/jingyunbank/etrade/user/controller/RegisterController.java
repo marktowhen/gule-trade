@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.Login;
+import com.jingyunbank.core.web.Security;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
@@ -90,17 +92,18 @@ public class RegisterController {
 			
 			Optional<Cart> candidatecart = cartService.singleCart(user.getID());
 			candidatecart.ifPresent(cart->{
-				ServletBox.setLoginCartID(session, cart.getID());
+				Login.CartID(session, cart.getID());
 			});
 			
-			ServletBox.setLoginUID(session, user.getID());
-			ServletBox.setLoginUname(session, user.getUsername());
+			Login.UID(session, user.getID());
+			Login.Uname(session, user.getUsername());
+			Security.authenticate(session);
 			//清空错误次数
 			session.setAttribute("loginWrongTimes", 0);
 			//记录登录历史 未完待续
 			
 			//将uid写入cookie
-			Cookie cookie = new Cookie(ServletBox.LOGIN_ID, user.getID());
+			Cookie cookie = new Cookie(Login.LOGIN_ID, user.getID());
 			cookie.setPath("/");
 			response.addCookie(cookie);
 			

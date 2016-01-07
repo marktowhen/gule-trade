@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class TrackControllerTest extends TestCaseBase{
@@ -34,7 +34,7 @@ public class TrackControllerTest extends TestCaseBase{
 	public void test7() throws Exception{
 		getMockMvc().perform(
 				 post("/api/track/footprint/save")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 				.param("gid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -51,7 +51,7 @@ public class TrackControllerTest extends TestCaseBase{
 	public void test8() throws Exception{
 		getMockMvc().perform(
 				 post("/api/track/favorites/savemerchant")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 				.param("mid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -68,7 +68,7 @@ public class TrackControllerTest extends TestCaseBase{
 	public void test9() throws Exception{
 		getMockMvc().perform(
 				 post("/api/track/favorites/savegoods")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 				.param("gid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -85,7 +85,7 @@ public class TrackControllerTest extends TestCaseBase{
 	public void test10() throws Exception{
 		getMockMvc().perform(
 				 post("/api/track/favorites/listmerchantfavorites")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 				.param("uid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -102,7 +102,7 @@ public class TrackControllerTest extends TestCaseBase{
 	public void test11() throws Exception{
 		getMockMvc().perform(
 				 post("/api/track/favorites/listgoodsfavorites")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 				.param("uid", "3")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))

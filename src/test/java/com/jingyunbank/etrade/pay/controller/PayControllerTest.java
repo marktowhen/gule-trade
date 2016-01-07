@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
@@ -51,7 +51,7 @@ public class PayControllerTest extends TestCaseBase{
 					 put("/api/pay/init")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
-					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
+					.sessionAttr(Login.LOGIN_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -79,7 +79,7 @@ public class PayControllerTest extends TestCaseBase{
 					 post("/api/pay/build")
 					.content(json)
 					.contentType(MediaType.APPLICATION_JSON)
-					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
+					.sessionAttr(Login.LOGIN_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

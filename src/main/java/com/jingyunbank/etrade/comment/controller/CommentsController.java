@@ -24,7 +24,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.comment.bo.Comments;
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentImgService;
@@ -75,7 +75,7 @@ public class CommentsController {
 		OrderGoods	orderGoods =optional.get();
 		commentVO.setGID(orderGoods.getGID());
 		commentVO.setOID(orderGoods.getOID());
-		String id = ServletBox.getLoginUID(request);
+		String id = Login.UID(request);
 		commentVO.setUID(id);
 		commentVO.setAddtime(new Date());
 		commentVO.setCommentStatus(2);

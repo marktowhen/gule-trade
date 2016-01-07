@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class CityControllerTest extends TestCaseBase {
@@ -25,7 +25,7 @@ public class CityControllerTest extends TestCaseBase {
 	public void testDetail() throws Exception{
 		getMockMvc().perform(
 				 get("/api/city/1")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -42,7 +42,7 @@ public class CityControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 get("/api/city/list")
 				 .param("provinceID", "3")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

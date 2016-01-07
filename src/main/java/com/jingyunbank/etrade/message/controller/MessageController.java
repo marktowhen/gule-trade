@@ -24,6 +24,7 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -60,7 +61,7 @@ public class MessageController {
 		}
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
 		messageVO.setAddip(ServletBox.ip(request));
-		messageVO.setSentUID(ServletBox.getLoginUID(request));
+		messageVO.setSentUID(Login.UID(request));
 		messageVO.setStatus(IInboxService.STATUS_SUC);
 		messageVO.setType(IInboxService.TYPE_LETTER);
 		List<Message> listMsg = new ArrayList<Message>();
@@ -217,7 +218,7 @@ public class MessageController {
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result<String> remove(@PathVariable String id, HttpServletRequest request) throws Exception{
 		
-		inboxService.remove(id.split(","), ServletBox.getLoginUID(request));
+		inboxService.remove(id.split(","), Login.UID(request));
 		return Result.ok();
 	}
 	

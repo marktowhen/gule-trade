@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 /**
@@ -32,7 +32,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		/*SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy.mm.dd");*/
 		getMockMvc().perform(
 				 put("/api/userinfo/")
-				 .sessionAttr(ServletBox.LOGIN_ID, "lWptToNIT8SpzteYV6HKuQ")
+				 .sessionAttr(Login.LOGIN_ID, "lWptToNIT8SpzteYV6HKuQ")
 				.param("country", "1")
 				.param("province", "1")
 				.param("city", "1")
@@ -57,7 +57,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test1() throws Exception{
 			getMockMvc().perform(
 				 post("/api/userinfo/update")
-				.sessionAttr(ServletBox.LOGIN_ID, "R_r90WHXQSKnG6b82jr6NA")
+				.sessionAttr(Login.LOGIN_ID, "R_r90WHXQSKnG6b82jr6NA")
 				.param("country", "5")
 				.param("province", "5")
 				.param("city", "5")
@@ -85,7 +85,7 @@ public class UserInfoControllerTest extends TestCaseBase{
 		public void Test2() throws Exception{
 			getMockMvc().perform(
 					 get("/api/userinfo/IoBST6elTCarSyzl6Z277g")
-					 .sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+					 .sessionAttr(Login.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

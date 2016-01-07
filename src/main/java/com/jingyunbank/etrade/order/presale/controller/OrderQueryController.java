@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.presale.bean.Order2ShowVO;
@@ -47,7 +47,7 @@ public class OrderQueryController {
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
 			HttpSession session){
-		String loginuid = ServletBox.getLoginUID(session);
+		String loginuid = Login.UID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
 		return Result.ok(orderService.list(uid, statuscode, fromdate, keywords, new Range(from, size+from))
@@ -80,7 +80,7 @@ public class OrderQueryController {
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
 			HttpSession session){
-		String loginuid = ServletBox.getLoginUID(session);
+		String loginuid = Login.UID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
 		return Result.ok(orderService.count(uid, statuscode, fromdate, keywords));

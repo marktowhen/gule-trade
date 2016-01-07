@@ -22,7 +22,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
@@ -50,7 +50,7 @@ public class AddressController {
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		address.setUID(ServletBox.getLoginUID(request));
+		address.setUID(Login.UID(request));
 		address.setID(KeyGen.uuid());
 		Address addressBo = new Address();
 		BeanUtils.copyProperties(address, addressBo);
@@ -93,7 +93,7 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/default/{id}",method=RequestMethod.PUT)
 	public Result<String> setDefualt(@PathVariable String id, HttpServletRequest request ,@RequestBody boolean defaulted) throws Exception{
-		addressService.refreshDefault(id, ServletBox.getLoginUID(request), defaulted);
+		addressService.refreshDefault(id, Login.UID(request), defaulted);
 		return Result.ok("成功");
 	}
 
@@ -109,7 +109,7 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result<String> remove(HttpServletRequest request,@PathVariable String id) throws Exception{
-		if(addressService.remove(id.split(","), ServletBox.getLoginUID(request))){
+		if(addressService.remove(id.split(","), Login.UID(request))){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -144,7 +144,7 @@ public class AddressController {
 	@RequestMapping(value="/default",method=RequestMethod.GET)
 	public Result<AddressVO> getDefaultAddress(HttpServletRequest request)throws Exception{
 		
-		Optional<Address> optional = addressService.getDefaultAddress(ServletBox.getLoginUID(request));
+		Optional<Address> optional = addressService.getDefaultAddress(Login.UID(request));
 		if(optional.isPresent()){
 			return Result.ok(getVoFrombo(optional.get()));
 		}
@@ -163,7 +163,7 @@ public class AddressController {
 	@RequestMapping(value="/all",method=RequestMethod.GET)
 	public Result<List<AddressVO>> queryAll(HttpServletRequest request) throws Exception{
 		List<AddressVO> result = new ArrayList<AddressVO>();
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		List<Address> list = addressService.list(uid);
 		//格式转换
 		if(list!=null && !list.isEmpty()){
@@ -205,7 +205,7 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount",method=RequestMethod.GET)
 	public Result<Integer> getAmount(HttpServletRequest request,AddressVO addressVO  )throws Exception{
-		return Result.ok(addressService.getAmount(ServletBox.getLoginUID(request)));
+		return Result.ok(addressService.getAmount(Login.UID(request)));
 	}
 	
 	

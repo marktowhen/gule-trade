@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
@@ -46,7 +46,7 @@ public class UserInfoController {
 		
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-		String id = ServletBox.getLoginUID(request);
+		String id = Login.UID(request);
 		userInfoVO.setUID(id);;
 		if(userInfoService.UidExists(userInfoVO.getUID())>0){
 			return Result.fail("该uid已经存在！");
@@ -67,7 +67,7 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/userinfo",method=RequestMethod.GET)
 	public Result<UserInfoVO> selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
 		if(userinfo.isPresent()){
 			UserInfo userInfo=userinfo.get();
@@ -91,7 +91,7 @@ public class UserInfoController {
 	public Result<UserInfoVO> updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
 		
 		UserInfo userInfo=new UserInfo();
-		String id = ServletBox.getLoginUID(request);
+		String id = Login.UID(request);
 		userInfoVO.setUID(id);
 		if(!userInfoVO.isPoint()){
 			if(!StringUtils.isEmpty(userInfoVO.getBirthday()) && !StringUtils.isEmpty(userInfoVO.getAddress())&& !StringUtils.isEmpty(userInfoVO.getCity()) 

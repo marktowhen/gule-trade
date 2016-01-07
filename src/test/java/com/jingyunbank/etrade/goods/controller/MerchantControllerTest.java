@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class MerchantControllerTest extends TestCaseBase {
@@ -44,7 +44,7 @@ public class MerchantControllerTest extends TestCaseBase {
 	 public void test1() throws Exception{
 		getMockMvc().perform(
 				post("/api/merchant/savemerchant")
-				 .sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+				 .sessionAttr(Login.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 				.param("merchantName", "东阿阿胶"+Math.random()*100)
 				.param("merchantEname", "DEEJ"+Math.random()*100)
 				.param("merchantCode", "DEEJ"+Math.random()*50)
@@ -97,7 +97,7 @@ public class MerchantControllerTest extends TestCaseBase {
 	 public void test3() throws Exception{
 		getMockMvc().perform(
 				post("/api/merchant/updatemerchant")
-				 .sessionAttr(ServletBox.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
+				 .sessionAttr(Login.LOGIN_ID, "IoBST6elTCarSyzl6Z277g")
 				.param("merchantName", "东阿阿胶"+Math.random()*100)
 				.param("merchantEname", "DEEJ"+Math.random()*100)
 				.param("merchantCode", "DEEJ"+Math.random()*50)

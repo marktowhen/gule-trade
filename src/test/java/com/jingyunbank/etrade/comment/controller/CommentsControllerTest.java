@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class CommentsControllerTest extends TestCaseBase{
@@ -24,7 +24,7 @@ public class CommentsControllerTest extends TestCaseBase{
 	public void test1() throws Exception{
 		getMockMvc().perform(
 				 put("/api/comments/list")
-				 .sessionAttr(ServletBox.LOGIN_ID, "21")
+				 .sessionAttr(Login.LOGIN_ID, "21")
 				 	.param("GID", "3")
 				 	.param("ImgID", "7")
 				 	.param("goodsComment", "挺好")
@@ -50,7 +50,7 @@ public class CommentsControllerTest extends TestCaseBase{
 	public void test2() throws Exception{
 		getMockMvc().perform(
 				 get("/api/comments/getbyid/3")
-				 .sessionAttr(ServletBox.LOGIN_ID, "12")
+				 .sessionAttr(Login.LOGIN_ID, "12")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -67,7 +67,7 @@ public class CommentsControllerTest extends TestCaseBase{
 	public void test3() throws Exception{
 		getMockMvc().perform(
 				 delete("/api/comments/delete/rNa4bwnwQvOF0PaRGlY6VQ")
-				 .sessionAttr(ServletBox.LOGIN_ID, "12")
+				 .sessionAttr(Login.LOGIN_ID, "12")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -84,7 +84,7 @@ public class CommentsControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 				 post("/api/comments/update/status")
 				 .param("ID", "9zzH2f9FRiicAo0Sg10zgw")
-				 .sessionAttr(ServletBox.LOGIN_ID, "13")
+				 .sessionAttr(Login.LOGIN_ID, "13")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
