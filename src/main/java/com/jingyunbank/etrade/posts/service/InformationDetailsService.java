@@ -114,6 +114,20 @@ public class InformationDetailsService implements IInformationDetailsService{
 			return bo;
 		}).collect(Collectors.toList());
 	}
+	@Override
+	public List<InformationDetails> listByName(String name, Range range) {
+		
+		return informationDetailsDao.selectByName(name,range.getFrom(),range.getTo()-range.getFrom()).stream().map(entity ->{
+			InformationDetails bo=new InformationDetails();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+	}
+	@Override
+	public int selectmaxOrders(String id) throws Exception {
+		int max=informationDetailsDao.selectmaxOrders(); 
+		return informationDetailsDao.updateMaxOrders(id, max+1);
+	}
 	
 
 }

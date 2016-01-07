@@ -25,4 +25,9 @@ public interface InformationDetailsDao {
 	
 	public List<InformationDetailsEntity> selectDetail(@Param(value="from") long from,@Param(value="size") long size);
 	
+	public List<InformationDetailsEntity> selectByName(@Param(value="sitename") String name,@Param(value="from") long from,@Param(value="size") long size);
+	
+	public int selectmaxOrders() throws Exception;
+	
+	public int updateMaxOrders(@Param(value="id") String id,@Param(value="max") int maxOrders) throws Exception;
 }
