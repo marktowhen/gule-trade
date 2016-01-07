@@ -100,9 +100,21 @@
 			order by d.orders desc,d.addtime desc
 			LIMIT #{from} , #{size}
 		</select>
-		<!-- <select id="selectInfo" resultMap="">
-			select <include refid="details_list"></include>
-		</select> -->
+		<select id="selectByName" resultMap="InformationDetailsResultMap">
+			select <include refid="details_list"></include>,s.name as sitename
+			from information_details d
+			left join information_site s on d.sid=s.id
+			where s.name=#{sitename}
+			order by d.orders desc,d.addtime desc
+			LIMIT #{from} , #{size}
+		</select>
+		<select id="selectmaxOrders" resultType="int">
+			select max(d.orders) from information_details d
+		</select>
+		<update id="updateMaxOrders"  >
+			update information_details d set  d.orders=#{max}
+			where d.id=#{id}
+		</update>
 	</mapper>
 	
 	
