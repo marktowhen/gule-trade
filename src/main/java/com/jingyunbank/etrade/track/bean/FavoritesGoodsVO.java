@@ -18,10 +18,10 @@ public class FavoritesGoodsVO extends BaseGoods{
 	/** id */
 	private String ID;
 	/****我的足迹 冗余浏览时间字段***/
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date visitTime;
 	/****我的收藏 冗余收藏时间字段***/
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date collectTime;
 	
 	
