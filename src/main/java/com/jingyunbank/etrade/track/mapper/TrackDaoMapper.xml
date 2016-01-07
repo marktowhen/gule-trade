@@ -133,7 +133,7 @@
 		LEFT JOIN goods_brand b ON b.id=g.bid
 		LEFT JOIN goods_img i ON g.id=i.gid
 		LEFT JOIN merchant m ON g.mid=m.id
-		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1
+		LEFT JOIN goods_type p ON p.id = g.tid where 1=1 AND g.state=1 order by mid 
 		<if test="type =='2'.toString()">
 			limit #{from},#{to}
 		</if>
