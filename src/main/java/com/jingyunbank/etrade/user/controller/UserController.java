@@ -52,12 +52,12 @@ public class UserController {
 		return Result.ok(userVO);
 	}
 	/**
-	 * 查询该手机是否存在！
+	 * 查询 手机是/邮箱/用户名否存在！
 	 * @param phone
 	 * @return
 	 */
 	@RequestMapping(value="/key/exists",method=RequestMethod.GET)
-	public Result<Integer> existsPhone(@RequestParam String key){
+	public Result<Integer> exists(@RequestParam String key){
 		int count;
 		if(!userService.exists(key)){
 			//该手机号不存在
