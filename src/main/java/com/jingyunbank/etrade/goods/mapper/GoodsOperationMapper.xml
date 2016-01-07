@@ -347,4 +347,8 @@
 	<update id="updateCount" parameterType="java.util.Map" >
 		UPDATE `goods` g SET g.`count`  =  #{count}  WHERE g.id = #{gid}
 	</update>
+	
+	<select id="checkCode" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM goods g WHERE g.code= #{code}
+	</select>
 </mapper>
