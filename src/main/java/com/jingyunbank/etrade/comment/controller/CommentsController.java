@@ -220,6 +220,7 @@ public class CommentsController {
 	 */
 	@RequestMapping(value="/api/comments/overall/grade",method=RequestMethod.GET)
 	public Result<CommentsVO> getGrade(@RequestParam(value="gid") String gid){
+		int levelGrade=0;
 		int goodsCount=0;
 		int serviceCount=0;
 		int logisticsCount=0;
@@ -242,7 +243,7 @@ public class CommentsController {
 		if(personCount!=0){
 			level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
 		}
-		int levelGrade=(int)level*10;
+		levelGrade=(int)level*10;
 		CommentsVO commentsVO=new CommentsVO();
 		commentsVO.setLevel(level);
 		commentsVO.setPersonCount(personCount);
