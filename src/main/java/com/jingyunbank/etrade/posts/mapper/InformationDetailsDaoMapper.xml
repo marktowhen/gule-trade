@@ -32,7 +32,7 @@
 		</insert>
 		<!-- 通过id删除对应的信息 -->
 		<delete id="delete" parameterType="String">
-			delete from information_details d where d.id=#{ID}	
+			delete from information_details where id=#{ID}	
 		</delete>
 		<!-- 通过id修改对应属性的值 -->
 		<update id="update" parameterType="com.jingyunbank.etrade.posts.entity.InformationDetailsEntity">
