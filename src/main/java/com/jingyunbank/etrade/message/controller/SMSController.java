@@ -20,6 +20,7 @@ import com.jingyunbank.core.lang.Patterns;
 import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.util.Times;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
@@ -98,7 +99,7 @@ public class SMSController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/code/user",method=RequestMethod.GET)
 	public Result<String> sendCodeToUserMobile(HttpServletRequest request) throws Exception{
-		 Optional<Users> userOption = userService.single(ServletBox.getLoginUID(request));
+		 Optional<Users> userOption = userService.single(Login.UID(request));
 		 //验证码
 		 String code = new String(new RndBuilder().length(4).hasletter(false).next());
 		 return sendCodeToMobile(userOption.get().getMobile(), code, request);

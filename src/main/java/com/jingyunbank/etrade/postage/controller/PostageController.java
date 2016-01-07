@@ -19,6 +19,6 @@ public class PostageController {
 	
 	@RequestMapping(value="/api/postage/calculation", method=RequestMethod.GET)
 	public Result<BigDecimal> calculate(@RequestParam("price") BigDecimal price, @RequestParam("default") BigDecimal defaultp) throws Exception{
-		return Result.ok(postageService.calculate("", price, BigDecimal.ZERO, defaultp));
+		return Result.ok(postageService.calculate(price, 0, defaultp));
 	}
 }

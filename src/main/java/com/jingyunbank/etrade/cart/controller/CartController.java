@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.cart.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.cart.bean.CartVO;
@@ -100,9 +100,9 @@ public class CartController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String cid = ServletBox.getLoginCartID(session);
-		String uid = ServletBox.getLoginUID(session);
-		String uname = ServletBox.getLoginUname(session);
+		String cid = Login.CartID(session);
+		String uid = Login.UID(session);
+		String uname = Login.Uname(session);
 		goods.setUID(uid);
 		goods.setUname(uname);
 		goods.setCartID(cid);
@@ -136,7 +136,7 @@ public class CartController {
 	@RequestMapping(value="/api/cart/goods/{uid}", method=RequestMethod.DELETE,
 					produces="application/json;charset=UTF-8")
 	public Result<String> delete(@PathVariable("uid") String uid, HttpSession session) throws Exception{
-		String loginuid = ServletBox.getLoginUID(session);
+		String loginuid = Login.UID(session);
 		if(loginuid.equals(uid)){
 			cartService.clear(uid);
 		}

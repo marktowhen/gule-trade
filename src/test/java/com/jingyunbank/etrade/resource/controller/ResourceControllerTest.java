@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class ResourceControllerTest extends TestCaseBase {
@@ -33,7 +33,7 @@ public class ResourceControllerTest extends TestCaseBase {
 					fileUpload("/api/resource/upload/multiple")
 					.file(fstmp).file(secmp)
 					.param("param", "123").param("param", "456")
-					.sessionAttr(ServletBox.LOGIN_ID, "123321")
+					.sessionAttr(Login.LOGIN_ID, "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
 				.andExpect(status().isOk())

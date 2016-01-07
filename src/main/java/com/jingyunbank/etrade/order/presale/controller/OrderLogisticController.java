@@ -23,7 +23,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderLogisticService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
@@ -96,7 +96,7 @@ public class OrderLogisticController {
 		
 		String tradepwd = oidswithpwd.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
-		Optional<Users> ou = userService.single(ServletBox.getLoginUID(session));
+		Optional<Users> ou = userService.single(Login.UID(session));
 		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 			return Result.fail("支付密码错误！");
 		}

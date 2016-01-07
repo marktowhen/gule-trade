@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
@@ -100,7 +100,7 @@ public class OrderControllerTest extends TestCaseBase {
 					 put("/api/order")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
-					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
+					.sessionAttr(Login.LOGIN_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

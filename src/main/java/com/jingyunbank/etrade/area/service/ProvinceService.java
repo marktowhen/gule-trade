@@ -95,4 +95,13 @@ public class ProvinceService implements IProvinceService {
 		return this.list(p);
 	}
 
+	@Override
+	public boolean isFaraway(int provinceID) {
+		Province province = single(provinceID);
+		if(province!=null){
+			return province.isFaraway();
+		}
+		return true;
+	}
+
 }

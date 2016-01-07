@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class PointLogControllerTest extends TestCaseBase {
@@ -24,7 +24,7 @@ public class PointLogControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		getMockMvc().perform(
 				 get("/point/log/2")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -46,7 +46,7 @@ public class PointLogControllerTest extends TestCaseBase {
 				 .param("offset", "0")
 				 .param("size", "10")
 				 
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

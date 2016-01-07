@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
@@ -65,7 +65,7 @@ public class DiscountCouponController {
 		vo.setDiscount(new BigDecimal("0.2"));
 		vo.setValue(new BigDecimal("50"));
 		Users manager = new Users();
-		manager.setID(ServletBox.getLoginUID(request));
+		manager.setID(Login.UID(request));
 		discountCouponService.save(getBoFromVo(vo), manager);
 		return Result.ok();
 	}
@@ -102,7 +102,7 @@ public class DiscountCouponController {
 			return Result.fail("请设置正确数量");
 		}
 		Users manager = new Users();
-		manager.setID(ServletBox.getLoginUID(request));
+		manager.setID(Login.UID(request));
 		discountCouponService.saveMuti(getBoFromVo(vo), manager, amount);
 		return Result.ok();
 	}
@@ -137,7 +137,7 @@ public class DiscountCouponController {
 	public Result<String> remove(String code, HttpServletRequest request) throws Exception{
 		
 		Users manager = new Users();
-		manager.setID(ServletBox.getLoginUID(request));
+		manager.setID(Login.UID(request));
 		if(discountCouponService.remove(code, manager)){
 			return Result.ok();
 		}

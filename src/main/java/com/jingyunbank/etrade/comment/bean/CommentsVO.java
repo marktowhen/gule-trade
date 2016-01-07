@@ -29,7 +29,7 @@ public class CommentsVO {
 	private int personCount;//评论的总人数
 	private int allLevel;//评论商品总级别
 	private UserVO userVO; 
-	private float level;//所有评论的总级别
+	private double level;//所有评论的总级别
 	private int levelGrade;//所有评论的总级别
 	private float personalGrade;
 	private UserInfoVO userInfoVO;
@@ -54,10 +54,10 @@ public class CommentsVO {
 	public void setPersonalGrade(float personalGrade) {
 		this.personalGrade = personalGrade;
 	}
-	public float getLevel() {
+	public double getLevel() {
 		return level;
 	}
-	public void setLevel(float level) {
+	public void setLevel(double level) {
 		this.level = level;
 	}
 	public int getLevelGrade() {

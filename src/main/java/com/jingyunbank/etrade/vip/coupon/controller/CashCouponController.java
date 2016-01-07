@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -63,7 +63,7 @@ public class CashCouponController {
 			return Result.fail("有效期限设置错误");
 		}
 		Users manager = new Users();
-		manager.setID(ServletBox.getLoginUID(request));
+		manager.setID(Login.UID(request));
 		cashCouponService.save(getBoFromVo(vo), manager);
 		return Result.ok();
 	}
@@ -94,7 +94,7 @@ public class CashCouponController {
 			return Result.fail("请设置正确数量");
 		}
 		Users manager = new Users();
-		manager.setID(ServletBox.getLoginUID(request));
+		manager.setID(Login.UID(request));
 		cashCouponService.saveMuti(getBoFromVo(vo), manager, amount);
 		return Result.ok();
 	}
@@ -129,7 +129,7 @@ public class CashCouponController {
 		CashCoupon cashCoupon = new CashCoupon();
 		cashCoupon.setCode(code);
 		Users manager = new Users();
-		manager.setID(ServletBox.getLoginUID(request));
+		manager.setID(Login.UID(request));
 		if(cashCouponService.remove(code, manager)){
 			return Result.ok();
 		}

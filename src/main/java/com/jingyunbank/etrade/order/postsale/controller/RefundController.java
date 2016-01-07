@@ -24,7 +24,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundCertificate;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundLogistic;
@@ -56,8 +56,8 @@ public class RefundController {
 		if(refundvo.getMoney().compareTo(refundvo.getOmoney())>0){
 			return Result.fail("退款金额不得高于实际订单价格。");
 		}
-		String UID = ServletBox.getLoginUID(session);
-		String uname = ServletBox.getLoginUname(session);
+		String UID = Login.UID(session);
+		String uname = Login.Uname(session);
 		refundvo.setUID(UID);
 		refundvo.setAddtime(new Date());
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
@@ -107,7 +107,7 @@ public class RefundController {
 		if(valid.hasErrors() || StringUtils.isEmpty(refundvo.getID())){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String uname = ServletBox.getLoginUname(session);
+		String uname = Login.Uname(session);
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
 		refundvo.setStatusName(RefundStatusDesc.REQUEST.getName());
 		
@@ -136,7 +136,7 @@ public class RefundController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String uname = ServletBox.getLoginUname(session);
+		String uname = Login.Uname(session);
 		refundContextService.cancel(cancellation.getRid(), uname, cancellation.getNote());
 		
 		return Result.ok();
@@ -210,7 +210,7 @@ public class RefundController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的物流信息有误！");
 		}
-		String uname = ServletBox.getLoginUname(session);
+		String uname = Login.Uname(session);
 		RefundLogistic logistic = new RefundLogistic();
 		BeanUtils.copyProperties(logisticvo, logistic);
 		logistic.setAddtime(new Date());

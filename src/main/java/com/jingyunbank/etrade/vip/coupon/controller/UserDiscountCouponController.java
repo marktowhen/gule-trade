@@ -18,7 +18,7 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
@@ -198,7 +198,7 @@ public class UserDiscountCouponController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{code}", method=RequestMethod.PUT)
 	public Result<DiscountCoupon> active(@PathVariable String code, HttpServletRequest request) throws Exception {
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		Result<DiscountCoupon> valid = discountCouponService.canActive(code);
 		if(valid.isBad()){
 			return valid;
