@@ -224,9 +224,11 @@ public class CommentsController {
 		int goodsCount=0;
 		int serviceCount=0;
 		int logisticsCount=0;
-		float level = 0;
+		double level = 0.0;
 		int personCount=0;
-		
+		int serviceCounts=0;
+		int goodsCounts=0;
+		int logisticsCounts=0;
 		List<Comments> comments=commentService.list(gid);
 		if(comments.size()==0){
 			level=0;
@@ -236,19 +238,39 @@ public class CommentsController {
 			personCount=0;
 		}
 		for (int i=0;i<comments.size();i++) {
-			goodsCount+=comments.get(i).getCommentGrade();
-			serviceCount+=comments.get(i).getServiceGrade();
-			logisticsCount+=comments.get(i).getLogisticsGrade();	
+			if(comments.get(i).getCommentGrade()<6){
+				goodsCounts = 8;
+			}else{
+				goodsCounts=comments.get(i).getCommentGrade();
+			}
+			goodsCount+=goodsCounts;
+			if(comments.get(i).getServiceGrade()<6){
+				serviceCounts = 8;
+			}else{
+				serviceCounts=comments.get(i).getServiceGrade();
+			}
+			serviceCount+=serviceCounts;
+			if(comments.get(i).getLogisticsGrade()<6){
+				logisticsCounts = 8;
+			}else{
+				logisticsCounts = comments.get(i).getLogisticsGrade();
+			}
+			logisticsCount+=logisticsCounts;	
 		}
 		if(personCount!=0){
-			level=(goodsCount+serviceCount+logisticsCount)/3/personCount;
+			double  d1  =  goodsCount+serviceCount+logisticsCount; 
+			double d2 = (double)personCount;
+			double d3=d1/(3.0)/d2;
+			level=((int)(d3*10))/10.0;   
+			
 		}
-		levelGrade=(int)level*10;
+		levelGrade=(int)(level*10);
 		CommentsVO commentsVO=new CommentsVO();
 		commentsVO.setLevel(level);
 		commentsVO.setPersonCount(personCount);
 		commentsVO.setLevelGrade(levelGrade);
 		return Result.ok(commentsVO);	
+		
 		
 	}
 	/**
