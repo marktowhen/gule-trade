@@ -165,4 +165,23 @@ public class InformationDetailsController {
 				return vo;
 			}).collect(Collectors.toList()));
 	}
+	@RequestMapping(value="/api/information/byname/detail",method=RequestMethod.GET)
+	public Result<List<InformationDetailsVO>> selectDetailsByName(@RequestParam String name,@RequestParam int from,@RequestParam int size) throws Exception{
+		Range range = new Range();
+		range.setFrom(from);
+		range.setTo(from+size);
+		return Result.ok(informationDetailsService.listByName(name,range)
+				.stream().map(bo -> {
+				
+				InformationDetailsVO vo=new InformationDetailsVO();
+				BeanUtils.copyProperties(bo, vo);
+				return vo;
+			}).collect(Collectors.toList()));
+	}
+	@RequestMapping(value="/api/information/detail/orders/{id}",method=RequestMethod.PUT)
+	public Result<Integer> getMaxOrders(@PathVariable String id) throws Exception{
+		
+		return Result.ok(informationDetailsService.selectmaxOrders(id));
+		
+	}
 }
