@@ -16,6 +16,16 @@ public class ProvinceEntity implements Serializable {
 	private long offset;
 	private long size;
 	
+	//偏远地区
+	private boolean faraway;
+	
+	public boolean isFaraway() {
+		return faraway;
+	}
+	public void setFaraway(boolean faraway) {
+		this.faraway = faraway;
+	}
+	
 	public long getOffset() {
 		return offset;
 	}

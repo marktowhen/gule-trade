@@ -7,14 +7,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
+import com.jingyunbank.etrade.api.area.service.IProvinceService;
 
 public class ProvinceControllerTest extends TestCaseBase {
 
+	@Autowired
+	private IProvinceService provinceService;
 	
 	/**
 	 * 详情
@@ -51,6 +55,14 @@ public class ProvinceControllerTest extends TestCaseBase {
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(print());
 		//System.out.println(restTemplate.getForEntity("http://localhost:8080/user", String.class).getBody());
+		
+	}
+	
+	@Test
+	public void testFaraway() throws Exception{
+		System.out.println(provinceService.isFaraway(31));
+		System.out.println(provinceService.isFaraway(1));
+		System.out.println(provinceService.isFaraway(100));
 		
 	}
 }
