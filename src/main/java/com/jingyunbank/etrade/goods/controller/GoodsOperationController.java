@@ -50,6 +50,7 @@ public class GoodsOperationController {
 
 	/**
 	 * String 转Date
+	 * 
 	 * @param time
 	 * @return
 	 */
@@ -74,8 +75,8 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Result<String> saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
-			throws Exception {
+	public Result<String> saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo,
+			BindingResult valid) throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
@@ -169,8 +170,8 @@ public class GoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/update/{gid}", method = RequestMethod.PUT)
-	public Result<String> updateGoods(@PathVariable String gid, @RequestBody @Valid GoodsOperationVO vo, BindingResult valid)
-			throws Exception {
+	public Result<String> updateGoods(@PathVariable String gid, @RequestBody @Valid GoodsOperationVO vo,
+			BindingResult valid) throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
@@ -290,12 +291,25 @@ public class GoodsOperationController {
 		return Result.ok(list);
 	}
 
+	/**
+	 * 直接修改库存
+	 * 
+	 * @param gid
+	 * @param count
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/modfiycount/{gid}/{count}", method = RequestMethod.PUT)
-	public Result<String> modfiyCount(
-			@PathVariable String gid,
-			@PathVariable String count )throws Exception
-	{
-		if(goodsOperationService.refreshCount(gid,count)){
+	public Result<String> modfiyCount(@PathVariable String gid, @PathVariable String count) throws Exception {
+		if (goodsOperationService.refreshCount(gid, count)) {
+			return Result.ok("success");
+		}
+		return Result.fail("fail");
+	}
+
+	@RequestMapping(value = "/checkcode/{code}", method = RequestMethod.GET)
+	public Result<String> checkcode(@PathVariable String code) throws Exception {
+		if (goodsOperationService.checkCode(code)) {
 			return Result.ok("success");
 		}
 		return Result.fail("fail");
