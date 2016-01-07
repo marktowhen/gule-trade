@@ -99,6 +99,7 @@
 		<if test="bid !=null and bid !=''">
 		AND g.bid = #{bid}
 		</if>
+		ORDER BY CODE
 		LIMIT #{from} , #{size}
 	</select>
 </mapper>

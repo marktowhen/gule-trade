@@ -13,12 +13,11 @@ import com.jingyunbank.etrade.api.postage.service.IPostageService;
 public class PostageService implements IPostageService {
 
 	@Override
-	public BigDecimal calculate(String mid, BigDecimal orderprice,
-			BigDecimal weight, BigDecimal defaultp) {
+	public BigDecimal calculate(BigDecimal orderprice, int provenceid, BigDecimal weight) {
 		if(Objects.nonNull(orderprice) && orderprice.compareTo(BigDecimal.valueOf(99)) > 0){
 			return BigDecimal.ZERO;
 		}
-		return defaultp;
+		return BigDecimal.ZERO;
 	}
 
 	@Override

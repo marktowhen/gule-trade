@@ -176,5 +176,14 @@ public class GoodsOperationService implements IGoodsOperationService {
 
 	}
 
+	@Override
+	public boolean checkCode(String code) throws Exception {
+		int count = goodsOperationDao.checkCode(code);
+		if(count == 0){
+			return true;
+		}
+		return false;
+	}
+
 
 }

@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.goods.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.goods.entity.GoodsDetailEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsImgEntity;
@@ -125,13 +127,22 @@ public interface GoodsOperationDao {
 	 * @throws Exception
 	 */
 	public List<GoodsOperationEntity> selectBrandsByMid(String mid) throws Exception;
-	
+
 	/**
 	 * 根据商品ID 修改库存
+	 * 
 	 * @param gid
 	 * @param count
 	 * @return
 	 * @throws Exception
 	 */
 	public int updateCount(Map<String, Object> map) throws Exception;
+	
+	/**
+	 * 检查重复编码
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	public int checkCode(@Param("code") String code) throws Exception;
 }
