@@ -424,7 +424,7 @@
 		sales_date  >= 
 		DATE_SUB(NOW(),INTERVAL 24 HOUR)
 		group by gid order by sum(count) desc limit 0,3
-		) r left join goods x
+		) r inner join goods x
 		 on 1=1 AND x.state=1
 		and r.gid = x.id
 		left join goods_img i
