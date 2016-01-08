@@ -129,7 +129,7 @@ public class LoginController {
 	
 	
 	/**
-	 * 登录   
+	 * users登录   暂时不用
 	 * @param request
 	 * @param session
 	 * @param loginfo 用户名/手机/邮箱
@@ -180,7 +180,8 @@ public class LoginController {
 		//查询用户拥有的权限
 		List<UserRole> list = userRoleServce.list(users.getID());
 		if(list.isEmpty()){
-			return Result.fail("您没有权限");
+			//暂时屏蔽
+			//return Result.fail("您没有权限");
 		}
 		String [] roles = new String [list.size()];
 		for (int i = 0; i < list.size(); i++) {
@@ -201,6 +202,44 @@ public class LoginController {
 		UserVO vo = new UserVO();
 		BeanUtils.copyProperties(users, vo);
 		return Result.ok(vo);
+	}
+	
+	/**
+	 * 卖家登录   
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/seller/login",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<UserVO> sellerLogin(@Valid @RequestBody LoginUserVO user, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		
+		
+		return Result.ok();
+	}
+	
+	/**
+	 * 管理员登录   
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/manager/login",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<UserVO> managerLogin(@Valid @RequestBody LoginUserVO user, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		return Result.ok();
 	}
 	
 }
