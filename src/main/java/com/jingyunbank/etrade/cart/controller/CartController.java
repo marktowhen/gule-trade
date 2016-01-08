@@ -26,7 +26,7 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.cart.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
-import com.jingyunbank.etrade.api.postage.service.IPostageService;
+import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.cart.bean.CartVO;
 import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
