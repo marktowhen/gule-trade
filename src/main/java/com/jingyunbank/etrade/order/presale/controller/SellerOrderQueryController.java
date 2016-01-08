@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.presale.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
@@ -33,17 +35,21 @@ public class SellerOrderQueryController {
 	 * @param session
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/seller/{from}/{size}", method=RequestMethod.GET)
 	public Result<List<Order2ShowVO>> listMID(
-			@RequestParam(value="mid", required=false, defaultValue="") String mid, 
 			@PathVariable("from") int from, 
 			@PathVariable("size") int size,
-			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
+			@RequestParam(value="orderno", required=false, defaultValue="") String orderno,
+			@RequestParam(value="gname", required=false, defaultValue="") String gname,
+			@RequestParam(value="uname", required=false, defaultValue="") String uname,
+			@RequestParam(value="mname", required=false, defaultValue="") String mname,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
+			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
+			@RequestParam(value="enddate", required=false, defaultValue="") String enddate,
 			HttpSession session){
-		
-		return Result.ok(orderService.list(null, mid, statuscode, keywords, fromdate, null, new Range(from, size+from))
+		String mid = Login.MID(session);
+		return Result.ok(orderService.list(null, mid, statuscode, orderno, gname, uname, mname, fromdate, enddate, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "goods");

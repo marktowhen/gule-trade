@@ -100,7 +100,7 @@ public class OrderControllerTest extends TestCaseBase {
 					 put("/api/order")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
-					.sessionAttr(Login.LOGIN_ID, "USER-ID")
+					.sessionAttr(Login.LOGIN_USER_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

@@ -33,7 +33,7 @@ public class CartControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 				delete("/api/cart/goods")
 				.param("gids", "XXXXX").param("gids", "YYYYYY")
-				.sessionAttr(Login.LOGIN_ID, "123321")
+				.sessionAttr(Login.LOGIN_USER_ID, "123321")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())
@@ -46,7 +46,7 @@ public class CartControllerTest extends TestCaseBase{
 	public void testList() throws Exception{
 		getMockMvc().perform(
 				get("/api/cart/goods/list/123321")
-				.sessionAttr(Login.LOGIN_ID, "123321")
+				.sessionAttr(Login.LOGIN_USER_ID, "123321")
 				.accept(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(status().isOk())
@@ -69,8 +69,8 @@ public class CartControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 					 put("/api/cart")
 					 .content(json)
-					.sessionAttr(Login.LOGIN_ID, "123321")
-					.sessionAttr(Login.LOGIN_CART_ID, "123321123")
+					.sessionAttr(Login.LOGIN_USER_ID, "123321")
+					.sessionAttr(Login.LOGIN_USER_CART_ID, "123321123")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -84,7 +84,7 @@ public class CartControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 					 post("/api/cart/goods/{id}", "rCxskSt0Qp-0zUwiyG7FVw")
 					.param("count", "4")
-					.sessionAttr(Login.LOGIN_ID, "123321")
+					.sessionAttr(Login.LOGIN_USER_ID, "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
 				.andExpect(status().isOk())
@@ -116,8 +116,8 @@ public class CartControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 					 post("/api/cart/clearing")
 					 .content(json)
-					.sessionAttr(Login.LOGIN_ID, "123321")
-					.sessionAttr(Login.LOGIN_CART_ID, "123321123")
+					.sessionAttr(Login.LOGIN_USER_ID, "123321")
+					.sessionAttr(Login.LOGIN_USER_CART_ID, "123321123")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON)
 				)
@@ -156,8 +156,8 @@ public class CartControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 					 get("/api/cart/clearing/list")
 					.sessionAttr(CartController.GOODS_IN_CART_TO_CLEARING, cart)
-					.sessionAttr(Login.LOGIN_ID, "123321")
-					.sessionAttr(Login.LOGIN_CART_ID, "123321123")
+					.sessionAttr(Login.LOGIN_USER_ID, "123321")
+					.sessionAttr(Login.LOGIN_USER_CART_ID, "123321123")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON)
 				)

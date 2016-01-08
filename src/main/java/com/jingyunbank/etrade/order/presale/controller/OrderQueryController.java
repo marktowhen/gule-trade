@@ -45,7 +45,7 @@ public class OrderQueryController {
 			@PathVariable("size") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
+			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
@@ -78,7 +78,7 @@ public class OrderQueryController {
 			@PathVariable("uid") String uid, 
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
+			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");

@@ -28,7 +28,7 @@ public class PointControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		getMockMvc().perform(
 				 get("/point/2")
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

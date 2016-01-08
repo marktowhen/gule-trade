@@ -32,7 +32,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 put("/api/vip/coupon/cashcoupon/user/")
 					.param("code", "5922969784792231886")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -51,7 +51,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/user/1")
 					.param("cashCoupon.threshholdLow", "1")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -67,7 +67,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 					 post("/api/vip/coupon/cashcoupon/user/")
 					.param("oid", "1")
 					.param("couponId", "ly87INApQGaCDzKS4evskA")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -88,7 +88,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/user/amount")
 					.param("cashCoupon.threshholdLow", "1")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -125,7 +125,7 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/user/useable/2")
 					//.param("orderPrice", "100")
-					.sessionAttr(Login.LOGIN_ID, "2")
+					.sessionAttr(Login.LOGIN_USER_ID, "2")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

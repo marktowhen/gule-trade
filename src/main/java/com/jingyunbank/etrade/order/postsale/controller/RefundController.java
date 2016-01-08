@@ -57,7 +57,7 @@ public class RefundController {
 			return Result.fail("退款金额不得高于实际订单价格。");
 		}
 		String UID = Login.UID(session);
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		refundvo.setUID(UID);
 		refundvo.setAddtime(new Date());
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
@@ -107,7 +107,7 @@ public class RefundController {
 		if(valid.hasErrors() || StringUtils.isEmpty(refundvo.getID())){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		refundvo.setStatusCode(RefundStatusDesc.REQUEST_CODE);
 		refundvo.setStatusName(RefundStatusDesc.REQUEST.getName());
 		
@@ -136,7 +136,7 @@ public class RefundController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		refundContextService.cancel(cancellation.getRid(), uname, cancellation.getNote());
 		
 		return Result.ok();
@@ -210,7 +210,7 @@ public class RefundController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的物流信息有误！");
 		}
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		RefundLogistic logistic = new RefundLogistic();
 		BeanUtils.copyProperties(logisticvo, logistic);
 		logistic.setAddtime(new Date());

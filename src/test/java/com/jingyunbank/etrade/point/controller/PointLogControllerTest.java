@@ -24,7 +24,7 @@ public class PointLogControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		getMockMvc().perform(
 				 get("/point/log/2")
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -46,7 +46,7 @@ public class PointLogControllerTest extends TestCaseBase {
 				 .param("offset", "0")
 				 .param("size", "10")
 				 
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

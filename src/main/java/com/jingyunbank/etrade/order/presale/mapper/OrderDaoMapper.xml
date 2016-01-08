@@ -145,7 +145,7 @@
 		from 
 		( 
 			select <include refid="orders_columns"/> 
-			from orders
+			from orders o
 			where <include refid="where_of_select_keywords"/>
 			order by addtime desc
 			limit #{from}, #{size}
@@ -156,7 +156,7 @@
 	
 	<select id="selectKeywordsCount" resultType="int">
 		select count(1) 
-		from orders
+		from orders o
 		where
 			<include refid="where_of_select_keywords"/>
 	</select>
@@ -166,7 +166,7 @@
 		from 
 		(
 			select <include refid="orders_columns"/> 
-			from orders
+			from orders o
 			where <include refid="where_of_select_condition"/>
 			order by addtime desc 
 			limit #{from}, #{size}
@@ -177,7 +177,7 @@
 	
 	<select id="selectConditionCount" resultType="int">
 		select count(1) 
-		from orders
+		from orders o
 		where 
 			<include refid="where_of_select_condition"/>
 	</select>
@@ -196,7 +196,7 @@
 		<if test="statuscode != null and !''.equals(statuscode)">
 			and (
 				status_code = #{statuscode} 
-				or exists (select 1 from order_goods og where og.oid = id and og.status_code = #{statuscode})
+				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code = #{statuscode})
 				)
 		</if>
 		<if test="fromdate != null and !''.equals(fromdate)">
@@ -206,7 +206,7 @@
 			and addtime &lt;= #{enddate}
 		</if>
 		<if test="gname != null and !''.equals(gname)">
-			and exists (select 1 from order_goods og where og.oid = id and og.gname like CONCAT('%','${gname}','%')) 
+			and exists (select 1 from order_goods og where og.oid = o.id and og.gname like CONCAT('%','${gname}','%')) 
 		</if>
 		<if test="uname != null and !''.equals(uname)">
 			and uname like CONCAT('%','${uname}','%')
@@ -227,7 +227,7 @@
 		<if test="statuscode != null and !''.equals(statuscode)">
 			and (
 				status_code = #{statuscode} 
-				or exists (select 1 from order_goods og where og.oid = id and og.status_code = #{statuscode})
+				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code = #{statuscode})
 				)
 		</if>
 		<if test="fromdate != null and !''.equals(fromdate)">
@@ -244,7 +244,7 @@
 					or
 					mname like CONCAT('%','${keywords}','%')
 					or
-					exists (select 1 from order_goods og where og.oid = id and og.gname like CONCAT('%','${keywords}','%'))
+					exists (select 1 from order_goods og where og.oid = o.id and og.gname like CONCAT('%','${keywords}','%'))
 				)
 		</if>
 	</sql>

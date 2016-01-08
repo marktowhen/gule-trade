@@ -103,9 +103,9 @@ public class CartController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String cid = Login.CartID(session);
+		String cid = Login.cartID(session);
 		String uid = Login.UID(session);
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		goods.setUID(uid);
 		goods.setUname(uname);
 		goods.setCartID(cid);
