@@ -133,7 +133,7 @@ public class CashCouponController {
 		if(cashCouponService.remove(code, manager)){
 			return Result.ok();
 		}
-		return Result.fail("未知错误");
+		return Result.fail("未知错误,请稍后重试!");
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class CashCouponController {
 			return Result.ok("");
 		}
 		
-		return Result.fail("请选择要解锁的券信息");
+		return Result.fail("请选择要解锁的优惠券");
 	}
 	
 	

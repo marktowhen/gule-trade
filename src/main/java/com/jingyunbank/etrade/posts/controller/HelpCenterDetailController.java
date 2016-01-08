@@ -119,7 +119,7 @@ public class HelpCenterDetailController {
 		if(list!=null && !list.isEmpty()){
 			return Result.ok(getVOFromBo(helpCenterDetailService.single(list.get(0).getID()).get()));
 		}
-		return Result.fail("未找到");
+		return Result.fail("数据未找到,请确认链接是否正确");
 	}
 	
 	/**

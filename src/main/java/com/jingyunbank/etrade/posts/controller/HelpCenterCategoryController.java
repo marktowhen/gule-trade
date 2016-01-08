@@ -136,7 +136,7 @@ public class HelpCenterCategoryController {
 		if(optional.isPresent()){
 			return Result.ok(getVOFromBo(optional.get()));
 		}
-		return Result.fail("未找到");
+		return Result.fail("数据未找到,请确认链接是否正确");
 	}
 	
 	

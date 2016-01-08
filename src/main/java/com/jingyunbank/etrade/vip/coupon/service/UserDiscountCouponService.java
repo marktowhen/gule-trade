@@ -75,20 +75,20 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 	public Result<UserDiscountCoupon> canConsume(String couponId, String uid, BigDecimal orderPrice) {
 		UserDiscountCouponEntity entity =  userDiscountCouponDao.selectUserDiscountCoupon(couponId,  uid);
 		if(entity==null){
-			return Result.fail("未找到");
+			return Result.fail("该券未找到,请选择其他优惠券");
 		}
 		if(entity.isConsumed()){
-			return  Result.fail("该券已消费");
+			return  Result.fail("该券已消费,请选择其他优惠券");
 		}
 		if(entity.isLocked()){
-			return  Result.fail("该券已锁定");
+			return  Result.fail("该券已被其他订单使用,请选择其他优惠券");
 		}
 		DiscountCouponEntity discountCoupon = entity.getDiscountCouponEntity();
 		if(discountCoupon==null){
-			return Result.fail("数据错误");
+			return Result.fail("数据错误,请选择其他优惠券");
 		}
 		if(discountCoupon.isDel()){
-			return  Result.fail("该券已被删除");
+			return  Result.fail("该券已作废,请选择其他优惠券");
 		}
 		Date nowDate = new Date();
 		if(discountCoupon.getStart().after(nowDate) || discountCoupon.getEnd().before(nowDate)){
@@ -96,7 +96,7 @@ public class UserDiscountCouponService implements IUserDiscountCouponService {
 			return Result.fail("请在"+format.format(discountCoupon.getStart())+"到"+format.format(discountCoupon.getEnd())+"期间使用");
 		}
 		if(orderPrice==null || orderPrice.compareTo(discountCoupon.getThreshhold())==-1){
-			return Result.fail("未到使用门槛:"+discountCoupon.getThreshhold().doubleValue());
+			return Result.fail("未到使用门槛:￥"+discountCoupon.getThreshhold().doubleValue());
 		}
 		
 		return Result.ok(getBoFromEntity(entity));

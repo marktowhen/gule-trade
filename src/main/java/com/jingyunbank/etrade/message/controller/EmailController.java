@@ -70,7 +70,7 @@ public class EmailController {
 	@RequestMapping(value="/code/bykey",method=RequestMethod.GET)
 	public Result<String> sendCodeByKey(HttpServletRequest request, HttpSession session,@RequestParam("key") String key) throws Exception{
 		if(StringUtils.isEmpty(key)){
-			return Result.fail("手机/邮箱");
+			return Result.fail("参数缺失:手机/邮箱/用户名");
 		}
 		Optional<Users> usersOptional = userService.singleByKey(key);
 		Users users=usersOptional.get();

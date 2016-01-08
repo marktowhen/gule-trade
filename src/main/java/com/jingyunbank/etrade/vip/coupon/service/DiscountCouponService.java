@@ -79,19 +79,19 @@ public class DiscountCouponService implements IDiscountCouponService{
 	public Result<DiscountCoupon> canActive(String code) {
 		DiscountCouponEntity entity = discountCouponDao.selectSingleByKey(code);
 		if(entity==null){
-			return Result.fail("卡号错误");
+			return Result.fail("充值码错误,请重新输入");
 		}
 		if(entity.isDel()){
-			return Result.fail("该卡已作废");
+			return Result.fail("该券已作废,请输入其他充值码");
 		}
 		if(entity.isUsed()){
-			return Result.fail("该卡已被使用");
+			return Result.fail("该券已被使用,请输入其他充值码");
 		}
 		if(entity.isLocked()){
-			return Result.fail("该卡未解锁");
+			return Result.fail("该券未解锁,请联系客服或输入其他充值码");
 		}
 		if(entity.getEnd().before(new Date())){
-			return Result.fail("已过期");
+			return Result.fail("该券已过期,请输入其他充值码");
 		}
 		return Result.ok(getBoFromEntity(entity));
 	}
