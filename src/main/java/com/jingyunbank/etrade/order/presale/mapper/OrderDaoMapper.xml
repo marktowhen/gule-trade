@@ -107,9 +107,9 @@
 	</select>
 	<select id="selectWithCondition" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
-		from order_goods og
+		from orders o
+		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
 		where 
 			o.uid = #{uid}
 			<if test="statuscode != null and !''.equals(statuscode)">
@@ -155,9 +155,9 @@
 	</select>
 	<select id="selectmWithCondition" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
-		from order_goods og
+		from orders o
+		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid 
-		left join orders o on og.oid = o.id 
 		<where>
 			<if test="mid != null and !''.equals(mid)">
 				o.mid = #{mid}
