@@ -21,11 +21,17 @@ import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.Security;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
+import com.jingyunbank.etrade.api.user.bo.Manager;
+import com.jingyunbank.etrade.api.user.bo.Seller;
 import com.jingyunbank.etrade.api.user.bo.UserRole;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IManagerService;
+import com.jingyunbank.etrade.api.user.service.ISellerService;
 import com.jingyunbank.etrade.api.user.service.IUserRoleService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
+import com.jingyunbank.etrade.user.bean.ManagerVO;
+import com.jingyunbank.etrade.user.bean.SellerVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -39,6 +45,13 @@ public class LoginController {
 	@Autowired
 	private IUserRoleService userRoleServce;
 	
+	@Autowired
+	private IManagerService managerService;
+	@Autowired
+	private ISellerService sellerService;
+	
+	
+	public static final String LOGIN_MERCHANT_ID = "LOGIN_MERCHANT_ID";
 	/**
 	 * 登录   
 	 * @param request
@@ -58,18 +71,6 @@ public class LoginController {
 			return Result.fail("用户名或者密码错误！");
 		}
 		
-		//密码不正确3次后需要验证码
-		int loginWrongTimes = 0;
-		//session中存放的错误次数
-//		Object objLoginTimes = session.getAttribute("loginWrongTimes");
-//		if(objLoginTimes != null && objLoginTimes instanceof Integer){
-//			loginWrongTimes = (int)session.getAttribute("loginWrongTimes");
-//			if(loginWrongTimes>=3){
-//				if(!checkCaptcha(session, user.getCaptcha())){
-//					return Result.fail("验证码错误");
-//				}
-//			}
-//		}
 		//2、根据用户名/手机号/邮箱查询用户信息
 		Optional<Users> usersOptional =  userService.singleByKey(user.getKey());
 		//是否存在该用户
@@ -78,8 +79,7 @@ public class LoginController {
 			//密码是否正确
 			if(!users.getPassword().equals(user.getPassword())){
 				//记录错误次数
-				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
-				return Result.fail("密码错误");
+				return Result.fail("用户名或者密码错误！");
 			}
 			//用户被锁
 			if(users.isLocked()){
@@ -87,7 +87,7 @@ public class LoginController {
 				//return Result.fail("用户被锁");
 			}
 		}else{
-			return Result.fail("未找到该用户,请确认输入是否正确");
+			return Result.fail("用户名或者密码错误！");
 		}
 		//3、成功之后
 		//用户信息放入session
@@ -100,9 +100,6 @@ public class LoginController {
 		Login.UID(session, users.getID());
 		Login.Uname(session, users.getUsername());
 		Security.authenticate(session);
-		//清空错误次数
-		session.setAttribute("loginWrongTimes", 0);
-		//记录登录历史 未完待续
 		
 		//将uid写入cookie
 		Cookie cookie = new Cookie(Login.LOGIN_ID, users.getID());
@@ -158,7 +155,7 @@ public class LoginController {
 			if(!users.getPassword().equals(user.getPassword())){
 				//记录错误次数
 				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
-				return Result.fail("密码错误");
+				return Result.fail("用户名或者密码错误！");
 			}
 			//用户被锁
 			if(users.isLocked()){
@@ -167,7 +164,7 @@ public class LoginController {
 			}
 			
 		}else{
-			return Result.fail("未找到该用户,请确认输入是否正确");
+			return Result.fail("用户名或者密码错误！");
 		}
 		//3、成功之后
 		//用户信息放入session
@@ -216,12 +213,42 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/seller/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<UserVO> sellerLogin(@Valid @RequestBody LoginUserVO user, 
+	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserVO loginUser, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
+		}
 		
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Seller> sellerOptional =  sellerService.singleByMname(loginUser.getKey());
+		//是否存在该用户
+		if(sellerOptional.isPresent()){
+			Seller seller = sellerOptional.get();
+			//密码是否正确
+			if(!seller.getPassword().equals(loginUser.getPassword())){
+				return Result.fail("用户名或者密码错误！");
+			}
+		}else{
+			return Result.fail("用户名或者密码错误！");
+		}
+		//3、成功之后
+		//用户信息放入session
+		Seller seller = sellerOptional.get();
+		Login.UID(session, seller.getID());
+		Login.Uname(session, seller.getSname());
+		//商铺id放入session
+		session.setAttribute(LOGIN_MERCHANT_ID, seller.getMid());
 		
-		return Result.ok();
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_ID, seller.getID());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+		SellerVO vo = new SellerVO();
+		BeanUtils.copyProperties(seller, vo);
+		return Result.ok(vo);
 	}
 	
 	/**
@@ -236,10 +263,52 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/manager/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<UserVO> managerLogin(@Valid @RequestBody LoginUserVO user, 
+	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserVO loginUser, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
-		return Result.ok();
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
+		}
+		
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Manager> managerOptional =  managerService.singleByMname(loginUser.getKey());
+		//是否存在该用户
+		if(managerOptional.isPresent()){
+			Manager manager = managerOptional.get();
+			//密码是否正确
+			if(!manager.getPassword().equals(loginUser.getPassword())){
+				return Result.fail("用户名或者密码错误！");
+			}
+		}else{
+			return Result.fail("用户名或者密码错误！");
+		}
+		//3、成功之后
+		Manager manager = managerOptional.get();
+		//查询用户拥有的权限
+		List<UserRole> list = userRoleServce.list(manager.getID());
+		if(list.isEmpty()){
+			return Result.fail("您没有权限");
+		}
+		String [] roles = new String [list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			roles[i] = list.get(i).getRole().getCode();
+		}
+		Security.authorize(session, roles);
+		//用户信息放入session
+		Login.UID(session, manager.getID());
+		Login.Uname(session, manager.getMname());
+		
+		
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_ID, manager.getID());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+		ManagerVO vo = new ManagerVO();
+		BeanUtils.copyProperties(manager, vo);
+		return Result.ok(vo);
 	}
 	
 }

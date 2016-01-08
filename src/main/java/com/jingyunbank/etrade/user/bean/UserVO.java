@@ -5,6 +5,7 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Email;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jingyunbank.core.lang.Patterns;
 
 /**
@@ -60,12 +61,14 @@ public class UserVO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	@JsonIgnore
 	public String getTradepwd() {
 		return tradepwd;
 	}
