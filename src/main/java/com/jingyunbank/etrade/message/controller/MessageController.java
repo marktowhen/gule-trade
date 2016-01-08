@@ -95,7 +95,7 @@ public class MessageController {
 			
 			return Result.ok(copyBoToVo(messageOption.get(), new MessageVO()));
 		}
-		return Result.fail("未找到");
+		return Result.fail("该消息不存在,请确认链接是否正确");
 	}
 	
 	

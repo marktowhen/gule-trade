@@ -87,7 +87,7 @@ public class LoginController {
 				//return Result.fail("用户被锁");
 			}
 		}else{
-			return Result.fail("未找到该用户");
+			return Result.fail("未找到该用户,请确认输入是否正确");
 		}
 		//3、成功之后
 		//用户信息放入session
@@ -167,7 +167,7 @@ public class LoginController {
 			}
 			
 		}else{
-			return Result.fail("未找到该用户");
+			return Result.fail("未找到该用户,请确认输入是否正确");
 		}
 		//3、成功之后
 		//用户信息放入session

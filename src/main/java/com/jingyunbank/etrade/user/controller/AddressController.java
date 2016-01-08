@@ -129,7 +129,7 @@ public class AddressController {
 		if(optional.isPresent()){
 			return Result.ok(getVoFrombo(optional.get()));
 		}
-		return Result.fail("地址不存在");
+		return Result.fail("地址不存在,请确认链接是否正确");
 	}
 	
 	/**

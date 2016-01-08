@@ -109,21 +109,21 @@ public class UserCashCouponService  implements IUserCashCouponService {
 	public Result<UserCashCoupon> canConsume(String couponId, String uid, BigDecimal orderPrice) {
 		UserCashCouponEntity entity =  userCashCouponDao.selectUserCashCoupon(couponId,  uid);
 		if(entity==null){
-			return Result.fail("未找到");
+			return Result.fail("该券未找到,请选择其他优惠券");
 		}
 		if(entity.isConsumed()){
-			return  Result.fail("该券已消费");
+			return  Result.fail("该券已消费,请选择其他优惠券");
 		}
 		
 		if(entity.isLocked()){
-			return  Result.fail("该券已锁定");
+			return  Result.fail("该券已被其他订单使用,请选择其他优惠券");
 		}
 		CashCouponEntity cashCoupon = entity.getCashCoupon();
 		if(cashCoupon==null){
-			return Result.fail("数据错误");
+			return Result.fail("数据错误,请选择其他优惠券");
 		}
 		if(cashCoupon.isDel()){
-			return  Result.fail("该券已被删除");
+			return  Result.fail("该券已作废,请选择其他优惠券");
 		}
 		
 //		Date nowDate = new Date();
@@ -134,7 +134,7 @@ public class UserCashCouponService  implements IUserCashCouponService {
 //			return Result.fail("已失效");
 //		}
 		if(orderPrice==null || orderPrice.compareTo(cashCoupon.getThreshhold())==-1){
-			return Result.fail("未到使用门槛:"+cashCoupon.getThreshhold().doubleValue());
+			return Result.fail("未到使用门槛:￥"+cashCoupon.getThreshhold().doubleValue());
 		}
 		
 		return Result.ok(getBoFromEntity(entity));
