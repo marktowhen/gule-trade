@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.user.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
@@ -20,7 +21,9 @@ import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.Security;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
+import com.jingyunbank.etrade.api.user.bo.UserRole;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IUserRoleService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
@@ -33,6 +36,8 @@ public class LoginController {
 	private IUserService userService;
 	@Autowired
 	private ICartService cartService;
+	@Autowired
+	private IUserRoleService userRoleServce;
 	
 	/**
 	 * 登录   
@@ -56,15 +61,15 @@ public class LoginController {
 		//密码不正确3次后需要验证码
 		int loginWrongTimes = 0;
 		//session中存放的错误次数
-		Object objLoginTimes = session.getAttribute("loginWrongTimes");
-		if(objLoginTimes != null && objLoginTimes instanceof Integer){
-			loginWrongTimes = (int)session.getAttribute("loginWrongTimes");
-			if(loginWrongTimes>=3){
-				if(!checkCaptcha(session, user.getCaptcha())){
-					return Result.fail("验证码错误");
-				}
-			}
-		}
+//		Object objLoginTimes = session.getAttribute("loginWrongTimes");
+//		if(objLoginTimes != null && objLoginTimes instanceof Integer){
+//			loginWrongTimes = (int)session.getAttribute("loginWrongTimes");
+//			if(loginWrongTimes>=3){
+//				if(!checkCaptcha(session, user.getCaptcha())){
+//					return Result.fail("验证码错误");
+//				}
+//			}
+//		}
 		//2、根据用户名/手机号/邮箱查询用户信息
 		Optional<Users> usersOptional =  userService.singleByKey(user.getKey());
 		//是否存在该用户
@@ -122,14 +127,80 @@ public class LoginController {
 		return Result.ok("成功");
 	}
 	
+	
 	/**
-	 * 校验图形验证码
+	 * 登录   
+	 * @param request
 	 * @param session
-	 * @param captcha
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
 	 * @return
 	 */
-	private boolean checkCaptcha(HttpSession session, String captcha) {
-		return true;
+	@RequestMapping(value="/back/login",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserVO user, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
+		}
+		
+		//密码不正确3次后需要验证码
+		int loginWrongTimes = 0;
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Users> usersOptional =  userService.singleByKey(user.getKey());
+		//是否存在该用户
+		if(usersOptional.isPresent()){
+			Users users = usersOptional.get();
+			//密码是否正确
+			if(!users.getPassword().equals(user.getPassword())){
+				//记录错误次数
+				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
+				return Result.fail("密码错误");
+			}
+			//用户被锁
+			if(users.isLocked()){
+				//暂时先不管
+				//return Result.fail("用户被锁");
+			}
+			
+		}else{
+			return Result.fail("未找到该用户");
+		}
+		//3、成功之后
+		//用户信息放入session
+		Users users = usersOptional.get();
+		
+		Login.UID(session, users.getID());
+		Login.Uname(session, users.getUsername());
+		Security.authenticate(session);
+		
+		//查询用户拥有的权限
+		List<UserRole> list = userRoleServce.list(users.getID());
+		if(list.isEmpty()){
+			return Result.fail("您没有权限");
+		}
+		String [] roles = new String [list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			roles[i] = list.get(i).getRole().getCode();
+		}
+		Security.authorize(session, roles);
+		//清空错误次数
+		session.setAttribute("loginWrongTimes", 0);
+		//记录登录历史 未完待续
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_ID, users.getID());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+		
+		UserVO vo = new UserVO();
+		BeanUtils.copyProperties(users, vo);
+		return Result.ok(vo);
 	}
 	
 }

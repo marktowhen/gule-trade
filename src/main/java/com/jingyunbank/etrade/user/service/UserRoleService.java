@@ -24,6 +24,7 @@ public class UserRoleService implements IUserRoleService {
 		return userRoleDao.selectList(uid).stream().map( resultEntity ->{
 			UserRole c = new UserRole();
 			BeanUtils.copyProperties(resultEntity, c);
+			BeanUtils.copyProperties(resultEntity.getRole(), c.getRole());
 			return c;
 		}).collect(Collectors.toList());
 	}
@@ -34,6 +35,7 @@ public class UserRoleService implements IUserRoleService {
 		if(entity!=null){
 			UserRole r = new UserRole();
 			BeanUtils.copyProperties(entity, r);
+			BeanUtils.copyProperties(entity.getRole(), r.getRole());
 			return r;
 		}
 		return null;
@@ -41,8 +43,16 @@ public class UserRoleService implements IUserRoleService {
 
 	@Override
 	public boolean delete(String[] ids) throws DataRemovingException {
-		// TODO Auto-generated method stub
 		return userRoleDao.updateValid(false, ids);
+	}
+
+	@Override
+	public boolean isAuthoritative(String uid, String roleCode) {
+		UserRoleEntity userRoleEntity = userRoleDao.selectByUidAndCode(uid, roleCode);
+		if(userRoleEntity!=null){
+			return true;
+		}
+		return false;
 	}
 
 }

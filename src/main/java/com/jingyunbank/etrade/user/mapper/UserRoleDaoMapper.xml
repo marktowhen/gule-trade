@@ -10,7 +10,7 @@
 		<result column="valid" property="valid" />
 		<result column="update_time" property="updateTime" />
 		<association  property="role" javaType="com.jingyunbank.etrade.user.entity.RoleEntity">
-			<result column="r_role_id" property="id"/>
+			<result column="r_role_id" property="ID"/>
 			<result column="r_code" property="code"/>
 			<result column="r_name" property="name"/>
 			<result column="r_valid" property="valid" />
@@ -46,4 +46,13 @@
 				#{id}
 			</foreach>
 	</update>
+	
+	<select id="selectByUidAndCode" resultMap="UserRoleEntityResultMap">
+		select <include refid="column_list_join_role"/> 
+			from user_role ur 
+				INNER JOIN role r on ur.role_id = r.id
+			where   ur.valid=true and r.valid=true 
+				and ur.uid=#{uid} and r.code=#{code}
+	</select>
+	
 </mapper>

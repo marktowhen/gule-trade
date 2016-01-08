@@ -14,6 +14,8 @@ public interface UserRoleDao {
 	
 	public boolean updateValid(@Param("valid") boolean valid,@Param("ids")  String[] ids);
 	
+	public UserRoleEntity selectByUidAndCode(@Param("uid")String uid,@Param("code") String roleCode);
+	
 	
 
 }
