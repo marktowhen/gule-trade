@@ -122,7 +122,7 @@
 	<sql id="detailedSql">
 		g.id gid,g.mid MID,g.`bid` bid,g.name goodsname,g.`code` CODE,g.tid tid,g.`price` price,
 		g.`promotion_price` promotion_price,<include refid="nowprice"/>
-		g.`state` state,g.`count` counts,g.`up_time` up_time, 
+		g.`state` state,g.`count` counts,g.`up_time` up_time, g.volume volume,
 		g.`down_time` down_time,g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
 		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME, g.`desc` goodsdesc,
 		g.`title` goodstitle,m.`name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
@@ -424,7 +424,7 @@
 		sales_date  >= 
 		DATE_SUB(NOW(),INTERVAL 24 HOUR)
 		group by gid order by sum(count) desc limit 0,3
-		) r left join goods x
+		) r inner join goods x
 		 on 1=1 AND x.state=1
 		and r.gid = x.id
 		left join goods_img i

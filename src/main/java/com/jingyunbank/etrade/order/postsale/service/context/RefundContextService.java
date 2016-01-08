@@ -102,6 +102,8 @@ public class RefundContextService implements IRefundContextService{
 				traces.add(createRefundTrace(refund, RefundStatusDesc.DONE, operator, note));
 			}
 			refundTraceService.save(traces);
+			List<String> ogids = refunds.stream().map(x->x.getOGID()).collect(Collectors.toList());
+			orderContextService.refundDone(ogids);
 		}
 		return true;
 	}
@@ -142,7 +144,7 @@ public class RefundContextService implements IRefundContextService{
 		refundService.refreshStatus(rids, RefundStatusDesc.DONE);
 		List<RefundTrace> traces = new ArrayList<RefundTrace>();
 		for (Refund refund : refunds) {
-			traces.add(createRefundTrace(refund, RefundStatusDesc.DONE, operator, ""));
+			traces.add(createRefundTrace(refund, RefundStatusDesc.DONE, operator, "卖家同意退款"));
 		}
 		refundTraceService.save(traces);
 		List<String> ogids = refunds.stream().map(x->x.getOGID()).collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.postage.service;
+package com.jingyunbank.etrade.logistic.service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.area.service.IProvinceService;
-import com.jingyunbank.etrade.api.order.presale.bo.Orders;
-import com.jingyunbank.etrade.api.postage.service.IPostageService;
+import com.jingyunbank.etrade.api.logistic.bo.Postage;
+import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 
 @Service("postageService")
 public class PostageService implements IPostageService {
@@ -41,8 +41,11 @@ public class PostageService implements IPostageService {
 	}
 
 	@Override
-	public void calculate(List<Orders> orders) {
-		
+	public List<Postage> calculate(List<Postage>  postages) {
+		for (Postage postage : postages) {
+			postage.setPostage(calculate(postage.getPrice(), postage.getProvince()));
+		}
+		return postages;
 	}
 
 }
