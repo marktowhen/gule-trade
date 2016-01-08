@@ -421,9 +421,9 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/honey/list", method = RequestMethod.GET)
-	public Result<List<HoneyGoodsVO>> listHoneyGoods() throws Exception {
-		List<HoneyGoods> goodslist = goodsService.listHoneyGoods();
+	@RequestMapping(value = "/honey/list/{gid}", method = RequestMethod.GET)
+	public Result<List<HoneyGoodsVO>> listHoneyGoods(@PathVariable String gid) throws Exception {
+		List<HoneyGoods> goodslist = goodsService.listHoneyGoods(gid);
 		List<HoneyGoodsVO> list = goodslist.stream().map(bo -> {
 			HoneyGoodsVO vo = new HoneyGoodsVO();
 			BeanUtils.copyProperties(bo, vo);

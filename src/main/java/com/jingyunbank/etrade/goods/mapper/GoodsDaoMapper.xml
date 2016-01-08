@@ -487,15 +487,17 @@
 		WHERE 1=1 AND g.id = #{gid} GROUP BY g.id
 	</select>
 	<!-- 查询商品详情页的宝贝排行  -->
-	<resultMap type="com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity"
-		id="honeyGoodsEntity">
-		<!-- 商品概要信息 -->
-		<result column="gid" property="GID" />
-		<result column="goodsname" property="goodsName" />
-		<result column="price" property="price" />
-		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumbpath1" />
-	</resultMap>
+	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity" parameterType="string">
+	<![CDATA[	
+		SELECT g.id gid,g.name goodsname,g.price,g.promotion_price as promotionPrice,g.now_price,
+		g.volume as volume, m.name merchantname, i.Thumb_path_1 thumb_path_1,g.pro_flag
+		FROM goods g
+		LEFT JOIN merchant m ON g.mid=m.id
+		LEFT JOIN goods_img i ON i.gid = g.id
+		where g.mid = (select mid from goods t where t.id = #{gid})
+		ORDER BY g.volume desc limit 0,4
+		]]>
+	</select>
 	<!-- 查询商品详情页的宝贝排行  -->
 	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity">
 	<![CDATA[	

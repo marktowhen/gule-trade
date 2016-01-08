@@ -251,9 +251,9 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<HoneyGoods> listHoneyGoods() throws Exception {
+	public List<HoneyGoods> listHoneyGoods(String gid) throws Exception {
 		List<HoneyGoods> rltlist = new ArrayList<HoneyGoods>();
-		List<HoneyGoodsEntity> goodslist = goodsDao.selectHoneyGoods();
+		List<HoneyGoodsEntity> goodslist = goodsDao.selectHoneyGoods(gid);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				HoneyGoods bo = new HoneyGoods();
