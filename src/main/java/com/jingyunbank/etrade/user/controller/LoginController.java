@@ -135,7 +135,7 @@ public class LoginController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value="/back/login",method=RequestMethod.POST,
+	@RequestMapping(value="/login/back",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
 	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserVO user, 
 						BindingResult valid, HttpSession session,
@@ -211,7 +211,7 @@ public class LoginController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value="/seller/login",method=RequestMethod.POST,
+	@RequestMapping(value="/login/seller",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
 	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserVO loginUser, 
 						BindingResult valid, HttpSession session,
@@ -239,6 +239,7 @@ public class LoginController {
 		Login.Uname(session, seller.getSname());
 		//商铺id放入session
 		session.setAttribute(LOGIN_MERCHANT_ID, seller.getMid());
+		Security.authenticate(session);
 		
 		//将uid写入cookie
 		Cookie cookie = new Cookie(Login.LOGIN_ID, seller.getID());
@@ -261,7 +262,7 @@ public class LoginController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value="/manager/login",method=RequestMethod.POST,
+	@RequestMapping(value="/login/manager",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
 	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserVO loginUser, 
 						BindingResult valid, HttpSession session,
@@ -297,7 +298,7 @@ public class LoginController {
 		//用户信息放入session
 		Login.UID(session, manager.getID());
 		Login.Uname(session, manager.getMname());
-		
+		Security.authenticate(session);
 		
 		
 		//将uid写入cookie
