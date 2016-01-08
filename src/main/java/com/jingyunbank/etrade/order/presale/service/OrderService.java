@@ -109,9 +109,10 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public List<Orders> list(String uid, String statuscode, String fromdate,
-			String keywords, Range range) {
-		return orderDao.selectWithCondition(uid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+	public List<Orders> list(String uid, String mid, String statuscode, String keywords, 
+			String fromdate, String enddate,
+			Range range) {
+		return orderDao.selectKeywords(uid, mid, statuscode, keywords, fromdate, enddate, range.getFrom(), (int)(range.getTo()-range.getFrom()))
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo, "goods");
@@ -125,24 +126,28 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public Integer count(String uid, String statuscode, String fromdate, String keywords) {
-		return orderDao.selectCount(uid, statuscode, fromdate, keywords);
+	public Integer count(
+			String uid, 
+			String mid, 
+			String statuscode, 
+			String keywords, 
+			String fromdate, 
+			String enddate){
+		return orderDao.selectKeywordsCount(uid, mid, statuscode, keywords, fromdate, enddate);
 	}
-
 	
-	public List<Orders> listm(String mid, String statuscode, String fromdate,
-			String keywords, Range range) {
-		return orderDao.selectmWithCondition(mid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
-				.stream().map(entity -> {
-					Orders bo = new Orders();
-					BeanUtils.copyProperties(entity, bo, "goods");
-					entity.getGoods().forEach(ge -> {
-						OrderGoods og = new OrderGoods();
-						BeanUtils.copyProperties(ge, og);
-						bo.getGoods().add(og);
-					});
-					return bo;
-				}).collect(Collectors.toList());
+	@Override
+	public Integer count(
+			String uid, 
+			String mid, 
+			String statuscode,
+			String orderno,
+			String gname,
+			String uname,
+			String mname,
+			String fromdate, 
+			String enddate) {
+		return orderDao.selectConditionCount(uid, mid, statuscode, orderno, gname, uname, mname, fromdate, enddate);
 	}
 
 	@Override
@@ -161,6 +166,29 @@ public class OrderService implements IOrderService{
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo, "goods");
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Orders> list(
+							String uid, 
+							String mid, 
+							String statuscode, 
+							String orderno,
+							String gname, 
+							String uname, String mname,
+							String fromdate, String enddate,
+							Range range) {
+		return orderDao.selectCondition(uid, mid, statuscode, orderno, gname, uname, mname, fromdate, enddate, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+				.stream().map(entity -> {
+					Orders bo = new Orders();
+					BeanUtils.copyProperties(entity, bo, "goods");
+					entity.getGoods().forEach(ge -> {
+						OrderGoods og = new OrderGoods();
+						BeanUtils.copyProperties(ge, og);
+						bo.getGoods().add(og);
+					});
 					return bo;
 				}).collect(Collectors.toList());
 	}

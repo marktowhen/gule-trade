@@ -43,7 +43,7 @@ public class SellerOrderQueryController {
 			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
 			HttpSession session){
 		
-		return Result.ok(orderService.listm(mid, statuscode, fromdate, keywords, new Range(from, size+from))
+		return Result.ok(orderService.list(null, mid, statuscode, keywords, fromdate, null, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "goods");

@@ -13,21 +13,6 @@ public interface OrderDao{
 	
 	public void insertOne(OrderEntity order) throws Exception ;
 
-	public List<OrderEntity> selectWithCondition(
-			@Param("uid") String uid, 
-			@Param("statuscode") String statuscode,
-			@Param("fromdate") String fromdate,
-			@Param("keywords") String keywords,
-			@Param("from") long from, 
-			@Param("size") int size);
-	public List<OrderEntity> selectmWithCondition(
-			@Param("mid") String mid, 
-			@Param("statuscode") String statuscode,
-			@Param("fromdate") String fromdate,
-			@Param("keywords") String keywords,
-			@Param("from") long from, 
-			@Param("size") int size);
-	
 	public void updateStatus(@Param("oids") List<String> oids, 
 							@Param("statuscode") String statuscode,
 							@Param("statusname") String statusname) throws Exception;
@@ -38,15 +23,54 @@ public interface OrderDao{
 
 	public List<OrderEntity> selectByOIDs(@Param("oids") List<String> oids);
 	
-	public int selectCount(
-			@Param("uid") String uid, 
-			@Param("statuscode") String statuscode,
-			@Param("fromdate") String fromdate,
-			@Param("keywords") String keywords);
-	
-	public List<OrderEntity> selectBefore(@Param("deadline") Date deadline, @Param("statuscode") String statuscode);
+	public List<OrderEntity> selectBefore(
+				@Param("deadline") Date deadline, 
+				@Param("statuscode") String statuscode);
 	
 	public List<OrderEntity> selectBetween(@Param("from") Date from, @Param("to") Date to, 
 			@Param("statuscode") String statuscode);
 
+	public List<OrderEntity> selectKeywords(
+			@Param("uid") String uid, 
+			@Param("mid") String mid,
+			@Param("statuscode") String statuscode,
+			@Param("keywords") String keywords,
+			@Param("fromdate") String fromdate,
+			@Param("enddate") String enddate,
+			@Param("from") long from, 
+			@Param("size") int size);
+	
+	public List<OrderEntity> selectCondition(
+			@Param("uid") String uid, 
+			@Param("mid") String mid,
+			@Param("statuscode") String statuscode, 
+			@Param("orderno") String orderno, 
+			@Param("gname") String gname, 
+			@Param("uname") String uname,
+			@Param("mname") String mname, 
+			@Param("fromdate") String fromdate, 
+			@Param("enddate") String enddate, 
+			@Param("from") long from, 
+			@Param("size") int size);
+	
+	public int selectKeywordsCount(
+			@Param("uid") String uid, 
+			@Param("mid") String mid, 
+			@Param("statuscode") String statuscode,
+			@Param("keywords") String keywords,
+			@Param("fromdate") String fromdate,
+			@Param("enddate") String enddate);
+	
+	public int selectConditionCount(
+			@Param("uid") String uid, 
+			@Param("mid") String mid,
+			@Param("statuscode") String statuscode, 
+			@Param("orderno") String orderno, 
+			@Param("gname") String gname, 
+			@Param("uname") String uname,
+			@Param("mname") String mname, 
+			@Param("fromdate") String fromdate, 
+			@Param("enddate") String enddate);
+	
+	
 }

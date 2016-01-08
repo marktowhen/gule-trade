@@ -17,20 +17,14 @@ public interface RefundDao {
 	public void updateStatus(@Param("RIDs")List<String> rIDs, @Param("status") RefundStatusDesc status) throws Exception;
 
 	public RefundEntity selectOne(String rid);
-
-	public List<RefundEntity> selectmWithCondition(
-			@Param("mid") String mid, 
-			@Param("statuscode") String statuscode,
-			@Param("fromdate") String fromdate,
-			@Param("keywords") String keywords,
-			@Param("from") long from, 
-			@Param("size") int size);
 	
-	public List<RefundEntity> selectWithCondition(
+	public List<RefundEntity> selectKeywords(
 			@Param("uid") String uid, 
+			@Param("mid") String mid,
 			@Param("statuscode") String statuscode,
-			@Param("fromdate") String fromdate,
 			@Param("keywords") String keywords,
+			@Param("fromdate") String fromdate,
+			@Param("enddate") String enddate,
 			@Param("from") long from, 
 			@Param("size") int size);
 

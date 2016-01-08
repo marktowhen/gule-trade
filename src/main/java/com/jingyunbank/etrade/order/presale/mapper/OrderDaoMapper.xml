@@ -60,7 +60,7 @@
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
-		img.thumb_path_1 as imgpath, img.gid as gid, 
+		img.thumb_path_1 as imgpath, og.gid as gid, 
 		og.gname as gname, og.count as count, og.pprice as gpprice, og.payout as gpayout,
 		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
 	</sql>
@@ -105,84 +105,6 @@
 		left join orders o on og.oid = o.id 
 		where o.id = #{oid}
 	</select>
-	<select id="selectWithCondition" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
-		from orders o
-		left join order_goods og on og.oid = o.id 
-		left join goods_img img on og.gid = img.gid 
-		where 
-			o.uid = #{uid}
-			<if test="statuscode != null and !''.equals(statuscode)">
-				and (o.status_code = #{statuscode} or og.status_code = #{statuscode})
-			</if>
-			<if test="fromdate != null and !''.equals(fromdate)">
-				and o.addtime &gt;= #{fromdate}
-			</if>
-			<if test="keywords != null and !''.equals(keywords)">
-				and (
-						og.gname like CONCAT('%','${keywords}','%') 
-						or 
-						o.orderno like CONCAT('%','${keywords}','%')
-						or
-						o.mid like CONCAT('%','${keywords}','%')
-						or
-						o.mname like CONCAT('%','${keywords}','%')
-					)
-			</if>
-		order by o.addtime desc 
-		limit #{from}, #{size}
-	</select>
-	
-	<select id="selectCount" resultType="int">
-		select count(1) 
-		from order_goods og
-		left join orders o on og.oid = o.id 
-		where 
-			o.uid = #{uid}
-			<if test="statuscode != null and !''.equals(statuscode)">
-				and o.status_code = #{statuscode}
-			</if>
-			<if test="fromdate != null and !''.equals(fromdate)">
-				and o.addtime &gt;= #{fromdate}
-			</if>
-			<if test="keywords != null and !''.equals(keywords)">
-				and (
-						og.gname like CONCAT('%','${keywords}','%') 
-						or 
-						o.orderno like CONCAT('%','${keywords}','%')
-					)
-			</if>
-	</select>
-	<select id="selectmWithCondition" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
-		from orders o
-		left join order_goods og on og.oid = o.id 
-		left join goods_img img on og.gid = img.gid 
-		<where>
-			<if test="mid != null and !''.equals(mid)">
-				o.mid = #{mid}
-			</if>
-			<if test="statuscode != null and !''.equals(statuscode)">
-				and (o.status_code = #{statuscode} or og.status_code = #{statuscode})
-			</if>
-			<if test="fromdate != null and !''.equals(fromdate)">
-				and o.addtime &gt;= #{fromdate}
-			</if>
-			<if test="keywords != null and !''.equals(keywords)">
-				and (
-						og.gname like CONCAT('%','${keywords}','%') 
-						or 
-						o.orderno like CONCAT('%','${keywords}','%')
-						or
-						o.mid like CONCAT('%','${keywords}','%')
-						or
-						o.mname like CONCAT('%','${keywords}','%')
-					)
-			</if>
-		</where>
-		order by o.addtime desc 
-		limit #{from}, #{size}
-	</select>
 	
 	<update id="updateStatus">
 		update orders
@@ -216,4 +138,114 @@
 			and o.status_code = #{statuscode}
 	</select>
 	
+	
+	
+	<select id="selectKeywords" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from 
+		( 
+			select <include refid="orders_columns"/> 
+			from orders
+			where <include refid="where_of_select_keywords"/>
+			order by addtime desc
+			limit #{from}, #{size}
+		) o
+		left join order_goods og on og.oid = o.id 
+		left join goods_img img on og.gid = img.gid
+	</select>
+	
+	<select id="selectKeywordsCount" resultType="int">
+		select count(1) 
+		from orders
+		where
+			<include refid="where_of_select_keywords"/>
+	</select>
+	
+	<select id="selectCondition" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from 
+		(
+			select <include refid="orders_columns"/> 
+			from orders
+			where <include refid="where_of_select_condition"/>
+			order by addtime desc 
+			limit #{from}, #{size}
+		) o
+		left join order_goods og on og.oid = o.id 
+		left join goods_img img on og.gid = img.gid
+	</select>
+	
+	<select id="selectConditionCount" resultType="int">
+		select count(1) 
+		from orders
+		where 
+			<include refid="where_of_select_condition"/>
+	</select>
+	
+	<sql id="where_of_select_condition">
+		1 = 1
+		<if test="uid != null and !''.equals(uid)">
+			and uid = #{uid}
+		</if>
+		<if test="mid != null and !''.equals(mid)">
+			and mid = #{mid}
+		</if>
+		<if test="orderno != null and !''.equals(orderno)">
+			and orderno = #{orderno}
+		</if>
+		<if test="statuscode != null and !''.equals(statuscode)">
+			and (
+				status_code = #{statuscode} 
+				or exists (select 1 from order_goods og where og.oid = id and og.status_code = #{statuscode})
+				)
+		</if>
+		<if test="fromdate != null and !''.equals(fromdate)">
+			and addtime &gt;= #{fromdate}
+		</if>
+		<if test="enddate != null and !''.equals(enddate)">
+			and addtime &lt;= #{enddate}
+		</if>
+		<if test="gname != null and !''.equals(gname)">
+			and exists (select 1 from order_goods og where og.oid = id and og.gname like CONCAT('%','${gname}','%')) 
+		</if>
+		<if test="uname != null and !''.equals(uname)">
+			and uname like CONCAT('%','${uname}','%')
+		</if>
+		<if test="mname != null and !''.equals(mname)">
+			and mname like CONCAT('%','${mname}','%')
+		</if>
+	</sql>
+	
+	<sql id="where_of_select_keywords">
+		1 = 1
+		<if test="uid != null and !''.equals(uid)">
+			and uid = #{uid}
+		</if>
+		<if test="mid != null and !''.equals(mid)">
+			and mid = #{mid}
+		</if>
+		<if test="statuscode != null and !''.equals(statuscode)">
+			and (
+				status_code = #{statuscode} 
+				or exists (select 1 from order_goods og where og.oid = id and og.status_code = #{statuscode})
+				)
+		</if>
+		<if test="fromdate != null and !''.equals(fromdate)">
+			and addtime &gt;= #{fromdate}
+		</if>
+		<if test="enddate != null and !''.equals(enddate)">
+			and addtime &lt;= #{enddate}
+		</if>
+		<if test="keywords != null and !''.equals(keywords)">
+			and (
+					orderno like CONCAT('%','${keywords}','%')
+					or
+					mid like CONCAT('%','${keywords}','%')
+					or
+					mname like CONCAT('%','${keywords}','%')
+					or
+					exists (select 1 from order_goods og where og.oid = id and og.gname like CONCAT('%','${keywords}','%'))
+				)
+		</if>
+	</sql>
 </mapper>
