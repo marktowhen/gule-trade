@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.user.dao.RoleDao">
+	<resultMap type="com.jingyunbank.etrade.user.entity.RoleEntity" id="RoleEntityResultMap">
+		<id column="id" property="ID" />
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="valid" property="valid" />
+		<result column="remark" property="remark" />
+	</resultMap>
+	<sql id="column_list">
+		 id,code,name,valid,remark 
+	</sql>
+	
+	<select id="selectList" resultMap="RoleEntityResultMap">
+		select <include refid="column_list"/> from role 
+	</select>
+	
+	<select id="selectOne" resultMap="RoleEntityResultMap">
+		select <include refid="column_list"/> from role 
+		where id=#{key} or code=#{key}
+	</select>
+	
+</mapper>
