@@ -46,7 +46,7 @@ public class RefundQueryController {
 			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
 			HttpSession session){
 		
-		return Result.ok(refundService.list(uid, statuscode, fromdate, keywords, new Range(from, size+from))
+		return Result.ok(refundService.list(uid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
 				.stream().map(bo-> {
 					Refund2ShowVO vo = new Refund2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "certificates");

@@ -157,7 +157,7 @@ public interface GoodsDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<HoneyGoodsEntity> selectHoneyGoods() throws Exception;
+	public List<HoneyGoodsEntity> selectHoneyGoods(String gid) throws Exception;
 	
 	/**
 	 * 查询商品的交易记录

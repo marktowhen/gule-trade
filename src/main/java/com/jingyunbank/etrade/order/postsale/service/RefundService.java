@@ -69,20 +69,9 @@ public class RefundService implements IRefundService {
 	}
 
 	@Override
-	public List<Refund> listm(String mid, String statuscode,
-			String fromdate, String keywords, Range range) {
-		return refundDao.selectmWithCondition(mid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
-				.stream().map(entity -> {
-					Refund bo = new Refund();
-					BeanUtils.copyProperties(entity, bo, "certificates");
-					return bo;
-				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<Refund> list(String uid, String statuscode, String fromdate,
-			String keywords, Range range) {
-		return refundDao.selectWithCondition(uid, statuscode, fromdate, keywords, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+	public List<Refund> list(String uid, String mid, String statuscode, String keywords, 
+			String fromdate, String enddate, Range range) {
+		return refundDao.selectKeywords(uid, mid, statuscode, keywords, fromdate, enddate, range.getFrom(), (int)(range.getTo()-range.getFrom()))
 				.stream().map(entity -> {
 					Refund bo = new Refund();
 					BeanUtils.copyProperties(entity, bo, "certificates");

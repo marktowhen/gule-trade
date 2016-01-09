@@ -25,7 +25,7 @@ public class CityControllerTest extends TestCaseBase {
 	public void testDetail() throws Exception{
 		getMockMvc().perform(
 				 get("/api/city/1")
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -42,7 +42,7 @@ public class CityControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 get("/api/city/list")
 				 .param("provinceID", "3")
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

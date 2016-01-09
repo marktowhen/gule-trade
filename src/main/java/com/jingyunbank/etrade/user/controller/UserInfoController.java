@@ -54,7 +54,7 @@ public class UserInfoController {
 		if(userInfoService.save(userInfo)){
 			return Result.ok(userInfoVO);
 		}
-		return Result.fail("重试！");
+		return Result.fail("未知错误,请稍后重试!");
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class UserInfoController {
 			BeanUtils.copyProperties(userInfo, userInfoVO);
 			return Result.ok(userInfoVO);
 		}
-		return Result.fail("重试");
+		return Result.fail("未知错误,请稍后重试!");
 	}
 	
 	/**

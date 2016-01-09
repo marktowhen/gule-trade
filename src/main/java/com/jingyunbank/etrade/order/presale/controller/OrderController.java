@@ -31,6 +31,7 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
+import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
@@ -51,6 +52,8 @@ public class OrderController {
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
 	private IGoodsService goodsService;
+	@Autowired
+	private IPostageService postageService;
 	
 	/**
 	 * 订单确认并提交<br>
@@ -73,7 +76,7 @@ public class OrderController {
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
 		String UID = Login.UID(session);
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		purchase.setUID(UID);
 		purchase.setUname(uname);
 
@@ -156,8 +159,7 @@ public class OrderController {
 		
 		return orders;
 	}
-	
-	public final static BigDecimal FREE_SHIPPING_THRESHOLD = new BigDecimal(99);//包邮下限
+	//校验用户提交的订单价格，邮费以及商品的价格数量等是否相互匹配
 	private boolean verifyOrderData(List<Orders> orders) {
 		for (Orders order : orders) {
 			BigDecimal originorderprice = order.getPrice();//data from user.
@@ -169,17 +171,14 @@ public class OrderController {
 			for (OrderGoods orderGoods : goods) {
 				BigDecimal pprice = orderGoods.getPprice();//data from user.
 				BigDecimal price = orderGoods.getPrice();//data from user.
-				BigDecimal postage = orderGoods.getPostage();//data from user.
 				int count = orderGoods.getCount();//data from user.
 				BigDecimal actualprice = (Objects.nonNull(pprice) && pprice.compareTo(BigDecimal.ZERO) > 0)?
 									pprice : price;
 				calculatedorderprice = calculatedorderprice.add(actualprice.multiply(BigDecimal.valueOf(count)).setScale(2, RoundingMode.HALF_UP));
-				calculatedorderpostage = calculatedorderpostage.add(postage);
 			}
-			//包邮
-			if(calculatedorderprice.compareTo(FREE_SHIPPING_THRESHOLD) >= 0){
-				calculatedorderpostage = BigDecimal.ZERO;
-			}
+			//计算邮费
+			calculatedorderpostage = postageService.calculate(calculatedorderprice, order.getProvince());
+			
 			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
 			if(calculatedorderprice.compareTo(originorderprice) != 0
 					|| calculatedorderpostage.compareTo(originorderpostage) != 0){

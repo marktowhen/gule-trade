@@ -40,7 +40,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 post("/api/vip/coupon/cashcoupon/")
 					 .content(json)
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 						
@@ -69,7 +69,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 post("/api/vip/coupon/cashcoupon/500")
 					 .content(json)
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 						
@@ -90,7 +90,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/isvalid")
 					.param("code", "20151117103601")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -110,7 +110,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 delete("/api/vip/coupon/cashcoupon/")
 					.param("code", "20151117103601")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -130,7 +130,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/list")
 					 .param("validTime", "true")
-					 .sessionAttr(Login.LOGIN_ID, "1")
+					 .sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -150,7 +150,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/amount")
 					 .param("validTime", "true")
-					 .sessionAttr(Login.LOGIN_ID, "1")
+					 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					 .contentType(MediaType.APPLICATION_JSON)
 					 .accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

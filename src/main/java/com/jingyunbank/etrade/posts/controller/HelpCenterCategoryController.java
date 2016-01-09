@@ -41,7 +41,7 @@ public class HelpCenterCategoryController {
 	 * @throws Exception
 	 * 2015年12月11日 qxs
 	 */
-	//@AuthBeforeOperation
+	//@AuthBeforeOperation(role={Role.MANAGER_CODE},name={Role.MANAGER_NAME})
 	@RequestMapping(value="/" , method=RequestMethod.POST)
 	public Result<String> save(HttpServletRequest request, @RequestBody @Valid HelpCenterCategoryVO vo , BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -67,7 +67,7 @@ public class HelpCenterCategoryController {
 	 * @throws Exception
 	 * 2015年12月11日 qxs
 	 */
-	//@AuthBeforeOperation
+	//@AuthBeforeOperation(role={Role.MANAGER_CODE},name={Role.MANAGER_NAME})
 	@RequestMapping(value="/{id}" , method=RequestMethod.PUT)
 	public Result<String> refresh(HttpServletRequest request,@PathVariable String id,@RequestBody @Valid HelpCenterCategoryVO vo , BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
@@ -136,7 +136,7 @@ public class HelpCenterCategoryController {
 		if(optional.isPresent()){
 			return Result.ok(getVOFromBo(optional.get()));
 		}
-		return Result.fail("未找到");
+		return Result.fail("数据未找到,请确认链接是否正确");
 	}
 	
 	
