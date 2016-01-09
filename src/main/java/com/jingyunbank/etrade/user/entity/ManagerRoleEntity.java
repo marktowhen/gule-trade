@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  *	用户角色
  */
-public class UserRoleEntity{
+public class ManagerRoleEntity{
 
 	private String ID;
 	private String roleID;//角色id

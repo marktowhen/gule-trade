@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.user.entity.UserRoleEntity;
+import com.jingyunbank.etrade.user.entity.ManagerRoleEntity;
 
 public interface UserRoleDao {
 	
-	public List<UserRoleEntity> selectList(String uid);
+	public List<ManagerRoleEntity> selectList(String uid);
 	
-	public UserRoleEntity selectOne(String id);
+	public ManagerRoleEntity selectOne(String id);
 	
 	public boolean updateValid(@Param("valid") boolean valid,@Param("ids")  String[] ids);
 	
-	public UserRoleEntity selectByUidAndCode(@Param("uid")String uid,@Param("code") String roleCode);
+	public ManagerRoleEntity selectByUidAndCode(@Param("uid")String uid,@Param("code") String roleCode);
 	
 	
 

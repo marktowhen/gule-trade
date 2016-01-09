@@ -23,11 +23,11 @@ import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.Manager;
 import com.jingyunbank.etrade.api.user.bo.Seller;
-import com.jingyunbank.etrade.api.user.bo.UserRole;
+import com.jingyunbank.etrade.api.user.bo.ManagerRole;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IManagerService;
 import com.jingyunbank.etrade.api.user.service.ISellerService;
-import com.jingyunbank.etrade.api.user.service.IUserRoleService;
+import com.jingyunbank.etrade.api.user.service.IManagerRoleService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
 import com.jingyunbank.etrade.user.bean.ManagerVO;
@@ -43,7 +43,7 @@ public class LoginController {
 	@Autowired
 	private ICartService cartService;
 	@Autowired
-	private IUserRoleService userRoleServce;
+	private IManagerRoleService userRoleServce;
 	
 	@Autowired
 	private IManagerService managerService;
@@ -175,7 +175,7 @@ public class LoginController {
 		Security.authenticate(session);
 		
 		//查询用户拥有的权限
-		List<UserRole> list = userRoleServce.list(users.getID());
+		List<ManagerRole> list = userRoleServce.list(users.getID());
 		if(list.isEmpty()){
 			//暂时屏蔽
 			//return Result.fail("您没有权限");
@@ -286,7 +286,7 @@ public class LoginController {
 		//3、成功之后
 		Manager manager = managerOptional.get();
 		//查询用户拥有的权限
-		List<UserRole> list = userRoleServce.list(manager.getID());
+		List<ManagerRole> list = userRoleServce.list(manager.getID());
 		if(list.isEmpty()){
 			return Result.fail("您没有权限");
 		}
