@@ -20,7 +20,7 @@ public class OrderLogisticControllerTest extends TestCaseBase{
 					 put("/api/orders/receipt")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content("{\"oids\":[\"asdf\"], \"tradepwd\":\"abcd1234\"}")
-					.sessionAttr(Login.LOGIN_ID, "Ma9ogkIXSW-y0uSrvfqVIQ")
+					.sessionAttr(Login.LOGIN_USER_ID, "Ma9ogkIXSW-y0uSrvfqVIQ")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

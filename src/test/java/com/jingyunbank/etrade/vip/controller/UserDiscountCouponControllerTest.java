@@ -32,7 +32,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 put("/api/vip/coupon/discountcoupon/user/")
 					.param("code", "20151117161936")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -51,7 +51,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/1")
 					.param("discountCouponVO.threshholdLow", "2")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -67,7 +67,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 					 post("/api/vip/coupon/discountcoupon/user/")
 					.param("oid", "1")
 					.param("couponId", "WYIgbRGhRqOP30iGE2Yrmg")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -88,7 +88,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/amount")
 					//.param("cashCoupon.threshholdLow", "1")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -124,7 +124,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/useable/2")
 					.param("orderPrice", "60")
-					.sessionAttr(Login.LOGIN_ID, "2")
+					.sessionAttr(Login.LOGIN_USER_ID, "2")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

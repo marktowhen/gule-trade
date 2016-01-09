@@ -50,8 +50,6 @@ public class LoginController {
 	@Autowired
 	private ISellerService sellerService;
 	
-	
-	public static final String LOGIN_MERCHANT_ID = "LOGIN_MERCHANT_ID";
 	/**
 	 * 登录   
 	 * @param request
@@ -94,15 +92,15 @@ public class LoginController {
 		Users users = usersOptional.get();
 		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
 		candidatecart.ifPresent(cart->{
-			Login.CartID(session, cart.getID());
+			Login.cartID(session, cart.getID());
 		});
 		
 		Login.UID(session, users.getID());
-		Login.Uname(session, users.getUsername());
+		Login.uname(session, users.getUsername());
 		Security.authenticate(session);
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_ID, users.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
@@ -171,7 +169,7 @@ public class LoginController {
 		Users users = usersOptional.get();
 		
 		Login.UID(session, users.getID());
-		Login.Uname(session, users.getUsername());
+		Login.uname(session, users.getUsername());
 		Security.authenticate(session);
 		
 		//查询用户拥有的权限
@@ -190,7 +188,7 @@ public class LoginController {
 		//记录登录历史 未完待续
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_ID, users.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
@@ -236,13 +234,13 @@ public class LoginController {
 		//用户信息放入session
 		Seller seller = sellerOptional.get();
 		Login.UID(session, seller.getID());
-		Login.Uname(session, seller.getSname());
+		Login.uname(session, seller.getSname());
 		//商铺id放入session
-		session.setAttribute(LOGIN_MERCHANT_ID, seller.getMid());
+		Login.MID(session, seller.getMid());
 		Security.authenticate(session);
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_ID, seller.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, seller.getID());
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
@@ -297,12 +295,12 @@ public class LoginController {
 		Security.authorize(session, roles);
 		//用户信息放入session
 		Login.UID(session, manager.getID());
-		Login.Uname(session, manager.getMname());
+		Login.uname(session, manager.getMname());
 		Security.authenticate(session);
 		
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_ID, manager.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, manager.getID());
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);

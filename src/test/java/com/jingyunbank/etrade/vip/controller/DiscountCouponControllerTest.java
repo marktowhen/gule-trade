@@ -41,7 +41,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 post("/api/vip/coupon/discountcoupon/")
 					 .content(json)
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -71,7 +71,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 post("/api/vip/coupon/discountcoupon/10000")
 					 .content(json)
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -91,7 +91,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/isvalid")
 					.param("code", "20151117112038")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -111,7 +111,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 delete("/api/vip/coupon/discountcoupon/")
 					.param("code", "20151117110618")
-					.sessionAttr(Login.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -131,7 +131,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/list")
 					 //.param("validTime", "true")
-					 .sessionAttr(Login.LOGIN_ID, "1")
+					 .sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -151,7 +151,7 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/amount")
 					// .param("validTime", "true")
-					 .sessionAttr(Login.LOGIN_ID, "1")
+					 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					 .contentType(MediaType.APPLICATION_JSON)
 					 .accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

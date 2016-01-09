@@ -37,7 +37,7 @@ public class HelpCenterDetailControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 post("/api/help/center/detail/")
 				 .content(json)
-				.sessionAttr(Login.LOGIN_ID, "2")
+				.sessionAttr(Login.LOGIN_USER_ID, "2")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 					
@@ -65,7 +65,7 @@ public class HelpCenterDetailControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				 put("/api/help/center/detail/A8AY8EhmSR-wqnpxaGS7Rg")
 				 .content(json)
-				.sessionAttr(Login.LOGIN_ID, "2")
+				.sessionAttr(Login.LOGIN_USER_ID, "2")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 					
@@ -85,7 +85,7 @@ public class HelpCenterDetailControllerTest extends TestCaseBase {
 	public void testDel() throws Exception{
 		getMockMvc().perform(
 				 delete("/api/help/center/detail/A8AY8EhmSR-wqnpxaGS7Rg")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -104,7 +104,7 @@ public class HelpCenterDetailControllerTest extends TestCaseBase {
 	public void testList() throws Exception{
 		getMockMvc().perform(
 				 get("/api/help/center/detail/list/hb6hQsxbSEyFGfc6jwzNTQ")
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -123,7 +123,7 @@ public class HelpCenterDetailControllerTest extends TestCaseBase {
 	public void testSingle() throws Exception{
 		getMockMvc().perform(
 				 get("/api/help/center/detail/A8AY8EhmSR-wqnpxaGS7Rg")
-				 .sessionAttr(Login.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

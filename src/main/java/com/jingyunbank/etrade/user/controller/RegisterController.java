@@ -92,18 +92,18 @@ public class RegisterController {
 			
 			Optional<Cart> candidatecart = cartService.singleCart(user.getID());
 			candidatecart.ifPresent(cart->{
-				Login.CartID(session, cart.getID());
+				Login.cartID(session, cart.getID());
 			});
 			
 			Login.UID(session, user.getID());
-			Login.Uname(session, user.getUsername());
+			Login.uname(session, user.getUsername());
 			Security.authenticate(session);
 			//清空错误次数
 			session.setAttribute("loginWrongTimes", 0);
 			//记录登录历史 未完待续
 			
 			//将uid写入cookie
-			Cookie cookie = new Cookie(Login.LOGIN_ID, user.getID());
+			Cookie cookie = new Cookie(Login.LOGIN_USER_ID, user.getID());
 			cookie.setPath("/");
 			response.addCookie(cookie);
 			

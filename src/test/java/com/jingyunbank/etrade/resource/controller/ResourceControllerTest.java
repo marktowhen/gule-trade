@@ -33,7 +33,7 @@ public class ResourceControllerTest extends TestCaseBase {
 					fileUpload("/api/resource/upload/multiple")
 					.file(fstmp).file(secmp)
 					.param("param", "123").param("param", "456")
-					.sessionAttr(Login.LOGIN_ID, "123321")
+					.sessionAttr(Login.LOGIN_USER_ID, "123321")
 					.accept(MediaType.APPLICATION_JSON)
 				)
 				.andExpect(status().isOk())

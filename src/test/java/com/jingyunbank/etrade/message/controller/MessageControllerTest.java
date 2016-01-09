@@ -29,7 +29,7 @@ public class MessageControllerTest extends TestCaseBase{
 				.param("title", "测试")
 				.param("content", "真帅")
 				.param("receiveUID", "1")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -48,7 +48,7 @@ public class MessageControllerTest extends TestCaseBase{
 	public void testGetSingle() throws Exception{
 		getMockMvc().perform(
 				get("/api/message/Xo8oTaXUQi-u81JKpoIndA")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -72,7 +72,7 @@ public class MessageControllerTest extends TestCaseBase{
 				.param("hasRead", "true")
 				.param("offset", "0")
 				.param("size", "5")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -92,7 +92,7 @@ public class MessageControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 				get("/api/message/amount/1")
 				.param("hasRead", "false")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -114,7 +114,7 @@ public class MessageControllerTest extends TestCaseBase{
 				get("/api/message/list/unread/1")
 				.param("offset", "0")
 				.param("size", "5")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -133,7 +133,7 @@ public class MessageControllerTest extends TestCaseBase{
 	public void testGetAmountUnread() throws Exception{
 		getMockMvc().perform(
 				get("/api/message/amount/unread/1")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -153,7 +153,7 @@ public class MessageControllerTest extends TestCaseBase{
 	public void testdelete() throws Exception{
 		getMockMvc().perform(
 				delete("/api/message/WBok41umRUqb1jrHzS2C0A,cfk8_BplSSygxukvXXQkpw")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -174,7 +174,7 @@ public class MessageControllerTest extends TestCaseBase{
 		getMockMvc().perform(
 				put("/api/message/WBok41umRUqb1jrHzS2C0A,cfk8_BplSSygxukvXXQkpw")
 				.param("hasRead", "true")
-				.sessionAttr(Login.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

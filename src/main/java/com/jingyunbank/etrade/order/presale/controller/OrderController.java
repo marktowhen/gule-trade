@@ -76,7 +76,7 @@ public class OrderController {
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
 		String UID = Login.UID(session);
-		String uname = Login.Uname(session);
+		String uname = Login.uname(session);
 		purchase.setUID(UID);
 		purchase.setUname(uname);
 

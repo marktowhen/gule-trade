@@ -191,16 +191,22 @@ public class CommentsController {
 		int gradeCount=0;
 		float zongjibie =0;
 		int personCount=0;
+		int gradeCounts=0;
 		List<Comments> comments=commentService.list(gid);
 		if(comments.size()==0){
-			zongjibie=0;
+			zongjibie=10;
 		}
 		personCount=commentService.commentCount(gid);
 		if(personCount==0){
 			personCount=0;
 		}
 		for(int i=0;i<comments.size();i++){
-			gradeCount+=comments.get(i).getCommentGrade();
+			if(comments.get(i).getCommentGrade()<8){
+				gradeCounts=8;
+			}else{
+				gradeCounts=comments.get(i).getCommentGrade();
+			}
+			gradeCount+=gradeCounts;
 		}
 		if(personCount!=0){
 			zongjibie=gradeCount/personCount;
@@ -274,7 +280,7 @@ public class CommentsController {
 		
 	}
 	/**
-	 * 通过oid查出详情
+	 * 通过oid和gid查出详情
 	 * @param oid
 	 * @return
 	 */

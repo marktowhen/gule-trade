@@ -45,12 +45,12 @@ public class OrderQueryController {
 			@PathVariable("size") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
+			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
-		return Result.ok(orderService.list(uid, statuscode, fromdate, keywords, new Range(from, size+from))
+		return Result.ok(orderService.list(uid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "goods");
@@ -72,18 +72,18 @@ public class OrderQueryController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/orders/amount/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/count/{uid}", method=RequestMethod.GET)
 	@AuthBeforeOperation
 	public Result<Integer> getAmount(
 			@PathVariable("uid") String uid, 
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
+			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
-		return Result.ok(orderService.count(uid, statuscode, fromdate, keywords));
+		return Result.ok(orderService.count(uid, null, statuscode, keywords, fromdate, null));
 	}
 	
 	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
