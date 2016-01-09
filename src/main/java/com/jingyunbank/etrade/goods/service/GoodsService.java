@@ -24,8 +24,10 @@ import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
+import com.jingyunbank.etrade.goods.dao.BrandDao;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
+import com.jingyunbank.etrade.goods.entity.GoodsMerchantEntity;
 import com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity;
 import com.jingyunbank.etrade.goods.entity.Hot24GoodsEntity;
 import com.jingyunbank.etrade.goods.entity.HotGoodsEntity;
@@ -145,6 +147,7 @@ public class GoodsService implements IGoodsService {
 		map.put("beginprice", show.getBeginPrice());
 		map.put("endprice", show.getEndPrice());
 
+		
 		List<GoodsMerchant> list = goodsDao.selectMerchantByWhere(map).stream().map(dao -> {
 			GoodsMerchant bo = new GoodsMerchant();
 			BeanUtils.copyProperties(dao, bo);

@@ -1,6 +1,8 @@
 package com.jingyunbank.etrade.goods.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 
 * Title: 	根据条件搜索的店铺信息
@@ -52,5 +54,6 @@ public class GoodsMerchantEntity implements Serializable{
 	public void setMerchantImg(String merchantImg) {
 		this.merchantImg = merchantImg;
 	}
+
 	
 }

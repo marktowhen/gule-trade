@@ -84,6 +84,12 @@
 		<result column="m_img" property="merchantImg" />
 		<result column="m_desc" property="merchantDesc" />
 		<result column="counts" property="goodscount" />
+		
+<!--  		<collection property="brands" javaType="ArrayList" 
+		ofType="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity">
+		<result column="bid" property="ID" />
+		<result column="brandname" property="name" />
+		</collection>  -->
 	</resultMap>
 	<!-- 查询热门推荐商品的基本信息 -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.HotGoodsEntity"
@@ -339,14 +345,14 @@
 	<!-- 根据商品条件搜索关联店铺 -->
 	<select id="selectMerchantByWhere" parameterType="java.util.Map"
 		resultMap="GoodsMerchantMap">
-		SELECT m.`id` mid ,m.`name` merchantname,m.img_path m_img, <include refid="nowprice"/>
+		SELECT m.`id` mid ,m.`name` merchantname,
+		m.img_path m_img, <include refid="nowprice"/>
 		m.merchant_desc m_desc, COUNT(g.id) counts FROM goods g
 		LEFT JOIN
 		goods_detail d ON d.gid = g.id
 		LEFT JOIN goods_img i ON i.gid = g.id
 		LEFT JOIN merchant m ON m.id=g.mid
-		LEFT JOIN goods_brand b ON
-		b.id=g.`bid`
+		LEFT JOIN goods_brand b ON b.id = g.bid
 		LEFT JOIN goods_type t ON t.id=g.tid
 		WHERE 1=1 AND
 		g.state=1

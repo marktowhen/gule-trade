@@ -1,6 +1,10 @@
 package com.jingyunbank.etrade.goods.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.jingyunbank.etrade.api.goods.bo.Brand;
 
 /**
  * 
@@ -17,6 +21,19 @@ public class GoodsMerchantVO implements Serializable {
 	private String merchantDesc; // 店铺介绍
 	private String merchantImg; // 店铺图片
 	private String goodscount; // 相关产品数量
+
+	private List<Brand> brands = new ArrayList<Brand>();
+	
+	
+
+
+	public List<Brand> getBrands() {
+		return brands;
+	}
+
+	public void setBrands(List<Brand> brands) {
+		this.brands = brands;
+	}
 
 	public String getMID() {
 		return MID;

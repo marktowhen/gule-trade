@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
+import com.jingyunbank.etrade.api.goods.service.IBrandService;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
@@ -51,6 +53,8 @@ public class GoodsController {
 	@Resource
 	protected IGoodsService goodsService;
 
+	@Resource
+	protected IBrandService brandService;
 	/*
 	 * @RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
 	 * public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest
@@ -251,13 +255,23 @@ public class GoodsController {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
-		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo -> {
+
+		List<GoodsMerchant> list = goodsService.listMerchantByWhere(goodshowBO, range);
+		List<GoodsMerchantVO> newlist = new ArrayList<GoodsMerchantVO>();
+		for(GoodsMerchant m :list){
+			GoodsMerchantVO vo = new GoodsMerchantVO();
+			BeanUtils.copyProperties(m, vo);
+			vo.setBrands(brandService.listBrandsByMid(m.getMID()));
+			newlist.add(vo);
+		}
+		
+		/*List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo -> {
 			GoodsMerchantVO vo = new GoodsMerchantVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList());*/
 
-		return Result.ok(list);
+		return Result.ok(newlist);
 	}
 
 	/**
@@ -276,7 +290,8 @@ public class GoodsController {
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
 		Range range = new Range();
 		range.setFrom(page.getOffset());
-		range.setTo(page.getSize());
+		range.setTo(page.getSize());		
+
 		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoodsMax(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vo);

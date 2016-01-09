@@ -66,11 +66,9 @@ public class GoodsControllerTest extends TestCaseBase{
 	
 	@Test
 	public void test5() throws Exception {
-		getMockMvc().perform(get("/api/goods/goodsMerchantByWhere/list").characterEncoding("utf-8")
-				.param("brands", new String[]{"1","2"})
-				.param("types", new String[]{"1","2"})
-				.param("beginPrice", new BigDecimal(50).toString())
-				.param("endPrice", new BigDecimal(250).toString())
+		getMockMvc().perform(get("/api/goods/merchant/list").characterEncoding("utf-8")
+
+				
 				)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
