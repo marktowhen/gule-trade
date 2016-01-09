@@ -22,11 +22,10 @@ public class GoodsMerchantVO implements Serializable {
 	private String merchantImg; // 店铺图片
 	private String goodscount; // 相关产品数量
 
+
+	
+
 	private List<Brand> brands = new ArrayList<Brand>();
-	
-	
-
-
 	public List<Brand> getBrands() {
 		return brands;
 	}
@@ -34,6 +33,8 @@ public class GoodsMerchantVO implements Serializable {
 	public void setBrands(List<Brand> brands) {
 		this.brands = brands;
 	}
+
+
 
 	public String getMID() {
 		return MID;
