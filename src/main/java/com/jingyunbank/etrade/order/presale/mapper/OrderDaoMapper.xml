@@ -148,7 +148,9 @@
 			from orders o
 			where <include refid="where_of_select_keywords"/>
 			order by addtime desc
+			<if test="size > 0">
 			limit #{from}, #{size}
+			</if>
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
@@ -169,7 +171,9 @@
 			from orders o
 			where <include refid="where_of_select_condition"/>
 			order by addtime desc 
+			<if test="size > 0">
 			limit #{from}, #{size}
+			</if>
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
