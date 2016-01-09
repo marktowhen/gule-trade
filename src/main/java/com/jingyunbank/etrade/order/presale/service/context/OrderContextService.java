@@ -249,7 +249,7 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
-			traces.add(createOrderTrace(order, "买家已确认收货。"));
+			traces.add(createOrderTrace(order, note));
 		}
 		traces.forEach(trace->trace.setNote(note));
 		orderTraceService.save(traces);
@@ -272,7 +272,7 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.CLOSED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
-			traces.add(createOrderTrace(order, "买家取消订单。"));
+			traces.add(createOrderTrace(order, reason));
 		}
 		//set note reason
 		traces.forEach(trace->trace.setNote(reason));

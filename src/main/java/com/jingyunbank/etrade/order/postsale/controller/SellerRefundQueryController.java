@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.postsale.service.IRefundService;
 import com.jingyunbank.etrade.order.postsale.bean.Refund2ShowVO;
 
@@ -34,14 +35,13 @@ public class SellerRefundQueryController {
 	 */
 	@RequestMapping(value="/api/refund/seller/{from}/{size}", method=RequestMethod.GET)
 	public Result<List<Refund2ShowVO>> listMID(
-			@RequestParam(value="mid", required=false, defaultValue="") String mid, 
 			@PathVariable("from") int from, 
 			@PathVariable("size") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
 			HttpSession session){
-		
+		String mid = Login.MID(session);
 		return Result.ok(refundService.list(null, mid, statuscode, keywords, fromdate, null, new Range(from, size+from))
 				.stream().map(bo-> {
 					Refund2ShowVO vo = new Refund2ShowVO();

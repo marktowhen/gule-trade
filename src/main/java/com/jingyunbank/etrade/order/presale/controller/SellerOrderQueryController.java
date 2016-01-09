@@ -62,4 +62,28 @@ public class SellerOrderQueryController {
 					return vo;
 				}).collect(Collectors.toList()));
 	}
+	
+	/**
+	 * get /api/orders/seller/count?keywords=东阿&status=PAID&fromdate=2015-11-09
+	 *	
+	 * 查询某用户的订单数量
+	 * @param uid
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="/api/orders/seller/count", method=RequestMethod.GET)
+	@AuthBeforeOperation
+	public Result<Integer> getAmount( 
+			@RequestParam(value="orderno", required=false, defaultValue="") String orderno,
+			@RequestParam(value="gname", required=false, defaultValue="") String gname,
+			@RequestParam(value="uname", required=false, defaultValue="") String uname,
+			@RequestParam(value="mname", required=false, defaultValue="") String mname,
+			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
+			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
+			@RequestParam(value="enddate", required=false, defaultValue="") String enddate,
+			HttpSession session){
+		String mid = Login.MID(session);
+		
+		return Result.ok(orderService.count(null, mid, statuscode, orderno, gname, uname, mname, fromdate, enddate));
+	}
 }
