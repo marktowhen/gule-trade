@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.jingyunbank.etrade.user.entity.ManagerRoleEntity;
 
-public interface UserRoleDao {
+public interface ManagerRoleDao {
 	
 	public List<ManagerRoleEntity> selectList(String uid);
 	
