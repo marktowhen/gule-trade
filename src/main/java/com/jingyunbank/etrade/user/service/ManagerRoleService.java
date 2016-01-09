@@ -8,21 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
-import com.jingyunbank.etrade.api.user.bo.UserRole;
-import com.jingyunbank.etrade.api.user.service.IUserRoleService;
-import com.jingyunbank.etrade.user.dao.UserRoleDao;
-import com.jingyunbank.etrade.user.entity.UserRoleEntity;
+import com.jingyunbank.etrade.api.user.bo.ManagerRole;
+import com.jingyunbank.etrade.api.user.service.IManagerRoleService;
+import com.jingyunbank.etrade.user.dao.ManagerRoleDao;
+import com.jingyunbank.etrade.user.entity.ManagerRoleEntity;
 
 @Service("userRoleService")
-public class UserRoleService implements IUserRoleService {
+public class ManagerRoleService implements IManagerRoleService {
 
 	@Autowired
-	private UserRoleDao userRoleDao;
+	private ManagerRoleDao userRoleDao;
 	
 	@Override
-	public List<UserRole> list(String uid) {
+	public List<ManagerRole> list(String uid) {
 		return userRoleDao.selectList(uid).stream().map( resultEntity ->{
-			UserRole c = new UserRole();
+			ManagerRole c = new ManagerRole();
 			BeanUtils.copyProperties(resultEntity, c);
 			BeanUtils.copyProperties(resultEntity.getRole(), c.getRole());
 			return c;
@@ -30,10 +30,10 @@ public class UserRoleService implements IUserRoleService {
 	}
 
 	@Override
-	public UserRole single(String id) {
-		UserRoleEntity entity = userRoleDao.selectOne(id);
+	public ManagerRole single(String id) {
+		ManagerRoleEntity entity = userRoleDao.selectOne(id);
 		if(entity!=null){
-			UserRole r = new UserRole();
+			ManagerRole r = new ManagerRole();
 			BeanUtils.copyProperties(entity, r);
 			BeanUtils.copyProperties(entity.getRole(), r.getRole());
 			return r;
@@ -48,7 +48,7 @@ public class UserRoleService implements IUserRoleService {
 
 	@Override
 	public boolean isAuthoritative(String uid, String roleCode) {
-		UserRoleEntity userRoleEntity = userRoleDao.selectByUidAndCode(uid, roleCode);
+		ManagerRoleEntity userRoleEntity = userRoleDao.selectByUidAndCode(uid, roleCode);
 		if(userRoleEntity!=null){
 			return true;
 		}
