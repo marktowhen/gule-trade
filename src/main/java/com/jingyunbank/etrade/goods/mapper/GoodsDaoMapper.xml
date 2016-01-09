@@ -506,7 +506,7 @@
 		LEFT JOIN merchant m ON g.mid=m.id
 		LEFT JOIN goods_img i ON i.gid = g.id
 		where g.mid = (select mid from goods t where t.id = #{gid})
-		ORDER BY g.volume desc limit 0,4
+		ORDER BY g.volume desc limit 0,6
 		]]>
 	</select>
 	
