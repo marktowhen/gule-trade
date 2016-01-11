@@ -41,7 +41,7 @@ public class AsyncNotifyService implements IAsyncNotifyService {
 	public void dispatch(com.jingyunbank.etrade.api.message.bo.Message message) throws NoticeDispatchException {
 		Message msg = null;
 		try {
-			msg = new Message(MQ_TOPIC, MQ_TOPIC_TAG, new ObjectMapper().writeValueAsBytes(message));
+			msg = new Message(MQ_NOTIFY_TOPIC, MQ_NOTIFY_TOPIC_TAG, new ObjectMapper().writeValueAsBytes(message));
 		} catch (JsonProcessingException e1) {
 			throw new NoticeDispatchException(e1);
 		}
@@ -60,7 +60,7 @@ public class AsyncNotifyService implements IAsyncNotifyService {
 	@PostConstruct
 	public void consume() throws MQClientException{
         // 订阅指定MyTopic下tags等于MyTag
-        defaultMQPushConsumer.subscribe(MQ_TOPIC, MQ_TOPIC_TAG);
+        defaultMQPushConsumer.subscribe(MQ_NOTIFY_TOPIC, MQ_NOTIFY_TOPIC_TAG);
         // 设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费<br>
         // 如果非第一次启动，那么按照上次消费的位置继续消费
         defaultMQPushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
@@ -71,8 +71,8 @@ public class AsyncNotifyService implements IAsyncNotifyService {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                 MessageExt msg = msgs.get(0);
-                if (msg.getTopic().equals(MQ_TOPIC)) {
-                    if (msg.getTags() != null && msg.getTags().equals(MQ_TOPIC_TAG)) {
+                if (msg.getTopic().equals(MQ_NOTIFY_TOPIC)) {
+                    if (msg.getTags() != null && msg.getTags().equals(MQ_NOTIFY_TOPIC_TAG)) {
                     	System.out.println("----------------------");
                     	System.out.println(new String(msg.getBody()));
                     	syncNotifyService.forEach(service->{
