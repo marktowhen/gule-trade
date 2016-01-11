@@ -148,7 +148,7 @@
 			from orders o
 			where <include refid="where_of_select_keywords"/>
 			order by addtime desc
-			<if test="size > 0">
+			<if test="size > 0 && from >= 0">
 			limit #{from}, #{size}
 			</if>
 		) o
@@ -171,7 +171,7 @@
 			from orders o
 			where <include refid="where_of_select_condition"/>
 			order by addtime desc 
-			<if test="size > 0">
+			<if test="size > 0 && from >= 0">
 			limit #{from}, #{size}
 			</if>
 		) o
