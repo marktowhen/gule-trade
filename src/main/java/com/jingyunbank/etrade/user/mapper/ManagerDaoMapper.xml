@@ -18,4 +18,8 @@
 		select <include refid="column_list"/> from manager where id=#{key} or mname=#{key}
 	</select>
 	
+	<update id="updatePassword">
+		update manager set password=#{password} where id =#{id}
+	</update>
+	
 </mapper>
