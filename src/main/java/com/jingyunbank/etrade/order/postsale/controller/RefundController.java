@@ -170,7 +170,7 @@ public class RefundController {
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<String> accept(@RequestParam(required=true) String rid, @RequestParam(required=true) String note, HttpSession session) throws Exception{
 		
-		refundContextService.accept(Arrays.asList(rid), "卖家", note);
+		refundContextService.accept(Arrays.asList(rid), "卖家", "卖家同意请求。");
 		return Result.ok();
 	}
 	

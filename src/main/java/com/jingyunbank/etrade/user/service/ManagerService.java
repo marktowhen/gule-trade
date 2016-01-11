@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.bo.Manager;
 import com.jingyunbank.etrade.api.user.service.IManagerService;
 import com.jingyunbank.etrade.user.dao.ManagerDao;
@@ -37,6 +38,16 @@ public class ManagerService implements IManagerService {
 			return Optional.of(bo);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public boolean refreshPassword(String id, String password)
+			throws DataRefreshingException {
+		try {
+			return managerDao.updatePassword(id, password);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
 	}
 
 

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,10 +35,10 @@ public class SellerOrderQueryController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/orders/seller/{from}/{size}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/seller/list", method=RequestMethod.GET)
 	public Result<List<Order2ShowVO>> listMID(
-			@PathVariable("from") int from, 
-			@PathVariable("size") int size,
+			@RequestParam(value="from", required=false, defaultValue="") int from, 
+			@RequestParam(value="size", required=false, defaultValue="") int size,
 			@RequestParam(value="orderno", required=false, defaultValue="") String orderno,
 			@RequestParam(value="gname", required=false, defaultValue="") String gname,
 			@RequestParam(value="uname", required=false, defaultValue="") String uname,

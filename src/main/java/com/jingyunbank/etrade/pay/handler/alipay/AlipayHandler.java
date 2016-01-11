@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.pay.handler.alipay;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class AlipayHandler implements IPayHandler {
 		//订单名称//必填
 		result.put("subject", payments.get(0).getMname());
 		//付款金额//必填
-		result.put("total_fee", "0.01");
+		result.put("total_fee", payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString());
 		//订单描述
 		//result.put("body", "");
 		//商品展示地址

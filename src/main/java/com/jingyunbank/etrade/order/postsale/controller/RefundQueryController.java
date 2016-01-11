@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.service.IRefundService;
 import com.jingyunbank.etrade.order.postsale.bean.Refund2ShowVO;
@@ -36,17 +37,16 @@ public class RefundQueryController {
 	 * @return
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/api/refund/{uid}/{from}/{size}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/refund/user/list", method=RequestMethod.GET)
 	public Result<List<Refund2ShowVO>> listUID(
-			@PathVariable("uid") String uid, 
-			@PathVariable("from") int from, 
-			@PathVariable("size") int size,
+			@RequestParam(value="from", required=false, defaultValue="") int from, 
+			@RequestParam(value="size", required=false, defaultValue="") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="1970-01-01") String fromdate,
 			HttpSession session){
-		
-		return Result.ok(refundService.list(uid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
+		String loginuid = Login.UID(session);
+		return Result.ok(refundService.list(loginuid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
 				.stream().map(bo-> {
 					Refund2ShowVO vo = new Refund2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "certificates");

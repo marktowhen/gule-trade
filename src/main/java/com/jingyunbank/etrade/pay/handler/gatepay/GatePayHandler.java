@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.pay.handler.gatepay;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class GatePayHandler implements IPayHandler {
 	@Override
 	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
-		String money = "0.01";//payments.stream().map(x->x.getMoney()).reduce(new BigDecimal(0), (a, b)->a.add(b)).toString();
+		String money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString();
 		String orderno = String.valueOf(payments.get(0).getExtransno());
 		String notify_url = pipeline.getNoticeUrl();
 		//String return_url = pipeline.getReturnUrl();

@@ -74,7 +74,7 @@ public class BrandController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateveiw/{bid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateview/{bid}", method = RequestMethod.GET)
 	public Result<BrandVO> queryBrandById(@PathVariable String bid) throws Exception {
 		BrandVO brand = null;
 		Optional<Brand> bo = brandService.singleById(bid);
@@ -114,7 +114,7 @@ public class BrandController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/brands/{mid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{mid}/list", method = RequestMethod.GET)
 	public Result<List<BrandVO>> getBrandByMid(@PathVariable String mid) throws Exception{
 		List<BrandVO> list = brandService.listBrandsByMid(mid).stream().map(bo -> {
 			BrandVO vo = new BrandVO();
@@ -143,7 +143,7 @@ public class BrandController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/brands", method = RequestMethod.GET)
+	@RequestMapping(value = "/all/list", method = RequestMethod.GET)
 	public Result<List<BrandVO>> getBrands() throws Exception{
 		List<BrandVO> list = brandService.listBrands().stream().map(bo -> {
 			BrandVO vo = new BrandVO();
