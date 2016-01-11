@@ -84,22 +84,12 @@ public class CommentsController {
 
 		if(commentService.save(comments)){
 			//对保存多张图片的过程！模拟写的！有多张图片的保存
-			List<String> picture = new ArrayList<String>();
-			if(commentVO.getImgPath1()!=null){
-				picture.add(commentVO.getImgPath1());
-			}
-			if(commentVO.getImgPath2()!=null){
-				picture.add(commentVO.getImgPath2());
-			}
-			if(commentVO.getImgPath3()!=null){
-				picture.add(commentVO.getImgPath3());
-			}
 			
-			if(picture.size()!=0){
-				for(int i=0;i<picture.size();i++){
+			if(commentVO.getPicture().size()!=0){
+				for(int i=0;i<commentVO.getPicture().size();i++){
 					CommentsImg commentsImg=new CommentsImg();
 					commentsImg.setID(KeyGen.uuid());
-					commentsImg.setPicture(picture.get(i));
+					commentsImg.setPicture(commentVO.getPicture().get(i));
 					commentsImg.setCommentID(commentVO.getID());;
 					commentImgService.save(commentsImg);
 				}

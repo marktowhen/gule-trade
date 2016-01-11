@@ -34,7 +34,7 @@ public class CommentsVO {
 	private float personalGrade;
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
-	private String picture;
+	private List<String> picture;
 	private String imgPath1;
 	private String imgPath2;
 	private String imgPath3;
@@ -42,10 +42,11 @@ public class CommentsVO {
 	
 	
 	
-	public String getPicture() {
+	
+	public List<String> getPicture() {
 		return picture;
 	}
-	public void setPicture(String picture) {
+	public void setPicture(List<String> picture) {
 		this.picture = picture;
 	}
 	public float getPersonalGrade() {
