@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
@@ -18,6 +19,7 @@ import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.presale.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
 
+@RestController
 public class ManagerOrderQueryController {
 	@Autowired
 	private IOrderService orderService;
