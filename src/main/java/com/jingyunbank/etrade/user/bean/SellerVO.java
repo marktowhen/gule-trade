@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.user.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SellerVO {
 	
@@ -26,6 +27,7 @@ public class SellerVO {
 	public String getPassword() {
 		return password;
 	}
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}
