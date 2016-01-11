@@ -19,4 +19,8 @@
 		select <include refid="column_list"/> from seller where id=#{key} or sname=#{key}
 	</select>
 	
+	<update id="updatePassword">
+		update seller set password=#{password} where id =#{id}
+	</update>
+	
 </mapper>
