@@ -101,7 +101,7 @@ public class PasswordController {
 				managerService.refreshPassword(uid, pwdVO.getNewPwd());
 				return Result.ok();
 			}
-			return Result.fail("旧密码错误");
+			return Result.fail("原密码错误");
 		}
 		return Result.fail("修改登录密码失败");
 	}
@@ -123,7 +123,7 @@ public class PasswordController {
 				sellerService.refreshPassword(uid, pwdVO.getNewPwd());
 				return Result.ok();
 			}
-			return Result.fail("旧密码错误");
+			return Result.fail("原密码错误");
 		}
 		return Result.fail("修改登录密码失败");
 	}

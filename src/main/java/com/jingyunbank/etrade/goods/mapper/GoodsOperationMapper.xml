@@ -337,7 +337,7 @@
 	
 	<!-- 根据MID 查询所属的品牌 -->
 	<select id="selectBrandsByMid" parameterType="String"  resultMap="baseGoodsMap">
-		SELECT id bid,NAME brandname FROM goods_brand  WHERE MID=#{mid}
+		SELECT id bid,NAME brandname FROM goods_brand  WHERE MID=#{mid} AND status=1
 	</select>
 	<!-- 查询所有的店铺 商家 -->
 	<select id="selectMerchant" parameterType="String"  resultMap="baseGoodsMap">
