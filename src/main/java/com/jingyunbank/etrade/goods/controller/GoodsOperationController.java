@@ -148,7 +148,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateveiw/{gid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateview/{gid}", method = RequestMethod.GET)
 	public Result<GoodsOperationShowVO> queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsOperationShowVO vo = null;
 		Optional<BaseGoodsOperation> showbo = goodsOperationService.singleById(gid);
@@ -281,7 +281,7 @@ public class GoodsOperationController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/brands/{mid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/brand/{mid}/list", method = RequestMethod.GET)
 	public Result<List<GoodsBrandVO>> getBrandByMid(@PathVariable String mid) throws Exception {
 		List<GoodsBrandVO> list = goodsOperationService.listBrandsByMid(mid).stream().map(bo -> {
 			GoodsBrandVO vo = new GoodsBrandVO();
