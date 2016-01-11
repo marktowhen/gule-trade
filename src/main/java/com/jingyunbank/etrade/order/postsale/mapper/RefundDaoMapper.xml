@@ -136,7 +136,9 @@
 						)
 				</if>
 			order by addtime desc 
+			<if test="size > 0 and from >= 0">
 			limit #{from}, #{size}
+			</if>
 		)r
 		inner join order_goods og on r.ogid = og.id 
 		inner join orders o on r.oid = o.id 

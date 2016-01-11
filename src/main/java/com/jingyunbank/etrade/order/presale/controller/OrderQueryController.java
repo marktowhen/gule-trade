@@ -37,20 +37,18 @@ public class OrderQueryController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/orders/{uid}/{from}/{size}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/user/list", method=RequestMethod.GET)
 	@AuthBeforeOperation
 	public Result<List<Order2ShowVO>> listUID(
-			@PathVariable("uid") String uid, 
-			@PathVariable("from") int from, 
-			@PathVariable("size") int size,
+			@RequestParam(value="from", required=false, defaultValue="") int from, 
+			@RequestParam(value="size", required=false, defaultValue="") int size,
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
-		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
-		return Result.ok(orderService.list(uid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
+		return Result.ok(orderService.list(loginuid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo, "goods");
