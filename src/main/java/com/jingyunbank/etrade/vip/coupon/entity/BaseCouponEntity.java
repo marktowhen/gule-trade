@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.vip.coupon.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -17,8 +16,6 @@ public class BaseCouponEntity implements Serializable{
 	
 	private Date addtimeStart;
 	private Date addtiemEnd;
-	private BigDecimal threshholdLow;//查询时添加条件 and threshhold>=threshholdLow
-	private BigDecimal threshholdHigh;//查询时添加条件 and threshhold<=threshholdHigh
 	
 	private boolean validTime;//true ->查询有效期内 false不起效
 	private boolean needUsed;//查询时是否需要加上used这个字段的条件
@@ -48,18 +45,6 @@ public class BaseCouponEntity implements Serializable{
 	}
 	public void setLocked(boolean locked) {
 		this.locked = locked;
-	}
-	public BigDecimal getThreshholdLow() {
-		return threshholdLow;
-	}
-	public void setThreshholdLow(BigDecimal threshholdLow) {
-		this.threshholdLow = threshholdLow;
-	}
-	public BigDecimal getThreshholdHigh() {
-		return threshholdHigh;
-	}
-	public void setThreshholdHigh(BigDecimal threshholdHigh) {
-		this.threshholdHigh = threshholdHigh;
 	}
 	public boolean isValidTime() {
 		return validTime;

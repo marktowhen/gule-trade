@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jingyunbank.etrade.goods.bean.BrandVO;
 /**
  * 
 * Title: 	根据条件搜索的店铺信息

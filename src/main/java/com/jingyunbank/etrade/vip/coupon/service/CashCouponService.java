@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.vip.coupon.service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,16 +32,15 @@ public class CashCouponService implements ICashCouponService{
 	private CashCouponDao cashCouponDao;
 
 	@Override
-	public boolean save(CashCoupon cashCoupon, Users manager) throws DataSavingException {
+	public CashCoupon save(CashCoupon cashCoupon, Users manager) throws DataSavingException {
 		
 		try {
 			cashCoupon.setID(KeyGen.uuid());
-			cashCoupon.setLocked(true);
 			while(true){
 				cashCoupon.setCardNum(getNewCardNum(cashCoupon.getValue()));
 				cashCoupon.setCode(new String(new RndBuilder().length(10).hasletter(true).next()));
 				if(cashCouponDao.insert(getEntityFromBo(cashCoupon))){
-					return true;
+					return cashCoupon;
 				}
 			}
 			
@@ -51,13 +51,14 @@ public class CashCouponService implements ICashCouponService{
 	}
 	
 	@Override
-	public boolean saveMuti(CashCoupon cashCoupon, Users manager, int amount) throws DataSavingException {
+	public List<CashCoupon> saveMuti(CashCoupon cashCoupon, Users manager, int amount) throws DataSavingException {
 		
 		try {
+			List<CashCoupon> list = new ArrayList<CashCoupon>();
 			for (int i = 0; i < amount; i++) {
-				save(cashCoupon, manager);
+				list.add(save(cashCoupon, manager));
 			}
-			return true;
+			return list;
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
@@ -246,7 +247,7 @@ public class CashCouponService implements ICashCouponService{
 		}else if(new BigDecimal("200").compareTo(value)==0){
 			return (ICashCouponService.CARD_NUM_PRIFIX_200);
 		}else{
-			throw new Exception("购物金面值仅限1000,500,200元");
+			return (ICashCouponService.CARD_NUM_PRIFIX_OTHER);
 		}
 	}
 

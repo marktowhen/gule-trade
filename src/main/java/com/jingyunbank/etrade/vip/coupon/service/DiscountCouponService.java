@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.vip.coupon.service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,17 +33,15 @@ public class DiscountCouponService implements IDiscountCouponService{
 	private DiscountCouponDao discountCouponDao;
 
 	@Override
-	public boolean save(DiscountCoupon discountCoupon, Users manager) throws DataSavingException {
+	public DiscountCoupon save(DiscountCoupon discountCoupon, Users manager) throws DataSavingException {
 		try {
-			discountCoupon.setLocked(true);
 			
 			discountCoupon.setID(KeyGen.uuid());
 			while(true){
 				discountCoupon.setCardNum(getNewCardNum(discountCoupon.getValue()));
 				discountCoupon.setCode(new String(new RndBuilder().length(10).hasletter(true).next()));
-				discountCoupon.setLocked(true);
 				if(discountCouponDao.insert(getEntityFromBo(discountCoupon))){
-					return true;
+					return discountCoupon;
 				}
 			}
 		} catch (Exception e) {
@@ -51,13 +50,14 @@ public class DiscountCouponService implements IDiscountCouponService{
 	}
 	
 	@Override
-	public boolean saveMuti(DiscountCoupon discountCoupon, Users manager,
+	public List<DiscountCoupon> saveMuti(DiscountCoupon discountCoupon, Users manager,
 			int amount) throws DataSavingException {
 		try {
+			List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
 			for (int i = 0; i < amount; i++) {
-				save(discountCoupon, manager);
+				list.add(save(discountCoupon, manager));
 			}
-			return true;
+			return list;
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}

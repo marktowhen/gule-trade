@@ -79,12 +79,6 @@
 		<if test="entity.needDelete">
 			and del = #{entity.del}
 		</if>
-		<if test="entity.threshholdLow!=null">
-			and threshhold &gt;=entity.threshholdLow
-		</if>
-		<if test="entity.threshholdHigh!=null">
-			and threshhold &lt;=entity.threshholdHigh
-		</if>
 		<if test="entity.needLocked">
 			and locked = #{entity.locked}
 		</if>
