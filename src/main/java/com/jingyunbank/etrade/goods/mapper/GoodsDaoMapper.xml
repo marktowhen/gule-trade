@@ -360,7 +360,7 @@
 		WHERE 1=1 AND
 		g.state=1
 		<include refid="where" />
-		GROUP BY merchantname LIMIT #{from} , #{size}
+		GROUP BY m.`id` LIMIT #{from} , #{size}
 		
 		
 	</select>
