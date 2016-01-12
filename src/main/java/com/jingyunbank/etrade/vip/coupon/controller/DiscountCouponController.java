@@ -73,7 +73,7 @@ public class DiscountCouponController {
 		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+reason);
 		bo.setLocked(false);
 		bo.setValue(new BigDecimal("50"));
-		bo.setDiscount(new BigDecimal("10").subtract(discount));
+		bo.setDiscount(new BigDecimal("10").subtract(discount).divide(new BigDecimal("10")));
 		bo.setThreshhold(threshhold);
 		bo.setStart(new Date());
 		Calendar c = Calendar.getInstance();
