@@ -29,6 +29,7 @@ import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.CashCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.ICashCouponService;
 import com.jingyunbank.etrade.vip.coupon.bean.CashCouponVO;
@@ -40,32 +41,51 @@ public class CashCouponController {
 	@Autowired
 	private ICashCouponService cashCouponService;
 	
+	
 	/**
-	 * 新增一张券
+	 * 
 	 * @param request
-	 * @param vo
-	 * @param valid
+	 * @param accessKey
+	 * @param amount 数量
+	 * @param value面额
+	 * @param threshhold 使用门槛
+	 * @param reason 原因
 	 * @return
-	 * 2015年11月16日 qxs
-	 * @throws DataSavingException 
+	 * @throws Exception
+	 * 2016年1月12日 qxs
 	 */
-	@RequestMapping(value = "/" ,method= RequestMethod.POST)
-	public Result<String> add(HttpServletRequest request,@RequestBody @Valid CashCouponVO vo,BindingResult valid) throws Exception{
-		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
-						.collect(Collectors.joining(" ; ")));
+	@RequestMapping(value = "/{accessKey}/{amount}" ,method= RequestMethod.POST)
+	public Result<List<CashCouponVO>> addMuti(HttpServletRequest request,
+			@PathVariable String accessKey,
+			@PathVariable int amount,
+			@RequestParam(value="value") BigDecimal value,
+			@RequestParam(value="threshhold",required=false,defaultValue="0") BigDecimal threshhold,
+			@RequestParam(value="reason",required=false,defaultValue="") String  reason) throws Exception{
+		if(!BaseCoupon.ACCESS_KEY_JYJR.equals(accessKey)){
+			return Result.fail("accessKey 错误");
 		}
+		if(amount<=0){
+			return Result.fail("数量错误");
+		}
+		if(value.compareTo(new BigDecimal("0"))<=0){
+			return Result.fail("面额错误");
+		}
+		//组装数据
+		CashCoupon bo = new CashCoupon();
+		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+" "+reason);
+		bo.setLocked(false);
+		bo.setValue(value);
+		bo.setThreshhold(threshhold);
+		bo.setStart(new Date());
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.YEAR, 100);
+		bo.setEnd(c.getTime());
+		return Result.ok(cashCouponService.saveMuti(bo, new Users(), amount).stream().map( result ->{
+	 		CashCouponVO vo = new CashCouponVO();
+			BeanUtils.copyProperties(result, vo);
+	 		return vo;
+	 	}).collect(Collectors.toList()));
 		
-		if(vo.getStart().after(vo.getEnd())
-				|| vo.getEnd().before(new Date())){
-			return Result.fail("有效期限设置错误");
-		}
-		Users manager = new Users();
-		manager.setID(Login.UID(request));
-		cashCouponService.save(getBoFromVo(vo), manager);
-		return Result.ok();
 	}
 	
 	

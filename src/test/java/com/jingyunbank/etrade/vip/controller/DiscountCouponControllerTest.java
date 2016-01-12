@@ -29,18 +29,11 @@ public class DiscountCouponControllerTest extends TestCaseBase{
 		 */
 		@Test
 		public void testSave() throws Exception{
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			DiscountCouponVO vo = new DiscountCouponVO();
-			vo.setValue(new BigDecimal(50));
-			vo.setStart(format.parse("2015-01-01 00:00:00"));
-			vo.setEnd(format.parse("2025-12-31 23:59:59"));
-			vo.setThreshhold(new BigDecimal(100));
-			vo.setDiscount(new BigDecimal(0.5));
-			ObjectMapper mapper = new ObjectMapper();
-			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/vip/coupon/discountcoupon/")
-					 .content(json)
+					 post("/api/vip/coupon/discountcoupon/bb1f957f773b12ae8f61d8b429b09ad5/2")
+					 .param("discount", "9")
+					 .param("threshhold", "10")
+					 .param("reason", "test")
 					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
