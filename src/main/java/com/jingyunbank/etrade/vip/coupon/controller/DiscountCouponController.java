@@ -65,15 +65,15 @@ public class DiscountCouponController {
 		if(amount<=0){
 			return Result.fail("数量错误");
 		}
-		if(discount.compareTo(new BigDecimal("0"))<=0 || discount.compareTo(new BigDecimal("10"))==1){
+		if(discount.compareTo(new BigDecimal("0"))<=0 || discount.compareTo(new BigDecimal("10"))>=0){
 			return Result.fail("折扣错误");
 		}
 		//组装数据
 		DiscountCoupon bo = new DiscountCoupon();
-		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+reason);
+		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+" "+reason);
 		bo.setLocked(false);
 		bo.setValue(new BigDecimal("50"));
-		bo.setDiscount(new BigDecimal("10").subtract(discount));
+		bo.setDiscount(new BigDecimal("10").subtract(discount).divide(new BigDecimal("10")));
 		bo.setThreshhold(threshhold);
 		bo.setStart(new Date());
 		Calendar c = Calendar.getInstance();

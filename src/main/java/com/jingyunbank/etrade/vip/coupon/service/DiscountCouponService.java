@@ -233,7 +233,12 @@ public class DiscountCouponService implements IDiscountCouponService{
 	 * 2015年12月29日 qxs
 	 */
 	private String getCardNumPrifix(BigDecimal value) throws Exception{
-		return IDiscountCouponService.CARD_NUM_PRIFIX_50;
+		if(new BigDecimal("50").compareTo(value)==0){
+			return IDiscountCouponService.CARD_NUM_PRIFIX_50;
+		}else{
+			return (ICashCouponService.CARD_NUM_PRIFIX_OTHER);
+		}
+		
 	}
 
 	@Override
