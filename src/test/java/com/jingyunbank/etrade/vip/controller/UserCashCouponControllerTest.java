@@ -50,7 +50,6 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		public void testGet() throws Exception{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/user/1")
-					.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
@@ -87,7 +86,6 @@ public class UserCashCouponControllerTest extends TestCaseBase{
 		public void testGetAmount() throws Exception{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/user/amount")
-					.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))

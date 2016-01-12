@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.vip.coupon.controller;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +26,8 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
 import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponAddVO;
@@ -40,34 +41,50 @@ public class DiscountCouponController {
 	private IDiscountCouponService discountCouponService;
 	
 	/**
-	 * 新增一张券
+	 * 接口生成抵用券 有效期6个月
 	 * @param request
-	 * @param vo
-	 * @param valid
+	 * @param accessKey
+	 * @param amount 数量
+	 * @param discount折扣 若为8折传入8
+	 * @param threshhold 使用门槛
+	 * @param reason 原因
 	 * @return
-	 * 2015年11月16日 qxs
-	 * @throws DataSavingException 
+	 * @throws Exception
+	 * 2016年1月12日 qxs
 	 */
-	//@AuthBeforeOperation
-	@RequestMapping(value = "/" ,method= RequestMethod.POST)
-	public Result<String> add(HttpServletRequest request, @RequestBody @Valid DiscountCouponAddVO vo,BindingResult valid) throws Exception{
-		if(valid.hasErrors()){
-			List<ObjectError> errors = valid.getAllErrors();
-			return Result.fail(errors.stream()
-						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
-						.collect(Collectors.joining(" ; ")));
+	@RequestMapping(value = "/{accessKey}/{amount}" ,method= RequestMethod.POST)
+	public Result<List<DiscountCouponVO>> addMuti(HttpServletRequest request,
+			@PathVariable String accessKey,
+			@PathVariable int amount,
+			@RequestParam(value="discount",defaultValue="8") BigDecimal discount,
+			@RequestParam(value="threshhold",required=false,defaultValue="0") BigDecimal threshhold,
+			@RequestParam(value="reason",required=false,defaultValue="") String  reason) throws Exception{
+		if(!BaseCoupon.ACCESS_KEY_JYJR.equals(accessKey)){
+			return Result.fail("accessKey 错误");
 		}
+		if(amount<=0){
+			return Result.fail("数量错误");
+		}
+		if(discount.compareTo(new BigDecimal("0"))<=0 || discount.compareTo(new BigDecimal("10"))==1){
+			return Result.fail("折扣错误");
+		}
+		//组装数据
+		DiscountCoupon bo = new DiscountCoupon();
+		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+reason);
+		bo.setLocked(false);
+		bo.setValue(new BigDecimal("50"));
+		bo.setDiscount(new BigDecimal("10").subtract(discount));
+		bo.setThreshhold(threshhold);
+		bo.setStart(new Date());
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MONTH, 6);
+		bo.setEnd(c.getTime());
+		return Result.ok(discountCouponService.saveMuti(bo, new Users(), amount).stream().map( result ->{
+			DiscountCouponVO vo = new DiscountCouponVO();
+			BeanUtils.copyProperties(result, vo);
+	 		return vo;
+	 	}).collect(Collectors.toList()));
 		
-		if(vo.getStart().after(vo.getEnd())
-				|| vo.getEnd().before(new Date())){
-			return Result.fail("有效期限设置错误");
-		}
-		vo.setDiscount(new BigDecimal("0.2"));
-		vo.setValue(new BigDecimal("50"));
-		Users manager = new Users();
-		manager.setID(Login.UID(request));
-		discountCouponService.save(getBoFromVo(vo), manager);
-		return Result.ok();
 	}
 	
 	/**

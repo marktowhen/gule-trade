@@ -50,7 +50,6 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		public void testGet() throws Exception{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/1")
-					.param("discountCouponVO.threshholdLow", "2")
 					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
@@ -87,7 +86,6 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		public void testGetAmount() throws Exception{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/amount")
-					//.param("cashCoupon.threshholdLow", "1")
 					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
