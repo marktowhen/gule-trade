@@ -53,6 +53,22 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-pool</artifactId>
+        </dependency>
         <!-- spring boot end -->
         
         
@@ -104,23 +120,7 @@
 		    <artifactId>json-path</artifactId>
 		    <scope>test</scope>
 		</dependency>
-		<!-- test scope dependency -->
-		
-		
-		<!-- rocketmq start -->
-		<dependency>
-             <groupId>com.alibaba.rocketmq</groupId>
-             <artifactId>rocketmq-all</artifactId>
-             <version>3.2.6</version>
-             <type>pom</type>
-        </dependency>
-        <dependency>
-             <groupId>com.alibaba.rocketmq</groupId>
-             <artifactId>rocketmq-client</artifactId>
-             <version>3.2.6</version>
-        </dependency>
-        <!-- rocketmq end -->
-        
+		<!-- test scope dependency -->        
         
         <!-- http components start -->
         <dependency>
