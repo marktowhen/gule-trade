@@ -65,7 +65,7 @@ public class DiscountCouponController {
 		if(amount<=0){
 			return Result.fail("数量错误");
 		}
-		if(discount.compareTo(new BigDecimal("0"))<=0 || discount.compareTo(new BigDecimal("10"))==1){
+		if(discount.compareTo(new BigDecimal("0"))<=0 || discount.compareTo(new BigDecimal("10"))>=0){
 			return Result.fail("折扣错误");
 		}
 		//组装数据
