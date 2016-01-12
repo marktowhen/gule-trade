@@ -70,7 +70,7 @@ public class DiscountCouponController {
 		}
 		//组装数据
 		DiscountCoupon bo = new DiscountCoupon();
-		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+reason);
+		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+" "+reason);
 		bo.setLocked(false);
 		bo.setValue(new BigDecimal("50"));
 		bo.setDiscount(new BigDecimal("10").subtract(discount).divide(new BigDecimal("10")));
