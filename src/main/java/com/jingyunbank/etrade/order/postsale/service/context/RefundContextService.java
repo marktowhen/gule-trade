@@ -16,6 +16,7 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.exception.NoticeDispatchException;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundLogistic;
 import com.jingyunbank.etrade.api.order.postsale.bo.RefundStatusDesc;
@@ -25,6 +26,7 @@ import com.jingyunbank.etrade.api.order.postsale.service.IRefundLogisticService;
 import com.jingyunbank.etrade.api.order.postsale.service.IRefundService;
 import com.jingyunbank.etrade.api.order.postsale.service.IRefundTraceService;
 import com.jingyunbank.etrade.api.order.postsale.service.context.IRefundContextService;
+import com.jingyunbank.etrade.api.order.postsale.service.context.IRefundEventService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 
 @Service("refundContextService")
@@ -40,6 +42,8 @@ public class RefundContextService implements IRefundContextService{
 	private IRefundLogisticService refundLogisticService;
 	@Autowired
 	private IOrderContextService orderContextService;
+	@Autowired
+	private IRefundEventService refundEventService;
 	
 	@Override
 	@Transactional
@@ -91,6 +95,11 @@ public class RefundContextService implements IRefundContextService{
 				traces.add(createRefundTrace(refund, RefundStatusDesc.ACCEPT, operator, note));
 			}
 			refundTraceService.save(traces);
+			try {
+				refundEventService.broadcast(returns, IRefundEventService.MQ_REFUND_QUEUE_DONE);
+			} catch (NoticeDispatchException e) {
+				e.printStackTrace();
+			}
 		}
 		//退款
 		refunds = refunds.stream().filter(refund->!refund.isReturnGoods()).collect(Collectors.toList());
@@ -104,7 +113,13 @@ public class RefundContextService implements IRefundContextService{
 			refundTraceService.save(traces);
 			List<String> ogids = refunds.stream().map(x->x.getOGID()).collect(Collectors.toList());
 			orderContextService.refundDone(ogids);
+			try {
+				refundEventService.broadcast(refunds, IRefundEventService.MQ_REFUND_QUEUE_DONE);
+			} catch (NoticeDispatchException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		return true;
 	}
 

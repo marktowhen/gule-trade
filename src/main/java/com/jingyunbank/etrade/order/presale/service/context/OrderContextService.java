@@ -20,6 +20,7 @@ import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.exception.NoticeDispatchException;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
@@ -31,12 +32,12 @@ import com.jingyunbank.etrade.api.order.presale.service.IOrderLogisticService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderTraceService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderEventService;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
-import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
@@ -60,7 +61,7 @@ public class OrderContextService implements IOrderContextService {
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
-	private IPointContextService pointContextService;
+	private IOrderEventService orderEventService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -97,6 +98,7 @@ public class OrderContextService implements IOrderContextService {
 									.lock(order.getUID(), order.getCouponID());
 				}
 			}
+
 		}catch(Exception e){
 			throw new DataSavingException(e);
 		}
@@ -158,8 +160,11 @@ public class OrderContextService implements IOrderContextService {
 			goodsOperationService.refreshGoodsVolume(uid, uname, gs.getGID(), gs.getCount());
 		}
 		
-		//add point async
-		//pointContextService.addPoint(uid, o.getPoint(), "");
+		try {
+			orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
+		} catch (NoticeDispatchException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -255,6 +260,7 @@ public class OrderContextService implements IOrderContextService {
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
+		
 		return true;
 	}
 
