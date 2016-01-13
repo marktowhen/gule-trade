@@ -61,7 +61,7 @@ public class OrderEventService implements IOrderEventService {
 		try {
 			pointContextService.addPoint(orders.get(0).getUID(), 
 					orders.stream().map(x->x.getPayout())
-						.reduce(BigDecimal.ZERO, (x,y)->x.add(y)).divide(BigDecimal.valueOf(10)).intValue(), "消费赚取积分");
+						.reduce(BigDecimal.ZERO, (x,y)->x.add(y)).divide(BigDecimal.valueOf(100)).intValue(), "消费赚取积分");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
