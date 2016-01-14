@@ -31,6 +31,7 @@ import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
 import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponAddVO;
+import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponShowVO;
 import com.jingyunbank.etrade.vip.coupon.bean.DiscountCouponVO;
 
 @RestController
@@ -53,7 +54,7 @@ public class DiscountCouponController {
 	 * 2016年1月12日 qxs
 	 */
 	@RequestMapping(value = "/{accessKey}/{amount}" ,method= RequestMethod.POST)
-	public Result<List<DiscountCouponVO>> addMuti(HttpServletRequest request,
+	public Result<List<DiscountCouponShowVO>> addMuti(HttpServletRequest request,
 			@PathVariable String accessKey,
 			@PathVariable int amount,
 			@RequestParam(value="discount",defaultValue="8") BigDecimal discount,
@@ -80,7 +81,7 @@ public class DiscountCouponController {
 		c.add(Calendar.MONTH, 6);
 		bo.setEnd(c.getTime());
 		return Result.ok(discountCouponService.saveMuti(bo, new Users(), amount).stream().map( result ->{
-			DiscountCouponVO vo = new DiscountCouponVO();
+			DiscountCouponShowVO vo = new DiscountCouponShowVO();
 			BeanUtils.copyProperties(result, vo);
 	 		return vo;
 	 	}).collect(Collectors.toList()));
