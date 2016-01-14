@@ -196,7 +196,7 @@ public class OrderService implements IOrderService{
 	@Override
 	public boolean shareCoupon(String couponid) {
 		int count = orderDao.countCouponOrder(couponid);
-		return count > 1;
+		return count >= 1;
 	}
 
 }
