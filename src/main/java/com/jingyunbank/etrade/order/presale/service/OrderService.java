@@ -193,5 +193,10 @@ public class OrderService implements IOrderService{
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public boolean shareCoupon(String couponid) {
+		int count = orderDao.countCouponOrder(couponid);
+		return count > 1;
+	}
 
 }

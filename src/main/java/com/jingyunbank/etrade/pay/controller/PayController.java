@@ -65,7 +65,7 @@ public class PayController {
 			return Result.fail("您提交的订单信息有误，请核实后进行支付。");
 		}
 		
-		List<OrderPayment> payments = payService.listPayments(oids)
+		List<OrderPayment> payments = payService.listPayable(oids)
 							.stream().filter(x-> !x.isDone()).collect(Collectors.toList());
 		
 		if(Objects.isNull(payments) || payments.size() == 0 || payments.size() != oids.size()){

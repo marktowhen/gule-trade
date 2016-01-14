@@ -88,6 +88,8 @@ public class OrderRobotService implements IOrderRobotService {
 					msg.setContent("您好，您有订单需要您确认收货，如24小时候内未操作，则系统会执行自动收货，请登录网站查询详情。");
 					msg.setReceiveUser(user);
 					msg.setReceiveUID(user.getID());
+					msg.setType(Message.TYPE_LETTER);
+	    			msg.setStatus(Message.STATUS_SUC);
 					asyncNotifyService.dispatch(msg);
 				}
 			}

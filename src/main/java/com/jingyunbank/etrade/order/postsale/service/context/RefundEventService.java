@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.ReferenceType;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.NoticeDispatchException;
+import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.order.postsale.bo.Refund;
 import com.jingyunbank.etrade.api.order.postsale.service.context.IRefundEventService;
@@ -62,9 +63,11 @@ public class RefundEventService implements IRefundEventService{
     			com.jingyunbank.etrade.api.message.bo.Message imsg = new com.jingyunbank.etrade.api.message.bo.Message();
     			imsg.setTitle("退单接受通知");
     			imsg.setID(KeyGen.uuid());
-    			imsg.setContent("您好，您有一笔退单被卖家同意，请登录网站查询详情。");
+    			imsg.setContent("您好，您有一笔退单申请卖家已同意，请登录网站查询详情。");
     			imsg.setReceiveUser(ucandidate.get());
     			imsg.setReceiveUID(ucandidate.get().getID());
+    			imsg.setType(Message.TYPE_LETTER);
+    			imsg.setStatus(Message.STATUS_SUC);
 				service.inform(imsg);
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -62,8 +62,8 @@ public class MessageController {
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
 		messageVO.setAddip(ServletBox.ip(request));
 		messageVO.setSentUID(Login.UID(request));
-		messageVO.setStatus(IInboxService.STATUS_SUC);
-		messageVO.setType(IInboxService.TYPE_LETTER);
+		messageVO.setStatus(Message.STATUS_SUC);
+		messageVO.setType(Message.TYPE_LETTER);
 		List<Message> listMsg = new ArrayList<Message>();
 		for (int i = 0; i < receiveUids.length; i++) {
 			Message message = new Message();

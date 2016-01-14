@@ -71,6 +71,8 @@ public interface OrderDao{
 			@Param("mname") String mname, 
 			@Param("fromdate") String fromdate, 
 			@Param("enddate") String enddate);
+
+	public int countCouponOrder(String couponid);
 	
 	
 }

@@ -138,6 +138,11 @@
 			and o.status_code = #{statuscode}
 	</select>
 	
+	<select id="countCouponOrder" parameterType="String" resultType="int">
+		select count(1)
+		from orders
+		where coupon_id = #{couponid}
+	</select>
 	
 	
 	<select id="selectKeywords" resultMap="OrderEntityResultMap">
@@ -154,6 +159,7 @@
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
+		order by o.addtime desc
 	</select>
 	
 	<select id="selectKeywordsCount" resultType="int">
@@ -177,6 +183,7 @@
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
+		order by o.addtime desc
 	</select>
 	
 	<select id="selectConditionCount" resultType="int">

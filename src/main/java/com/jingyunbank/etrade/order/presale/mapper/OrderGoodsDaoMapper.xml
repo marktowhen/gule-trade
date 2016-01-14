@@ -21,13 +21,15 @@
 		<result column="mid" property="MID" javaType="String"/>
 		<result column="mname" property="mname" javaType="String"/>
 		<result column="imgpath" property="imgpath" javaType="String"/>
+		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 	</resultMap>
 	<sql id="order_goods_column">
 		id, oid,uid, orderno, gid, gname, addtime, status_code, status_name, price, pprice, payout, coupon_reduce, count
 	</sql>
 	<sql id="select_order_goods_column">
 		og.id, og.oid, og.uid, og.orderno, og.gid, og.gname, og.addtime, og.status_code, og.status_name,
-		og.price, og.pprice, og.payout, og.coupon_reduce, og.count, o.mid, o.mname, img.thumb_path_1 as imgpath
+		og.price, og.pprice, og.payout, og.coupon_reduce, og.count, o.mid, o.mname, o.postage,
+		img.thumb_path_1 as imgpath
 	</sql>
 	<insert id="insertMany">
 		insert into order_goods

@@ -25,6 +25,7 @@ public class OrderGoodsVO {
 	private String MID;
 	private String mname;
 	private String imgpath;
+	private BigDecimal postage;
 	
 	public String getID() {
 		return ID;
@@ -128,5 +129,11 @@ public class OrderGoodsVO {
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
 	}
 }

@@ -66,9 +66,9 @@ public class PayService implements IPayService{
 //	}
 
 	@Override
-	public List<OrderPayment> listPayments(List<String> oids) {
+	public List<OrderPayment> listPayable(List<String> oids) {
 		
-		List<OrderPaymentEntity> entities = payDao.selectPayments(oids);
+		List<OrderPaymentEntity> entities = payDao.selectPayable(oids);
 		List<OrderPayment> bos = new ArrayList<OrderPayment>();
 		entities.forEach(e -> {
 			OrderPayment op = new OrderPayment();

@@ -20,8 +20,6 @@ import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.exception.NoticeDispatchException;
-import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
@@ -57,14 +55,12 @@ public class OrderContextService implements IOrderContextService {
 	@Autowired
 	private IOrderLogisticService orderLogisticService;
 	@Autowired
-	private IGoodsOperationService goodsOperationService;
-	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
 	private IOrderEventService orderEventService;
 	
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
 	public void save(List<Orders> orders) throws DataSavingException {
 		try{
 			//如果订单支付金额为0则将状态设为已支付
@@ -98,6 +94,9 @@ public class OrderContextService implements IOrderContextService {
 									.lock(order.getUID(), order.getCouponID());
 				}
 			}
+			if(orders.stream().anyMatch(x-> OrderStatusDesc.PAID_CODE.equals(x.getStatusCode()))){
+				orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
+			}
 
 		}catch(Exception e){
 			throw new DataSavingException(e);
@@ -120,7 +119,7 @@ public class OrderContextService implements IOrderContextService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
 	public void paysuccess(String extransno) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.listByExtransno(extransno);
 		if(orders.size() == 0){
@@ -135,6 +134,8 @@ public class OrderContextService implements IOrderContextService {
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		List<OrderGoods> goods = new ArrayList<OrderGoods>();
 		for (Orders order : orders) {
+			order.setStatusCode(OrderStatusDesc.PAID_CODE);
+			order.setStatusName(OrderStatusDesc.PAID.getName());
 			traces.add(createOrderTrace(order, "用户支付成功"));
 			goods.addAll(order.getGoods());
 		}
@@ -152,19 +153,9 @@ public class OrderContextService implements IOrderContextService {
 								.consume(order.getUID(), order.getCouponID());
 			}
 		}
-		Orders o = orders.get(0);
-		String uid = o.getUID();
-		String uname = o.getUname();
-		//更新库存
-		for (OrderGoods gs : goods) {
-			goodsOperationService.refreshGoodsVolume(uid, uname, gs.getGID(), gs.getCount());
-		}
 		
-		try {
-			orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
-		} catch (NoticeDispatchException e) {
-			e.printStackTrace();
-		}
+		orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
+		
 	}
 
 	@Override
@@ -181,6 +172,8 @@ public class OrderContextService implements IOrderContextService {
 		payService.refreshStatus(extransno, false);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
+			order.setStatusCode(OrderStatusDesc.PAYFAIL_CODE);
+			order.setStatusName(OrderStatusDesc.PAYFAIL.getName());
 			traces.add(createOrderTrace(order, note));
 		}
 		//刷新订单商品的状态
@@ -211,6 +204,8 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.ACCEPT);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
+			order.setStatusCode(OrderStatusDesc.ACCEPT_CODE);
+			order.setStatusName(OrderStatusDesc.ACCEPT.getName());
 			traces.add(createOrderTrace(order, "卖家接受订单，商品即将出库。"));
 		}
 		orderTraceService.save(traces);
@@ -234,6 +229,8 @@ public class OrderContextService implements IOrderContextService {
 		orderLogisticService.save(logistic);
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.DELIVERED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		order.setStatusCode(OrderStatusDesc.DELIVERED_CODE);
+		order.setStatusName(OrderStatusDesc.DELIVERED.getName());
 		traces.add(createOrderTrace(order, "卖家已发货"));
 		orderTraceService.save(traces);
 		//刷新订单商品的状态
@@ -254,6 +251,8 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.RECEIVED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
+			order.setStatusCode(OrderStatusDesc.RECEIVED_CODE);
+			order.setStatusName(OrderStatusDesc.RECEIVED.getName());
 			traces.add(createOrderTrace(order, note));
 		}
 		traces.forEach(trace->trace.setNote(note));
@@ -278,6 +277,8 @@ public class OrderContextService implements IOrderContextService {
 		orderService.refreshStatus(oids, OrderStatusDesc.CLOSED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		for (Orders order : orders) {
+			order.setStatusCode(OrderStatusDesc.CLOSED_CODE);
+			order.setStatusName(OrderStatusDesc.CLOSED.getName());
 			traces.add(createOrderTrace(order, reason));
 		}
 		//set note reason
@@ -291,8 +292,10 @@ public class OrderContextService implements IOrderContextService {
 			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
 				if(temp.contains(order.getCouponID())) continue;
 				temp.add(order.getCouponID());
-				couponStrategyResolver.resolve(order.getCouponType())
+				if(!orderService.shareCoupon(order.getCouponID())){
+					couponStrategyResolver.resolve(order.getCouponType())
 								.unlock(order.getUID(), order.getCouponID());
+				}
 			}
 		}
 		return true;
@@ -311,6 +314,8 @@ public class OrderContextService implements IOrderContextService {
 		
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
 		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		order.setStatusCode(OrderStatusDesc.REMOVED_CODE);
+		order.setStatusName(OrderStatusDesc.REMOVED.getName());
 		traces.add(createOrderTrace(order, "买家移除订单。"));
 		//set note reason
 		orderTraceService.save(traces);

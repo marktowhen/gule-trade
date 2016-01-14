@@ -143,6 +143,7 @@
 		inner join order_goods og on r.ogid = og.id 
 		inner join orders o on r.oid = o.id 
 		left join goods_img img on og.gid = img.gid 
+		order by r.addtime desc
 	</select>
 	
 	<select id="selectBefore" resultMap="RefundEntityResultMap">

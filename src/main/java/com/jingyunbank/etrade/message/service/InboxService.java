@@ -77,7 +77,7 @@ public class InboxService implements IInboxService {
 		MessageEntity e = new MessageEntity();
 		e.setID(id);
 		e.setReceiveUID(receiveUID);
-		e.setStatus(STATUS_DEL);
+		e.setStatus(Message.STATUS_DEL);
 		try {
 			messageDao.updateStatus(e);
 		} catch (Exception e1) {
@@ -91,7 +91,7 @@ public class InboxService implements IInboxService {
 		MessageEntity e = new MessageEntity();
 		e.setIDs(ids);
 		e.setReceiveUID(receiveUID);
-		e.setStatus(STATUS_DEL);
+		e.setStatus(Message.STATUS_DEL);
 		try {
 			messageDao.updateStatus(e);
 		} catch (Exception e1) {
@@ -113,7 +113,7 @@ public class InboxService implements IInboxService {
 	public List<Message> list(String uid, Range range) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(uid);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
 					.stream().map( entityResul->{
 						return copyEntityToBo(entityResul, new Message());
@@ -130,7 +130,7 @@ public class InboxService implements IInboxService {
 	public int count(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return messageDao.count(entity);
 	}
 
@@ -140,7 +140,7 @@ public class InboxService implements IInboxService {
 		entity.setReceiveUID(uid);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(false);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
 					.stream().map( entityResul->{
 						return copyEntityToBo(entityResul, new Message());
@@ -150,7 +150,7 @@ public class InboxService implements IInboxService {
 	public int countUnread(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(false);
 		return messageDao.count(entity);
@@ -160,7 +160,7 @@ public class InboxService implements IInboxService {
 	public int countRead(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(true);
 		return messageDao.count(entity);
@@ -172,7 +172,7 @@ public class InboxService implements IInboxService {
 		entity.setReceiveUID(receiveUID);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(true);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
 					.stream().map( entityResul->{
 						return copyEntityToBo(entityResul, new Message());

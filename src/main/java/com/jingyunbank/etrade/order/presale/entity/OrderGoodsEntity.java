@@ -31,6 +31,7 @@ public class OrderGoodsEntity implements Serializable{
 	private String MID;
 	private String mname;
 	private String imgpath;
+	private BigDecimal postage;//用于邮费退换
 	
 	public String getID() {
 		return ID;
@@ -134,5 +135,11 @@ public class OrderGoodsEntity implements Serializable{
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
 	}
 }
