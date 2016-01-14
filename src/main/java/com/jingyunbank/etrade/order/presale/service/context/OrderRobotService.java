@@ -64,7 +64,7 @@ public class OrderRobotService implements IOrderRobotService {
 		List<Orders> unpaid = orderService.listBefore(Date.from(deadline), OrderStatusDesc.DELIVERED);
 		List<String> oids = unpaid.stream().map(x->x.getID()).collect(Collectors.toList());
 		System.out.println("待收货订单："+oids);
-		if(oids.size() > 0) orderContextService.cancel(oids, "超时自动确认收货");
+		if(oids.size() > 0) orderContextService.received(oids, "超时自动确认收货");
 		System.out.println("===================未收货订单超时关闭任务完成======================");
 	}
 

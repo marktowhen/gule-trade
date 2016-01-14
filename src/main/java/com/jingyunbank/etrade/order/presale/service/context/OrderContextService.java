@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.util.UniqueSequence;
-import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
@@ -30,7 +29,6 @@ import com.jingyunbank.etrade.api.order.presale.service.IOrderLogisticService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderTraceService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
-import com.jingyunbank.etrade.api.order.presale.service.context.IOrderEventService;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
@@ -51,55 +49,45 @@ public class OrderContextService implements IOrderContextService {
 	@Autowired
 	private IPayService payService;
 	@Autowired
-	private ICartService cartService;
-	@Autowired
 	private IOrderLogisticService orderLogisticService;
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
-	@Autowired
-	private IOrderEventService orderEventService;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
-	public void save(List<Orders> orders) throws DataSavingException {
-		try{
-			//如果订单支付金额为0则将状态设为已支付
-			refreshOrderStatusBasedOnOrderPayout(orders);
-			//保存订单信息
-			orderService.save(orders);
-			//构建详情跟追踪状态
-			List<OrderGoods> goods = new ArrayList<OrderGoods>();
-			List<OrderTrace> traces = new ArrayList<OrderTrace>();
-			List<OrderPayment> payments = new ArrayList<OrderPayment>();
-			for (Orders order : orders) {
-				goods.addAll(order.getGoods());
-				traces.add(createOrderTrace(order, "用户创建订单。"));
-				createPayment(order, payments);
-			}
-			//保存订单的详情（每笔订单的商品信息）
-			orderGoodsService.save(goods);
-			//保存订单状态追踪信息
-			orderTraceService.save(traces);
-			//保存订单的支付信息
-			payService.save(payments);
-			//将下订单的商品从购物车中删除掉
-			cartService.remove(goods.stream().map(x->x.getGID()).collect(Collectors.toList()), orders.get(0).getUID());
-			//冻结优惠卡
-			List<String> temp = new ArrayList<String>();
-			for (Orders order : orders) {
-				if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
-					if(temp.contains(order.getCouponID())) continue;
-					temp.add(order.getCouponID());
+	public void save(List<Orders> orders) throws DataSavingException, DataRefreshingException {
+		//如果订单支付金额为0则将状态设为已支付
+		refreshOrderStatusBasedOnOrderPayout(orders);
+		//保存订单信息
+		orderService.save(orders);
+		//构建详情跟追踪状态
+		List<OrderGoods> goods = new ArrayList<OrderGoods>();
+		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		List<OrderPayment> payments = new ArrayList<OrderPayment>();
+		for (Orders order : orders) {
+			goods.addAll(order.getGoods());
+			traces.add(createOrderTrace(order, "用户创建订单。"));
+			createPayment(order, payments);
+		}
+		//保存订单的详情（每笔订单的商品信息）
+		orderGoodsService.save(goods);
+		//保存订单状态追踪信息
+		orderTraceService.save(traces);
+		//保存订单的支付信息
+		payService.save(payments);
+		//冻结优惠卡
+		List<String> temp = new ArrayList<String>();
+		for (Orders order : orders) {
+			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
+				if(temp.contains(order.getCouponID())) continue;
+				temp.add(order.getCouponID());
+				try {
 					couponStrategyResolver.resolve(order.getCouponType())
 									.lock(order.getUID(), order.getCouponID());
+				} catch (IllegalArgumentException | DataRefreshingException e) {
+					throw new DataRefreshingException(e);
 				}
 			}
-			if(orders.stream().anyMatch(x-> OrderStatusDesc.PAID_CODE.equals(x.getStatusCode()))){
-				orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
-			}
-
-		}catch(Exception e){
-			throw new DataSavingException(e);
 		}
 	}
 
@@ -143,9 +131,6 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAID);
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
-		
-		orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
-		
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -23,13 +24,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.ReferenceType;
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderEventService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
@@ -51,6 +55,10 @@ public class OrderEventService implements IOrderEventService {
 	private IGoodsOperationService goodsOperationService;
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
+	@Autowired
+	private ICartService cartService;
+	@Autowired
+	private IOrderService orderService;
 	
 	@Override
 	public void broadcast(List<Orders> event, String queue){
@@ -66,6 +74,16 @@ public class OrderEventService implements IOrderEventService {
 			}
 		});
 	}
+	
+	@Override
+	public void broadcast(String extransno, String status) {
+		List<Orders> orders = orderService.listByExtransno(extransno);
+		if(orders.size() == 0){
+			return;
+		}
+		broadcast(orders, status);
+	}
+	
 	//计算积分
 	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
 	public void calculatePoint(String content){
@@ -140,6 +158,22 @@ public class OrderEventService implements IOrderEventService {
 					logger.error("支付成功后异步消费优惠卡券失败：" + e.toString());
 				}
 			}
+		}
+	}
+	
+	//删除购物车
+	@JmsListener(destination=MQ_ORDER_QUEUE_SAVE)
+	public void ordersaved(String content){
+		List<Orders> orders = convert(content);
+		List<OrderGoods> goods = new ArrayList<OrderGoods>();
+		for (Orders order : orders) {
+			goods.addAll(order.getGoods());
+		}
+		//将下订单的商品从购物车中删除掉
+		try {
+			cartService.remove(goods.stream().map(x->x.getGID()).collect(Collectors.toList()), orders.get(0).getUID());
+		} catch (DataRemovingException e) {
+			logger.error("删除用户购物车中商品时失败：" + e.toString());
 		}
 	}
 
