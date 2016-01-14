@@ -32,6 +32,7 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.CashCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.ICashCouponService;
+import com.jingyunbank.etrade.vip.coupon.bean.CashCouponShowVO;
 import com.jingyunbank.etrade.vip.coupon.bean.CashCouponVO;
 
 @RestController
@@ -55,7 +56,7 @@ public class CashCouponController {
 	 * 2016年1月12日 qxs
 	 */
 	@RequestMapping(value = "/{accessKey}/{amount}" ,method= RequestMethod.POST)
-	public Result<List<CashCouponVO>> addMuti(HttpServletRequest request,
+	public Result<List<CashCouponShowVO>> addMuti(HttpServletRequest request,
 			@PathVariable String accessKey,
 			@PathVariable int amount,
 			@RequestParam(value="value") BigDecimal value,
@@ -79,7 +80,7 @@ public class CashCouponController {
 		bo.setStart(new Date());
 		bo.setEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-02-29 23:59:59"));
 		return Result.ok(cashCouponService.saveMuti(bo, new Users(), amount).stream().map( result ->{
-	 		CashCouponVO vo = new CashCouponVO();
+			CashCouponShowVO vo = new CashCouponShowVO();
 			BeanUtils.copyProperties(result, vo);
 	 		return vo;
 	 	}).collect(Collectors.toList()));
