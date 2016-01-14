@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.area.bean.CountryVO;
 
 @RestController
-@RequestMapping("/api/country")
+@RequestMapping("/api/area/country")
 public class CountryController {
 	
 	@Autowired
