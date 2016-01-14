@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
@@ -53,6 +54,7 @@ public class CashCouponService implements ICashCouponService{
 	}
 	
 	@Override
+	@Transactional
 	public List<CashCoupon> saveMuti(CashCoupon cashCoupon, Users manager, int amount) throws DataSavingException {
 		
 		try {

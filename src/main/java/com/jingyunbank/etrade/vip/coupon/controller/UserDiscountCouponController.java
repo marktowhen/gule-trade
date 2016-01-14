@@ -6,8 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +22,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
+import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.bo.UserDiscountCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
@@ -204,6 +208,15 @@ public class UserDiscountCouponController {
 			return valid;
 		}
 		if(userDiscountCouponService.active(code, uid)){
+			if(!StringUtils.isEmpty(valid.getBody().getRemark()) && valid.getBody().getRemark().indexOf(BaseCoupon.ACCESS_ID_JYJR)>-1 ){
+				
+				//通知景云 更改使用状态
+				PostMethod postMethod = new PostMethod(BaseCoupon.ACTIVE_COUNPON_NOTICE_URL.replace(":id", valid.getBody().getID()));
+				HttpClient client = new HttpClient();
+				client.getHttpConnectionManager().getParams()
+				.setConnectionTimeout(50000);// 设置连接时间
+				client.executeMethod(postMethod);
+			}
 			return Result.ok();
 		}
 		return Result.fail("系统繁忙,请稍后再试");
