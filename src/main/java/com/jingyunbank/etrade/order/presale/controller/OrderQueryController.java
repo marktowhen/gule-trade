@@ -70,18 +70,16 @@ public class OrderQueryController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/orders/count/{uid}", method=RequestMethod.GET)
+	@RequestMapping(value="/api/orders/user/count", method=RequestMethod.GET)
 	@AuthBeforeOperation
 	public Result<Integer> getAmount(
-			@PathVariable("uid") String uid, 
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
-		if(!loginuid.equalsIgnoreCase(uid))return Result.fail("无权访问！");
 		
-		return Result.ok(orderService.count(uid, null, statuscode, keywords, fromdate, null));
+		return Result.ok(orderService.count(loginuid, null, statuscode, keywords, fromdate, null));
 	}
 	
 	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
