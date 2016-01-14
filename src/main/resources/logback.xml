@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_HOME" value="D://" />
+    <property name="LOG_HOME" value="logs/" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 	    <encoder>
 	      <pattern>%-5level %logger{50} %d{yyyy-MM-dd HH:mm:ss} %n ---> %msg%n</pattern>
@@ -40,7 +40,21 @@
 		</filter>   
     </appender> 
     
-    
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+        <File>${LOG_HOME}error.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <FileNamePattern>${LOG_HOME}/myApp.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>  
+        <encoder>  
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>  
+        </encoder>  
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">   
+		      <level>ERROR</level>   
+		      <onMatch>ACCEPT</onMatch>   
+		      <onMismatch>DENY</onMismatch>   
+		</filter>   
+    </appender>  
     
 
 
@@ -55,6 +69,10 @@
        <appender-ref ref="debug" />
     </logger> 
     
+	<logger name="com.jingyunbank.etrade" additivity="false">
+        <level value="ERROR"/>
+       <appender-ref ref="error" />
+    </logger> 
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
