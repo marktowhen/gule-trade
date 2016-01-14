@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -100,8 +101,11 @@ public class OrderEventService implements IOrderEventService {
 	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
 	public void paysuccnotify(String content){
 		List<Orders> orders = convert(content);
+		if(Objects.isNull(orders) || orders.size() == 0) return;
 		
     	Optional<Users> ucandidate = userService.single(orders.get(0).getUID());
+    	if(!ucandidate.isPresent()) return;
+    	
     	syncNotifyService.forEach(service->{
     		try {
     			com.jingyunbank.etrade.api.message.bo.Message imsg = new com.jingyunbank.etrade.api.message.bo.Message();
@@ -114,7 +118,9 @@ public class OrderEventService implements IOrderEventService {
     			imsg.setStatus(Message.STATUS_SUC);
 				service.inform(imsg);
 			} catch (Exception e) {
-				logger.error("发送支付成功提醒失败：" + e.toString());
+				logger.error("发送支付成功提醒失败：" 
+						+ String.join(",", orders.stream().map(o->o.getID()).collect(Collectors.toList())) 
+						+ e.toString());
 			}
     	});
 	}
