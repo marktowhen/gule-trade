@@ -16,6 +16,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +33,7 @@ import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderEventService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
 import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 
 @Service("orderEventService")
@@ -47,6 +49,8 @@ public class OrderEventService implements IOrderEventService {
 	private IPointContextService pointContextService;
 	@Autowired
 	private IGoodsOperationService goodsOperationService;
+	@Autowired
+	private ICouponStrategyResolver couponStrategyResolver;
 	
 	@Override
 	public void broadcast(List<Orders> event, String queue){
@@ -114,6 +118,27 @@ public class OrderEventService implements IOrderEventService {
 				goodsOperationService.refreshGoodsVolume(uid, uname, gs.getGID(), gs.getCount());
 			} catch (DataSavingException | DataRefreshingException e) {
 				logger.error("更新库存失败：" + e.toString());
+			}
+		}
+	}
+	
+	//消费卡券
+	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
+	public void payconsumecoupon(String content){
+		List<Orders> orders = convert(content);
+		
+		//更新优惠卡券状态
+		List<String> temp = new ArrayList<String>();
+		for (Orders order : orders) {
+			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
+				if(temp.contains(order.getCouponID())) continue;
+				temp.add(order.getCouponID());
+				try {
+					couponStrategyResolver.resolve(order.getCouponType())
+									.consume(order.getUID(), order.getCouponID());
+				} catch (IllegalArgumentException | DataRefreshingException e) {
+					logger.error("支付成功后异步消费优惠卡券失败：" + e.toString());
+				}
 			}
 		}
 	}

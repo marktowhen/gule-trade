@@ -143,16 +143,6 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAID);
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
-		//更新优惠卡券状态
-		List<String> temp = new ArrayList<String>();
-		for (Orders order : orders) {
-			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
-				if(temp.contains(order.getCouponID())) continue;
-				temp.add(order.getCouponID());
-				couponStrategyResolver.resolve(order.getCouponType())
-								.consume(order.getUID(), order.getCouponID());
-			}
-		}
 		
 		orderEventService.broadcast(orders, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
 		
