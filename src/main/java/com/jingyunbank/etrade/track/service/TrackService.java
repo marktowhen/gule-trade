@@ -338,10 +338,16 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		if(uid == null || "".equals(uid)){
 			
 		}else{
-			//查询品牌字符串
-		    bidstr = trackDao.selectRecommendBidstr(params).get("bidstr");
-			//查询类别字符串
-		    tidstr = trackDao.selectRecommendTidstr(params).get("tidstr");
+			Map<String, String> bidmap = trackDao.selectRecommendBidstr(params);
+			if(bidmap!=null){
+				//查询品牌字符串
+			    bidstr = bidmap.get("bidstr");
+			}
+		    Map<String, String> tidmap = trackDao.selectRecommendTidstr(params);
+			if(tidmap!=null){
+				//查询类别字符串
+			    tidstr = tidmap.get("tidstr");
+			}
 		}
 		List<String> bids = new ArrayList<String>();
 		String tmpbidstr[] = bidstr.split(",");
@@ -350,7 +356,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		String tmptidstr[] = tidstr.split(",");
 		tids = Arrays.asList(tmptidstr);
 		//查询相关产品
-		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bids,tids,from,to,uid);
+		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bidstr,tidstr,bids,tids,from,to,uid);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				RecommendGoods bo = new RecommendGoods();

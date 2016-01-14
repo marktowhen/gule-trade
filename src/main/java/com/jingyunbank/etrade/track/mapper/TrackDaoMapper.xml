@@ -306,16 +306,18 @@
 			on g.id = d.gid
 			LEFT JOIN goods_img i ON g.id=i.gid
 			where 1=1 
-			<if test="uid !='' and uid !=null"> 
+			<if test="bidstr !='' and bidstr !=null"> 
 				and g.bid in
 			  <foreach collection="bids" item="bid" open="(" separator="," close=")">
 				#{bid}
 			  </foreach>
+			</if>
+			<if test="tidstr !='' and tidstr !=null"> 
 			  	and g.tid in
 			   <foreach collection="tids" item="tid" open="(" separator="," close=")">
 				#{tid}
 			   </foreach>
-		   </if>
+		    </if>
 		  LIMIT #{from} , #{to}
 	</select>
 	<!-- 查询推荐商品 -->
