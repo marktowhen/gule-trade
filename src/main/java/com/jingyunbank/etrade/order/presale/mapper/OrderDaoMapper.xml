@@ -141,7 +141,7 @@
 	<select id="countCouponOrder" parameterType="String" resultType="int">
 		select count(1)
 		from orders
-		where coupon_id = #{couponid}
+		where coupon_id = #{couponid} and status_code = 'NEW'
 	</select>
 	
 	
