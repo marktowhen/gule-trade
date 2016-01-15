@@ -41,7 +41,10 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 		DiscountCoupon coupon = r.getBody().getDiscountCoupon();
 		BigDecimal discount = coupon.getDiscount();
 		BigDecimal discountprice = originprice.multiply(discount).setScale(2, RoundingMode.HALF_UP);
-		discountprice = discountprice.compareTo(coupon.getValue())<0?discountprice: coupon.getValue();
+		//若折扣有上限
+		if(coupon.getValue()!=null && coupon.getValue().compareTo(new BigDecimal("0"))>0){
+			discountprice = discountprice.compareTo(coupon.getValue())<0?discountprice: coupon.getValue();
+		}
 		return Result.ok(originprice.compareTo(coupon.getThreshhold()) >= 0? originprice.subtract(discountprice): originprice);
 	}
 

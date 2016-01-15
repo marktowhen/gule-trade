@@ -1,8 +1,8 @@
 package com.jingyunbank.etrade.vip.coupon.controller;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,9 +77,7 @@ public class CashCouponController {
 		bo.setValue(value);
 		bo.setThreshhold(threshhold);
 		bo.setStart(new Date());
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.YEAR, 100);
-		bo.setEnd(c.getTime());
+		bo.setEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-02-29 23:59:59"));
 		return Result.ok(cashCouponService.saveMuti(bo, new Users(), amount).stream().map( result ->{
 	 		CashCouponVO vo = new CashCouponVO();
 			BeanUtils.copyProperties(result, vo);
@@ -107,9 +105,7 @@ public class CashCouponController {
 						.collect(Collectors.joining(" ; ")));
 		}
 		vo.setStart(new Date());
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.YEAR, 100);
-		vo.setEnd(c.getTime());
+		vo.setEnd(null);
 		if(amount<=0){
 			return Result.fail("请设置正确数量");
 		}

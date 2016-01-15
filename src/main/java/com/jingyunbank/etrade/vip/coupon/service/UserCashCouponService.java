@@ -1,6 +1,8 @@
 package com.jingyunbank.etrade.vip.coupon.service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,14 +127,14 @@ public class UserCashCouponService  implements IUserCashCouponService {
 		if(cashCoupon.isDel()){
 			return  Result.fail("该券已作废,请选择其他优惠券");
 		}
-		
-//		Date nowDate = new Date();
-//		if(cashCoupon.getStart().after(nowDate)){
-//			return Result.fail("未到使用时间");
-//		}
-//		if(cashCoupon.getEnd().before(nowDate)){
-//			return Result.fail("已失效");
-//		}
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date nowDate = new Date();
+		if(cashCoupon.getStart()!=null && cashCoupon.getStart().after(nowDate)){
+			return Result.fail("请在"+format.format(nowDate)+"之后使用");
+		}
+		if(cashCoupon.getEnd()!=null && cashCoupon.getEnd().before(nowDate)){
+			return Result.fail("该券已过期,请使用其他优惠券");
+		}
 		if(orderPrice==null || orderPrice.compareTo(cashCoupon.getThreshhold())==-1){
 			return Result.fail("未到使用门槛:￥"+cashCoupon.getThreshhold().doubleValue());
 		}

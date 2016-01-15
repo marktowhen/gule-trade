@@ -40,7 +40,9 @@ public class CashCouponService implements ICashCouponService{
 				cashCoupon.setCardNum(getNewCardNum(cashCoupon.getValue()));
 				cashCoupon.setCode(new String(new RndBuilder().length(10).hasletter(true).next()));
 				if(cashCouponDao.insert(getEntityFromBo(cashCoupon))){
-					return cashCoupon;
+					CashCoupon result = new CashCoupon();
+					BeanUtils.copyProperties(cashCoupon, result);
+					return result;
 				}
 			}
 			
@@ -92,9 +94,9 @@ public class CashCouponService implements ICashCouponService{
 		if(entity.isLocked()){
 			return Result.fail("该券未解锁,请联系客服或输入其他充值码");
 		}
-//		if(entity.getEnd().before(new Date())){
-//			return Result.fail("已过期");
-//		}
+		if(entity.getEnd()!=null && entity.getEnd().before(new Date())){
+			return Result.fail("该券已过期,请输入其他充值码");
+		}
 		return Result.ok(getBofromEntity(entity));
 	}
 

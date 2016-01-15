@@ -1,8 +1,8 @@
 package com.jingyunbank.etrade.vip.coupon.controller;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class DiscountCouponController {
 	private IDiscountCouponService discountCouponService;
 	
 	/**
-	 * 接口生成抵用券 有效期6个月
+	 * 接口生成抵用券 有效期到2016-02-29
 	 * @param request
 	 * @param accessKey
 	 * @param amount 数量
@@ -73,13 +73,11 @@ public class DiscountCouponController {
 		DiscountCoupon bo = new DiscountCoupon();
 		bo.setRemark(BaseCoupon.ACCESS_ID_JYJR+" "+reason);
 		bo.setLocked(false);
-		bo.setValue(new BigDecimal("50"));
+		bo.setValue(new BigDecimal("0"));
 		bo.setDiscount(new BigDecimal("10").subtract(discount).divide(new BigDecimal("10")));
 		bo.setThreshhold(threshhold);
 		bo.setStart(new Date());
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.MONTH, 6);
-		bo.setEnd(c.getTime());
+		bo.setEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-02-29 23:59:59"));
 		return Result.ok(discountCouponService.saveMuti(bo, new Users(), amount).stream().map( result ->{
 			DiscountCouponShowVO vo = new DiscountCouponShowVO();
 			BeanUtils.copyProperties(result, vo);

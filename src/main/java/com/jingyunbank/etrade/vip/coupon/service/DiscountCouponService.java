@@ -41,7 +41,9 @@ public class DiscountCouponService implements IDiscountCouponService{
 				discountCoupon.setCardNum(getNewCardNum(discountCoupon.getValue()));
 				discountCoupon.setCode(new String(new RndBuilder().length(10).hasletter(true).next()));
 				if(discountCouponDao.insert(getEntityFromBo(discountCoupon))){
-					return discountCoupon;
+					DiscountCoupon result = new DiscountCoupon();
+					BeanUtils.copyProperties(discountCoupon, result);
+					return result;
 				}
 			}
 		} catch (Exception e) {
