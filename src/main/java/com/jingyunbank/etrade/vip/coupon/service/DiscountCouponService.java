@@ -22,7 +22,6 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.vip.coupon.bo.DiscountCoupon;
-import com.jingyunbank.etrade.api.vip.coupon.service.ICashCouponService;
 import com.jingyunbank.etrade.api.vip.coupon.service.IDiscountCouponService;
 import com.jingyunbank.etrade.vip.coupon.dao.DiscountCouponDao;
 import com.jingyunbank.etrade.vip.coupon.entity.DiscountCouponEntity;
@@ -207,7 +206,7 @@ public class DiscountCouponService implements IDiscountCouponService{
 		cardNum.append(format.format(new Date()));
 		String lastCardNum = getLastCardNum(cardNum.toString());
 		if(StringUtils.isEmpty(lastCardNum)){
-			return ICashCouponService.CARD_NUM_SUFFIX_START;
+			return DiscountCoupon.CARD_NUM_SUFFIX_START;
 		}
 		//数据库中的最大的序号
 		String index = lastCardNum.substring(cardNum.toString().length());
@@ -238,9 +237,9 @@ public class DiscountCouponService implements IDiscountCouponService{
 	 */
 	private String getCardNumPrifix(BigDecimal value) throws Exception{
 		if(new BigDecimal("50").compareTo(value)==0){
-			return IDiscountCouponService.CARD_NUM_PRIFIX_50;
+			return DiscountCoupon.CARD_NUM_PRIFIX_50;
 		}else{
-			return (ICashCouponService.CARD_NUM_PRIFIX_OTHER);
+			return (DiscountCoupon.CARD_NUM_PRIFIX_OTHER);
 		}
 		
 	}
@@ -255,7 +254,7 @@ public class DiscountCouponService implements IDiscountCouponService{
 			condition.setNeedLocked(true);
 			condition.setLocked(locked);
 		}
-		return discountCouponDao.selectList(condition, range.getFrom(), range.getTo()-range.getFrom())
+		return discountCouponDao.selectList(condition,null,null, range.getFrom(), range.getTo()-range.getFrom())
 				.stream().map(entity->{
 						return (getBoFromEntity(entity));
 				}).collect(Collectors.toList());
@@ -270,12 +269,41 @@ public class DiscountCouponService implements IDiscountCouponService{
 			condition.setNeedLocked(true);
 			condition.setLocked(locked);
 		}
-		return discountCouponDao.count(condition);
+		return discountCouponDao.count(condition,null,null);
 	}
 
 	@Override
 	public boolean unlock(String[] ids) {
 		return discountCouponDao.updateLocked(ids, false);
+	}
+
+	@Override
+	public List<DiscountCoupon> list(String cardNum, String cardNumStart,
+			String cardNumEnd, BigDecimal value, Boolean locked, Range range) {
+		DiscountCouponEntity condition = new DiscountCouponEntity();
+		condition.setCardNum(cardNum);
+		condition.setValue(value);
+		if(locked!=null){
+			condition.setNeedLocked(true);
+			condition.setLocked(locked);
+		}
+		return discountCouponDao.selectList(condition,cardNumStart,cardNumEnd, range.getFrom(), range.getTo()-range.getFrom())
+				.stream().map(entity->{
+						return (getBoFromEntity(entity));
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public int count(String cardNum, String cardNumStart, String cardNumEnd,
+			BigDecimal value, Boolean locked) {
+		DiscountCouponEntity condition = new DiscountCouponEntity();
+		condition.setCardNum(cardNum);
+		condition.setValue(value);
+		if(locked!=null){
+			condition.setNeedLocked(true);
+			condition.setLocked(locked);
+		}
+		return discountCouponDao.count(condition,cardNumStart,cardNumEnd);
 	}
 
 	

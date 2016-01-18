@@ -214,7 +214,7 @@ public class CashCouponService implements ICashCouponService{
 		cardNum.append(format.format(new Date()));
 		String lastCardNum = getLastCardNum(cardNum.toString());
 		if(StringUtils.isEmpty(lastCardNum)){
-			return ICashCouponService.CARD_NUM_SUFFIX_START;
+			return CashCoupon.CARD_NUM_SUFFIX_START;
 		}
 		//数据库中的最大的序号
 		String index = lastCardNum.substring(cardNum.toString().length());
@@ -245,13 +245,13 @@ public class CashCouponService implements ICashCouponService{
 	 */
 	private String getCardNumPrifix(BigDecimal value) throws Exception{
 		if(new BigDecimal("1000").compareTo(value)==0){
-			return (ICashCouponService.CARD_NUM_PRIFIX_1000);
+			return (CashCoupon.CARD_NUM_PRIFIX_1000);
 		}else if(new BigDecimal("500").compareTo(value)==0){
-			return (ICashCouponService.CARD_NUM_PRIFIX_500);
+			return (CashCoupon.CARD_NUM_PRIFIX_500);
 		}else if(new BigDecimal("200").compareTo(value)==0){
-			return (ICashCouponService.CARD_NUM_PRIFIX_200);
+			return (CashCoupon.CARD_NUM_PRIFIX_200);
 		}else{
-			return (ICashCouponService.CARD_NUM_PRIFIX_OTHER);
+			return (CashCoupon.CARD_NUM_PRIFIX_OTHER);
 		}
 	}
 
@@ -265,7 +265,7 @@ public class CashCouponService implements ICashCouponService{
 			condition.setNeedLocked(true);
 			condition.setLocked(locked);
 		}
-		return cashCouponDao.selectList(condition, range.getFrom(), range.getTo()-range.getFrom())
+		return cashCouponDao.selectList(condition,null,null, range.getFrom(), range.getTo()-range.getFrom())
 				.stream().map(entity->{
 						return (getBofromEntity(entity));
 				}).collect(Collectors.toList());
@@ -280,12 +280,41 @@ public class CashCouponService implements ICashCouponService{
 			condition.setNeedLocked(true);
 			condition.setLocked(locked);
 		}
-		return cashCouponDao.count(condition);
+		return cashCouponDao.count(condition, null, null);
 	}
 
 	@Override
 	public boolean unlock(String[] ids) {
 		return cashCouponDao.updateLocked(ids, false);
+	}
+
+	@Override
+	public List<CashCoupon> list(String cardNum, String cardNumStart,
+			String cardNumEnd, BigDecimal value, Boolean locked, Range range) {
+		CashCouponEntity condition = new CashCouponEntity();
+		condition.setCardNum(cardNum);
+		condition.setValue(value);
+		if(locked!=null){
+			condition.setNeedLocked(true);
+			condition.setLocked(locked);
+		}
+		return cashCouponDao.selectList(condition,cardNumStart,cardNumEnd , range.getFrom(), range.getTo()-range.getFrom())
+				.stream().map(entity->{
+						return (getBofromEntity(entity));
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public int count(String cardNum, String cardNumStart, String cardNumEnd,
+			BigDecimal value, Boolean locked) {
+		CashCouponEntity condition = new CashCouponEntity();
+		condition.setCardNum(cardNum);
+		condition.setValue(value);
+		if(locked!=null){
+			condition.setNeedLocked(true);
+			condition.setLocked(locked);
+		}
+		return cashCouponDao.count(condition,cardNumStart,cardNumEnd);
 	}
 	
 }

@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.vip.coupon.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 所有优惠方式的父类。
@@ -14,10 +13,6 @@ public class BaseCouponEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = -4209769546160818768L;
 	
-	private Date addtimeStart;
-	private Date addtiemEnd;
-	
-	private boolean validTime;//true ->查询有效期内 false不起效
 	private boolean needUsed;//查询时是否需要加上used这个字段的条件
 	private boolean needDelete;//查询时是否需要加上Delete这个字段的条件
 	private boolean needLocked;//查询时是否需要加上locked这个字段的条件
@@ -46,12 +41,6 @@ public class BaseCouponEntity implements Serializable{
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
-	public boolean isValidTime() {
-		return validTime;
-	}
-	public void setValidTime(boolean validTime) {
-		this.validTime = validTime;
-	}
 	public boolean isNeedUsed() {
 		return needUsed;
 	}
@@ -63,18 +52,6 @@ public class BaseCouponEntity implements Serializable{
 	}
 	public void setNeedDelete(boolean needDelete) {
 		this.needDelete = needDelete;
-	}
-	public Date getAddtimeStart() {
-		return addtimeStart;
-	}
-	public void setAddtimeStart(Date addtimeStart) {
-		this.addtimeStart = addtimeStart;
-	}
-	public Date getAddtiemEnd() {
-		return addtiemEnd;
-	}
-	public void setAddtiemEnd(Date addtiemEnd) {
-		this.addtiemEnd = addtiemEnd;
 	}
 
 	public boolean isDel() {

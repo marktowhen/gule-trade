@@ -80,6 +80,8 @@ public interface DiscountCouponDao {
 	 */
 	public List<DiscountCouponEntity> selectList(
 			@Param(value="entity") DiscountCouponEntity entity,
+			@Param(value="cardNumStart") String cardNumStart, 
+			@Param(value="cardNumEnd") String cardNumEnd, 
 			@Param(value="offset") long offset, 
 			@Param(value="size") long size); 
 
@@ -89,7 +91,9 @@ public interface DiscountCouponDao {
 	 * @return
 	 * 2015年12月29日 qxs
 	 */
-	public int count(@Param(value="entity") DiscountCouponEntity entity);
+	public int count(@Param(value="entity") DiscountCouponEntity entity,
+			@Param(value="cardNumStart") String cardNumStart, 
+			@Param(value="cardNumEnd") String cardNumEnd );
 
 	/**
 	 * 修改锁定状态
