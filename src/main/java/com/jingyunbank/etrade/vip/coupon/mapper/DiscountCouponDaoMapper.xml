@@ -41,39 +41,24 @@
 			<include refid="column_list"></include>
 		from 	discount_coupon 
 		<where>
-			<include refid="base_condition"></include>
+			<include refid="selectList_condition"></include>
 		</where>
-		order by addtime desc
+		order by card_num 
 		limit #{offset,javaType=LONG},#{size,javaType=LONG}
 	</select>
 	
 	<select id="count" resultType="int" >
 		select count(1) from discount_coupon 
 		<where>
-			<include refid="base_condition"></include>
+			<include refid="selectList_condition"></include>
 		</where>
 	</select>
-	<sql id="base_condition">
-		<if test="entity.ID!=null and entity.ID!=''" >
-				and id =#{entity.ID}
-		</if>
-		<if test="entity.code!=null and entity.code!=''" >
-			and code =#{entity.code}
-		</if>
+	<sql id="selectList_condition">
 		<if test="entity.discount!=null and entity.discount!=''" >
 			and discount =#{entity.discount}
 		</if>
 		<if test="entity.value!=null and entity.value!=''" >
 			and value =#{entity.value}
-		</if>
-		<if test="entity.addtimeStart!=null">
-			and addtime &gt;=entity.addtimeStart
-		</if>
-		<if test="entity.addtiemEnd!=null">
-			and addtime &lt;=entity.addtiemEnd
-		</if>
-		<if test="entity.validTime">
-			and now() between start and end
 		</if>
 		<if test="entity.needUsed">
 			and used = #{entity.used}
@@ -86,6 +71,12 @@
 		</if>
 		<if test="entity.cardNum!=null and entity.cardNum!=''" >
 			and card_num like CONCAT('%',#{entity.cardNum},'%')
+		</if>
+		<if test="cardNumStart!=null and cardNumStart!=''" >
+			and card_num &gt;=#{cardNumStart}
+		</if>
+		<if test="cardNumEnd!=null and cardNumEnd!=''" >
+			and card_num &lt;=#{cardNumEnd}
 		</if>
 	</sql>
 	<!-- 修改删除状态 -->

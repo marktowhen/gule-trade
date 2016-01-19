@@ -165,12 +165,14 @@ public class CashCouponController {
 			@PathVariable long from,
 			@PathVariable long size,
 			@RequestParam(required=false) String cardNum,
+			@RequestParam(required=false) String cardNumStart,
+			@RequestParam(required=false) String cardNumEnd,
 			@RequestParam(required=false) BigDecimal value,
 			@RequestParam(required=false) Boolean locked){
 		Range range =  new Range();
 		range.setFrom(from);
 		range.setTo(from + size);
-		return Result.ok(cashCouponService.list(cardNum, value,locked , range)
+		return Result.ok(cashCouponService.list(cardNum ,cardNumStart,cardNumEnd, value,locked , range)
 		 	.stream().map( bo ->{
 		 		CashCouponVO vo = new CashCouponVO();
 				BeanUtils.copyProperties(bo, vo, "code");
@@ -188,9 +190,11 @@ public class CashCouponController {
 	@RequestMapping(value="/amount", method=RequestMethod.GET)
 	public Result<Integer> getAmount(
 			@RequestParam(required=false) String cardNum,
+			@RequestParam(required=false) String cardNumStart,
+			@RequestParam(required=false) String cardNumEnd,
 			@RequestParam(required=false) BigDecimal value,
 			@RequestParam(required=false) Boolean locked){
-		return Result.ok(cashCouponService.count(cardNum, value,locked));
+		return Result.ok(cashCouponService.count(cardNum,cardNumStart,cardNumEnd, value,locked));
 	}
 	
 	/**
@@ -199,8 +203,8 @@ public class CashCouponController {
 	 * @return
 	 * 2015年12月29日 qxs
 	 */
-	@RequestMapping(value="/unlock/{ids}", method=RequestMethod.PUT)
-	public Result<String> unlock(@PathVariable String ids){
+	@RequestMapping(value="/unlock", method=RequestMethod.PUT)
+	public Result<String> unlock(@RequestBody String ids){
 		if(!StringUtils.isEmpty(ids)){
 			cashCouponService.unlock(ids.split(","));
 			return Result.ok("");

@@ -86,6 +86,8 @@ public interface CashCouponDao {
 	/**
 	 * 列表
 	 * @param entity
+	 * @param cardNumEnd 
+	 * @param cardNumStart 
 	 * @param offset
 	 * @param size
 	 * @return
@@ -93,16 +95,22 @@ public interface CashCouponDao {
 	 */
 	public List<CashCouponEntity> selectList(
 			@Param(value="entity") CashCouponEntity entity,
+			@Param(value="cardNumStart") String cardNumStart, 
+			@Param(value="cardNumEnd") String cardNumEnd, 
 			@Param(value="offset") long offset, 
 			@Param(value="size") long size); 
 
 	/**
 	 * 数量
 	 * @param entity
+	 * @param cardNumEnd 
+	 * @param cardNumStart 
 	 * @return
 	 * 2015年12月29日 qxs
 	 */
-	public int count(@Param(value="entity") CashCouponEntity entity);
+	public int count(@Param(value="entity") CashCouponEntity entity, 
+			@Param(value="cardNumStart") String cardNumStart, 
+			@Param(value="cardNumEnd") String cardNumEnd);
 
 	/**
 	 * 修改锁定状态
