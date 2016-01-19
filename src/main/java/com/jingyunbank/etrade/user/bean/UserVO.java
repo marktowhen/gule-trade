@@ -2,10 +2,12 @@ package com.jingyunbank.etrade.user.bean;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jingyunbank.core.lang.Patterns;
 
 /**
@@ -21,18 +23,28 @@ public class UserVO {
 	private String mobile;//11位数字的有效手机号
 	@Email(regexp=Patterns.INTERNAL_EMAIL_PATTERN,message="邮箱格式不正确")
 	private String email;//有效的邮箱
-	@Size(max=20,min=8,message="密码必须是8-20位")
 	@NotNull(message="密码不能为空")
 	private String password;
-	@Size(max=20,min=8,message="密码必须是8-20位")
 	private String tradepwd;
 	private String nickname;
 	//private UserInfo uinfo;
 	private boolean locked;
 	private String code;
+	//由于password、tradepwd不返回给前台 所以在安全设置页面判断两个密码是否相同等只能放在后台
+	private boolean hasPassword;
+	private boolean hasTradepwd;
+	private boolean freeRunningTradepwd;//是否独立支付密码
 	
 	
-	
+	public boolean isHasPassword() {
+		return !StringUtils.isEmpty(password);
+	}
+	public boolean isHasTradepwd() {
+		return !StringUtils.isEmpty(tradepwd);
+	}
+	public boolean isFreeRunningTradepwd() {
+		return (isHasTradepwd() && !tradepwd.equals(password));
+	}
 	public String getCode() {
 		return code;
 	}
@@ -63,15 +75,19 @@ public class UserVO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	@JsonIgnore
 	public String getTradepwd() {
 		return tradepwd;
 	}
+	@JsonProperty
 	public void setTradepwd(String tradepwd) {
 		this.tradepwd = tradepwd;
 	}

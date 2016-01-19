@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.area.bean.CityVO;
 
 @RestController
-@RequestMapping("/api/city")
+@RequestMapping("/api/area/city")
 public class CityController {
 	
 	@Autowired

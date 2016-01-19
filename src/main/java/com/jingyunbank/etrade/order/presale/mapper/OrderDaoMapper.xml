@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.order.presale.dao.OrderDao">
+	<resultMap type="com.jingyunbank.etrade.order.presale.entity.OrderEntity" id="OrderEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
+		<result column="receiver" property="receiver" javaType="String"/>
+		<result column="mid" property="MID" javaType="String"/>
+		<result column="mname" property="mname" javaType="String"/>
+		<result column="uid" property="UID" javaType="String"/>
+		<result column="uname" property="uname" javaType="String"/>
+		<result column="address" property="address" javaType="String"/>
+		<result column="mobile" property="mobile" javaType="String"/>
+		<result column="zipcode" property="zipcode" javaType="String"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="paytype_code" property="paytypeCode" javaType="String"/>
+		<result column="paytype_name" property="paytypeName" javaType="String"/>
+		<result column="deliverytype_code" property="deliveryTypeCode" javaType="String"/>
+		<result column="deliverytype_name" property="deliveryTypeName" javaType="String"/>
+		<result column="invoice_type" property="invoiceType" javaType="String"/>
+		<result column="invoice_title" property="invoiceTitle" javaType="String"/>
+		<result column="coupon_id" property="couponID" javaType="String"/>
+		<result column="coupon_type" property="couponType" javaType="String"/>
+		<result column="coupon_reduce" property="couponReduce" jdbcType="DECIMAL"/>
+		<result column="status_code" property="statusCode" javaType="String"/>
+		<result column="status_name" property="statusName" javaType="String"/>
+		<result column="price" property="price" jdbcType="DECIMAL"/>
+		<result column="payout" property="payout" jdbcType="DECIMAL"/>
+		<result column="postage" property="postage" jdbcType="DECIMAL"/>
+		<result column="note" property="note" javaType="String"/>
+		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderGoodsEntity">
+			<result column="ogid" property="ID" javaType="String"/>
+			<result column="gid" property="GID" javaType="String"/>
+			<result column="gname" property="gname" javaType="String"/>
+			<result column="imgpath" property="imgpath" javaType="String"/>
+			<result column="count" property="count" jdbcType="INTEGER"/>
+			<result column="gprice" property="price" jdbcType="DECIMAL"/>
+			<result column="gpprice" property="pprice" jdbcType="DECIMAL"/>
+			<result column="gpayout" property="payout" jdbcType="DECIMAL"/>
+			<result column="gstatuscode" property="statusCode" javaType="String"/>
+			<result column="gstatusname" property="statusName" javaType="String"/>
+			<result column="oid" property="OID" javaType="String"/>
+		</collection>
+	</resultMap>
+	<sql id="orders_columns">
+		id, orderno, receiver, uid, uname, mid, mname, address, mobile, zipcode, addtime, 
+		paytype_code, paytype_name, deliverytype_code, deliverytype_name, coupon_id, coupon_type, coupon_reduce,
+		status_code, status_name, price, payout, postage, note, invoice_type, invoice_title
+	</sql>
+	<sql id="payments_join_orders_columns">
+		o.id, o.orderno, o.receiver, o.uid, o.uname, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
+		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, o.coupon_id, o.coupon_type, o.coupon_reduce,
+		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.invoice_type, o.invoice_title,
+		og.id as ogid, og.gid, og.count, og.gname, og.oid
+	</sql>
+	<sql id="goods_join_orders_columns">
+		o.id, o.orderno, o.receiver, o.uid, o.uname, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
+		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
+		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
+		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note,
+		img.thumb_path_1 as imgpath, og.gid as gid, 
+		og.gname as gname, og.count as count, og.pprice as gpprice, og.payout as gpayout,
+		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
+	</sql>
+	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.presale.entity.OrderEntity">
+		insert into orders
+			(<include refid="orders_columns"/>)
+		values
+			(
+				#{ID}, #{orderno}, #{receiver}, #{UID}, #{uname}, #{MID}, #{mname}, #{address},
+				 #{mobile}, #{zipcode}, #{addtime}, #{paytypeCode}, #{paytypeName}, 
+				 #{deliveryTypeCode}, #{deliveryTypeName}, #{couponID}, #{couponType}, #{couponReduce},
+				 #{statusCode}, #{statusName}, #{price}, #{payout}, #{postage}, #{note},
+				 #{invoiceType}, #{invoiceTitle}
+			 )
+	</insert>
+	<insert id="insertMany">
+		insert into orders
+			(<include refid="orders_columns"/>)
+		values
+		<foreach collection="orders" item="order" separator="," open="" close="">
+			(
+			 #{order.ID}, #{order.orderno}, #{order.receiver}, #{order.UID}, #{order.uname}, #{order.MID}, #{order.mname}, #{order.address},
+			 #{order.mobile}, #{order.zipcode}, #{order.addtime},  #{order.paytypeCode}, #{order.paytypeName}, 
+			 #{order.deliveryTypeCode}, #{order.deliveryTypeName}, #{order.couponID}, #{order.couponType}, #{order.couponReduce},
+			 #{order.statusCode}, #{order.statusName}, #{order.price}, #{order.payout}, #{order.postage}, #{order.note},
+			 #{order.invoiceType}, #{order.invoiceTitle}
+			)
+		</foreach>
+	</insert>
+	<select id="selectByOIDs" resultMap="OrderEntityResultMap">
+		select <include refid="orders_columns"/> 
+		from orders
+		where id in 
+			<foreach collection="oids" item="oid" open="(" separator="," close=")">
+				#{oid}
+			</foreach>
+	</select>
+	<select id="selectOne" parameterType="String" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from order_goods og
+		left join goods_img img on og.gid = img.gid 
+		left join orders o on og.oid = o.id 
+		where o.id = #{oid}
+	</select>
+	
+	<update id="updateStatus">
+		update orders
+		set status_code = #{statuscode}, status_name = #{statusname}
+		where id in 
+		<foreach collection="oids" item="oid" open="(" separator="," close=")">
+			#{oid}
+		</foreach>
+	</update>
+	<select id="selectByExtranso" parameterType="String"  resultMap="OrderEntityResultMap">
+		select <include refid="payments_join_orders_columns"/>
+		from order_payment p
+		left join orders o on p.oid = o.id
+		left join order_goods og on o.id = og.oid
+		where p.extransno = #{extransno}
+	</select>
+	
+	<select id="selectBefore" resultMap="OrderEntityResultMap">
+		select o.id
+		from orders o
+		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
+		where ot.addtime is not null and ot.addtime &lt;= #{deadline} and o.status_code = #{statuscode}
+	</select>
+	
+	<select id="selectBetween" resultMap="OrderEntityResultMap">
+		select o.id, o.uid
+		from orders o
+		inner join order_trace ot on o.id = ot.oid and ot.status_code = #{statuscode}
+		where 
+			(ot.addtime is not null and ot.addtime &lt;= #{to} and ot.addtime &gt;= #{from})
+			and o.status_code = #{statuscode}
+	</select>
+	
+	<select id="countCouponOrder" parameterType="String" resultType="int">
+		select count(1)
+		from orders
+		where coupon_id = #{couponid} and status_code = 'NEW'
+	</select>
+	
+	
+	<select id="selectKeywords" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from 
+		( 
+			select <include refid="orders_columns"/> 
+			from orders o
+			where <include refid="where_of_select_keywords"/>
+			order by addtime desc
+			<if test="size > 0 and from >= 0">
+			limit #{from}, #{size}
+			</if>
+		) o
+		left join order_goods og on og.oid = o.id 
+		left join goods_img img on og.gid = img.gid
+		order by o.addtime desc
+	</select>
+	
+	<select id="selectKeywordsCount" resultType="int">
+		select count(1) 
+		from orders o
+		where
+			<include refid="where_of_select_keywords"/>
+	</select>
+	
+	<select id="selectCondition" resultMap="OrderEntityResultMap">
+		select <include refid="goods_join_orders_columns"/> 
+		from 
+		(
+			select <include refid="orders_columns"/> 
+			from orders o
+			where <include refid="where_of_select_condition"/>
+			order by addtime desc 
+			<if test="size > 0 and from >= 0">
+			limit #{from}, #{size}
+			</if>
+		) o
+		left join order_goods og on og.oid = o.id 
+		left join goods_img img on og.gid = img.gid
+		order by o.addtime desc
+	</select>
+	
+	<select id="selectConditionCount" resultType="int">
+		select count(1) 
+		from orders o
+		where 
+			<include refid="where_of_select_condition"/>
+	</select>
+	
+	<sql id="where_of_select_condition">
+		1 = 1
+		<if test="uid != null and !''.equals(uid)">
+			and uid = #{uid}
+		</if>
+		<if test="mid != null and !''.equals(mid)">
+			and mid = #{mid}
+		</if>
+		<if test="orderno != null and !''.equals(orderno)">
+			and orderno = #{orderno}
+		</if>
+		<if test="statuscode != null and !''.equals(statuscode)">
+			and (
+				status_code = #{statuscode} 
+				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code = #{statuscode})
+				)
+		</if>
+		<if test="fromdate != null and !''.equals(fromdate)">
+			and addtime &gt;= #{fromdate}
+		</if>
+		<if test="enddate != null and !''.equals(enddate)">
+			and addtime &lt;= #{enddate}
+		</if>
+		<if test="gname != null and !''.equals(gname)">
+			and exists (select 1 from order_goods og where og.oid = o.id and og.gname like CONCAT('%','${gname}','%')) 
+		</if>
+		<if test="uname != null and !''.equals(uname)">
+			and uname like CONCAT('%','${uname}','%')
+		</if>
+		<if test="mname != null and !''.equals(mname)">
+			and mname like CONCAT('%','${mname}','%')
+		</if>
+	</sql>
+	
+	<sql id="where_of_select_keywords">
+		1 = 1
+		<if test="uid != null and !''.equals(uid)">
+			and uid = #{uid}
+		</if>
+		<if test="mid != null and !''.equals(mid)">
+			and mid = #{mid}
+		</if>
+		<if test="statuscode != null and !''.equals(statuscode)">
+			and (
+				status_code = #{statuscode} 
+				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code = #{statuscode})
+				)
+		</if>
+		<if test="fromdate != null and !''.equals(fromdate)">
+			and addtime &gt;= #{fromdate}
+		</if>
+		<if test="enddate != null and !''.equals(enddate)">
+			and addtime &lt;= #{enddate}
+		</if>
+		<if test="keywords != null and !''.equals(keywords)">
+			and (
+					orderno like CONCAT('%','${keywords}','%')
+					or
+					mid like CONCAT('%','${keywords}','%')
+					or
+					mname like CONCAT('%','${keywords}','%')
+					or
+					exists (select 1 from order_goods og where og.oid = o.id and og.gname like CONCAT('%','${keywords}','%'))
+				)
+		</if>
+	</sql>
+</mapper>

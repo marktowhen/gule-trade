@@ -16,9 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.vip.bean.CashCouponVO;
+import com.jingyunbank.etrade.vip.coupon.bean.CashCouponVO;
 
 public class CashCouponControllerTest extends TestCaseBase{
 	
@@ -29,18 +29,12 @@ public class CashCouponControllerTest extends TestCaseBase{
 		 */
 		@Test
 		public void testSave() throws Exception{
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			CashCouponVO vo = new CashCouponVO();
-			vo.setValue(new BigDecimal(100));
-			vo.setStart(format.parse("2015-01-01 00:00:00"));
-			vo.setEnd(format.parse("2025-1-1 00:00:00"));
-			vo.setThreshhold(new BigDecimal(100));
-			ObjectMapper mapper = new ObjectMapper();
-			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/vip/coupon/cashcoupon/")
-					 .content(json)
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					 post("/api/vip/coupon/cashcoupon/bb1f957f773b12ae8f61d8b429b09ad5/1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
+					.param("value", "50")
+					.param("threshhold", "150")
+					.param("reason", "test")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 						
@@ -60,16 +54,16 @@ public class CashCouponControllerTest extends TestCaseBase{
 		public void testSaveMuti() throws Exception{
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			CashCouponVO vo = new CashCouponVO();
-			vo.setValue(new BigDecimal(50));
+			vo.setValue(new BigDecimal(200));
 			vo.setStart(format.parse("2015-01-01 00:00:00"));
-			vo.setEnd(format.parse("2025-1-1 00:00:00"));
-			vo.setThreshhold(new BigDecimal(100));
+			vo.setEnd(format.parse("2025-12-31 23:59:59"));
+			vo.setThreshhold(new BigDecimal(0));
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(vo);
 			getMockMvc().perform(
-					 post("/api/vip/coupon/cashcoupon/20")
+					 post("/api/vip/coupon/cashcoupon/500")
 					 .content(json)
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 						
@@ -90,7 +84,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/isvalid")
 					.param("code", "20151117103601")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -110,7 +104,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 delete("/api/vip/coupon/cashcoupon/")
 					.param("code", "20151117103601")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -130,7 +124,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/list")
 					 .param("validTime", "true")
-					 .sessionAttr(ServletBox.LOGIN_ID, "1")
+					 .sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -150,7 +144,7 @@ public class CashCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/cashcoupon/amount")
 					 .param("validTime", "true")
-					 .sessionAttr(ServletBox.LOGIN_ID, "1")
+					 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					 .contentType(MediaType.APPLICATION_JSON)
 					 .accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

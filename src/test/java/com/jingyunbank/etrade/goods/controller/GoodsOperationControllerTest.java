@@ -8,9 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Random;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -24,27 +21,7 @@ import com.jingyunbank.etrade.goods.bean.GoodsOperationVO;
 public class GoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void testAddGoods() throws Exception {
-
 		GoodsOperationVO vo = new GoodsOperationVO();
-		vo.setMID("2");
-		vo.setBID("1");
-		 vo.setName("星期六阿胶");
-		vo.setCode("JY006");
-		vo.setTid("2");
-		vo.setPrice(new BigDecimal("333.00"));
-		//vo.setPro_start(new Date());
-		//vo.setPro_end(new Date());
-		vo.setState(1);
-		vo.setStandardNo("星期六阿胶标准号003");
-		vo.setCount(1000);
-		
-		vo.setThumbpath1("D://img/1.jpg");
-		vo.setThumbpath2("D://img/2.jpg");
-		vo.setThumbpath3("D://img/3.jpg");
-		vo.setThumbpath4("D://img/4.jpg");
-		vo.setThumbpath5("D://img/5.jpg");
-		vo.setContent("<h3>hello<h3>");
-
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		getMockMvc()
@@ -163,7 +140,7 @@ public class GoodsOperationControllerTest extends TestCaseBase {
 		vo.setName("测试品牌添加-2");
 		vo.setMID("2");
 		vo.setDesc("测试品牌添加测试品牌添加-2");
-		vo.setAdmin_sort(0);
+		vo.setAdminsort(0);
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		getMockMvc().perform(post("/api/brand/update/BZPAEhpaQkiweDTSLTGJ2A").characterEncoding("utf-8")

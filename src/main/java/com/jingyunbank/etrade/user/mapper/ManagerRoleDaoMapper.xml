@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.user.dao.ManagerRoleDao">
+	<resultMap type="com.jingyunbank.etrade.user.entity.ManagerRoleEntity" id="ManagerRoleEntityResultMap">
+		<id column="id" property="ID" />
+		<result column="role_id" property="roleID" />
+		<result column="uid" property="UID" />
+		<result column="valid" property="valid" />
+		<result column="update_time" property="updateTime" />
+		<association  property="role" javaType="com.jingyunbank.etrade.user.entity.RoleEntity">
+			<result column="r_role_id" property="ID"/>
+			<result column="r_code" property="code"/>
+			<result column="r_name" property="name"/>
+			<result column="r_valid" property="valid" />
+		</association>
+	</resultMap>
+	<sql id="column_list">
+		 id,role_id,uid,valid,update_time 
+	</sql>
+	
+	<sql id="column_list_join_role">
+		 ur.id,ur.role_id,ur.uid,ur.valid,ur.update_time ,
+		 r.id r_role_id,r.code r_code,r.name r_name,r.valid r_valid
+	</sql>
+	
+	<select id="selectList" resultMap="ManagerRoleEntityResultMap">
+		select <include refid="column_list_join_role"/> 
+			from manager_role ur 
+				INNER JOIN role r on ur.role_id = r.id
+			where ur.valid=true and r.valid=true
+				and ur.uid=#{uid}
+	</select>
+	
+	<select id="selectOne" resultMap="ManagerRoleEntityResultMap">
+		select <include refid="column_list_join_role"/> 
+			from manager_role ur 
+				INNER JOIN role r on ur.role_id = r.id
+			where   id=#{id}
+	</select>
+	
+	<update id="updateValid">
+		update manager_role set valid = #{valid} where id in 
+			<foreach collection="ids" item="id" open="(" close=")" separator=",">
+				#{id}
+			</foreach>
+	</update>
+	
+	<select id="selectByUidAndCode" resultMap="ManagerRoleEntityResultMap">
+		select <include refid="column_list_join_role"/> 
+			from manager_role ur 
+				INNER JOIN role r on ur.role_id = r.id
+			where   ur.valid=true and r.valid=true 
+				and ur.uid=#{uid} and r.code=#{code}
+	</select>
+	
+</mapper>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.vip.coupon.dao.DiscountCouponDao">
+	<resultMap type="com.jingyunbank.etrade.vip.coupon.entity.DiscountCouponEntity" id="DiscountCouponEntityResultMap">
+		<id column="id" property="ID" javaType="String" />
+		<result column="code" property="code" javaType="String" />
+		<result column="discount" property="discount" javaType="DECIMAL" />
+		<result column="value" property="value" javaType="DECIMAL" />
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="start" property="start" javaType="java.util.Date"/>
+		<result column="end" property="end" javaType="java.util.Date"/>
+		<result column="used" property="used" javaType="BOOLEAN" />
+		<result column="usedtime" property="usedtime" javaType="java.util.Date"/>
+		<result column="threshhold" property="threshhold" javaType="DECIMAL" />
+		<result column="del" property="del" javaType="BOOLEAN" />
+		<result column="remark" property="remark" javaType="String" />
+		<result column="locked" property="locked" javaType="BOOLEAN" />
+		<result column="card_num" property="cardNum" javaType="String" />
+	</resultMap>
+	<sql id="column_list">
+		 id,code,discount,value,addtime,start,end,used,usedtime,threshhold,del,remark ,card_num,locked
+	</sql>
+	<insert id="insert">
+		insert into discount_coupon(<include refid="column_list"/>) 
+		values(#{ID},#{code},#{discount},#{value},now(),#{start},#{end},#{used},#{usedtime},#{threshhold},#{del},#{remark},#{cardNum},#{locked})
+	</insert>
+	
+	<insert id="insertMuti" >
+		insert into discount_coupon(<include refid="column_list"/>) 
+		values
+			<foreach collection="list" item="item"   open="" close="" separator=",">
+				(#{item.ID},#{item.code},#{item.discount},#{item.value},now(),#{item.start},#{item.end},#{item.used},#{item.usedtime},#{item.threshhold},#{item.del},#{item.remark},#{item.cardNum},#{item.locked})
+			</foreach>
+		
+	</insert>
+	
+	<select id="selectList" resultMap="DiscountCouponEntityResultMap" >
+		select 
+			<include refid="column_list"></include>
+		from 	discount_coupon 
+		<where>
+			<include refid="base_condition"></include>
+		</where>
+		order by addtime desc
+		limit #{offset,javaType=LONG},#{size,javaType=LONG}
+	</select>
+	
+	<select id="count" resultType="int" >
+		select count(1) from discount_coupon 
+		<where>
+			<include refid="base_condition"></include>
+		</where>
+	</select>
+	<sql id="base_condition">
+		<if test="entity.ID!=null and entity.ID!=''" >
+				and id =#{entity.ID}
+		</if>
+		<if test="entity.code!=null and entity.code!=''" >
+			and code =#{entity.code}
+		</if>
+		<if test="entity.discount!=null and entity.discount!=''" >
+			and discount =#{entity.discount}
+		</if>
+		<if test="entity.value!=null and entity.value!=''" >
+			and value =#{entity.value}
+		</if>
+		<if test="entity.addtimeStart!=null">
+			and addtime &gt;=entity.addtimeStart
+		</if>
+		<if test="entity.addtiemEnd!=null">
+			and addtime &lt;=entity.addtiemEnd
+		</if>
+		<if test="entity.validTime">
+			and now() between start and end
+		</if>
+		<if test="entity.needUsed">
+			and used = #{entity.used}
+		</if>
+		<if test="entity.needDelete">
+			and del = #{entity.del}
+		</if>
+		<if test="entity.needLocked">
+			and locked = #{entity.locked}
+		</if>
+		<if test="entity.cardNum!=null and entity.cardNum!=''" >
+			and card_num like CONCAT('%',#{entity.cardNum},'%')
+		</if>
+	</sql>
+	<!-- 修改删除状态 -->
+	<update id="updateDeleteStatus">
+		update discount_coupon  set 
+			del =#{del},
+			remark =#{remark} 
+		where 1=1
+			and code =#{code}
+	</update>
+	
+	<!-- 置为已使用 -->
+	<update id="updateUsedStatus">
+		update discount_coupon  set 
+			used =#{used},
+			usedtime =now()
+		where 1=1
+			and code =#{code}
+	</update>
+	
+	<select id="selectSingleByKey" resultMap="DiscountCouponEntityResultMap">
+		select <include refid="column_list"/>
+		from discount_coupon where id =#{key} or code=#{key}
+	</select>
+	
+	<select id="selectByAddtime" resultMap="DiscountCouponEntityResultMap">
+		select <include refid="column_list"/>
+		from discount_coupon where addtime between #{from} and #{to}
+		order by addtime desc
+		limit #{offset},#{size}
+	</select>
+	
+	<select id="countByAddtime" resultType="int">
+		select count(1)
+		from discount_coupon where addtime between #{from} and #{to}
+	</select>
+	
+	<select id="selectListByCardNum" resultMap="DiscountCouponEntityResultMap">
+		select 
+			<include refid="column_list"></include>
+		from 	discount_coupon 
+		where card_num like CONCAT('%',#{cardNum},'%')
+			order by card_num desc
+			limit #{offset},#{size}
+	</select>
+	<update id="updateLocked">
+		update discount_coupon  set 
+			locked =#{locked}
+		where id in 
+		 <foreach collection="ids" item="id" open="(" close=")" separator=",">
+		 	#{id}
+		 </foreach>
+	</update>
+	
+</mapper>

@@ -27,6 +27,7 @@ public class RefundEntity implements Serializable{
 	private String statusCode;
 	private String statusName;//RefundStatusDesc
 	private boolean returnGoods;//是否退货
+	private boolean received;
 	
 	private String GID;//商品id
 	private String gname;//商品名
@@ -140,5 +141,11 @@ public class RefundEntity implements Serializable{
 	}
 	public void setOrderno(long orderno) {
 		this.orderno = orderno;
+	}
+	public boolean isReceived() {
+		return received;
+	}
+	public void setReceived(boolean received) {
+		this.received = received;
 	}
 }

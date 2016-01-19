@@ -29,6 +29,15 @@ public class UserInfoEntity {
 	private Device regdevice;//注册设备
 	private String picture;//头像文件名
 	
+	private boolean isPoint;//是否有积分
+	
+
+	public boolean isPoint() {
+		return isPoint;
+	}
+	public void setPoint(boolean isPoint) {
+		this.isPoint = isPoint;
+	}
 	public String getPicture() {
 		return picture;
 	}

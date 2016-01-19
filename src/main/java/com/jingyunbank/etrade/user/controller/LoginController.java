@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -22,16 +23,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.util.MD5;
+import com.jingyunbank.core.web.Login;
+import com.jingyunbank.core.web.Security;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
+import com.jingyunbank.etrade.api.user.bo.Manager;
+import com.jingyunbank.etrade.api.user.bo.Seller;
+import com.jingyunbank.etrade.api.user.bo.ManagerRole;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IManagerService;
+import com.jingyunbank.etrade.api.user.service.ISellerService;
+import com.jingyunbank.etrade.api.user.service.IManagerRoleService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.LoginUserPwdVO;
 import com.jingyunbank.etrade.user.bean.LoginUserSmsVO;
+import com.jingyunbank.etrade.user.bean.ManagerVO;
+import com.jingyunbank.etrade.user.bean.SellerVO;
+import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
 @RequestMapping("/api")
@@ -41,6 +51,13 @@ public class LoginController {
 	private IUserService userService;
 	@Autowired
 	private ICartService cartService;
+	@Autowired
+	private IManagerRoleService userRoleServce;
+	
+	@Autowired
+	private IManagerService managerService;
+	@Autowired
+	private ISellerService sellerService;
 	
 	/**
 	 * 登录
@@ -53,59 +70,36 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<String> login(@Valid @RequestBody LoginUserPwdVO user, 
+	public Result<UserVO> login(@Valid @RequestBody LoginUserPwdVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("用户名或者密码错误！");
 		}
 		
-		//密码不正确3次后需要验证码
-		int loginWrongTimes = 0;
-		//session中存放的错误次数
-		Object objLoginTimes = session.getAttribute("loginWrongTimes");
-		if(objLoginTimes != null && objLoginTimes instanceof Integer){
-			loginWrongTimes = (int)session.getAttribute("loginWrongTimes");
-			if(loginWrongTimes>=3){
-				if(!checkCaptcha(session, user.getCaptcha())){
-					return Result.fail("验证码错误");
-				}
-			}
-		}
 		//2、根据用户名/手机号/邮箱查询用户信息
-		Optional<Users> usersOptional =  userService.getByKey(user.getKey());
+		Optional<Users> usersOptional =  userService.singleByKey(user.getKey());
 		//是否存在该用户
 		if(usersOptional.isPresent()){
 			Users users = usersOptional.get();
 			//密码是否正确
-			if(!users.getPassword().equalsIgnoreCase(MD5.digest(user.getPassword()))){
+			if(!users.getPassword().equals(user.getPassword())){
 				//记录错误次数
-				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
-				return Result.fail("密码错误");
+				return Result.fail("用户名或者密码错误！");
 			}
 			//用户被锁
 			if(users.isLocked()){
 				//暂时先不管
 				//return Result.fail("用户被锁");
 			}
+			//3、成功之后
+			doAfterCheck(users, session, response);
+			UserVO vo = new UserVO();
+			BeanUtils.copyProperties(users, vo);
+			return Result.ok(vo);
 		}else{
-			return Result.fail("未找到该用户");
+			return Result.fail("用户名或者密码错误！");
 		}
-		//3、成功之后
-		doAfterCheck(usersOptional.get(), session, response);
-		
-		return Result.ok("成功");
-	}
-	/**
-	 * 用户注销登录
-	 * @param session
-	 * @return
-	 * 2015年11月11日 qxs
-	 */
-	@RequestMapping(value="/logout",method=RequestMethod.GET)
-	public Result<String> logout(HttpSession session) throws Exception{
-		session.invalidate();
-		return Result.ok("成功");
 	}
 	
 	/**
@@ -130,15 +124,15 @@ public class LoginController {
 					.collect(Collectors.joining(" ; ")));
 		}
 		//验证短信验证码是否正确
-		String sessionCode = (String)session.getAttribute(ServletBox.SMS_MESSAGE);
+		String sessionCode = (String)session.getAttribute(ServletBox.SMS_CODE_KEY_IN_SESSION);
 		if(StringUtils.isEmpty(sessionCode)){
 			return Result.fail("验证码未发送或已失效");
 		}
 		if(!sessionCode.equals(user.getCode())){
 			return Result.fail("验证码错误");
 		}
-		session.setAttribute(ServletBox.SMS_MESSAGE, null);
-		Optional<Users> userOption = userService.getByPhone(user.getMobile());
+		session.setAttribute(ServletBox.SMS_CODE_KEY_IN_SESSION, null);
+		Optional<Users> userOption = userService.singleByKey(user.getMobile());
 		//如果未注册自动注册
 		if(!userOption.isPresent()){
 			Users registerUser = new Users();
@@ -146,7 +140,7 @@ public class LoginController {
 			registerUser.setUsername(IUserService.SMS_LOGIN_USERNAME_PREFIX+user.getMobile());
 			registerUser.setID(KeyGen.uuid());
 			UserInfo userInfo=new UserInfo();
-			userInfo.setRegip(EtradeUtil.getIpAddr(request));
+			userInfo.setRegip(ServletBox.ip(request));
 			userService.save(registerUser, userInfo);
 			userOption = Optional.of(registerUser);
 		}
@@ -167,31 +161,219 @@ public class LoginController {
 		//用户信息放入session
 		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
 		candidatecart.ifPresent(cart->{
-			ServletBox.setLoginCartID(session, cart.getID());
+			Login.cartID(session, cart.getID());
 		});
 		
-		ServletBox.setLoginUID(session, users.getID());
-		ServletBox.setLoginUname(session, users.getUsername());
+		Login.UID(session, users.getID());
+		Login.uname(session, users.getUsername());
+		Security.authenticate(session);
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+		
+	}
+	/**
+	 * 用户注销登录
+	 * @param session
+	 * @return
+	 * 2015年11月11日 qxs
+	 */
+	@RequestMapping(value="/logout",method=RequestMethod.GET)
+	public Result<String> logout(HttpSession session) throws Exception{
+		session.invalidate();
+		return Result.ok("成功");
+	}
+	
+	
+	/**
+	 * users登录   暂时不用
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/login/back",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserPwdVO user, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
+		}
+		
+		//密码不正确3次后需要验证码
+		int loginWrongTimes = 0;
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Users> usersOptional =  userService.singleByKey(user.getKey());
+		//是否存在该用户
+		if(usersOptional.isPresent()){
+			Users users = usersOptional.get();
+			//密码是否正确
+			if(!users.getPassword().equals(user.getPassword())){
+				//记录错误次数
+				session.setAttribute("loginWrongTimes", ++loginWrongTimes);
+				return Result.fail("用户名或者密码错误！");
+			}
+			//用户被锁
+			if(users.isLocked()){
+				//暂时先不管
+				//return Result.fail("用户被锁");
+			}
+			
+		}else{
+			return Result.fail("用户名或者密码错误！");
+		}
+		//3、成功之后
+		//用户信息放入session
+		Users users = usersOptional.get();
+		
+		Login.UID(session, users.getID());
+		Login.uname(session, users.getUsername());
+		Security.authenticate(session);
+		
+		//查询用户拥有的权限
+		List<ManagerRole> list = userRoleServce.list(users.getID());
+		if(list.isEmpty()){
+			//暂时屏蔽
+			//return Result.fail("您没有权限");
+		}
+		String [] roles = new String [list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			roles[i] = list.get(i).getRole().getCode();
+		}
+		Security.authorize(session, roles);
 		//清空错误次数
 		session.setAttribute("loginWrongTimes", 0);
 		//记录登录历史 未完待续
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(ServletBox.LOGIN_ID, users.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
 		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
+		
+		
+		UserVO vo = new UserVO();
+		BeanUtils.copyProperties(users, vo);
+		return Result.ok(vo);
 	}
 	
-	
-	
 	/**
-	 * 校验图形验证码
+	 * 卖家登录   
+	 * @param request
 	 * @param session
-	 * @param captcha
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
 	 * @return
 	 */
-	private boolean checkCaptcha(HttpSession session, String captcha) {
-		return true;
+	@RequestMapping(value="/login/seller",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserPwdVO loginUser, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
+		}
+		
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Seller> sellerOptional =  sellerService.singleByMname(loginUser.getKey());
+		//是否存在该用户
+		if(sellerOptional.isPresent()){
+			Seller seller = sellerOptional.get();
+			//密码是否正确
+			if(!seller.getPassword().equals(loginUser.getPassword())){
+				return Result.fail("用户名或者密码错误！");
+			}
+		}else{
+			return Result.fail("用户名或者密码错误！");
+		}
+		//3、成功之后
+		//用户信息放入session
+		Seller seller = sellerOptional.get();
+		Login.UID(session, seller.getID());
+		Login.uname(session, seller.getSname());
+		//商铺id放入session
+		Login.MID(session, seller.getMid());
+		Security.authenticate(session);
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, seller.getID());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+		SellerVO vo = new SellerVO();
+		BeanUtils.copyProperties(seller, vo);
+		return Result.ok(vo);
+	}
+	
+	/**
+	 * 管理员登录   
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/login/manager",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserPwdVO loginUser, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("用户名或者密码错误！");
+		}
+		
+		//2、根据用户名/手机号/邮箱查询用户信息
+		Optional<Manager> managerOptional =  managerService.singleByMname(loginUser.getKey());
+		//是否存在该用户
+		if(managerOptional.isPresent()){
+			Manager manager = managerOptional.get();
+			//密码是否正确
+			if(!manager.getPassword().equals(loginUser.getPassword())){
+				return Result.fail("用户名或者密码错误！");
+			}
+		}else{
+			return Result.fail("用户名或者密码错误！");
+		}
+		//3、成功之后
+		Manager manager = managerOptional.get();
+		//查询用户拥有的权限
+		List<ManagerRole> list = userRoleServce.list(manager.getID());
+		if(list.isEmpty()){
+			return Result.fail("您没有权限");
+		}
+		String [] roles = new String [list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			roles[i] = list.get(i).getRole().getCode();
+		}
+		Security.authorize(session, roles);
+		//用户信息放入session
+		Login.UID(session, manager.getID());
+		Login.uname(session, manager.getMname());
+		Security.authenticate(session);
+		
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, manager.getID());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+		ManagerVO vo = new ManagerVO();
+		BeanUtils.copyProperties(manager, vo);
+		return Result.ok(vo);
 	}
 	
 }

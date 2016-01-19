@@ -24,12 +24,12 @@ import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.IInboxService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.message.bean.MessageVO;
 
 @RestController
@@ -60,10 +60,10 @@ public class MessageController {
 						.collect(Collectors.joining(" ; ")));
 		}
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
-		messageVO.setAddip(EtradeUtil.getIpAddr(request));
-		messageVO.setSentUID(ServletBox.getLoginUID(request));
-		messageVO.setStatus(IInboxService.STATUS_SUC);
-		messageVO.setType(IInboxService.TYPE_LETTER);
+		messageVO.setAddip(ServletBox.ip(request));
+		messageVO.setSentUID(Login.UID(request));
+		messageVO.setStatus(Message.STATUS_SUC);
+		messageVO.setType(Message.TYPE_LETTER);
 		List<Message> listMsg = new ArrayList<Message>();
 		for (int i = 0; i < receiveUids.length; i++) {
 			Message message = new Message();
@@ -84,8 +84,8 @@ public class MessageController {
 	 * @throws DataRefreshingException 
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result<MessageVO> getSingleInfo(@PathVariable String id, HttpServletRequest request)throws Exception{
-		Optional<Message> messageOption = inboxService.getSingle(id);
+	public Result<MessageVO> single(@PathVariable String id, HttpServletRequest request)throws Exception{
+		Optional<Message> messageOption = inboxService.single(id);
 		if(messageOption.isPresent()){
 			//如果未读则置为已读
 			if(!messageOption.get().isHasRead()){
@@ -95,7 +95,7 @@ public class MessageController {
 			
 			return Result.ok(copyBoToVo(messageOption.get(), new MessageVO()));
 		}
-		return Result.fail("未找到");
+		return Result.fail("该消息不存在,请确认链接是否正确");
 	}
 	
 	
@@ -130,8 +130,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getAmountUID(@PathVariable String uid , HttpServletRequest request) throws Exception{
-		return Result.ok( inboxService.getAmount(uid));
+	public Result<Integer> count(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.count(uid));
 	}
 	
 	/**
@@ -166,8 +166,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/unread/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getUnreadAmount(@PathVariable String uid , HttpServletRequest request) throws Exception{
-		return Result.ok( inboxService.getAmountUnread(uid));
+	public Result<Integer> countUnread(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.countUnread(uid));
 	}
 	
 	/**
@@ -202,8 +202,8 @@ public class MessageController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/read/amount/{uid}",method=RequestMethod.GET)
-	public Result<Integer> getReadAmount(@PathVariable String uid , HttpServletRequest request) throws Exception{
-		return Result.ok( inboxService.getAmountRead(uid));
+	public Result<Integer> countRead(@PathVariable String uid , HttpServletRequest request) throws Exception{
+		return Result.ok( inboxService.countRead(uid));
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public class MessageController {
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result<String> remove(@PathVariable String id, HttpServletRequest request) throws Exception{
 		
-		inboxService.remove(id.split(","), ServletBox.getLoginUID(request));
+		inboxService.remove(id.split(","), Login.UID(request));
 		return Result.ok();
 	}
 	

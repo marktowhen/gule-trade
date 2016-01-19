@@ -38,15 +38,17 @@ public class GoodsVO implements Serializable{
 		private BigDecimal nowPrice; // 现价
 		private String disCount; // 折扣
 		private BigDecimal discountPrice; // 折扣价
-		private String count; // 库存
+		private int count; // 库存
 		private String volume; // 销量
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date addTime;// 商品添加时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
-		private Date pro_start;  //促销开始时间
+		private Date onSaleBeginTime;  //促销开始时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
-		private Date pro_end;	//促销结束时间
-		private String pro_flag; //是否促销标志
+		private Date onSaleEndTime;	//促销结束时间
+		private boolean onSale; //是否促销标志
+		
+		
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date upTime; //上架时间
 		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
@@ -56,15 +58,15 @@ public class GoodsVO implements Serializable{
 		private String barCode; //条形码
 		private String goodsDesc; //宝贝描述
 		private String goodsTitle; //宝贝标题
-		private int state;
+		private boolean state;
 		private int comment; //商品评论数
 		
 		//----------------商品图片属性-----------------//
-		private String thumb_path_1; // 展示图片
-		private String thumb_path_2; // 展示图片
-		private String thumb_path_3; // 展示图片
-		private String thumb_path_4; // 展示图片
-		private String thumb_path_5; // 展示图片
+		private String thumbpath1; // 展示图片
+		private String thumbpath2; // 展示图片
+		private String thumbpath3; // 展示图片
+		private String thumbpath4; // 展示图片
+		private String thumbpath5; // 展示图片
 		private String content;  //图片展示html代码
 		
 
@@ -78,6 +80,7 @@ public class GoodsVO implements Serializable{
 		private String ingredients;// 配料表
 		private String foodAdditives;// 食品添加剂
 		private String specifications;// 具体规格
+		private String taste; //口味
 		private String ingredient;// 成分含量
 		private String functions;// 功能及功效
 		private String note;// 注意事项
@@ -192,10 +195,11 @@ public class GoodsVO implements Serializable{
 		public void setDiscountPrice(BigDecimal discountPrice) {
 			this.discountPrice = discountPrice;
 		}
-		public String getCount() {
+		
+		public int getCount() {
 			return count;
 		}
-		public void setCount(String count) {
+		public void setCount(int count) {
 			this.count = count;
 		}
 		public String getVolume() {
@@ -210,23 +214,23 @@ public class GoodsVO implements Serializable{
 		public void setAddTime(Date addTime) {
 			this.addTime = addTime;
 		}
-		public Date getPro_start() {
-			return pro_start;
+		public Date getOnSaleBeginTime() {
+			return onSaleBeginTime;
 		}
-		public void setPro_start(Date pro_start) {
-			this.pro_start = pro_start;
+		public void setOnSaleBeginTime(Date onSaleBeginTime) {
+			this.onSaleBeginTime = onSaleBeginTime;
 		}
-		public Date getPro_end() {
-			return pro_end;
+		public Date getOnSaleEndTime() {
+			return onSaleEndTime;
 		}
-		public void setPro_end(Date pro_end) {
-			this.pro_end = pro_end;
+		public void setOnSaleEndTime(Date onSaleEndTime) {
+			this.onSaleEndTime = onSaleEndTime;
 		}
-		public String getPro_flag() {
-			return pro_flag;
+		public boolean isOnSale() {
+			return onSale;
 		}
-		public void setPro_flag(String pro_flag) {
-			this.pro_flag = pro_flag;
+		public void setOnSale(boolean onSale) {
+			this.onSale = onSale;
 		}
 		public Date getUpTime() {
 			return upTime;
@@ -270,41 +274,48 @@ public class GoodsVO implements Serializable{
 		public void setGoodsTitle(String goodsTitle) {
 			this.goodsTitle = goodsTitle;
 		}
-		public int getState() {
+		public boolean isState() {
 			return state;
 		}
-		public void setState(int state) {
+		public void setState(boolean state) {
 			this.state = state;
 		}
-		public String getThumb_path_1() {
-			return thumb_path_1;
+		public int getComment() {
+			return comment;
 		}
-		public void setThumb_path_1(String thumb_path_1) {
-			this.thumb_path_1 = thumb_path_1;
+		public void setComment(int comment) {
+			this.comment = comment;
 		}
-		public String getThumb_path_2() {
-			return thumb_path_2;
+		
+		public String getThumbpath1() {
+			return thumbpath1;
 		}
-		public void setThumb_path_2(String thumb_path_2) {
-			this.thumb_path_2 = thumb_path_2;
+		public void setThumbpath1(String thumbpath1) {
+			this.thumbpath1 = thumbpath1;
 		}
-		public String getThumb_path_3() {
-			return thumb_path_3;
+		public String getThumbpath2() {
+			return thumbpath2;
 		}
-		public void setThumb_path_3(String thumb_path_3) {
-			this.thumb_path_3 = thumb_path_3;
+		public void setThumbpath2(String thumbpath2) {
+			this.thumbpath2 = thumbpath2;
 		}
-		public String getThumb_path_4() {
-			return thumb_path_4;
+		public String getThumbpath3() {
+			return thumbpath3;
 		}
-		public void setThumb_path_4(String thumb_path_4) {
-			this.thumb_path_4 = thumb_path_4;
+		public void setThumbpath3(String thumbpath3) {
+			this.thumbpath3 = thumbpath3;
 		}
-		public String getThumb_path_5() {
-			return thumb_path_5;
+		public String getThumbpath4() {
+			return thumbpath4;
 		}
-		public void setThumb_path_5(String thumb_path_5) {
-			this.thumb_path_5 = thumb_path_5;
+		public void setThumbpath4(String thumbpath4) {
+			this.thumbpath4 = thumbpath4;
+		}
+		public String getThumbpath5() {
+			return thumbpath5;
+		}
+		public void setThumbpath5(String thumbpath5) {
+			this.thumbpath5 = thumbpath5;
 		}
 		public String getContent() {
 			return content;
@@ -396,7 +407,6 @@ public class GoodsVO implements Serializable{
 		public void setIsGiftBox(String isGiftBox) {
 			this.isGiftBox = isGiftBox;
 		}
-
 		public Date getProductionDate() {
 			return productionDate;
 		}
@@ -433,12 +443,14 @@ public class GoodsVO implements Serializable{
 		public void setFactoryTel(String factoryTel) {
 			this.factoryTel = factoryTel;
 		}
-		public int getComment() {
-			return comment;
+		public String getTaste() {
+			return taste;
 		}
-		public void setComment(int comment) {
-			this.comment = comment;
+		public void setTaste(String taste) {
+			this.taste = taste;
 		}
+		
+		
 		
 		
 }

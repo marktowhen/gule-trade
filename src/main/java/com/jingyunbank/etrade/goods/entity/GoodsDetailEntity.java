@@ -30,6 +30,8 @@ public class GoodsDetailEntity {
 	private String foodAdditives;
 	/** 具体规格*/
 	private String specifications;
+	/**口味*/
+	private String taste;
 	/** 成分含量*/
 	private String ingredient;
 	/** 功能及功效*/
@@ -186,6 +188,12 @@ public class GoodsDetailEntity {
 	}
 	public void setFactoryTel(String factoryTel) {
 		this.factoryTel = factoryTel;
+	}
+	public String getTaste() {
+		return taste;
+	}
+	public void setTaste(String taste) {
+		this.taste = taste;
 	}
 	
 	

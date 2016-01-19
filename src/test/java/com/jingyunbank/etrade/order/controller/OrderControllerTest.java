@@ -18,11 +18,11 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.order.bean.PurchaseGoodsVO;
-import com.jingyunbank.etrade.order.bean.PurchaseOrderVO;
-import com.jingyunbank.etrade.order.bean.PurchaseRequestVO;
+import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
+import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
+import com.jingyunbank.etrade.order.presale.bean.PurchaseRequestVO;
 
 public class OrderControllerTest extends TestCaseBase {
 
@@ -82,7 +82,6 @@ public class OrderControllerTest extends TestCaseBase {
 				PurchaseGoodsVO g = new PurchaseGoodsVO();
 				g.setGID("@@@@#$@#@@SDFASDXCV");
 				g.setGname("GXNAME");
-				g.setTotal(new BigDecimal("123.3"));
 				g.setCount(2);
 				g.setMID("1111111111111111111111");
 				g.setPrice(new BigDecimal("123.3"));
@@ -101,7 +100,7 @@ public class OrderControllerTest extends TestCaseBase {
 					 put("/api/order")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
-					.sessionAttr(ServletBox.LOGIN_ID, "USER-ID")
+					.sessionAttr(Login.LOGIN_USER_ID, "USER-ID")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

@@ -12,7 +12,7 @@ public interface PayDao {
 	
 	public void insertMany(@Param("payments") List<OrderPaymentEntity> payments) throws Exception;
 
-	public List<OrderPaymentEntity> selectPayments(@Param("oids") List<String> oids);
+	public List<OrderPaymentEntity> selectPayable(@Param("oids") List<String> oids);
 	
 	public void updateMany(@Param("payments") List<OrderPaymentEntity> payments) throws Exception;
 	//指定的支付id中已完成的支付数

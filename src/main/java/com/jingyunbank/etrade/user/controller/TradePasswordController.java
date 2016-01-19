@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.base.util.EtradeUtil;
 import com.jingyunbank.etrade.user.bean.UserVO;
 @RestController
 @RequestMapping("/api/tradepwd")
@@ -35,13 +35,9 @@ public class TradePasswordController {
 	@RequestMapping(value="/",method=RequestMethod.PUT)
 	public Result<UserVO> updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
-		if(EtradeUtil.effectiveTime(session)){
-			if(userVO.getTradepwd()!=null){
-				if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
-					return Result.fail("交易密码必须是8-20位");
-				}
-			}
-			String uid = ServletBox.getLoginUID(request);
+		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+			
+			String uid = Login.UID(request);
 			userVO.setID(uid);
 			Users users=new Users();
 			BeanUtils.copyProperties(userVO, users);
@@ -62,14 +58,9 @@ public class TradePasswordController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
 	public Result<UserVO> installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		if(EtradeUtil.effectiveTime(session)){
-			if(userVO.getTradepwd()!=null){
-				if(userVO.getTradepwd().length()<7||userVO.getTradepwd().length()>20){
-					return Result.fail("交易密码必须是8-20位");
-				}
-			}
-			String uid = ServletBox.getLoginUID(request);
-			Optional<Users> optional=userService.getByUID(uid);
+		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+			String uid = Login.UID(request);
+			Optional<Users> optional=userService.single(uid);
 			Users users=optional.get();
 			/*if(StringUtils.isEmpty(users.getTradepwd())){*/
 					userVO.setID(uid);

@@ -42,17 +42,20 @@
 		<select id="selectCommentGradeByGid" resultMap="ResultMap">
 		   select 
 		   <include refid="comment_list"></include>
-		   from comment where gid=#{GID}
+		   from comment c where gid=#{GID}
 		   	<if test="commentGrade!=0">
 		   		<if test="commentGrade >=8">
-		   			and comment_grade  &gt;8
+		   			and comment_grade  &gt;=8
 		   		</if>
-		   		<if test="commentGrade &lt;8  &amp;&amp; commentGrade &gt;5">
-		   			and comment_grade &lt;8 &amp;&amp; comment_grade &gt;5
+		   		<if test="commentGrade &lt;8  and commentGrade &gt;6">
+		   			and comment_grade &lt;8 &amp;&amp; comment_grade &gt;6
 		   		</if> 
 		   		<if test="commentGrade &lt;6">
-		   			and comment_grade &lt;6
+		   			and comment_grade &lt;=6
 		   		</if>
+		   </if>
+		   <if test="picture!=0">
+		   		and EXISTS (select 1 from comment_img img where c.id=img.comment_id)
 		   </if>
 		   order by addtime desc,sort desc
 		   <if test="offset!=null and size!=null and size!=0">
@@ -76,7 +79,7 @@
 		<!-- 通过oid查出产品判断状态 -->
 		<select id="selectCommentByOid" parameterType="String" resultMap="ResultMap">
 			select <include refid="comment_list"></include>
-			from comment where oid=#{OID}
+			from comment where oid=#{oid} and gid=#{gid}
 		</select>
 		<!-- 通过gid查出该商品的总条数 -->
 		<select id="commentCount" resultType="int" parameterType="string">

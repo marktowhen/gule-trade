@@ -1,5 +1,9 @@
 package com.jingyunbank.etrade.user.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.user.entity.UserEntity;
 
 public interface UserDao {
@@ -42,13 +46,15 @@ public interface UserDao {
 	 * @param key loginName/email/phone
 	 * @return
 	 */
-	public UserEntity selectUserByLoginKey(String key);
+	public UserEntity selectOneByKey(String key);
 	/**
 	 *	通过id查询用户（user）的信息
 	 * @param id
 	 * @return
 	 */
-	public UserEntity selectUserByid(String id);
+	public UserEntity selectOne(String id);
+
+	public List<UserEntity> selectMany(@Param("uids") List<String> uids) ;
 	
 	/**
 	 * 修改用户信息

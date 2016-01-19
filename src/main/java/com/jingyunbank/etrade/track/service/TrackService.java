@@ -24,6 +24,7 @@ import com.jingyunbank.etrade.api.track.bo.AdDetail;
 import com.jingyunbank.etrade.api.track.bo.AdModule;
 import com.jingyunbank.etrade.api.track.bo.FavoritesGoods;
 import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
+import com.jingyunbank.etrade.api.track.bo.OtherGoods;
 import com.jingyunbank.etrade.api.track.bo.RecommendGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
@@ -34,6 +35,7 @@ import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
+import com.jingyunbank.etrade.track.entity.OtherGoodsEntity;
 import com.jingyunbank.etrade.track.entity.RecommendGoodsEntity;
 
 /**
@@ -48,10 +50,11 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	@Resource
 	private TrackDao trackDao;
 	@Override
-	public List<FootprintGoods> listFootprintGoods(int from,int to) throws Exception {
+	public List<FootprintGoods> listFootprintGoods(int from,int to,String uid) throws Exception {
 		this.from = from;
 		this.to = to;
-		Map<String, Integer> params = new HashMap<String,Integer>();
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("uid", uid);
 		params.put("from", this.from);
 		params.put("to", this.to);
 		List<FootprintGoods> rltlist = new ArrayList<FootprintGoods>();
@@ -286,6 +289,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		map.put("from", (int) range.getFrom());
 		map.put("size", (int) range.getTo());
 		map.put("name", adDetail.getName());
+		map.put("adModuleId", adDetail.getAdModuleId());
 		List<AdDetail> showAdDetailList = trackDao.selectAddetailsByCondition(map).stream().map(eo -> {
 			AdDetail bo = new AdDetail();
 			BeanUtils.copyProperties(eo, bo);
@@ -334,10 +338,16 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		if(uid == null || "".equals(uid)){
 			
 		}else{
-			//查询品牌字符串
-		    bidstr = trackDao.selectRecommendBidstr(params).get("bidstr");
-			//查询类别字符串
-		    tidstr = trackDao.selectRecommendTidstr(params).get("tidstr");
+			Map<String, String> bidmap = trackDao.selectRecommendBidstr(params);
+			if(bidmap!=null){
+				//查询品牌字符串
+			    bidstr = bidmap.get("bidstr");
+			}
+		    Map<String, String> tidmap = trackDao.selectRecommendTidstr(params);
+			if(tidmap!=null){
+				//查询类别字符串
+			    tidstr = tidmap.get("tidstr");
+			}
 		}
 		List<String> bids = new ArrayList<String>();
 		String tmpbidstr[] = bidstr.split(",");
@@ -346,10 +356,35 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		String tmptidstr[] = tidstr.split(",");
 		tids = Arrays.asList(tmptidstr);
 		//查询相关产品
-		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bids,tids,from,to);
+		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bidstr,tidstr,bids,tids,from,to,uid);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				RecommendGoods bo = new RecommendGoods();
+				try {
+					BeanUtils.copyProperties(eo, bo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return rltlist;
+	}
+	
+	public List<OtherGoods> listOtherGoods(String gid,String uid,int from,int to) throws Exception {
+		this.from = from;
+		this.to = to;
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("uid", uid);
+		params.put("gid", gid);
+		params.put("from", this.from);
+		params.put("to", this.to);
+		List<OtherGoods> rltlist = new ArrayList<OtherGoods>();
+		//查询相关产品
+		List<OtherGoodsEntity> goodslist = trackDao.selectOtherGoods(params);
+		if (goodslist != null) {
+			rltlist = goodslist.stream().map(eo -> {
+				OtherGoods bo = new OtherGoods();
 				try {
 					BeanUtils.copyProperties(eo, bo);
 				} catch (Exception e) {

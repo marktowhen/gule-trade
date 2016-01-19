@@ -26,9 +26,10 @@ public class GoodsEntity {
 	/**  商品促销价格*/
 	private BigDecimal promotionPrice;
 	/**  商品现价*/
-	private BigDecimal now_price;
+	private BigDecimal nowprice;
 	/**  是否上架0否1是*/
-	private int state;
+	//private int state;
+	private boolean state;
 	/**  上架时间*/
 	private Date upTime;
 	/**  下架时间*/
@@ -54,9 +55,10 @@ public class GoodsEntity {
 	private int expandSort;
 	
 	private int recordSort;//推荐排序
-	private Date pro_start;  //促销开始时间
-	private Date pro_end;	//促销结束时间
-	private int pro_flag; //是否促销标志
+	
+	private Date onSaleBeginTime;  //促销开始时间
+	private Date onSaleEndTime;	//促销结束时间
+	private boolean onSale; //是否促销标志
 	
 	public String getID() {
 		return ID;
@@ -106,16 +108,18 @@ public class GoodsEntity {
 	public void setPromotionPrice(BigDecimal promotionPrice) {
 		this.promotionPrice = promotionPrice;
 	}
-	public BigDecimal getNow_price() {
-		return now_price;
+	
+	
+	public BigDecimal getNowprice() {
+		return nowprice;
 	}
-	public void setNow_price(BigDecimal now_price) {
-		this.now_price = now_price;
+	public void setNowprice(BigDecimal nowprice) {
+		this.nowprice = nowprice;
 	}
-	public int getState() {
+	public boolean isState() {
 		return state;
 	}
-	public void setState(int state) {
+	public void setState(boolean state) {
 		this.state = state;
 	}
 	public Date getUpTime() {
@@ -167,24 +171,27 @@ public class GoodsEntity {
 	public void setRecordSort(int recordSort) {
 		this.recordSort = recordSort;
 	}
-	public Date getPro_start() {
-		return pro_start;
+	
+	
+	public Date getOnSaleBeginTime() {
+		return onSaleBeginTime;
 	}
-	public void setPro_start(Date pro_start) {
-		this.pro_start = pro_start;
+	public void setOnSaleBeginTime(Date onSaleBeginTime) {
+		this.onSaleBeginTime = onSaleBeginTime;
 	}
-	public Date getPro_end() {
-		return pro_end;
+	public boolean isOnSale() {
+		return onSale;
 	}
-	public void setPro_end(Date pro_end) {
-		this.pro_end = pro_end;
+	public void setOnSale(boolean onSale) {
+		this.onSale = onSale;
 	}
-	public int getPro_flag() {
-		return pro_flag;
+	public Date getOnSaleEndTime() {
+		return onSaleEndTime;
 	}
-	public void setPro_flag(int pro_flag) {
-		this.pro_flag = pro_flag;
+	public void setOnSaleEndTime(Date onSaleEndTime) {
+		this.onSaleEndTime = onSaleEndTime;
 	}
+
 	public BigDecimal getPostage() {
 		return postage;
 	}

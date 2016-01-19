@@ -19,17 +19,18 @@
 			<result column="regtime" property="regtime"/>
 			<result column="regip" property="regip"/>
 			<result column="regdevice" property="regdevice"/>
+			<result column="ispoint" property="isPoint"/>
 			<result column="picture" property="picture"/>
 		</resultMap>
 		<sql id="column_list">
-		uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice,picture
+		uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice,ispoint,picture
 	</sql>
 		<!--添加用户资料信息 -->
 		<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
-			insert into users_info(uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice)
+			insert into users_info(uid,birthday,marriage,gender,country,province,city,address,education,job,income,avatar,regtime,regip,regdevice,ispoint)
 			values
 			(#{UID},#{birthday},#{marriage},#{gender},#{country},#{province},#{city},#{address},#{education},#{job},#{income},
-			#{avatar},#{regtime},#{regip},#{regdevice})
+			#{avatar},#{regtime},#{regip},#{regdevice},#{isPoint})
 		</insert>
 		<!-- 通过uid查询个人的信息（也可通过uid查询用户注册时信息） -->
 	 	<select id="selectByUid" resultType="com.jingyunbank.etrade.user.entity.UserInfoEntity">

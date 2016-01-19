@@ -9,18 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.api.user.service.IUserService;
 
 public class AddressControllerTest extends TestCaseBase {
 	
-	@Autowired
-	private IUserService userService;
+	
 	/**
 	 * 测试新增
 	 * @throws Exception
@@ -29,7 +26,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void test0() throws Exception{
 		getMockMvc().perform(
 				 post("/api/address/")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("valid", "true")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
@@ -50,7 +47,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void testAdd() throws Exception{
 		getMockMvc().perform(
 				post("/api/address/")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("name", "q")
 				.param("country", "1")
 				.param("province", "2")
@@ -94,7 +91,7 @@ public class AddressControllerTest extends TestCaseBase {
 				.param("telephone", "84936795")
 				.param("defaulted", "true")
 				.param("valid", "true")
-				 .sessionAttr(ServletBox.LOGIN_ID, "1")
+				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -114,7 +111,7 @@ public class AddressControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				delete("/api/address/b,t")
 				//.param("ID", "b,t")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -137,7 +134,7 @@ public class AddressControllerTest extends TestCaseBase {
 				.param("offset", "0")
 				.param("size", "2")
 				.param("uid", "1")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -155,7 +152,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void testGetAmout() throws Exception{
 		getMockMvc().perform(
 				get("/api/address/amount")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -173,7 +170,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void testGetSingle() throws Exception{
 		getMockMvc().perform(
 				get("/api/address/-D2c0YzaQFGDMqvpiFo3dw")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -191,7 +188,7 @@ public class AddressControllerTest extends TestCaseBase {
 	public void testGetDefault() throws Exception{
 		getMockMvc().perform(
 				get("/api/address/default")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

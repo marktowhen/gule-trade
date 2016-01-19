@@ -21,7 +21,6 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
-import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
@@ -146,24 +145,9 @@ public class GoodsService implements IGoodsService {
 		map.put("beginprice", show.getBeginPrice());
 		map.put("endprice", show.getEndPrice());
 
+		
 		List<GoodsMerchant> list = goodsDao.selectMerchantByWhere(map).stream().map(dao -> {
 			GoodsMerchant bo = new GoodsMerchant();
-			BeanUtils.copyProperties(dao, bo);
-			return bo;
-		}).collect(Collectors.toList());
-		return list;
-	}
-
-	@Override
-	public List<ShowGoods> listMerchantByWhereGoods4(GoodsShow show) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("brandArr", show.getBrands());
-		map.put("typeArr", show.getTypes());
-		map.put("beginprice", show.getBeginPrice());
-		map.put("endprice", show.getEndPrice());
-		map.put("mid", show.getMID());
-		List<ShowGoods> list = goodsDao.selectMerchantByWhereGoods4(map).stream().map(dao -> {
-			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
@@ -268,9 +252,9 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<HoneyGoods> listHoneyGoods() throws Exception {
+	public List<HoneyGoods> listHoneyGoods(String gid) throws Exception {
 		List<HoneyGoods> rltlist = new ArrayList<HoneyGoods>();
-		List<HoneyGoodsEntity> goodslist = goodsDao.selectHoneyGoods();
+		List<HoneyGoodsEntity> goodslist = goodsDao.selectHoneyGoods(gid);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				HoneyGoods bo = new HoneyGoods();
@@ -289,6 +273,8 @@ public class GoodsService implements IGoodsService {
 		map.put("size", (int) range.getTo());
 		map.put("name", goodsSearch.getName());
 		map.put("state", goodsSearch.getState());
+		map.put("mid", goodsSearch.getMID());
+		map.put("bid", goodsSearch.getBID());
 		List<GoodsList> showGoodsList = goodsBKDao.selectGoodsByCondition(map).stream().map(dao -> {
 			GoodsList bo = new GoodsList();
 			BeanUtils.copyProperties(dao, bo);
@@ -298,17 +284,39 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public List<SalesRecord> listSalesRecords(String gid, Range range) throws Exception {
+	public List<ShowGoods> listBrandsThree(Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("gid", gid);
 		map.put("from", (int) range.getFrom());
 		map.put("size", (int) range.getTo());
-		List<SalesRecord> saleList = goodsDao.selectSalesRecords(map).stream().map(dao -> {
-			SalesRecord bo = new SalesRecord();
+		List<ShowGoods> brandslist = goodsDao.selectBrandsThree(map).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
 			BeanUtils.copyProperties(dao, bo);
 			return bo;
 		}).collect(Collectors.toList());
-		return saleList;
+		return brandslist;
+	}
+
+	@Override
+	public List<ShowGoods> listTypesThree(Range range) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("from", (int) range.getFrom());
+		map.put("size", (int) range.getTo());
+		List<ShowGoods> typeslist = goodsDao.selectTypesThree(map).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return typeslist;
+	}
+
+	@Override
+	public List<ShowGoods> listGoodsStcok(List<String> gids) throws Exception {
+		List<ShowGoods> stocklist = goodsDao.selectGoodsStock(gids).stream().map(dao -> {
+			ShowGoods bo = new ShowGoods();
+			BeanUtils.copyProperties(dao, bo);
+			return bo;
+		}).collect(Collectors.toList());
+		return stocklist;
 	}
 
 }

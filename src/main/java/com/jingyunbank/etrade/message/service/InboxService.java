@@ -77,7 +77,7 @@ public class InboxService implements IInboxService {
 		MessageEntity e = new MessageEntity();
 		e.setID(id);
 		e.setReceiveUID(receiveUID);
-		e.setStatus(STATUS_DEL);
+		e.setStatus(Message.STATUS_DEL);
 		try {
 			messageDao.updateStatus(e);
 		} catch (Exception e1) {
@@ -91,7 +91,7 @@ public class InboxService implements IInboxService {
 		MessageEntity e = new MessageEntity();
 		e.setIDs(ids);
 		e.setReceiveUID(receiveUID);
-		e.setStatus(STATUS_DEL);
+		e.setStatus(Message.STATUS_DEL);
 		try {
 			messageDao.updateStatus(e);
 		} catch (Exception e1) {
@@ -101,7 +101,7 @@ public class InboxService implements IInboxService {
 	}
 
 	@Override
-	public Optional<Message> getSingle(String ID) {
+	public Optional<Message> single(String ID) {
 		MessageEntity entity = messageDao.selectSingle(ID);
 		if(entity!=null){
 			return Optional.of(copyEntityToBo(entity, new Message()));
@@ -113,7 +113,7 @@ public class InboxService implements IInboxService {
 	public List<Message> list(String uid, Range range) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(uid);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
 					.stream().map( entityResul->{
 						return copyEntityToBo(entityResul, new Message());
@@ -127,11 +127,11 @@ public class InboxService implements IInboxService {
 	 * 2015年11月13日 qxs
 	 */
 	@Override
-	public int getAmount(String receiveUID) {
+	public int count(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
-		entity.setStatus(STATUS_SUC);
-		return messageDao.getAmount(entity);
+		entity.setStatus(Message.STATUS_SUC);
+		return messageDao.count(entity);
 	}
 
 	@Override
@@ -140,30 +140,30 @@ public class InboxService implements IInboxService {
 		entity.setReceiveUID(uid);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(false);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
 					.stream().map( entityResul->{
 						return copyEntityToBo(entityResul, new Message());
 					}).collect(Collectors.toList());
 	}
 	@Override
-	public int getAmountUnread(String receiveUID) {
+	public int countUnread(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(false);
-		return messageDao.getAmount(entity);
+		return messageDao.count(entity);
 	}
 	
 	@Override
-	public int getAmountRead(String receiveUID) {
+	public int countRead(String receiveUID) {
 		MessageEntity entity = new MessageEntity();
 		entity.setReceiveUID(receiveUID);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(true);
-		return messageDao.getAmount(entity);
+		return messageDao.count(entity);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class InboxService implements IInboxService {
 		entity.setReceiveUID(receiveUID);
 		entity.setNeedReadStatus(true);
 		entity.setHasRead(true);
-		entity.setStatus(STATUS_SUC);
+		entity.setStatus(Message.STATUS_SUC);
 		return  messageDao.selectList(entity, range.getFrom(), range.getTo()-range.getFrom())
 					.stream().map( entityResul->{
 						return copyEntityToBo(entityResul, new Message());

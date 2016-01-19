@@ -7,6 +7,9 @@ import java.util.Date;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 public class GoodsInCartVO implements Serializable {
 
@@ -15,14 +18,15 @@ public class GoodsInCartVO implements Serializable {
 	private String cartID;
 	private Date addtime;
 	private String UID;
+	private String uname;
 	
-	@NotNull
-	//@Size(min=22, max=22)
+	@NotBlank
+	@Size(min=1, max=22)
 	private String GID;
-	@NotNull
+	@NotBlank
 	private String gname;
-	@NotNull
-	//@Size(min=22, max=22)
+	@NotBlank
+	@Size(min=1, max=22)
 	private String MID;
 	@NotNull
 	private String mname;
@@ -114,5 +118,10 @@ public class GoodsInCartVO implements Serializable {
 	public void setPprice(BigDecimal pprice) {
 		this.pprice = pprice;
 	}
-		
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
+	}
 }

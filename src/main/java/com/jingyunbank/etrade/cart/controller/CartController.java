@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.cart.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -22,9 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.cart.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
+import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.cart.bean.CartVO;
 import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
@@ -37,6 +39,8 @@ public class CartController {
 	
 	@Autowired
 	private ICartService cartService;
+	@Autowired
+	private IPostageService postageService;
 	
 	/**
 	 *	uri : get /api/cart/goods/list/:uid
@@ -78,6 +82,7 @@ public class CartController {
 			}
 			GoodsInCartVO goodsVo = new GoodsInCartVO();
 			BeanUtils.copyProperties(goods, goodsVo);
+			goodsVo.setCount(goodsVo.getStock() < goodsVo.getCount()?goodsVo.getStock():goodsVo.getCount());
 			order.getGoods().add(goodsVo);
 		});
 		return cart;
@@ -98,9 +103,11 @@ public class CartController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String cid = ServletBox.getLoginCartID(session);
-		String uid = ServletBox.getLoginUID(session);
+		String cid = Login.cartID(session);
+		String uid = Login.UID(session);
+		String uname = Login.uname(session);
 		goods.setUID(uid);
+		goods.setUname(uname);
 		goods.setCartID(cid);
 		goods.setID(KeyGen.uuid());
 		goods.setAddtime(new Date());
@@ -132,7 +139,7 @@ public class CartController {
 	@RequestMapping(value="/api/cart/goods/{uid}", method=RequestMethod.DELETE,
 					produces="application/json;charset=UTF-8")
 	public Result<String> delete(@PathVariable("uid") String uid, HttpSession session) throws Exception{
-		String loginuid = ServletBox.getLoginUID(session);
+		String loginuid = Login.UID(session);
 		if(loginuid.equals(uid)){
 			cartService.clear(uid);
 		}
@@ -170,6 +177,38 @@ public class CartController {
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
 	public Result<CartVO> clearing(@Valid @RequestBody CartVO cart,
 					BindingResult valid, HttpSession session) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的订单信息有误，请核实后重新提交。");
+		}
+		
+		List<OrdersInCartVO> orders = cart.getOrders();
+		BigDecimal cartprice = BigDecimal.ZERO;
+		BigDecimal cartpricewithoutpostage = BigDecimal.ZERO;
+		for (OrdersInCartVO order : orders) {
+			//纯订单价格
+			BigDecimal orderprice = BigDecimal.ZERO;
+			//纯邮费
+			BigDecimal orderpostage = BigDecimal.valueOf(10);
+			List<GoodsInCartVO> goods = order.getGoods();
+			for (GoodsInCartVO gs : goods) {
+				BigDecimal gspprice = gs.getPprice();
+				BigDecimal gsprice = gs.getPrice();
+				int gscount = gs.getCount();
+				orderprice = orderprice.add(
+							(Objects.nonNull(gspprice)?gspprice:gsprice)
+									.multiply(BigDecimal.valueOf(gscount)).setScale(2)
+						);
+			}
+			//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
+			orderpostage = (orderprice.compareTo(BigDecimal.valueOf(99)) >= 0 ? BigDecimal.ZERO : orderpostage);
+            order.setPostage(orderpostage);
+            order.setPrice(orderprice.add(orderpostage));
+            cartprice = cartprice.add(order.getPrice());
+            cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
+		}
+		cart.setTotalPrice(cartprice);
+		cart.setTotalPriceWithoutPostage(cartpricewithoutpostage);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		session.setAttribute(GOODS_IN_CART_TO_CLEARING, mapper.writeValueAsString(cart));
 		return Result.ok(cart);

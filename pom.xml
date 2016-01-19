@@ -4,7 +4,7 @@
 
 	<groupId>com.jingyunbank</groupId>
 	<artifactId>jingyun-etrade</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>jingyun-etrade</name>
@@ -28,6 +28,7 @@
 	</properties>
 
 	<dependencies>
+		<!-- spring boot start -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -52,6 +53,25 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-pool</artifactId>
+        </dependency>
+        <!-- spring boot end -->
+        
+        
         <!-- MyBatis start -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
@@ -65,6 +85,7 @@
 		</dependency>
 		<!-- MyBatis end -->
 
+
 		<!-- db start -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -76,36 +97,37 @@
 			<artifactId>druid</artifactId>
 			<version>${druid.version}</version>
 		</dependency>
+		<!-- db end -->
 		
+		<!-- jingyun projects start -->
 		<dependency>
 	    	<groupId>com.jingyunbank</groupId>
 			<artifactId>jingyun-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.1-RELEASE</version>
 	    </dependency>
 	    
 	    <dependency>
 	    	<groupId>com.jingyunbank</groupId>
 			<artifactId>jingyun-etrade-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-RELEASE</version>
 	    </dependency>
+	    <!-- jingyun projects end -->
 	    
+	    
+	    <!-- test scope dependency -->
 	    <dependency>
 		    <groupId>com.jayway.jsonpath</groupId>
 		    <artifactId>json-path</artifactId>
 		    <scope>test</scope>
 		</dependency>
-		
-		<dependency>
-             <groupId>com.alibaba.rocketmq</groupId>
-             <artifactId>rocketmq-all</artifactId>
-             <version>3.2.6</version>
-             <type>pom</type>
-        </dependency>
+		<!-- test scope dependency -->        
+        
+        <!-- http components start -->
         <dependency>
-             <groupId>com.alibaba.rocketmq</groupId>
-             <artifactId>rocketmq-client</artifactId>
-             <version>3.2.6</version>
-        </dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<!-- http components end -->
 		
 	</dependencies>
 

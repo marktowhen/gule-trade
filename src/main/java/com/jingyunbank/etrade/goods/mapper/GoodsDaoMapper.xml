@@ -16,9 +16,11 @@
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
 		<result column="addtime" property="addTime" />
-		<result column="pro_flag" property="pro_flag" />
-		<result column="pro_start" property="pro_start" />
-		<result column="pro_end" property="pro_end" />
+		
+		<result column="pro_flag" property="onSale" />
+		<result column="pro_start" property="onSaleBeginTime" />
+		<result column="pro_end" property="onSaleEndTime" />
+		
 		<result column="up_time" property="upTime" />
 		<result column="down_time" property="downTime" />
 		<result column="postage" property="postage" />
@@ -39,6 +41,7 @@
 		<result column="ingredients" property="ingredients" />
 		<result column="food_additives" property="foodAdditives" />
 		<result column="specifications" property="specifications" />
+		<result column="taste" property="taste" />
 		<result column="ingredient" property="ingredient" />
 		<result column="functions" property="functions" />
 		<result column="note" property="note" />
@@ -51,11 +54,11 @@
 		<result column="factoryaddr" property="factoryAddr" />
 		<result column="factorytel" property="factoryTel" />
 		<!-- 商品图片信息 -->
-		<result column="thumb_path_1" property="thumb_path_1" />
-		<result column="thumb_path_2" property="thumb_path_2" />
-		<result column="thumb_path_3" property="thumb_path_3" />
-		<result column="thumb_path_4" property="thumb_path_4" />
-		<result column="thumb_path_5" property="thumb_path_5" />
+		<result column="thumb_path_1" property="thumbpath1" />
+		<result column="thumb_path_2" property="thumbpath2" />
+		<result column="thumb_path_3" property="thumbpath3" />
+		<result column="thumb_path_4" property="thumbpath4" />
+		<result column="thumb_path_5" property="thumbpath5" />
 		<result column="content" property="content" />
 		<!-- 店铺信息 -->
 		<result column="mid" property="MID" />
@@ -81,6 +84,14 @@
 		<result column="m_img" property="merchantImg" />
 		<result column="m_desc" property="merchantDesc" />
 		<result column="counts" property="goodscount" />
+		
+<!--   		
+		<collection property="brands" javaType="ArrayList" 
+		ofType="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity">
+		<result column="bid" property="ID" />
+		<result column="brandname" property="name" />
+		</collection>  
+-->
 	</resultMap>
 	<!-- 查询热门推荐商品的基本信息 -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.HotGoodsEntity"
@@ -88,12 +99,14 @@
 		<!-- 商品概要信息 -->
 		<result column="gid" property="GID" />
 		<result column="goodsname" property="goodsName" />
+		<result column="img_path" property="imgPath" />
 		<result column="weight" property="weight" />
 		<result column="unit" property="unit" />
 		<result column="price" property="price" />
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
+		<result column="pro_flag" property="onSale" />
 		<!-- 品牌信息 -->
 		<result column="bid" property="BID" />
 		<result column="brandname" property="brandName" />
@@ -101,6 +114,7 @@
 		<!--类型信息 -->
 		<result column="tid" property="TID" />
 		<result column="typename" property="typeName" />
+		<result column="merchant_name" property="merchantName" />
 	</resultMap>
 
 	<!-- 商品图片属性 goods_img i -->
@@ -116,14 +130,15 @@
 	<sql id="detailedSql">
 		g.id gid,g.mid MID,g.`bid` bid,g.name goodsname,g.`code` CODE,g.tid tid,g.`price` price,
 		g.`promotion_price` promotion_price,<include refid="nowprice"/>
-		g.`state` state,g.`count` counts,g.`up_time` up_time, 
+		g.`state` state,g.`count` counts,g.`up_time` up_time, g.volume volume,
 		g.`down_time` down_time,g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
-		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
-		g.`title` goodstitle,m.`merchant_name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
+		g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME, g.`desc` goodsdesc,
+		g.`title` goodstitle,m.`name` merchantname ,m.`img_path` merchantimg ,b.`name` brandname,t.`name` typename,
 		<include refid="imgAttr"/>
 		d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
 		d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
 		d.`ingredients` ingredients,d.`food_additives` food_additives,d.`specifications` specifications,
+		d.`taste` taste,
 		d.`ingredient` ingredient, d.`functions` functions,d.`note` note,d.`storage_methods` storage_methods,
 		d.`is_gift_box` is_gift_box,d.`production_date` production_date,d.`weight` weight,d.`unit` unit,
 		d.`factory_name` factoryname,d.`factory_addr` factoryaddr,d.`factory_tel` factorytel,COUNT(c.id) COMMENT
@@ -136,11 +151,11 @@
 	<!-- 商品概要信息查询字段 用于多条件搜索和商品展示 -->
 	<sql id="commentGoods">
 		g.id gid, g.name goodsname,g.title goodstitle,d.weight weight,d.unit unit,g.price price ,
-		g.promotion_price promotion_price,
+		g.promotion_price promotion_price,d.specifications specifications,
 		<include refid="nowprice"/>
 		i.Thumb_path_1 thumb_path_1,g.volume volume,g.addtime addtimes,
 		g.pro_flag pro_flag, g.pro_start pro_start, g.pro_end pro_end,
-		COUNT(c.goods_comment) comment
+		COUNT(c.id) comment
 	</sql>
 
 	<!-- 根据名称like查询商品 -->
@@ -161,8 +176,31 @@
 	<!-- 查询品牌 -->
 	<select id="selectBrands" resultMap="baseGoodsMap">
 		SELECT b.id bid, b.name
-		brandname, b.desc branddesc FROM goods_brand b ORDER BY b.admin_sort
+		brandname, b.desc branddesc FROM goods_brand b
+	    WHERE b.status=1 
+	    ORDER BY b.admin_sort
 	</select>
+	
+	<select id="selectBrandsThree" resultMap="baseGoodsMap" parameterType="java.util.Map">
+	<![CDATA[
+		SELECT b.id bid, b.name brandname, b.desc branddesc 
+		FROM goods_brand b WHERE b.admin_sort <> 0 AND b.status=1  
+		ORDER BY b.admin_sort
+		LIMIT #{from},#{size}
+	]]>
+	</select>
+	
+	
+	<select id="selectTypesThree" resultMap="baseGoodsMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT t.id tid,t.`name` typename FROM goods_type t 
+			WHERE t.`status`= 1 AND 
+		    t.`admin_sort` <> 0 
+		    ORDER BY t.`admin_sort`
+		    LIMIT #{from},#{size}
+		]]>
+	</select>
+	
 	<!-- 查询类型 -->
 	<select id="selectTypes" resultMap="baseGoodsMap">
 		SELECT t.id tid,t.name
@@ -174,8 +212,8 @@
 	<!-- 查询热门推荐商品 -->
 	<sql id="hotGoodsWhere">
 		g.id as gid,g.mid, b.id brand_id ,b.name brand_name,p.name type_name,g.name as goodsname,
-		g.price,g.now_price now_price , g.count count, g.volume volume
-		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,
+		g.price,g.now_price now_price , g.count count, g.volume volume,mt.img_path as img_path
+		,g.addtime addtime,g.pro_flag,g.promotion_price,d.specifications,mt.level as level,mt.name as merchant_name,
 		<include refid="imgAttr" />
 		d.weight,d.unit ,t.strategy_name,t.parameter1
 	</sql>
@@ -273,7 +311,7 @@
 	<!-- 根据商品 推荐序号 查询 宝贝推荐的商品 -->
 	<select id="selectRecommend" parameterType="java.util.Map" resultMap="baseGoodsMap">
 	<![CDATA[	
-		SELECT g.id gid,g.name goodsname, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1
+		SELECT g.id gid,g.name goodsname, m.name as merchantname, i.Thumb_path_1 thumb_path_1
 		,g.price,g.pro_flag,g.promotion_price,d.specifications
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
@@ -309,36 +347,22 @@
 	<!-- 根据商品条件搜索关联店铺 -->
 	<select id="selectMerchantByWhere" parameterType="java.util.Map"
 		resultMap="GoodsMerchantMap">
-		SELECT m.`id` mid ,m.`merchant_name` merchantname,m.img_path m_img, <include refid="nowprice"/>
+
+		SELECT m.`id` mid ,m.`name` merchantname,
+		m.img_path m_img, <include refid="nowprice"/>
 		m.merchant_desc m_desc, COUNT(g.id) counts FROM goods g
 		LEFT JOIN
 		goods_detail d ON d.gid = g.id
 		LEFT JOIN goods_img i ON i.gid = g.id
 		LEFT JOIN merchant m ON m.id=g.mid
-		LEFT JOIN goods_brand b ON
-		b.id=g.`bid`
+		LEFT JOIN goods_brand b ON b.id = g.bid
 		LEFT JOIN goods_type t ON t.id=g.tid
 		WHERE 1=1 AND
 		g.state=1
 		<include refid="where" />
-		GROUP BY merchantname LIMIT #{from} , #{size}
-	</select>
-	<!--查询店铺相关产品4条 -->
-	<select id="selectMerchantByWhereGoods4" parameterType="java.util.Map"
-		resultMap="baseGoodsMap">
-		SELECT
-		<include refid="commentGoods" />
-				FROM goods g
-				LEFT JOIN goods_detail d ON d.gid = g.id
-				LEFT JOIN goods_img i ON i.gid = g.id
-				LEFT JOIN merchant m ON m.id=g.mid
-				LEFT JOIN goods_brand b ON b.id=g.`bid`
-				LEFT JOIN goods_type t ON t.id=g.tid
-				LEFT JOIN COMMENT c ON c.gid=g.id
-				WHERE 1=1 AND g.state=1  AND m.id = #{mid}
-		<include refid="where" />
-		GROUP BY g.id
-		LIMIT 0,4
+		GROUP BY m.`id` LIMIT #{from} , #{size}
+		
+		
 	</select>
 	<!--查询店铺相关产品->>更多相关产品 -->
 	<select id="selectMerchantByWhereGoodsMax" parameterType="java.util.Map"
@@ -399,7 +423,7 @@
 		<result column="name" property="goodsName" />
 		<result column="price" property="price" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 	</resultMap>
 	<!-- 查询24小时热卖推荐商品列表 -->
 	<select id="selectHot24Goods" resultMap="hot24GoodsEntity">
@@ -411,7 +435,7 @@
 		sales_date  >= 
 		DATE_SUB(NOW(),INTERVAL 24 HOUR)
 		group by gid order by sum(count) desc limit 0,3
-		) r left join goods x
+		) r inner join goods x
 		 on 1=1 AND x.state=1
 		and r.gid = x.id
 		left join goods_img i
@@ -438,7 +462,7 @@
 		LEFT JOIN COMMENT c ON c.gid=g.id
 		WHERE 1 = 1 AND g.state=1 
 		<include refid="where" />
-		<if test="goodsname !=''">
+		<if test="goodsname !='' and goodsname!=null ">
 			<![CDATA[ AND g.name LIKE CONCAT(CONCAT('%', #{goodsname}), '%')]]>
 		</if>
 		GROUP BY g.id
@@ -473,6 +497,7 @@
 		LEFT JOIN COMMENT c ON g.id=c.gid
 		WHERE 1=1 AND g.id = #{gid} GROUP BY g.id
 	</select>
+	
 	<!-- 查询商品详情页的宝贝排行  -->
 	<resultMap type="com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity"
 		id="honeyGoodsEntity">
@@ -481,36 +506,34 @@
 		<result column="goodsname" property="goodsName" />
 		<result column="price" property="price" />
 		<result column="now_price" property="nowPrice" />
-		<result column="thumb_path_1" property="thumb_path_1" />
+		<result column="thumb_path_1" property="thumbpath1" />
 	</resultMap>
 	<!-- 查询商品详情页的宝贝排行  -->
-	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity">
+	<select id="selectHoneyGoods" resultMap="honeyGoodsEntity" parameterType="string">
 	<![CDATA[	
 		SELECT g.id gid,g.name goodsname,g.price,g.promotion_price as promotionPrice,g.now_price,
-		g.volume as volume, m.merchant_name merchantname, i.Thumb_path_1 thumb_path_1,g.pro_flag
+		g.volume as volume, m.name merchantname, i.Thumb_path_1 thumb_path_1,g.pro_flag
 		FROM goods g
 		LEFT JOIN merchant m ON g.mid=m.id
 		LEFT JOIN goods_img i ON i.gid = g.id
-		ORDER BY g.volume desc limit 0,4
+		where g.mid = (select mid from goods t where t.id = #{gid})
+		 AND g.state=1 
+		ORDER BY g.volume desc limit 0,6
 		]]>
 	</select>
 	
-	
-	<resultMap type="com.jingyunbank.etrade.goods.entity.SalesRecordEntity" id="salesrecordsMap">
-		<result column="gid" property="ID" />
-		<result column="goodsname" property="OID" />
-		<result column="price" property="UID" />
-		<result column="now_price" property="uname" />
-		<result column="now_price" property="GID" />
-		<result column="thumb_path_1" property="count" />
-		<result column="thumb_path_1" property="sales_date" />
-	</resultMap>
-	<!-- 查询商品的交易记录 -->
-	<select id="selectSalesRecords"  parameterType="java.util.Map" resultMap="salesrecordsMap">
-		SELECT s.`id`,s.`oid`,s.`uid`, s.`uname`,s.`gid`, s.`count`,s.`sales_date` 
-		FROM `sales_records` s
-		WHERE 1=1 AND s.`gid` =#{gid}
-		ORDER BY s.`sales_date`DESC
-		LIMIT #{from}, #{size}
+	<!-- 获取商品的库存 -->
+	<select id="selectGoodsStock" parameterType="string"
+		resultMap="baseGoodsMap">
+		SELECT g.id gid,g.count counts  FROM goods g
+		WHERE 1=1 
+		<if test="gids !='' and gids !=null ">
+					AND g.id IN
+					<foreach collection="gids" index="index" item="item"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+		</if>
 	</select>
+	
 </mapper>

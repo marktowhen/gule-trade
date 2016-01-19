@@ -20,7 +20,18 @@ public class BrandVO implements Serializable {
 	@NotNull(message="品牌名称不能为空")
 	private String name;
 	private String desc;
-	private int admin_sort;
+	private int adminsort;
+	private boolean status;
+	
+	
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 
 	public String getID() {
 		return ID;
@@ -54,12 +65,14 @@ public class BrandVO implements Serializable {
 		this.desc = desc;
 	}
 
-	public int getAdmin_sort() {
-		return admin_sort;
+	public int getAdminsort() {
+		return adminsort;
 	}
 
-	public void setAdmin_sort(int admin_sort) {
-		this.admin_sort = admin_sort;
+	public void setAdminsort(int adminsort) {
+		this.adminsort = adminsort;
 	}
+
+
 
 }

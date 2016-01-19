@@ -30,7 +30,6 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.goods.bo.Brand;
 import com.jingyunbank.etrade.api.goods.service.IBrandService;
 import com.jingyunbank.etrade.goods.bean.BrandVO;
-import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 
 @RestController
 @RequestMapping("/api/brand")
@@ -48,7 +47,7 @@ public class BrandController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Result saveBrand(HttpServletRequest request, @RequestBody @Valid BrandVO vo, BindingResult valid)
+	public Result<String> saveBrand(HttpServletRequest request, @RequestBody @Valid BrandVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
@@ -60,8 +59,7 @@ public class BrandController {
 		Brand brand = new Brand();
 		BeanUtils.copyProperties(vo, brand);
 		brand.setID(KeyGen.uuid());
-		brand.setAdmin_sort(0);
-
+		brand.setStatus(true);
 		if (brandService.save(brand)) {
 			return Result.ok("success");
 		} else {
@@ -76,8 +74,8 @@ public class BrandController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateveiw/{bid}", method = RequestMethod.GET)
-	public Result queryBrandById(@PathVariable String bid) throws Exception {
+	@RequestMapping(value = "/updateview/{bid}", method = RequestMethod.GET)
+	public Result<BrandVO> queryBrandById(@PathVariable String bid) throws Exception {
 		BrandVO brand = null;
 		Optional<Brand> bo = brandService.singleById(bid);
 		if (Objects.nonNull(bo)) {
@@ -89,7 +87,7 @@ public class BrandController {
 	
 	
 	@RequestMapping(value = "/update/{bid}", method = RequestMethod.POST)
-	public Result updateBrand(HttpServletRequest request,@PathVariable String bid,  @RequestBody @Valid BrandVO vo, BindingResult valid)
+	public Result<String> updateBrand(HttpServletRequest request,@PathVariable String bid,  @RequestBody @Valid BrandVO vo, BindingResult valid)
 			throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
@@ -116,7 +114,7 @@ public class BrandController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/brands/{mid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{mid}/list", method = RequestMethod.GET)
 	public Result<List<BrandVO>> getBrandByMid(@PathVariable String mid) throws Exception{
 		List<BrandVO> list = brandService.listBrandsByMid(mid).stream().map(bo -> {
 			BrandVO vo = new BrandVO();
@@ -128,6 +126,16 @@ public class BrandController {
 	
 	
 	
+	@RequestMapping(value = "/{bid}", method = RequestMethod.PUT)
+	public Result<String> delBrand(@PathVariable String bid) throws Exception{
+		if(brandService.delBrand(bid)){
+			return Result.ok("success");
+		}
+		return Result.fail("fail");
+	}
+	
+	
+	
 	
 	/**
 	 * 根据MID 查询所属的品牌
@@ -135,7 +143,7 @@ public class BrandController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/brands", method = RequestMethod.GET)
+	@RequestMapping(value = "/all/list", method = RequestMethod.GET)
 	public Result<List<BrandVO>> getBrands() throws Exception{
 		List<BrandVO> list = brandService.listBrands().stream().map(bo -> {
 			BrandVO vo = new BrandVO();

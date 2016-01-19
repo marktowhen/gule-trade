@@ -29,6 +29,7 @@ public class RefundRequestVO {
 	private String statusCode;
 	private String statusName;//RefundStatusDesc
 	private long refundno;
+	private boolean received;
 	@NotNull
 	private boolean returnGoods=false;//是否退货
 	
@@ -146,12 +147,18 @@ public class RefundRequestVO {
 	public void setCertificates(List<String> certificates) {
 		this.certificates = certificates;
 	}
-
 	public long getRefundno() {
 		return refundno;
 	}
-
 	public void setRefundno(long refundno) {
 		this.refundno = refundno;
+	}
+
+	public boolean isReceived() {
+		return received;
+	}
+
+	public void setReceived(boolean received) {
+		this.received = received;
 	}
 }

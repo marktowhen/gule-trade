@@ -18,6 +18,7 @@
 		<result column="description" property="description" javaType="String"/>
 		<result column="reason" property="reason" javaType="String"/>
 		<result column="return_goods" property="returnGoods" javaType="Boolean"/>
+		<result column="received" property="received" javaType="Boolean"/>
 		
 		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
 		<result column="gid" property="GID" javaType="String"/>
@@ -27,11 +28,11 @@
 	</resultMap>
 	<sql id="refund_columns">
 		id, uid, oid, mid, ogid, addtime, status_code, status_name,
-		money, omoney, description, reason, return_goods, refundno
+		money, omoney, description, reason, return_goods, refundno, received
 	</sql>
 	<sql id="goods_join_refund_columns">
 		r.id, r.uid, r.oid, r.mid, r.ogid, r.addtime, r.status_code, r.status_name,
-		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno,
+		r.money, r.omoney, r.description, r.reason, r.return_goods, r.refundno, r.received,
 		o.orderno, og.gid, og.gname, img.thumb_path_1 as gpath
 	</sql>
 	<insert id="insertOne" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
@@ -40,74 +41,115 @@
 		values
 			(
 				#{ID}, #{UID}, #{OID}, #{MID}, #{OGID}, #{addtime}, #{statusCode}, #{statusName},
-				#{money}, #{omoney}, #{description}, #{reason}, #{return_goods}, #{refundno}
+				#{money}, #{omoney}, #{description}, #{reason}, #{returnGoods}, #{refundno}, #{received}
 			 )
 	</insert>
 	<update id="updateStatus">
 		update refunds
 		set status_code = #{status.code}, status_name = #{status.name}
-		where id = #{RID}
+		where id in 
+		<foreach collection="RIDs" item="rid" open="(" separator="," close=")">
+			#{rid}
+		</foreach>
 	</update>
+	
+	<update id="update" parameterType="com.jingyunbank.etrade.order.postsale.entity.RefundEntity">
+		update refunds
+		<set>
+			<if test="statusCode != null and !''.equals(statusCode)">
+				status_code = #{statusCode},
+			</if>
+			<if test="statusName != null and !''.equals(statusName)">
+				status_name = #{statusName},
+			</if>
+			<if test="money != null">
+				money = #{money},
+			</if>
+			<if test="description != null and !''.equals(description)">
+				description = #{description},
+			</if>
+			<if test="reason != null and !''.equals(reason)">
+				reason = #{reason},
+			</if>
+		</set>
+		where id = #{ID}
+	</update>
+	
 	<select id="selectOne" parameterType="String" resultMap="RefundEntityResultMap">
 		select <include refid="refund_columns"/> 
 		from refunds
 		where id = #{rid}
 	</select>
-	<select id="selectmWithCondition" resultMap="RefundEntityResultMap">
-		select <include refid="goods_join_refund_columns"/> 
-		from refunds r
-		inner join order_goods og on r.ogid = og.id 
-		inner join orders o on r.oid = o.id 
-		left join goods_img img on og.gid = img.gid 
-		where 
-			r.mid = #{mid}
-			<if test="statuscode != null and !''.equals(statuscode)">
-				and r.status_code = #{statuscode}
-			</if>
-			<if test="fromdate != null and !''.equals(fromdate)">
-				and r.addtime &gt;= #{fromdate}
-			</if>
-			<if test="keywords != null and !''.equals(keywords)">
-				and (
-						og.gname like CONCAT('%','${keywords}','%') 
-						or 
-						o.orderno like CONCAT('%','${keywords}','%')
-						or
-						r.mid like CONCAT('%','${keywords}','%')
-						or
-						o.mname like CONCAT('%','${keywords}','%')
-					)
-			</if>
-		order by r.addtime desc 
-		limit #{from}, #{size}
+	<select id="selectByRIDs" resultMap="RefundEntityResultMap">
+		select <include refid="refund_columns"/> 
+		from refunds
+		where id in 
+			<foreach collection="rids" item="rid" open="(" separator="," close=")">
+				#{rid}
+			</foreach>
+	</select>
+	<select id="selectOneByOGID" parameterType="String" resultMap="RefundEntityResultMap">
+		select <include refid="refund_columns"/> 
+		from refunds
+		where ogid = #{ogid}
+		order by addtime desc
+		limit 1
 	</select>
 	
-	<select id="selectWithCondition" resultMap="RefundEntityResultMap">
+	<select id="selectKeywords" resultMap="RefundEntityResultMap">
 		select <include refid="goods_join_refund_columns"/> 
-		from refunds r
+		from 
+		(
+			select <include refid="refund_columns"/>
+			from refunds
+			where 
+				1 = 1
+				<if test="uid != null and !''.equals(uid)">
+					and uid = #{uid}
+				</if>
+				<if test="mid != null and !''.equals(mid)">
+					and mid = #{mid}
+				</if>
+				<if test="statuscode != null and !''.equals(statuscode)">
+					and status_code = #{statuscode}
+				</if>
+				<if test="fromdate != null and !''.equals(fromdate)">
+					and addtime &gt;= #{fromdate}
+				</if>
+				<if test="enddate != null and !''.equals(enddate)">
+					and addtime &lt;= #{enddate}
+				</if>
+				<if test="keywords != null and !''.equals(keywords)">
+					and (
+							mid like CONCAT('%','${keywords}','%')
+							or
+							exists (select 1 from order_goods og where og.id = ogid and og.gname like CONCAT('%','${keywords}','%'))
+							or 
+							exists (
+									select 1 from orders o 
+									where o.id = oid 
+									and (
+										o.orderno like CONCAT('%','${keywords}','%') 
+										or o.mname like CONCAT('%','${keywords}','%')
+									)
+							)
+						)
+				</if>
+			order by addtime desc 
+			<if test="size > 0 and from >= 0">
+			limit #{from}, #{size}
+			</if>
+		)r
 		inner join order_goods og on r.ogid = og.id 
 		inner join orders o on r.oid = o.id 
 		left join goods_img img on og.gid = img.gid 
-		where 
-			r.uid = #{uid}
-			<if test="statuscode != null and !''.equals(statuscode)">
-				and r.status_code = #{statuscode}
-			</if>
-			<if test="fromdate != null and !''.equals(fromdate)">
-				and r.addtime &gt;= #{fromdate}
-			</if>
-			<if test="keywords != null and !''.equals(keywords)">
-				and (
-						og.gname like CONCAT('%','${keywords}','%') 
-						or 
-						o.orderno like CONCAT('%','${keywords}','%')
-						or
-						r.mid like CONCAT('%','${keywords}','%')
-						or
-						o.mname like CONCAT('%','${keywords}','%')
-					)
-			</if>
-		order by r.addtime desc 
-		limit #{from}, #{size}
+		order by r.addtime desc
+	</select>
+	
+	<select id="selectBefore" resultMap="RefundEntityResultMap">
+		select r.id
+		from refunds r
+		inner join refund_trace rt on r.id = rt.rid and rt.status_code = #{statuscode}
+		where rt.addtime is not null and rt.addtime &lt;= #{deadline} and r.status_code = #{statuscode}
 	</select>
 </mapper>

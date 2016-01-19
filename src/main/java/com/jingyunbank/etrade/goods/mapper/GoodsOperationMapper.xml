@@ -24,9 +24,15 @@
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
 		<result column="addtime" property="addTime" />
-		<result column="pro_flag" property="pro_flag" />
-		<result column="pro_start" property="pro_start" />
-		<result column="pro_end" property="pro_end" />
+		<result column="pro_flag" property="onSale" />
+		<result column="pro_start" property="onSaleBeginTime" />
+		<result column="pro_end" property="onSaleEndTime" />
+		<!-- 用于商品序号的字段 -->
+		<result column="adminSort" property="adminSort" />
+		<result column="merchantSort" property="merchantSort" />
+		<result column="expandSort" property="expandSort" />
+		<result column="recordSort" property="recordSort" />
+		
 		<result column="postage" property="postage" />
 		<result column="subvolumeType" property="subVolumeType" />
 		<result column="barvode" property="barCode" />
@@ -43,6 +49,7 @@
 		<result column="ingredients" property="ingredients" />
 		<result column="food_additives" property="foodAdditives" />
 		<result column="specifications" property="specifications" />
+		<result column="taste" property="taste" />
 		<result column="ingredient" property="ingredient" />
 		<result column="functions" property="functions" />
 		<result column="note" property="note" />
@@ -75,23 +82,24 @@
 	<insert id="insertGoods" parameterType="com.jingyunbank.etrade.goods.entity.GoodsEntity">
 		INSERT INTO `goods` (<include refid="goodsSql"/>)
 		VALUES(
-			#{ID},#{MID},#{BID},#{name},#{code},#{tid},#{price},#{promotionPrice},#{now_price},#{state},
+			#{ID},#{MID},#{BID},#{name},#{code},#{tid},#{price},#{promotionPrice},#{nowprice},#{state},
 			#{upTime},#{downTime},#{count},#{volume},#{addTime},#{postage},#{subVolumeType},#{barCode},
 			#{goodsDesc},#{goodsTitle},#{adminSort},#{merchantSort},#{expandSort},#{recordSort},
-			#{pro_start},#{pro_end},#{pro_flag}
+			#{onSaleBeginTime},#{onSaleEndTime},#{onSale}
 			)
+			
 	</insert>
 	<!-- 插入商品detail -->
 	<sql id="goodsdetailSql">
 	`id`,`gid`,`standard_no`,`shelf_life`,`approve_no`,`usage`,`commended_user`, `not_commended_user`,`ingredients`,
-  	`food_additives`, `specifications`,`ingredient`,`functions`,`note`,`storage_methods`,`is_gift_box`,`production_date`,
+  	`food_additives`, `specifications`,`taste`,`ingredient`,`functions`,`note`,`storage_methods`,`is_gift_box`,`production_date`,
  	 `weight`,`unit`,`factory_name`,`factory_addr`,`factory_tel`
 	</sql>
 	<insert id="insertGoodsDetail" parameterType="com.jingyunbank.etrade.goods.entity.GoodsDetailEntity">
 		INSERT INTO `goods_detail` (<include refid="goodsdetailSql"/>)
 		VALUES(#{ID},#{GID},#{standardNo},#{shelfLife},#{approveNo},#{usage},#{commendedUser},
 					#{notCommendedUser},#{ingredients},#{foodAdditives},
-					#{specifications},#{ingredient},#{functions},#{note},#{storageMethods},
+					#{specifications},#{taste},#{ingredient},#{functions},#{note},#{storageMethods},
 					#{isGiftBox},#{ProductionDate},#{weight},
 					#{unit},#{factoryName},#{factoryAddr},#{factoryTel}
 				)
@@ -117,14 +125,17 @@
 	g.`postage` postage, g.`sub_volume_type`subvolumeType,g.`barCode` barvode,
 	g.`pro_flag` pro_flag,g.`pro_start` pro_start,g.`pro_end` pro_end, g.`addtime` ADDTIME,
 	g.`title` goodstitle,g.`desc` goodsdesc,
-	m.`merchant_name` merchantname ,b.`name` brandname,t.`name` typename,
 	
+	g.`admin_sort` adminSort, g.`merchant_sort` merchantSort,
+	g.`expand_sort` expandSort, g.`record_sort` recordSort,
+	
+	m.`name` merchantname ,b.`name` brandname,t.`name` typename,
 	d.`standard_no` standard_no,d.`shelf_life` shelf_life,d.`approve_no` approve_no,
 	d.`usage` usages,d.`commended_user` commended_user,d.`not_commended_user` not_commended_user,
 	d.`ingredients` ingredients,d.`food_additives` food_additives,d.`specifications` specifications,
 	d.`ingredient` ingredient, d.`functions` functions,d.`note` note,d.`storage_methods` storage_methods,
 	d.`is_gift_box` is_gift_box,d.`production_date` ProductionDate,d.`weight` weight,d.`unit` unit,
-	d.`factory_name` factoryname,d.`factory_addr` factoryaddr,d.`factory_tel` factorytel,
+	d.`factory_name` factoryname,d.`factory_addr` factoryaddr,d.`factory_tel` factorytel,d.taste taste,
 	
 	i.`Thumb_path_1` thumb_path_1,i.`Thumb_path_2` thumb_path_2,i.`Thumb_path_3` thumb_path_3,
 	i.`Thumb_path_4` thumb_path_4,i.`Thumb_path_5` thumb_path_5,i.content content
@@ -165,16 +176,13 @@
 		<if test="promotionPrice !=null and promotionPrice != ''">
 			g.`promotion_price` = #{promotionPrice},
 		</if>
-		<if test="state >=0">
-			g.`state` = #{state},
-		</if>
 		<if test="upTime !=null and upTime != ''">
 			g.`up_time` = #{upTime},
 		</if>
 		<if test="downTime !=null and downTime != ''">
 			g.`down_time` = #{downTime},
 		</if>
-		<if test="count !=null and count != ''">
+		<if test="count >=0">
 			g.`count` = #{count},
 		</if>
 		<if test="postage !=null and postage != ''">
@@ -192,16 +200,27 @@
 		<if test="goodsTitle !=null and goodsTitle != ''">
 			g.`title` = #{goodsTitle},
 		</if>
-		<if test="pro_start !=null and pro_start != ''">
-			g.`pro_start` = #{pro_start},
+		<if test="onSaleBeginTime !=null and onSaleBeginTime != ''">
+			g.`pro_start` = #{onSaleBeginTime},
 		</if>
-		<if test="pro_end !=null and pro_end != ''">
-			g.`pro_end` = #{pro_end},
+		<if test="onSaleEndTime !=null and onSaleEndTime != ''">
+			g.`pro_end` = #{onSaleEndTime},
 		</if>
-		<if test=" pro_flag >=0">
-			g.`pro_flag` = #{pro_flag},
+		<!-- 排序字段begin -->
+		<if test="adminSort > 0 ">
+			g.`admin_sort` = #{adminSort},
 		</if>
-		g.id = #{ID}
+		<if test="merchantSort > 0 ">
+			g.`merchant_sort` = #{merchantSort},
+		</if>
+		<if test="expandSort > 0 ">
+			g.`expand_sort` = #{expandSort},
+		</if>
+		<if test="recordSort > 0 ">
+			g.`record_sort` = #{recordSort},
+		</if>
+		<!-- 排序字段end -->
+		g.`state` = #{state},g.`pro_flag` = #{onSale},g.id = #{ID}
 		 WHERE id = #{ID}
 	</update>
 	<!-- 修改商品描述信息 -->
@@ -233,6 +252,9 @@
 		</if>
 		<if test="specifications !=null and  specifications !=''">
 			d.specifications= #{specifications},
+		</if>
+		<if test="taste !=null and  taste !=''">
+			d.taste= #{taste},
 		</if>
 		<if test="ingredient !=null and  ingredient !=''">
 			d.ingredient= #{ingredient},
@@ -315,10 +337,18 @@
 	
 	<!-- 根据MID 查询所属的品牌 -->
 	<select id="selectBrandsByMid" parameterType="String"  resultMap="baseGoodsMap">
-		SELECT id bid,NAME brandname FROM goods_brand  WHERE MID=#{mid}
+		SELECT id bid,NAME brandname FROM goods_brand  WHERE MID=#{mid} AND status=1
 	</select>
 	<!-- 查询所有的店铺 商家 -->
 	<select id="selectMerchant" parameterType="String"  resultMap="baseGoodsMap">
-		SELECT id mid, merchant_name merchantname  FROM merchant 
+		SELECT id mid, name merchantname  FROM merchant 
+	</select>
+	
+	<update id="updateCount" parameterType="java.util.Map" >
+		UPDATE `goods` g SET g.`count`  =  #{count}  WHERE g.id = #{gid}
+	</update>
+	
+	<select id="checkCode" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM goods g WHERE g.code= #{code}
 	</select>
 </mapper>

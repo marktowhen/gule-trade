@@ -6,14 +6,13 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataRemovingException;
-import com.jingyunbank.etrade.merchant.entity.MerchantEntity;
 import com.jingyunbank.etrade.track.entity.AdDetailEntity;
 import com.jingyunbank.etrade.track.entity.AdModuleEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesEntity;
 import com.jingyunbank.etrade.track.entity.FavoritesGoodsVEntity;
 import com.jingyunbank.etrade.track.entity.FootprintEntity;
 import com.jingyunbank.etrade.track.entity.FootprintGoodsEntity;
+import com.jingyunbank.etrade.track.entity.OtherGoodsEntity;
 import com.jingyunbank.etrade.track.entity.RecommendGoodsEntity;
 
 /**
@@ -28,7 +27,7 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FootprintGoodsEntity> selectFootprintGoods(Map<String, Integer> params) throws Exception;
+	public List<FootprintGoodsEntity> selectFootprintGoods(Map<String, Object> params) throws Exception;
 	/**
 	 * 保存我的足迹信息
 	 * @param fe
@@ -157,6 +156,13 @@ public interface TrackDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<RecommendGoodsEntity> selectRecommendGoods(@Param("bids") List<String> bids,@Param("tids") List<String> tids,@Param("from") int from,@Param("to") int to) throws Exception;
+	public List<RecommendGoodsEntity> selectRecommendGoods(@Param("bidstr") String bidstr,@Param("tidstr") String tidstr,@Param("bids") List<String> bids,@Param("tids") List<String> tids,@Param("from") int from,@Param("to") int to,@Param("uid") String uid) throws Exception;
+	/**
+	 * 查询其他用户购买的商品
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OtherGoodsEntity> selectOtherGoods(Map<String, Object> params) throws Exception;
 	 
 }

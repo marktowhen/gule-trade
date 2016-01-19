@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.pay.handler.gatepay;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,10 +29,10 @@ public class GatePayHandler implements IPayHandler {
 	@Override
 	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
-		String money = "0.01";//payments.stream().map(x->x.getMoney()).reduce(new BigDecimal(0), (a, b)->a.add(b)).toString();
+		String money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString();
 		String orderno = String.valueOf(payments.get(0).getExtransno());
 		String notify_url = pipeline.getNoticeUrl();
-		String return_url = pipeline.getReturnUrl();
+		//String return_url = pipeline.getReturnUrl();
 		String key = pipeline.getSignkey();
 		String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		
@@ -41,7 +42,7 @@ public class GatePayHandler implements IPayHandler {
 		result.put("user_id", payments.get(0).getUID());
 		result.put("timestamp", timestamp);
 		result.put("sign_type", pipeline.getSigntype().toUpperCase());
-		result.put("busi_partner", "101001");//商户业务类型，实物：109001， 虚拟：101001
+		result.put("busi_partner", "109001");//商户业务类型，实物：109001， 虚拟：101001
 		result.put("no_order", orderno);//订单号
 		result.put("dt_order", timestamp);
 		result.put("name_goods", payments.get(0).getMname());
@@ -50,8 +51,8 @@ public class GatePayHandler implements IPayHandler {
 
 		//non required
 		result.put("bank_code", bankCode);
-		result.put("pay_type", "1");
-		result.put("url_return", return_url);
+		//result.put("pay_type", "8");支付类型，1表示借记卡，8表示信用卡，不写表示都支持
+		//result.put("url_return", return_url);
 		
 		result.put("sign", MD5.digest(compositeGatewayKeyValuePaires(result, key)));
 		//result.put("userreq_ip", "192.168.1.1");

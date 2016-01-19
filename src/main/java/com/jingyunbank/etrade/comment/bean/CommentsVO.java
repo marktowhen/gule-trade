@@ -29,21 +29,24 @@ public class CommentsVO {
 	private int personCount;//评论的总人数
 	private int allLevel;//评论商品总级别
 	private UserVO userVO; 
-	private float level;//所有评论的总级别
+	private double level;//所有评论的总级别
 	private int levelGrade;//所有评论的总级别
 	private float personalGrade;
 	private UserInfoVO userInfoVO;
 	private List<CommentsImg> imgs=new ArrayList<CommentsImg>();
-	private String picture;
-	private String imgPath;
+	private List<String> picture;
+	private String imgPath1;
+	private String imgPath2;
+	private String imgPath3;
 	
 	
 	
 	
-	public String getPicture() {
+	
+	public List<String> getPicture() {
 		return picture;
 	}
-	public void setPicture(String picture) {
+	public void setPicture(List<String> picture) {
 		this.picture = picture;
 	}
 	public float getPersonalGrade() {
@@ -52,10 +55,10 @@ public class CommentsVO {
 	public void setPersonalGrade(float personalGrade) {
 		this.personalGrade = personalGrade;
 	}
-	public float getLevel() {
+	public double getLevel() {
 		return level;
 	}
-	public void setLevel(float level) {
+	public void setLevel(double level) {
 		this.level = level;
 	}
 	public int getLevelGrade() {
@@ -64,11 +67,25 @@ public class CommentsVO {
 	public void setLevelGrade(int levelGrade) {
 		this.levelGrade = levelGrade;
 	}
-	public String getImgPath() {
-		return imgPath;
+
+	public String getImgPath1() {
+		return imgPath1;
 	}
-	public void setImgPath(String imgPath) {
-		this.imgPath = imgPath;
+
+	public void setImgPath1(String imgPath1) {
+		this.imgPath1 = imgPath1;
+	}
+	public String getImgPath2() {
+		return imgPath2;
+	}
+	public void setImgPath2(String imgPath2) {
+		this.imgPath2 = imgPath2;
+	}
+	public String getImgPath3() {
+		return imgPath3;
+	}
+	public void setImgPath3(String imgPath3) {
+		this.imgPath3 = imgPath3;
 	}
 	public int getAllLevel() {
 		return allLevel;

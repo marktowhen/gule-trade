@@ -9,7 +9,8 @@
 		<result column="mid_" property="MID" />
 		<result column="name_" property="name" />
 		<result column="desc_" property="desc" />
-		<result column="sort" property="admin_sort" />
+		<result column="sort" property="adminsort" />
+		<result column="status" property="status" />
 	</resultMap>
 	
 	
@@ -21,15 +22,15 @@
 	</resultMap>
 	
 	<insert id="insertBrand" parameterType="com.jingyunbank.etrade.goods.entity.GoodsBrandEntity">
-	INSERT INTO `goods_brand` ( `id`,`mid`,`name`,`desc`,`admin_sort`) VALUES
+	INSERT INTO `goods_brand` ( `id`,`mid`,`name`,`desc`,`admin_sort`,status) VALUES
   	(
-  	#{ID},#{MID},#{name},#{desc},#{admin_sort}
+  	#{ID},#{MID},#{name},#{desc},#{adminsort},#{status}
   	)
 	</insert>
 	
 	<select id="selectOne" parameterType="string" resultMap="brandMap">
 		SELECT b.`id` bid, b.`mid` mid_ ,b.`name` name_ ,
-			   b.`desc` desc_ ,b.`admin_sort` sort 
+			   b.`desc` desc_ ,b.`admin_sort` sort ,b.`status` status
 		FROM goods_brand  b WHERE b.id= #{bid}
 	</select>
 	
@@ -44,22 +45,28 @@
 		  <if test="desc !=null and desc !=''">
 			  b.`desc` =  #{desc},
 		 </if>
-		<if test="admin_sort >= 0 ">
-			    b.`admin_sort` = #{admin_sort},
+		<if test="adminsort >= 0 ">
+			    b.`admin_sort` = #{adminsort},
 		 </if>
 		b.`id` = #{ID}
 		WHERE `id` = #{ID}
 	</update>
 	
 	<select id="selectbrand" resultMap="querybrandMap" parameterType="string">
-		SELECT m.merchant_name mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
+		SELECT m.name as mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
 		LEFT JOIN merchant m ON b.mid = m.id
- 			WHERE MID=#{mid}
+ 			WHERE MID=#{mid} AND b.status=1
 	</select>
 	
 	<select id="selectAllBrands" resultMap="querybrandMap">
-		SELECT m.merchant_name mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
+		SELECT m.name as mname,b.id bid, b.name bname, b.desc desc_ FROM goods_brand b
 		LEFT JOIN merchant m ON b.mid = m.id
+		WHERE b.status=1
 	</select>
 
+
+	<update id="delBrand" parameterType="string">
+		UPDATE `goods_brand` b SET  b.`status` = FALSE
+		WHERE `id` = #{bid}
+	</update>
 </mapper>

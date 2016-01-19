@@ -29,7 +29,7 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean saveMerchant(Merchant merchant) throws DataSavingException {
+	public boolean save(Merchant merchant) throws DataSavingException {
 		boolean rlt = false;
 		try {
 			merchantService.saveMerchant(merchant);
@@ -44,7 +44,7 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean updateMerchant(Merchant merchant) throws DataRefreshingException {
+	public boolean refresh(Merchant merchant) throws DataRefreshingException {
 		boolean rlt = false;
 		try {
 			merchantService.updateMerchant(merchant);
@@ -60,7 +60,7 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 	}
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public Optional<Merchant> getMerchantInfoByMid(String mid) throws IllegalAccessException, InvocationTargetException {
+	public Optional<Merchant> singleByMID(String mid) throws IllegalAccessException, InvocationTargetException {
 		
 		Optional<Merchant> merchant = merchantService.getMerchant(mid);
 		Merchant bo = merchant.get();

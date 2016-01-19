@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.user.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
+import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
 
 /**
@@ -31,8 +31,8 @@ import com.jingyunbank.etrade.user.bean.UserInfoVO;
 public class UserInfoController {
 	@Autowired
 	private IUserInfoService userInfoService;
-
-	
+	@Autowired
+	private IPointContextService pointContextService;
 	/**
 	 * 个人资料的添加
 	 * @param session
@@ -46,7 +46,7 @@ public class UserInfoController {
 		
 		UserInfo userInfo=new UserInfo();
 		BeanUtils.copyProperties(userInfoVO, userInfo);
-		String id = ServletBox.getLoginUID(request);
+		String id = Login.UID(request);
 		userInfoVO.setUID(id);;
 		if(userInfoService.UidExists(userInfoVO.getUID())>0){
 			return Result.fail("该uid已经存在！");
@@ -54,7 +54,7 @@ public class UserInfoController {
 		if(userInfoService.save(userInfo)){
 			return Result.ok(userInfoVO);
 		}
-		return Result.fail("重试！");
+		return Result.fail("未知错误,请稍后重试!");
 	}
 	
 	/**
@@ -67,18 +67,15 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/userinfo",method=RequestMethod.GET)
 	public Result<UserInfoVO> selectUserInfo(HttpSession session,HttpServletRequest request) throws Exception{
-		String uid = ServletBox.getLoginUID(request);
+		String uid = Login.UID(request);
 		Optional<UserInfo> userinfo= userInfoService.getByUid(uid);
-		
-		
 		if(userinfo.isPresent()){
-			
 			UserInfo userInfo=userinfo.get();
 			UserInfoVO userInfoVO=new UserInfoVO();
 			BeanUtils.copyProperties(userInfo, userInfoVO);
 			return Result.ok(userInfoVO);
 		}
-		return Result.fail("重试");
+		return Result.fail("未知错误,请稍后重试!");
 	}
 	
 	/**
@@ -92,13 +89,20 @@ public class UserInfoController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/info",method=RequestMethod.PUT)
 	public Result<UserInfoVO> updateUserInfo(@RequestBody UserInfoVO userInfoVO,HttpSession session,HttpServletRequest request) throws Exception {
-		if(!StringUtils.isEmpty(userInfoVO.getBirthdayStr())){
-			/*Date date = new SimpleDateFormat("yyyy-MM-dd").parse(userInfoVO.getBirthdayStr());
-			userInfoVO.setBirthday(date);*/
-		}
+		
 		UserInfo userInfo=new UserInfo();
-		String id = ServletBox.getLoginUID(request);
+		String id = Login.UID(request);
 		userInfoVO.setUID(id);
+		if(!userInfoVO.isPoint()){
+			if(!StringUtils.isEmpty(userInfoVO.getBirthday()) && !StringUtils.isEmpty(userInfoVO.getAddress())&& !StringUtils.isEmpty(userInfoVO.getCity()) 
+					&&!StringUtils.isEmpty(userInfoVO.getCountry())&& !StringUtils.isEmpty(userInfoVO.getProvince())&&!StringUtils.isEmpty(userInfoVO.getEducation())
+					&& !StringUtils.isEmpty(userInfoVO.getJob())&& !StringUtils.isEmpty(userInfoVO.getIncome())){
+					
+				if(pointContextService.addPoint(id, 50, "信息完善啦！")){
+					userInfoVO.setPoint(true);
+				}
+			}
+		}
 		BeanUtils.copyProperties(userInfoVO, userInfo);
 		
 		if(userInfoService.refresh(userInfo)){

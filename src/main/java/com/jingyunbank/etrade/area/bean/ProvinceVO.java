@@ -18,6 +18,15 @@ public class ProvinceVO implements Serializable {
 	private String provinceName;
 	@NotNull(message="国家不能为空")
 	private int countryID;
+	//偏远地区
+	private boolean faraway;
+	
+	public boolean isFaraway() {
+		return faraway;
+	}
+	public void setFaraway(boolean faraway) {
+		this.faraway = faraway;
+	}
 	public int getProvinceID() {
 		return provinceID;
 	}

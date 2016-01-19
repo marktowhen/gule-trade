@@ -14,29 +14,31 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Page;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.etrade.api.goods.bo.GoodsMerchant;
 import com.jingyunbank.etrade.api.goods.bo.GoodsShow;
 import com.jingyunbank.etrade.api.goods.bo.HoneyGoods;
 import com.jingyunbank.etrade.api.goods.bo.Hot24Goods;
 import com.jingyunbank.etrade.api.goods.bo.HotGoods;
-import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
+import com.jingyunbank.etrade.api.goods.service.IBrandService;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
+import com.jingyunbank.etrade.goods.bean.GoodsStockShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
 import com.jingyunbank.etrade.goods.bean.GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HoneyGoodsVO;
 import com.jingyunbank.etrade.goods.bean.Hot24GoodsVO;
 import com.jingyunbank.etrade.goods.bean.HotGoodsVO;
 import com.jingyunbank.etrade.goods.bean.RecommendGoods;
-import com.jingyunbank.etrade.goods.bean.SaleRecordVO;
 
 /**
  * Title: 商品controller
@@ -51,28 +53,18 @@ public class GoodsController {
 	@Resource
 	protected IGoodsService goodsService;
 
-	/**
-	 * 根据名称模糊查询商品
-	 * 
-	 * @param request
-	 * @param goodsname
-	 * @param page
-	 * @return
-	 * @throws Exception
+	@Resource
+	protected IBrandService brandService;
+	/*
+	 * @RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
+	 * public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest
+	 * request, @PathVariable String goodsname, Page page) throws Exception {
+	 * Range range = new Range(); range.setFrom(page.getOffset());
+	 * range.setTo(page.getSize()); List<CommonGoodsVO> list =
+	 * goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
+	 * CommonGoodsVO vo = new CommonGoodsVO(); BeanUtils.copyProperties(bo, vo);
+	 * return vo; }).collect(Collectors.toList()); return Result.ok(list); }
 	 */
-	@RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest request, @PathVariable String goodsname,
-			Page page) throws Exception {
-		Range range = new Range();
-		range.setFrom(page.getOffset());
-		range.setTo(page.getSize());
-		List<CommonGoodsVO> list = goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
-			CommonGoodsVO vo = new CommonGoodsVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
-		return Result.ok(list);
-	}
 
 	/**
 	 * 查询品牌列表
@@ -88,6 +80,44 @@ public class GoodsController {
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+
+	/**
+	 * 首页商品分类 ----显示3条品牌
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/brand/{from}/{size}/list", method = RequestMethod.GET)
+	public Result<List<GoodsBrandVO>> queryBrandsThree(HttpServletRequest request, @PathVariable String from,
+			@PathVariable String size) throws Exception {
+		List<GoodsBrandVO> list = goodsService
+				.listBrandsThree(new Range(Integer.parseInt(from), Integer.parseInt(size))).stream().map(bo -> {
+					GoodsBrandVO vo = new GoodsBrandVO();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
+
+	/**
+	 * 首页商品分类 ----显示3条类别
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/type/{from}/{size}/list", method = RequestMethod.GET)
+	public Result<List<GoodsTypesVO>> queryTypesThree(HttpServletRequest request, @PathVariable String from,
+			@PathVariable String size) throws Exception {
+		List<GoodsTypesVO> list = goodsService.listTypesThree(new Range(Integer.parseInt(from), Integer.parseInt(size)))
+				.stream().map(bo -> {
+					GoodsTypesVO vo = new GoodsTypesVO();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
 
@@ -225,57 +255,43 @@ public class GoodsController {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
-		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo -> {
+
+		List<GoodsMerchant> list = goodsService.listMerchantByWhere(goodshowBO, range);
+		List<GoodsMerchantVO> newlist = new ArrayList<GoodsMerchantVO>();
+		for(GoodsMerchant m :list){
+			GoodsMerchantVO vo = new GoodsMerchantVO();
+			BeanUtils.copyProperties(m, vo);
+			vo.setBrands(brandService.listBrandsByMid(m.getMID()));
+			newlist.add(vo);
+		}
+		
+/*		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo -> {
 			GoodsMerchantVO vo = new GoodsMerchantVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList());*/
 
-		return Result.ok(list);
+		return Result.ok(newlist);
 	}
 
 	/**
-	 * 店铺相关商品 (点击X件相关产品 MID ) 显示4条
+	 * 店铺相关产品(分页)
 	 * 
 	 * @param request
 	 * @param goodshowvo
 	 * @return
 	 * @throws Exception
 	 */
-	// @RequestMapping(value = "/merchantGoodsByWhere4/list", method =
-	// RequestMethod.GET)
-	@RequestMapping(value = "/merchantgoods4/list", method = RequestMethod.GET)
-	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoods(HttpServletRequest request,
-			GoodsShowVO goodshowvo) throws Exception {
-		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
-		// 接收价格区间
-		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
-
-		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoods4(goodshowBO).stream().map(bo -> {
-			CommonGoodsVO vo = new CommonGoodsVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
-		return Result.ok(list);
-	}
-
-	/**
-	 * 店铺相关商品 更多相关产品(分页)
-	 * 
-	 * @param request
-	 * @param goodshowvo
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/merchantgoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/{mid}/list", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request,
-			GoodsShowVO goodshowvo, Page page) throws Exception {
+			@PathVariable String mid, GoodsShowVO goodshowvo, Page page) throws Exception {
 		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
 		// 接收价格区间
 		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
 		Range range = new Range();
 		range.setFrom(page.getOffset());
-		range.setTo(page.getSize());
+		range.setTo(page.getSize());		
+
 		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoodsMax(goodshowBO, range).stream().map(bo -> {
 			CommonGoodsVO vo = new CommonGoodsVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -290,7 +306,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/hotgoods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/hot/list", method = RequestMethod.GET)
 	public Result<List<HotGoodsVO>> listHotGoods() throws Exception {
 		List<HotGoodsVO> rltlist = new ArrayList<HotGoodsVO>();
 		List<HotGoods> goodslist = goodsService.listHotGoods();
@@ -349,7 +365,7 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/hot24goods/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/hot24/list", method = RequestMethod.GET)
 	public Result<Hot24GoodsVO> listHot24Goods() throws Exception {
 		List<Hot24Goods> goodslist = goodsService.listHot24Goods();
 		Hot24GoodsVO hot24GoodsVO = new Hot24GoodsVO();
@@ -378,7 +394,7 @@ public class GoodsController {
 	 * @param vo
 	 * @return
 	 */
-	@RequestMapping(value = "/byresult/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/result/list", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> listGoodsByGoodsResult(GoodsShowVO vo, Page page) throws Exception {
 		// ----分页条件 [待修改]
 		Range range = new Range();
@@ -402,7 +418,7 @@ public class GoodsController {
 	 * @param gid
 	 * @return
 	 */
-	@RequestMapping(value = "/byid/{gid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{gid}", method = RequestMethod.GET)
 	public Result<GoodsVO> queryGoodsById(@PathVariable String gid) throws Exception {
 		GoodsVO vo = null;
 		Optional<ShowGoods> showbo = goodsService.singleById(gid);
@@ -420,9 +436,9 @@ public class GoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/honeygoods/list", method = RequestMethod.GET)
-	public Result<List<HoneyGoodsVO>> listHoneyGoods() throws Exception {
-		List<HoneyGoods> goodslist = goodsService.listHoneyGoods();
+	@RequestMapping(value = "/honey/list/{gid}", method = RequestMethod.GET)
+	public Result<List<HoneyGoodsVO>> listHoneyGoods(@PathVariable String gid) throws Exception {
+		List<HoneyGoods> goodslist = goodsService.listHoneyGoods(gid);
 		List<HoneyGoodsVO> list = goodslist.stream().map(bo -> {
 			HoneyGoodsVO vo = new HoneyGoodsVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -432,20 +448,18 @@ public class GoodsController {
 	}
 
 	/**
-	 * 获取商品的购买记录
-	 * 
-	 * @param gid
+	 * http://localhost:8080/api/goods/stock/list?gids=1&gids=2
+	 * 根据GID 获取商品的库存 
+	 * @param request
+	 * @param gids
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	@RequestMapping(value = "/salesrecords/list/{gid}", method = RequestMethod.GET)
-	public Result<List<SaleRecordVO>> querySalesRecords(@PathVariable String gid, Page page) throws Exception {
-		Range range = new Range();
-		range.setFrom(page.getOffset());
-		range.setTo(page.getSize());
-		List<SalesRecord> salelist = goodsService.listSalesRecords(gid, range);
-		List<SaleRecordVO> list = salelist.stream().map(bo -> {
-			SaleRecordVO vo = new SaleRecordVO();
+	@RequestMapping(value = "/stock/list", method = RequestMethod.GET)
+	public Result<List<GoodsStockShowVO>> queryStockByGids(HttpServletRequest request,
+			@RequestParam List<String> gids) throws Exception {
+		List<GoodsStockShowVO> list = goodsService.listGoodsStcok(gids).stream().map(bo -> {
+			GoodsStockShowVO vo = new GoodsStockShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());

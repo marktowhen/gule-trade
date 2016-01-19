@@ -88,7 +88,7 @@ public class MerchantController {
 		merchantVO.setID(KeyGen.uuid());
 		merchant.setRegisterDate(new Date());
 		BeanUtils.copyProperties(merchantVO, merchant);
-		if(merchantContextService.saveMerchant(merchant)){
+		if(merchantContextService.save(merchant)){
 			return Result.ok(merchantVO);
 		}
 		return Result.ok(merchantVO);
@@ -132,7 +132,7 @@ public class MerchantController {
 		Merchant merchant=Merchant.getInstance();
 		BeanUtils.copyProperties(merchantVO, merchant);
 		//修改商家和修改商家类型
-		if(this.merchantContextService.updateMerchant(merchant)){
+		if(this.merchantContextService.refresh(merchant)){
 			return Result.ok(merchantVO);
 		}
 		return Result.ok(merchantVO);
@@ -171,7 +171,7 @@ public class MerchantController {
 	 */
 	@RequestMapping(value="/info/{mid}",method=RequestMethod.GET)
 	public Result<?> getMerchantInfo(HttpSession session,HttpServletRequest request,@PathVariable String mid) throws Exception{
-		Optional<Merchant> merchant= merchantContextService.getMerchantInfoByMid(mid);
+		Optional<Merchant> merchant= merchantContextService.singleByMID(mid);
 		if(merchant.isPresent()){
 			Merchant bo = merchant.get();
 			MerchantVO vo = new MerchantVO();
@@ -198,7 +198,7 @@ public class MerchantController {
 		range.setTo(page.getSize());
 		Merchant merchant = new Merchant();
 		BeanUtils.copyProperties(merchantSearchVO, merchant);
-		
+		merchant.setName(merchantSearchVO.getMerchantName());
 		List<MerchantVO> merchantlist = merchantService.listMerchantsByCondition(merchant, range).stream().map(bo -> {
 			MerchantVO vo = new MerchantVO();
 			BeanUtils.copyProperties(bo, vo);
@@ -206,6 +206,15 @@ public class MerchantController {
 		}).collect(Collectors.toList());
 		
 		return Result.ok(merchantlist);
+	}
+
+	@RequestMapping(value = "/count", method = RequestMethod.GET)
+	public Result<Integer> countMerchants(MerchantSearchVO merchantSearchVO) throws Exception {
+		Merchant merchant = new Merchant();
+		BeanUtils.copyProperties(merchantSearchVO, merchant);
+		merchant.setName(merchantSearchVO.getMerchantName());
+		int count = merchantService.countMerchants(merchant);
+		return Result.ok(count);
 	}
 	
 }

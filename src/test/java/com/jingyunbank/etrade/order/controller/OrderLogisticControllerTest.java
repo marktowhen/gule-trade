@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class OrderLogisticControllerTest extends TestCaseBase{
@@ -20,7 +20,7 @@ public class OrderLogisticControllerTest extends TestCaseBase{
 					 put("/api/orders/receipt")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content("{\"oids\":[\"asdf\"], \"tradepwd\":\"abcd1234\"}")
-					.sessionAttr(ServletBox.LOGIN_ID, "Ma9ogkIXSW-y0uSrvfqVIQ")
+					.sessionAttr(Login.LOGIN_USER_ID, "Ma9ogkIXSW-y0uSrvfqVIQ")
 					.characterEncoding("UTF-8")
 					.accept(MediaType.APPLICATION_JSON)
 				)

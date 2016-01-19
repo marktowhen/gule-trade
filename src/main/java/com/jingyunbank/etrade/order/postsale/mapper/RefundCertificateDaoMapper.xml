@@ -15,8 +15,19 @@
 		insert into refund_certificate
 			(<include refid="refund_certificate_columns"/>)
 		values
-		<foreach collection="certs" item="cert" separator="," open="(" close=")">
-			#{cert.ID}, #{cert.RID}, #{cert.path}
+		<foreach collection="certs" item="cert" separator="," open="" close="">
+			(#{cert.ID}, #{cert.RID}, #{cert.path})
 		</foreach>
 	</insert>
+	
+	<select id="selectMany" parameterType="String" resultType="String">
+		select 
+			path 
+		from refund_certificate
+		where rid = #{rid}
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		delete from refund_certificate where rid = #{rid}
+	</delete>
 </mapper>

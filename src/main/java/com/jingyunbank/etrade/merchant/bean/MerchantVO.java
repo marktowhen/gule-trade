@@ -21,17 +21,17 @@ public class MerchantVO implements Serializable {
 	private String ID;
 	/**商家名称*/
 	@NotNull(message="商家名称不能为空")
-	private String merchantName;
+	private String name;
 	/**商家英文名称*/
-	private String merchantEname;
+	private String ename;
 	/**商家编码*/
-	private String merchantCode;
+	private String code;
 	/**商家地址*/
 	@NotNull(message="商家地址不能为空")
-	private String merchantAddress;
+	private String address;
 	/**商家规模*/
 	@NotNull(message="商家规模不能为空")
-	private String merchantScale;
+	private String scale;
 	/**员工人数（人）*/
 	private int employeeNum;
 	/**电话*/
@@ -71,35 +71,36 @@ public class MerchantVO implements Serializable {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getMerchantName() {
-		return merchantName;
+	
+	public String getName() {
+		return name;
 	}
-	public void setMerchantName(String merchantName) {
-		this.merchantName = merchantName;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getMerchantEname() {
-		return merchantEname;
+	public String getEname() {
+		return ename;
 	}
-	public void setMerchantEname(String merchantEname) {
-		this.merchantEname = merchantEname;
+	public void setEname(String ename) {
+		this.ename = ename;
 	}
-	public String getMerchantCode() {
-		return merchantCode;
+	public String getCode() {
+		return code;
 	}
-	public void setMerchantCode(String merchantCode) {
-		this.merchantCode = merchantCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
-	public String getMerchantAddress() {
-		return merchantAddress;
+	public String getAddress() {
+		return address;
 	}
-	public void setMerchantAddress(String merchantAddress) {
-		this.merchantAddress = merchantAddress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
-	public String getMerchantScale() {
-		return merchantScale;
+	public String getScale() {
+		return scale;
 	}
-	public void setMerchantScale(String merchantScale) {
-		this.merchantScale = merchantScale;
+	public void setScale(String scale) {
+		this.scale = scale;
 	}
 	public int getEmployeeNum() {
 		return employeeNum;

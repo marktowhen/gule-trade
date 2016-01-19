@@ -18,7 +18,6 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.goods.bo.GoodsList;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
@@ -217,12 +216,19 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
 		map.put("size", (int) range.getTo());
-		map.put("merchantName", merchant.getMerchantName());
+		map.put("merchantName", merchant.getName());
 		List<Merchant> showMerchantList = merchantDao.selectMerchantsByCondition(map).stream().map(eo -> {
 			Merchant bo = new Merchant();
 			BeanUtils.copyProperties(eo, bo);
 			return bo;
 		}).collect(Collectors.toList());
 		return showMerchantList;
+	}
+	@Override
+	public int countMerchants(Merchant merchant) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("merchantName", merchant.getName());
+		int count = merchantDao.selectMerchantsCount(map);
+		return count;
 	}
 }

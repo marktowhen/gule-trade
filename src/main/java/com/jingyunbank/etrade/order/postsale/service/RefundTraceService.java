@@ -58,4 +58,14 @@ public class RefundTraceService implements IRefundTraceService {
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<RefundTrace> list(String rid, String status) {
+		return refundTraceDao.selectWithStatus(rid, status)
+				.stream().map(entity -> {
+					RefundTrace bo = new RefundTrace();
+					BeanUtils.copyProperties(entity, bo);
+					return bo;
+				}).collect(Collectors.toList());
+	}
+
 }

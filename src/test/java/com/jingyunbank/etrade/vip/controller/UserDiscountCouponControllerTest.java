@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.jingyunbank.core.web.ServletBox;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.api.vip.service.IUserDiscountCouponService;
+import com.jingyunbank.etrade.api.vip.coupon.service.IUserDiscountCouponService;
 
 public class UserDiscountCouponControllerTest extends TestCaseBase{
 	
@@ -32,7 +32,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 put("/api/vip/coupon/discountcoupon/user/")
 					.param("code", "20151117161936")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -50,8 +50,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		public void testGet() throws Exception{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/1")
-					.param("discountCouponVO.threshholdLow", "2")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -67,7 +66,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 					 post("/api/vip/coupon/discountcoupon/user/")
 					.param("oid", "1")
 					.param("couponId", "WYIgbRGhRqOP30iGE2Yrmg")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -87,8 +86,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 		public void testGetAmount() throws Exception{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/amount")
-					//.param("cashCoupon.threshholdLow", "1")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -124,7 +122,7 @@ public class UserDiscountCouponControllerTest extends TestCaseBase{
 			getMockMvc().perform(
 					 get("/api/vip/coupon/discountcoupon/user/useable/2")
 					.param("orderPrice", "60")
-					.sessionAttr(ServletBox.LOGIN_ID, "2")
+					.sessionAttr(Login.LOGIN_USER_ID, "2")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

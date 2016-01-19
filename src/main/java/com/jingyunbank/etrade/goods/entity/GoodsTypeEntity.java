@@ -14,6 +14,25 @@ public class GoodsTypeEntity implements Serializable {
 	private String ID;
 	/**类型名称*/
 	private String name;
+	
+	private boolean status;
+	private int adminsort;
+	
+	
+	
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	
+	public int getAdminsort() {
+		return adminsort;
+	}
+	public void setAdminsort(int adminsort) {
+		this.adminsort = adminsort;
+	}
 	public String getID() {
 		return ID;
 	}

@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.area.bean.ProvinceVO;
 
 @RestController
-@RequestMapping("/api/province")
+@RequestMapping("/api/area/province")
 public class ProvinceController {
 	
 	@Autowired

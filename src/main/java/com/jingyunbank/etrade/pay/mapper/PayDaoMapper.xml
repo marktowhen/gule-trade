@@ -41,13 +41,16 @@
 			#{p.money}, #{p.note})
 		</foreach>
 	</insert>
-	<select id="selectPayments" resultMap="OrderPaymentEntityResultMap">
+	<select id="selectPayable" resultMap="OrderPaymentEntityResultMap">
 		select <include refid="order_payment_columns"/>
 		from order_payment
-		where oid in
-		<foreach collection="oids" item="oid" open="(" separator="," close=")">
-			#{oid}
-		</foreach>
+		where 
+			done = 0
+			and exists (select 1 from orders o where o.id = oid and o.status_code = 'NEW')
+			and oid in
+			<foreach collection="oids" item="oid" open="(" separator="," close=")">
+				#{oid}
+			</foreach>
 	</select>
 	<select id="countDone" resultType="int">
 		select count(id) from order_payment 

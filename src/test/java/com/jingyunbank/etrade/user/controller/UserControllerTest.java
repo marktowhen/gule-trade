@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.user.bean.LoginUserPwdVO;
@@ -50,7 +51,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testLogout() throws Exception{
 		getMockMvc()
 			.perform(get("/api/user/logout")
-					.sessionAttr(ServletBox.LOGIN_ID, "1")
+					.sessionAttr(Login.LOGIN_USER_ID, "1")
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -88,7 +89,7 @@ public class UserControllerTest extends TestCaseBase {
 				.param("code", "4278")
 				/*.param("email", "5559018888@qq.com")*/
 				.param("password", "123490090")
-				.sessionAttr(ServletBox.SMS_MESSAGE, "4278")
+				.sessionAttr(ServletBox.SMS_CODE_KEY_IN_SESSION, "4278")
 				.param("nickname", "xiaoxue")
 				.param("locked", "true")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +107,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testUpdatePassword() throws Exception{
 		getMockMvc().perform(
 				post("/api/user/update/password")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("password", "77777777777")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -146,7 +147,7 @@ public class UserControllerTest extends TestCaseBase {
 				.param("loginfo", "18766169803")
 				.param("password", "1234455555")
 				.param("code", "4278")
-				.sessionAttr(ServletBox.SMS_MESSAGE, "4278")
+				.sessionAttr(ServletBox.SMS_CODE_KEY_IN_SESSION, "4278")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -164,7 +165,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testTradepwd() throws Exception{
 		getMockMvc().perform(
 				post("/api/user/update/tradepwd")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("tradepwd", "4568787989888")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -182,7 +183,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testInstallTradepwd() throws Exception{
 		getMockMvc().perform(
 				post("/api/user/install/tradepwd")
-				.sessionAttr(ServletBox.LOGIN_ID, "vcAxfKg-TlOB4Ql5AB3k-w")
+				.sessionAttr(Login.LOGIN_USER_ID, "vcAxfKg-TlOB4Ql5AB3k-w")
 				.param("tradepwd", "777777777888")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -203,7 +204,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testCurrentSendPhone() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/send/message")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -224,8 +225,8 @@ public class UserControllerTest extends TestCaseBase {
 				post("/api/user/send/message")
 				.param("mobile", "18766169803")
 				.param("code", "9650")
-				.sessionAttr(ServletBox.LOGIN_ID, "123")
-				.sessionAttr(ServletBox.SMS_MESSAGE, "9650")
+				.sessionAttr(Login.LOGIN_USER_ID, "123")
+				.sessionAttr(ServletBox.SMS_CODE_KEY_IN_SESSION, "9650")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -262,8 +263,8 @@ public class UserControllerTest extends TestCaseBase {
 				post("/api/user/update/phone")
 				.param("mobile", "18766169803")
 				.param("code", "9650")
-				.sessionAttr(ServletBox.LOGIN_ID, "123")
-				.sessionAttr(ServletBox.SMS_MESSAGE, "9650")
+				.sessionAttr(Login.LOGIN_USER_ID, "123")
+				.sessionAttr(ServletBox.SMS_CODE_KEY_IN_SESSION, "9650")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -280,7 +281,7 @@ public class UserControllerTest extends TestCaseBase {
 		getMockMvc().perform(
 				get("/api/user/smsMessage")
 				/*.param("mobile", "15853161111")*/
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -296,7 +297,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testSendEmail() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/email-link")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("email", "627956245@qq.com")
 				.param("code", "1234")
 				.sessionAttr("session_code", "1234")
@@ -318,7 +319,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testCheckEmail() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/ckemail-link")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("d", "1")
 				.param("u", "NjI3OTU2MjQ1QHFxLmNvbX4xNDQ3MjExODI0NjQ4")
 				.param("m", "EAC57D28C8D9C3D52C0EF1E66727AE8B")
@@ -343,7 +344,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testSendEmailCode() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/email-message")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -364,9 +365,9 @@ public class UserControllerTest extends TestCaseBase {
 				post("/api/user/message")
 				.param("mobile", "15853161111")
 				.param("code", "894")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.sessionAttr("UNCHECK_MOBILE", "15853161111")
-				.sessionAttr(ServletBox.SMS_MESSAGE, "894")
+				.sessionAttr(ServletBox.SMS_CODE_KEY_IN_SESSION, "894")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -392,7 +393,7 @@ public class UserControllerTest extends TestCaseBase {
 				, new FileInputStream(new File(fileName)));
 		getMockMvc().perform(fileUpload("/api/resource/upload/multiple")
 				.file(file)
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_ID, "1")
 				
 				)
 				.andExpect(status().isOk())
@@ -412,7 +413,7 @@ public class UserControllerTest extends TestCaseBase {
 	public void testQuery() throws Exception{
 		getMockMvc().perform(
 				get("/api/user/query")
-				.sessionAttr(ServletBox.LOGIN_ID, "1")
+				.sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("key", "15853161111")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
