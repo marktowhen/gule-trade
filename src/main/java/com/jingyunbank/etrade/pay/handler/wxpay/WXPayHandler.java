@@ -41,23 +41,21 @@ public class WXPayHandler implements IPayHandler {
 	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("appid", "wx104070783e1981df");//公众账号ID
-		requestParams.put("mch_id", "1294062701");//商户号
+		requestParams.put("mch_id", pipeline.getPartner());//商户号
 		requestParams.put("nonce_str", new String(new RndBuilder().length(16).hasletter(true).next()));//随机字符串，不长于32位
-//		result.put("body", payments.get(0).getMname());//商品或支付单简要描述
-//		result.put("out_trade_no", String.valueOf(payments.get(0).getExtransno()));//商户系统内部的订单号
-		requestParams.put("body", "测试体");//商品或支付单简要描述
-		requestParams.put("out_trade_no", UniqueSequence.next()+"");//商户系统内部的订单号
+		requestParams.put("body", payments.get(0).getMname());//商品或支付单简要描述
+		requestParams.put("out_trade_no", String.valueOf(payments.get(0).getExtransno()));//商户系统内部的订单号
 		requestParams.put("fee_type", "CNY");//默认人民币：CNY
 		requestParams.put("total_fee", "1");//单位分
 		requestParams.put("spbill_create_ip", "124.128.245.162");//APP和网页支付提交用户端ip
-		requestParams.put("notify_url", "http://weixin.tunnel.qydev.com/api/payments/result/gateway/async");//接收微信支付异步通知回调地址
+		requestParams.put("notify_url", pipeline.getNoticeUrl());//接收微信支付异步通知回调地址
 		requestParams.put("trade_type", "NATIVE");//交易类型
 		requestParams.put("product_id", UniqueSequence.next()+"");//trade_type=NATIVE，此参数必传。此id为二维码中包含的商品ID，商户自行定义。
 		
-		String signkey = "zhonghuaejiao2wx104070783e1981df";//pipeline.getSignkey();
+		String signkey = pipeline.getSignkey();
 		requestParams.put("sign", MD5.digest(compositeWXPayKeyValuePaires(requestParams, signkey)).toUpperCase());
 		
-		HttpPost post = new HttpPost("https://api.mch.weixin.qq.com/pay/unifiedorder");
+		HttpPost post = new HttpPost(pipeline.getPayUrl());
 		StringBuilder xml = creatPostEntity(requestParams);
 		post.setEntity(new StringEntity(xml.toString(), "utf-8"));
 		
@@ -70,8 +68,8 @@ public class WXPayHandler implements IPayHandler {
 			return requestParams;
 		}
 		try(InputStream is = entity.getContent()){
-			JAXBContext jaxbcontext = JAXBContext.newInstance(WXPayResult.class);
-			WXPayResult wxresult = (WXPayResult) jaxbcontext.createUnmarshaller().unmarshal(is);
+			JAXBContext jaxbcontext = JAXBContext.newInstance(WXPrePayResult.class);
+			WXPrePayResult wxresult = (WXPrePayResult) jaxbcontext.createUnmarshaller().unmarshal(is);
 			if(StringUtils.hasText(wxresult.getReturn_code()) 
 					&& StringUtils.hasText(wxresult.getResult_code())
 					&& wxresult.getResult_code().equals("SUCCESS")
@@ -123,13 +121,6 @@ public class WXPayHandler implements IPayHandler {
 
 	@PostConstruct
 	public void postprocessor(){
-		pipeline = payPipelineService.single(PayPipeline.ALIPAY);
+		pipeline = payPipelineService.single(PayPipeline.WXPAY);
 	}
-//	public static void main(String[] args){
-//		try {
-//			System.out.println(new WXPayHandler().prepare(null, ""));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 }

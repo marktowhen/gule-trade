@@ -12,6 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,7 @@ public class GatepayResultController {
 		response.setCharacterEncoding("UTF-8");
 		InputStream payresultstream = request.getInputStream();
 		Map<String, String> payresult = resolve(payresultstream);
+		logger.info("网关支付结果异步通知参数->" + payresult);
 		Map<String, String> result = new HashMap<String, String>();
         if (Objects.isNull(payresult)
         		|| Objects.isNull(payresult.get("result_pay"))
@@ -57,14 +60,16 @@ public class GatepayResultController {
         {
         	String sign = payresult.get("sign");
         	String key = pipeline.getSignkey();
-            if (!sign.equalsIgnoreCase(MD5.digest(compositeGatewayKeyValuePaires(payresult, key))))
+        	String calcSign = MD5.digest(compositeGatewayKeyValuePaires(payresult, key));
+            if (!sign.equalsIgnoreCase(calcSign))
             {
-            	orderContextService.payfail(extransno, "支付结果的签名校验失败："+payresult+":"+sign);
+            	orderContextService.payfail(extransno, "支付结果的签名校验失败："+calcSign);
             	result.put("ret_code", "9999");
             	result.put("ret_msg", "签名校验失败");
             	OutputStream opstream = response.getOutputStream();
             	opstream.write(new ObjectMapper().writeValueAsBytes(result));
             	opstream.close();
+            	return;
             }
         } catch (Exception e){
         	orderContextService.payfail(extransno, e.getMessage().substring(0, 250));
@@ -73,6 +78,7 @@ public class GatepayResultController {
         	OutputStream opstream = response.getOutputStream();
         	opstream.write(new ObjectMapper().writeValueAsBytes(result));
         	opstream.close();
+        	return;
         }
 
         orderContextService.paysuccess(extransno);
@@ -81,7 +87,7 @@ public class GatepayResultController {
     	OutputStream opstream = response.getOutputStream();
     	opstream.write(new ObjectMapper().writeValueAsBytes(result));
     	opstream.close();
-        
+        return;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -115,5 +121,5 @@ public class GatepayResultController {
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.GATEPAY);
 	}
-
+	private Logger logger = LoggerFactory.getLogger(GatepayResultController.class);
 }

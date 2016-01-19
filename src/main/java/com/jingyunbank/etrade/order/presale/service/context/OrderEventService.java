@@ -33,6 +33,7 @@ import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderEventService;
@@ -79,6 +80,9 @@ public class OrderEventService implements IOrderEventService {
 	@Override
 	public void broadcast(String extransno, String status) {
 		List<Orders> orders = orderService.listByExtransno(extransno);
+		orders = orders.stream()
+				.filter(x-> OrderStatusDesc.NEW_CODE.equals(x.getStatusCode()))
+				.collect(Collectors.toList());
 		if(orders.size() == 0){
 			return;
 		}

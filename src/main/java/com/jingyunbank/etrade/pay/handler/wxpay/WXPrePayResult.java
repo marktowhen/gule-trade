@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class WXPayResult {
+public class WXPrePayResult {
 	private String return_code;
 	private String return_msg;
 	private String appid;
