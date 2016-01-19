@@ -109,7 +109,7 @@
 	    <dependency>
 	    	<groupId>com.jingyunbank</groupId>
 			<artifactId>jingyun-etrade-api</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>1.0.1-RELEASE</version>
 	    </dependency>
 	    <!-- jingyun projects end -->
 	    

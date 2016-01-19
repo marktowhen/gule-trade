@@ -125,11 +125,11 @@ public class WXPayHandler implements IPayHandler {
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.ALIPAY);
 	}
-	public static void main(String[] args){
-		try {
-			System.out.println(new WXPayHandler().prepare(null, ""));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args){
+//		try {
+//			System.out.println(new WXPayHandler().prepare(null, ""));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 }
