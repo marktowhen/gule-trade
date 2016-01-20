@@ -1,6 +1,8 @@
 package com.jingyunbank.etrade.pay.handler.wxpay;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ public class WXPayHandler implements IPayHandler {
 	
 	@Override
 	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
+		BigDecimal money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b));
+		String moneyfen = money.multiply(BigDecimal.valueOf(100)).setScale(0, RoundingMode.HALF_UP).toString();
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("appid", "wx104070783e1981df");//公众账号ID
 		requestParams.put("mch_id", pipeline.getPartner());//商户号
@@ -46,7 +50,7 @@ public class WXPayHandler implements IPayHandler {
 		requestParams.put("body", payments.get(0).getMname());//商品或支付单简要描述
 		requestParams.put("out_trade_no", String.valueOf(payments.get(0).getExtransno()));//商户系统内部的订单号
 		requestParams.put("fee_type", "CNY");//默认人民币：CNY
-		requestParams.put("total_fee", "1");//单位分
+		requestParams.put("total_fee", moneyfen);//单位分
 		requestParams.put("spbill_create_ip", "124.128.245.162");//APP和网页支付提交用户端ip
 		requestParams.put("notify_url", pipeline.getNoticeUrl());//接收微信支付异步通知回调地址
 		requestParams.put("trade_type", "NATIVE");//交易类型
