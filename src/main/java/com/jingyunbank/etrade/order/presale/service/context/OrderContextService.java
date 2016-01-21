@@ -437,24 +437,4 @@ public class OrderContextService implements IOrderContextService {
 			throws DataRefreshingException, DataSavingException {
 		orderGoodsService.refreshGoodStatus(ogids, OrderStatusDesc.REFUNDED);
 	}
-	public static void main(String[] args) {
-		List<Orders> s = new ArrayList<Orders>();
-		for (int i = 0; i < 1; i++) {
-			Orders o = new Orders();
-			o.setCouponID(null);
-			s.add(o);
-		}
-		for (int i = 0; i < 1; i++) {
-			Orders o = new Orders();
-			o.setCouponID("");
-			s.add(o);
-		}
-		for (int i = 0; i < 1; i++) {
-			Orders o = new Orders();
-			o.setCouponID("asdfa");
-			s.add(o);
-		}
-		
-		System.out.println(s.stream().map(x->x.getCouponID()).distinct().count());
-	}
 }
