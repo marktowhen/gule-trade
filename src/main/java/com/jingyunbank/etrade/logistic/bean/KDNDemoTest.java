@@ -111,16 +111,16 @@ public class KDNDemoTest {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		try {
-			String result = getOrderTracesByJson();
-			System.out.println("==>>:" + result);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		try {
+//			String result = getOrderTracesByJson();
+//			System.out.println("==>>:" + result);
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * 向指定 URL 发送POST方法的请求
