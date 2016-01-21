@@ -1,10 +1,12 @@
 package com.jingyunbank.etrade.order.presale.service.context;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
@@ -33,7 +37,9 @@ import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
 import com.jingyunbank.etrade.api.pay.bo.PayType;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
+import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
+import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyService;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
@@ -52,10 +58,86 @@ public class OrderContextService implements IOrderContextService {
 	private IOrderLogisticService orderLogisticService;
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
+	@Autowired
+	private IPostageService postageService;
+	
+	//校验用户提交的订单价格，邮费以及商品的价格数量等是否相互匹配
+	private boolean verifyOrderData(List<Orders> orders) {
+		for (Orders order : orders) {
+			BigDecimal originorderprice = order.getPrice();//data from user.
+			BigDecimal originorderpostage = order.getPostage();//data from user.
+			BigDecimal calculatedorderprice = BigDecimal.ZERO;//data calculated based on goods info.
+			BigDecimal calculatedorderpostage = BigDecimal.ZERO;//as above.
+			
+			List<OrderGoods> goods = order.getGoods();
+			for (OrderGoods orderGoods : goods) {
+				BigDecimal pprice = orderGoods.getPprice();//data from user.
+				BigDecimal price = orderGoods.getPrice();//data from user.
+				int count = orderGoods.getCount();//data from user.
+				BigDecimal actualprice = (Objects.nonNull(pprice) && pprice.compareTo(BigDecimal.ZERO) > 0)?
+									pprice : price;
+				calculatedorderprice = calculatedorderprice.add(actualprice.multiply(BigDecimal.valueOf(count)).setScale(2, RoundingMode.HALF_UP));
+			}
+			//计算邮费
+			calculatedorderpostage = postageService.calculate(calculatedorderprice, order.getProvince());
+			
+			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
+			if(calculatedorderprice.compareTo(originorderprice) != 0
+					|| calculatedorderpostage.compareTo(originorderpostage) != 0){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	//计算订单，及订单中每件商品的实际支付价格(剔除使用优惠卡券后的价格)
+	private boolean calculateCouponReduce(List<Orders> orders){
+
+		//orders 必须是公用一张卡券的或者没有卡券
+		long c0 = orders.stream().map(x->x.getCouponID()).distinct().count();
+		long c1 = orders.stream().map(x->x.getCouponType()).distinct().count();
+		//c0, c1 必须都是1
+		if(c0 != c1 || c0 != 1 || c1 != 1){
+			return false;
+		}
+		
+		Orders o0 = orders.get(0);
+		String couponID = o0.getCouponID();
+		String couponType = o0.getCouponType();
+		String UID = o0.getUID();
+		boolean isemployee = o0.isEmployee();
+		
+		if(StringUtils.hasText(couponType)){//使用优惠券
+			ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
+			return couponStrategyService.calculate(UID, couponID, orders);
+		}else{//员工通道
+			boolean useEmployeeCoupon = true;
+			if(useEmployeeCoupon && isemployee){
+				orders.forEach(order ->{order.setCouponType(BaseCoupon.EMPLOYEECOUPON);});
+				ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(BaseCoupon.EMPLOYEECOUPON);
+				return couponStrategyService.calculate(UID, couponID, orders);
+			}
+		}
+		return !StringUtils.hasText(couponID);
+	}
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
-	public void save(List<Orders> orders) throws DataSavingException, DataRefreshingException {
+	public Result<List<Orders>> save(List<Orders> orders) throws DataSavingException, DataRefreshingException {
+
+		//订单价格简单校验
+		//订单价应担匹配商品总价及邮费计算规则
+		boolean goodData = verifyOrderData(orders);
+		if(!goodData){
+			return Result.fail("订单数据校验失败，请检查订单信息后重新提交。");
+		}
+		
+		//计算优惠券优惠后的价格，以及填充payout
+		boolean legalCoupon= calculateCouponReduce(orders);
+		if(!legalCoupon){
+			return Result.fail("优惠卡券信息不正确，请检查订单信息后重新提交。");
+		}
+		
 		//如果订单支付金额为0则将状态设为已支付
 		refreshOrderStatusBasedOnOrderPayout(orders);
 		//保存订单信息
@@ -89,6 +171,8 @@ public class OrderContextService implements IOrderContextService {
 				}
 			}
 		}
+		
+		return Result.ok(orders);
 	}
 
 	private void refreshOrderStatusBasedOnOrderPayout(List<Orders> orders) {
@@ -352,5 +436,25 @@ public class OrderContextService implements IOrderContextService {
 	public void refundDone(List<String> ogids)
 			throws DataRefreshingException, DataSavingException {
 		orderGoodsService.refreshGoodStatus(ogids, OrderStatusDesc.REFUNDED);
+	}
+	public static void main(String[] args) {
+		List<Orders> s = new ArrayList<Orders>();
+		for (int i = 0; i < 1; i++) {
+			Orders o = new Orders();
+			o.setCouponID(null);
+			s.add(o);
+		}
+		for (int i = 0; i < 1; i++) {
+			Orders o = new Orders();
+			o.setCouponID("");
+			s.add(o);
+		}
+		for (int i = 0; i < 1; i++) {
+			Orders o = new Orders();
+			o.setCouponID("asdfa");
+			s.add(o);
+		}
+		
+		System.out.println(s.stream().map(x->x.getCouponID()).distinct().count());
 	}
 }

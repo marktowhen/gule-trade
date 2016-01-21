@@ -14,7 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringApplicationConfiguration(classes=JingYunTradeApplication.class)
 @WebIntegrationTest
 public class TestCaseBase {
-
+	
 		@Autowired
 		private WebApplicationContext wac;
 		private MockMvc mockMvc;

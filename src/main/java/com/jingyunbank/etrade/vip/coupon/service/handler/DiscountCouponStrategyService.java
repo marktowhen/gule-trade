@@ -34,8 +34,7 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 	}
 
 	@Override
-	public Result<BigDecimal> calculate(String UID, String couponID,
-			BigDecimal originprice) throws UnsupportedOperationException {
+	public Result<BigDecimal> calculate(String UID, String couponID, BigDecimal originprice){
 		Result<UserDiscountCoupon> r = userDiscountCouponService.canConsume(couponID, UID, originprice);
 		if(r.isBad()) return Result.fail(r.getMessage());
 		DiscountCoupon coupon = r.getBody().getDiscountCoupon();
@@ -67,8 +66,7 @@ public class DiscountCouponStrategyService implements ICouponStrategyService {
 	}
 
 	@Override
-	public boolean calculate(String UID, String couponID, List<Orders> orders)
-			throws UnsupportedOperationException {
+	public boolean calculate(String UID, String couponID, List<Orders> orders){
 		if(StringUtils.hasText(couponID)){
 			//总订单价格，包括邮费
 			BigDecimal origintotalprice = orders.stream()

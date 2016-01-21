@@ -231,4 +231,9 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		int count = merchantDao.selectMerchantsCount(map);
 		return count;
 	}
+
+	@Override
+	public boolean isAutotrophic(String mid) {
+		return merchantDao.isAutotrophic(mid);
+	}
 }
