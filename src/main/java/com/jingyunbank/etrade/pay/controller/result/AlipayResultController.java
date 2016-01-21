@@ -13,6 +13,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +53,7 @@ public class AlipayResultController {
 			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
 			params.put(name, valueStr);
 		}
+		logger.info("支付宝支付结果异步通知参数->"+params);
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
@@ -96,6 +99,7 @@ public class AlipayResultController {
 			return ("success");	//请不要修改或删除
 			//////////////////////////////////////////////////////////////////////////////////////////
 		}else{//验证失败
+			orderContextService.payfail(out_trade_no, "支付结果的签名校验失败："+calculatedSign);
 			return ("fail");
 		}
 	}
@@ -138,5 +142,5 @@ public class AlipayResultController {
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.ALIPAY);
 	}
-
+	private Logger logger = LoggerFactory.getLogger(AlipayResultController.class);
 }

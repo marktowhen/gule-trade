@@ -110,6 +110,9 @@ public class OrderContextService implements IOrderContextService {
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
 	public void paysuccess(String extransno) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.listByExtransno(extransno);
+		orders = orders.stream()
+				.filter(x-> OrderStatusDesc.NEW_CODE.equals(x.getStatusCode()))
+				.collect(Collectors.toList());
 		if(orders.size() == 0){
 			return;
 		}

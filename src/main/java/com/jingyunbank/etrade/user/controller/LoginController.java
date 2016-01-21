@@ -1,26 +1,34 @@
 package com.jingyunbank.etrade.user.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.Security;
+import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
+import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Manager;
 import com.jingyunbank.etrade.api.user.bo.Seller;
 import com.jingyunbank.etrade.api.user.bo.ManagerRole;
@@ -29,7 +37,8 @@ import com.jingyunbank.etrade.api.user.service.IManagerService;
 import com.jingyunbank.etrade.api.user.service.ISellerService;
 import com.jingyunbank.etrade.api.user.service.IManagerRoleService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.user.bean.LoginUserVO;
+import com.jingyunbank.etrade.user.bean.LoginUserPwdVO;
+import com.jingyunbank.etrade.user.bean.LoginUserSmsVO;
 import com.jingyunbank.etrade.user.bean.ManagerVO;
 import com.jingyunbank.etrade.user.bean.SellerVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
@@ -51,18 +60,17 @@ public class LoginController {
 	private ISellerService sellerService;
 	
 	/**
-	 * 登录   
-	 * @param request
+	 * 登录
+	 * @param user
+	 * @param valid
 	 * @param session
-	 * @param loginfo 用户名/手机/邮箱
-	 * @param password 密码
-	 * @param checkCode 验证码
-	 * 
+	 * @param response
 	 * @return
+	 * @throws Exception
 	 */
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<UserVO> login(@Valid @RequestBody LoginUserVO user, 
+	public Result<UserVO> login(@Valid @RequestBody LoginUserPwdVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -84,12 +92,73 @@ public class LoginController {
 				//暂时先不管
 				//return Result.fail("用户被锁");
 			}
+			//3、成功之后
+			doAfterCheck(users, session, response);
+			UserVO vo = new UserVO();
+			BeanUtils.copyProperties(users, vo);
+			return Result.ok(vo);
 		}else{
 			return Result.fail("用户名或者密码错误！");
 		}
-		//3、成功之后
+	}
+	
+	/**
+	 * 短信登录   
+	 * @param request
+	 * @param session
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/login/sms",method=RequestMethod.POST,
+				consumes="application/json;charset=UTF-8")
+	public Result<String> loginBySms(@Valid @RequestBody LoginUserSmsVO user, 
+						BindingResult valid, HttpSession session,
+						HttpServletResponse response, HttpServletRequest request) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+					.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+					.collect(Collectors.joining(" ; ")));
+		}
+		//验证短信验证码是否正确
+		String sessionCode = (String)session.getAttribute(ServletBox.SMS_CODE_KEY_IN_SESSION);
+		if(StringUtils.isEmpty(sessionCode)){
+			return Result.fail("验证码未发送或已失效");
+		}
+		if(!sessionCode.equals(user.getCode())){
+			return Result.fail("验证码错误");
+		}
+		session.setAttribute(ServletBox.SMS_CODE_KEY_IN_SESSION, null);
+		Optional<Users> userOption = userService.singleByKey(user.getMobile());
+		//如果未注册自动注册
+		if(!userOption.isPresent()){
+			Users registerUser = new Users();
+			registerUser.setMobile(user.getMobile());
+			registerUser.setUsername(IUserService.SMS_LOGIN_USERNAME_PREFIX+user.getMobile());
+			registerUser.setID(KeyGen.uuid());
+			UserInfo userInfo=new UserInfo();
+			userInfo.setRegip(ServletBox.ip(request));
+			userService.save(registerUser, userInfo);
+			userOption = Optional.of(registerUser);
+		}
+		//成功之后
+		doAfterCheck(userOption.get(), session, response);
+		
+		return Result.ok();
+	}
+	
+	/**
+	 * 登录成功后的操作
+	 * @param users
+	 * @param session
+	 * @param response
+	 * 2015年12月21日 qxs
+	 */
+	private void doAfterCheck(Users users, HttpSession session, HttpServletResponse response){
 		//用户信息放入session
-		Users users = usersOptional.get();
 		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
 		candidatecart.ifPresent(cart->{
 			Login.cartID(session, cart.getID());
@@ -106,9 +175,6 @@ public class LoginController {
 		response.addCookie(cookie);
 		
 		
-		UserVO vo = new UserVO();
-		BeanUtils.copyProperties(users, vo);
-		return Result.ok(vo);
 	}
 	/**
 	 * 用户注销登录
@@ -135,7 +201,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login/back",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserVO user, 
+	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserPwdVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -211,7 +277,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login/seller",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserVO loginUser, 
+	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserPwdVO loginUser, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -262,7 +328,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login/manager",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserVO loginUser, 
+	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserPwdVO loginUser, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
