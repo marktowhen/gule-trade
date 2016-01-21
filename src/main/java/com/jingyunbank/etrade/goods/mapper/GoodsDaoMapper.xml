@@ -13,6 +13,7 @@
 		<result column="price" property="price" />
 		<result column="promotion_price" property="promotionPrice" />
 		<result column="nowprice" property="nowPrice" />
+		<result column="emprice" property="emprice"/>
 		<result column="counts" property="count" />
 		<result column="volume" property="volume" />
 		<result column="addtime" property="addTime" />
@@ -535,5 +536,12 @@
 					</foreach>
 		</if>
 	</select>
-	
+	<select id="selectEmprice" resultMap="baseGoodsMap">
+		select id as gid, emprice as emprice
+		from goods 
+		where id in 
+		<foreach collection="gids" item="gid" open="(" separator="," close=")">
+			#{gid}
+		</foreach>
+	</select>
 </mapper>

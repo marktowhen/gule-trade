@@ -126,4 +126,7 @@
 		merchant m
 		where m.name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
 	</select>
+	<select id="isAutotrophic" parameterType="String" resultType="boolean">
+		select autotrophic from merchant where id = #{ID}
+	</select>
 </mapper>

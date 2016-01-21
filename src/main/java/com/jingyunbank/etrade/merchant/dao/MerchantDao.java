@@ -100,5 +100,11 @@ public interface MerchantDao{
 	 * @throws Exception
 	 */
 	public int selectMerchantsCount(Map<String, Object> map) throws Exception;
+	/**
+	 * 商家是否是自营的
+	 * @param mid
+	 * @return
+	 */
+	public boolean isAutotrophic(String mid);
 	
 }

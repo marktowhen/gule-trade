@@ -174,5 +174,11 @@ public interface GoodsDao {
 	 * @throws Exception
 	 */
 	public List<GoodsDaoEntity> selectGoodsStock(@Param("gids") List<String> gids) throws Exception;
+	/**
+	 * 查询员工价
+	 * @param gid
+	 * @return
+	 */
+	public List<GoodsDaoEntity> selectEmprice(@Param("gids") List<String> gids);
 
 }

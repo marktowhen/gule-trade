@@ -52,6 +52,8 @@ public class PurchaseRequestVO {
 	private String couponID;//卡券id
 	private String couponType;//卡券类型
 	
+	private boolean employee;//是否是员工购买
+	
 	@Valid
 	@NotNull
 	@Size(min=1)
@@ -140,5 +142,11 @@ public class PurchaseRequestVO {
 	}
 	public void setProvince(int province) {
 		this.province = province;
+	}
+	public boolean isEmployee() {
+		return employee;
+	}
+	public void setEmployee(boolean employee) {
+		this.employee = employee;
 	}
 }

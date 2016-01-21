@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.user.dao.EmployeeDao">
+	<resultMap type="com.jingyunbank.etrade.user.entity.EmployeeEntity" id="EmployeeEntityResultMap">
+		<id column="id" property="ID" />
+		<result column="name" property="name" />
+		<result column="mobile" property="mobile" />
+	</resultMap>
+	<sql id="column_list">
+		 id, name, mobile
+	</sql>
+	
+	<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.EmployeeEntity">
+		insert into employee (<include refid="column_list"/>)
+			values (#{ID}, #{name}, #{mobile}); 
+	</insert>
+	<update id="update" parameterType="com.jingyunbank.etrade.user.entity.EmployeeEntity">
+		update employee 
+		<set>
+			<if test="name != null and !''.equals(name)">
+				name = #{name},
+			</if>
+			<if test="mobile != null and !''.equals(mobile)">
+				mobile = #{mobile},
+			</if>
+		</set>
+		where id = #{ID}
+	</update>
+	<delete id="delete" parameterType="String">
+		delete from employee where id = #{ID}
+	</delete>
+	
+	<select id="count" parameterType="String" resultType="int">
+		select count(1) from employee where mobile = #{mobile}
+	</select>
+	<!-- <select id="selectOne" resultMap="EmployeeEntityResultMap">
+		select <include refid="column_list"/> from employee 
+		where id=#{key} or code=#{key}
+	</select> -->
+</mapper>

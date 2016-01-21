@@ -33,6 +33,8 @@ public class OrderEntity {
 	private BigDecimal postage;
 	private BigDecimal payout;
 	private String note;
+	private boolean employee;
+	
 	private List<OrderGoodsEntity> goods = new ArrayList<OrderGoodsEntity>();
 	
 	public String getID() {
@@ -196,5 +198,11 @@ public class OrderEntity {
 	}
 	public void setCouponReduce(BigDecimal couponReduce) {
 		this.couponReduce = couponReduce;
+	}
+	public boolean isEmployee() {
+		return employee;
+	}
+	public void setEmployee(boolean employee) {
+		this.employee = employee;
 	}
 }

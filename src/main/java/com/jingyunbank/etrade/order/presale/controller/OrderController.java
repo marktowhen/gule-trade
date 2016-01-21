@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.order.presale.controller;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,13 +29,11 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
-import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
-import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyService;
 import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
@@ -52,8 +48,6 @@ public class OrderController {
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
 	private IGoodsService goodsService;
-	@Autowired
-	private IPostageService postageService;
 	
 	/**
 	 * 订单确认并提交<br>
@@ -77,12 +71,11 @@ public class OrderController {
 		}
 		String UID = Login.UID(session);
 		String uname = Login.uname(session);
+		boolean isemployee = Login.employee(session);
 		purchase.setUID(UID);
 		purchase.setUname(uname);
+		purchase.setEmployee(isemployee);
 
-		String couponID = purchase.getCouponID();
-		String couponType = purchase.getCouponType();
-		
 		List<Orders> orders = populateOrderData(purchase, session);
 		List<String> gids = new ArrayList<String>();
 		for (Orders order : orders) {
@@ -94,21 +87,14 @@ public class OrderController {
 		if(gstock.stream().anyMatch(x->x <= 0)){
 			return Result.fail("部分商品暂时无货，请检查后重新提交订单。");
 		}
-		//订单价格简单校验
-		//订单价应担匹配商品总价及邮费计算规则
-		boolean goodData = verifyOrderData(orders);
-		if(!goodData){
-			return Result.fail("订单数据校验失败，请检查订单信息后重新提交。");
-		}
 		
-		boolean legalCoupon = calculateOrdersGoodsPayout(couponID, couponType, UID, orders);
-		if(!legalCoupon){
-			return Result.fail("优惠卡券信息不正确，请检查订单信息后重新提交。");
+		Result<List<Orders>> sr = orderContextService.save(orders);
+		if(sr.isOk()){
+			session.removeAttribute(CartController.GOODS_IN_CART_TO_CLEARING);
+			return Result.ok(purchase);
+		}else{
+			return Result.fail(sr.getMessage());
 		}
-		
-		orderContextService.save(orders);
-		session.removeAttribute(CartController.GOODS_IN_CART_TO_CLEARING);
-		return Result.ok(purchase);
 	}
 
 	private List<Orders> populateOrderData(PurchaseRequestVO purchase,
@@ -159,46 +145,7 @@ public class OrderController {
 		
 		return orders;
 	}
-	//校验用户提交的订单价格，邮费以及商品的价格数量等是否相互匹配
-	private boolean verifyOrderData(List<Orders> orders) {
-		for (Orders order : orders) {
-			BigDecimal originorderprice = order.getPrice();//data from user.
-			BigDecimal originorderpostage = order.getPostage();//data from user.
-			BigDecimal calculatedorderprice = BigDecimal.ZERO;//data calculated based on goods info.
-			BigDecimal calculatedorderpostage = BigDecimal.ZERO;//as above.
-			
-			List<OrderGoods> goods = order.getGoods();
-			for (OrderGoods orderGoods : goods) {
-				BigDecimal pprice = orderGoods.getPprice();//data from user.
-				BigDecimal price = orderGoods.getPrice();//data from user.
-				int count = orderGoods.getCount();//data from user.
-				BigDecimal actualprice = (Objects.nonNull(pprice) && pprice.compareTo(BigDecimal.ZERO) > 0)?
-									pprice : price;
-				calculatedorderprice = calculatedorderprice.add(actualprice.multiply(BigDecimal.valueOf(count)).setScale(2, RoundingMode.HALF_UP));
-			}
-			//计算邮费
-			calculatedorderpostage = postageService.calculate(calculatedorderprice, order.getProvince());
-			
-			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
-			if(calculatedorderprice.compareTo(originorderprice) != 0
-					|| calculatedorderpostage.compareTo(originorderpostage) != 0){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	//计算订单，及订单中每件商品的实际支付价格(剔除使用优惠卡券后的价格)
-	private boolean calculateOrdersGoodsPayout(String couponID, String couponType, String UID,
-											List<Orders> orders) throws Exception{
-		if(StringUtils.hasText(couponType)){
-			ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
-			return couponStrategyService.calculate(UID, couponID, orders);
-		}
-		return !StringUtils.hasText(couponID);
-	}
 	
-
 	@AuthBeforeOperation
 	@RequestMapping(
 			value="/api/orders/cancellation",

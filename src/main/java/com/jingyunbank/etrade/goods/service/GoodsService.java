@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.goods.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -317,6 +318,14 @@ public class GoodsService implements IGoodsService {
 			return bo;
 		}).collect(Collectors.toList());
 		return stocklist;
+	}
+
+	@Override
+	public Map<String, BigDecimal> emprice(List<String> gids) {
+		List<GoodsDaoEntity> entities = goodsDao.selectEmprice(gids);
+		Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
+		entities.forEach(x->result.put(x.getGID(), x.getEmprice()));
+		return result;
 	}
 
 }

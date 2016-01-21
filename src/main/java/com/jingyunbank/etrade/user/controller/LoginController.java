@@ -33,6 +33,7 @@ import com.jingyunbank.etrade.api.user.bo.Manager;
 import com.jingyunbank.etrade.api.user.bo.Seller;
 import com.jingyunbank.etrade.api.user.bo.ManagerRole;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IEmployeeService;
 import com.jingyunbank.etrade.api.user.service.IManagerService;
 import com.jingyunbank.etrade.api.user.service.ISellerService;
 import com.jingyunbank.etrade.api.user.service.IManagerRoleService;
@@ -53,7 +54,8 @@ public class LoginController {
 	private ICartService cartService;
 	@Autowired
 	private IManagerRoleService userRoleServce;
-	
+	@Autowired
+	private IEmployeeService employeeService;
 	@Autowired
 	private IManagerService managerService;
 	@Autowired
@@ -163,9 +165,11 @@ public class LoginController {
 		candidatecart.ifPresent(cart->{
 			Login.cartID(session, cart.getID());
 		});
+		boolean isemployee = employeeService.isEmployee(users.getMobile());
 		
 		Login.UID(session, users.getID());
 		Login.uname(session, users.getUsername());
+		Login.employee(session, isemployee);
 		Security.authenticate(session);
 		
 		//将uid写入cookie
