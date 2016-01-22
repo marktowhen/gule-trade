@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.logistic.bean;
+package com.jingyunbank.etrade.logistic.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,16 +11,18 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jingyunbank.etrade.api.logistic.bo.KDNShow;
+import com.jingyunbank.etrade.api.logistic.service.IExpressDeliveryService;
+import com.jingyunbank.etrade.logistic.bean.KDNShowVO;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+@Service("kdnService")
+public class KDNService implements IExpressDeliveryService {
 
-/**
- * 测试快递鸟 接口数据 Title: KDNDemoTest
- * 
- * @author duanxf
- * @date 2016年1月19日
- */
-public class KDNDemoTest {
 	// 电商ID
 	private static String EBusinessID = "1255799";
 	// 电商加密私钥，快递鸟提供，注意保管，不要泄漏
@@ -28,15 +30,7 @@ public class KDNDemoTest {
 	// 请求url
 	private static String ReqURL = "http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
 
-	/**
-	 * base64编码
-	 * 
-	 * @param str
-	 *            内容
-	 * @param charset
-	 *            编码方式
-	 * @throws UnsupportedEncodingException
-	 */
+	// base64编码
 	private static String base64(String str, String charset) throws UnsupportedEncodingException {
 		String encoded = Base64.encode(str.getBytes(charset));
 		return encoded;
@@ -47,15 +41,7 @@ public class KDNDemoTest {
 		return result;
 	}
 
-	/**
-	 * MD5加密
-	 * 
-	 * @param str
-	 *            内容
-	 * @param charset
-	 *            编码方式
-	 * @throws Exception
-	 */
+	// MD5加密
 	private static String MD5(String str, String charset) throws Exception {
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(str.getBytes(charset));
@@ -90,36 +76,6 @@ public class KDNDemoTest {
 			return base64(MD5(content + keyValue, charset), charset);
 		}
 		return base64(MD5(content, charset), charset);
-	}
-
-	/**
-	 * Json方式 查询订单物流轨迹
-	 * 
-	 * @throws Exception
-	 */
-	public static String getOrderTracesByJson() throws Exception {
-		String requestData = "{'OrderCode':'123456','ShipperCode':'ZTO','LogisticCode':'719151393719'}";
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("RequestData", urlEncoder(requestData, "UTF-8"));
-		params.put("EBusinessID", EBusinessID);
-		params.put("RequestType", "1002");
-		String dataSign = encrypt(requestData, AppKey, "UTF-8");
-		params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
-		params.put("DataType", "2");
-		String result = sendPost(ReqURL, params);
-		// 根据公司业务处理返回的信息......
-		return result;
-	}
-
-	public static void main(String[] args) {
-		try {
-			String result = getOrderTracesByJson();
-			System.out.println("==>>:" + result);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -163,7 +119,7 @@ public class KDNDemoTest {
 					param.append(entry.getValue());
 					System.out.println(entry.getKey() + ":" + entry.getValue());
 				}
-				System.out.println("param:" + param.toString());
+				// System.out.println("param:" + param.toString());
 				out.write(param.toString());
 			}
 			// flush输出流的缓冲
@@ -191,6 +147,37 @@ public class KDNDemoTest {
 			}
 		}
 		return result.toString();
+	}
+
+	/**
+	 * ZTO 719151393719
+	 * 
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getOrderTracesByJson(Map<Object, Object> map) throws Exception {
+		String requestData = "{'OrderCode':'AAA','ShipperCode':'BBB','LogisticCode':'CCC'}";
+		requestData = requestData.replace("AAA", map.get("OrderCode") + "").replace("BBB", map.get("ShipperCode") + "")
+				.replace("CCC", map.get("LogisticCode") + "");
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("RequestData", urlEncoder(requestData, "UTF-8"));
+		params.put("EBusinessID", EBusinessID);
+		params.put("RequestType", "1002");
+		String dataSign = encrypt(requestData, AppKey, "UTF-8");
+		params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
+		params.put("DataType", "2");
+		String result = sendPost(ReqURL, params);
+		// 根据公司业务处理返回的信息......
+		return result;
+	}
+
+	@Override
+	public Optional<KDNShow> getRemoteExpress(Map<Object, Object> map) throws Exception {
+		String result = getOrderTracesByJson(map);
+		ObjectMapper obj = new ObjectMapper();
+		KDNShow show = obj.readValue(result.toLowerCase(), KDNShow.class);
+		return Optional.ofNullable(show);
 	}
 
 }

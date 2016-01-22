@@ -12,6 +12,7 @@ public class OrderLogisticEntity {
 	private String OID;
 	private String expressno;
 	private String expressName;
+	private String expressCode;
 	private Date addtime;
 	private String typeCode;
 	private String typeName;
@@ -58,4 +59,11 @@ public class OrderLogisticEntity {
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
 	}
+	public String getExpressCode() {
+		return expressCode;
+	}
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
+	}
+	
 }
