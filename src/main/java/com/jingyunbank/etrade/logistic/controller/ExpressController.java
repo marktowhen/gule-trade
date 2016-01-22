@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
@@ -18,12 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.logistic.bo.KDNShow;
-import com.jingyunbank.etrade.api.logistic.service.IExpressDeliveryService;
 import com.jingyunbank.etrade.api.logistic.service.IExpressService;
-import com.jingyunbank.etrade.goods.bean.GoodsOperationShowVO;
+import com.jingyunbank.etrade.api.logistic.service.ILogisticService;
 import com.jingyunbank.etrade.logistic.bean.ExpressVO;
-import com.jingyunbank.etrade.logistic.bean.KDNShowVO;
+import com.jingyunbank.etrade.logistic.bean.LogisticDataVO;
 
 /**
  * 
@@ -33,29 +30,28 @@ import com.jingyunbank.etrade.logistic.bean.KDNShowVO;
  * @date 2016年1月21日
  */
 @RestController
-@RequestMapping("/api/express")
+@RequestMapping("/api/logistic")
 public class ExpressController {
 
 	@Autowired
 	private IExpressService expressService;
 
 	@Autowired
-	private IExpressDeliveryService kdnService;
+	private ILogisticService kdnService;
 
-	@RequestMapping(value = "/info/{oid}/{code}/{codeid}", method = RequestMethod.GET)
-	public Result<KDNShowVO> getExpressInfo(@PathVariable String oid, @PathVariable String code,
+	@RequestMapping(value = "/express/info/{oid}/{code}/{codeid}", method = RequestMethod.GET)
+	public Result<List<LogisticDataVO>> getExpressInfo(@PathVariable String oid, @PathVariable String code,
 			@PathVariable String codeid) throws Exception {
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		map.put("OrderCode", oid);
 		map.put("ShipperCode", code);
 		map.put("LogisticCode", codeid);
-		KDNShowVO showVO = null;
-		Optional<KDNShow> bo = kdnService.getRemoteExpress(map);
-		if (Objects.nonNull(bo)) {
-			showVO = new KDNShowVO();
-			BeanUtils.copyProperties(bo.get(), showVO);
-		}
-		return Result.ok(showVO);
+		List<LogisticDataVO> list = kdnService.getRemoteExpress(map).stream().map(bo -> {
+			LogisticDataVO vo = new LogisticDataVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 
 	/**
@@ -65,7 +61,7 @@ public class ExpressController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/express/list", method = RequestMethod.GET)
 	public Result<List<ExpressVO>> queryAllExpress(HttpServletRequest request) throws Exception {
 		List<ExpressVO> expressList = expressService.listExpress().stream().map(bo -> {
 			ExpressVO vo = new ExpressVO();
@@ -74,5 +70,5 @@ public class ExpressController {
 		}).collect(Collectors.toList());
 		return Result.ok(expressList);
 	}
-	
+
 }

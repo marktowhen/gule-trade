@@ -9,19 +9,26 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jingyunbank.etrade.api.logistic.bo.KDNContent;
 import com.jingyunbank.etrade.api.logistic.bo.KDNShow;
-import com.jingyunbank.etrade.api.logistic.service.IExpressDeliveryService;
-import com.jingyunbank.etrade.logistic.bean.KDNShowVO;
+import com.jingyunbank.etrade.api.logistic.bo.LogisticData;
+import com.jingyunbank.etrade.api.logistic.service.ILogisticService;
+import com.jingyunbank.etrade.logistic.bean.LogisticDataVO;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
 @Service("kdnService")
-public class KDNService implements IExpressDeliveryService {
+public class KDNService implements ILogisticService {
 
 	// 电商ID
 	private static String EBusinessID = "1255799";
@@ -173,11 +180,29 @@ public class KDNService implements IExpressDeliveryService {
 	}
 
 	@Override
-	public Optional<KDNShow> getRemoteExpress(Map<Object, Object> map) throws Exception {
+	public List<LogisticData> getRemoteExpress(Map<Object, Object> map) throws Exception {
 		String result = getOrderTracesByJson(map);
 		ObjectMapper obj = new ObjectMapper();
 		KDNShow show = obj.readValue(result.toLowerCase(), KDNShow.class);
-		return Optional.ofNullable(show);
+		List<LogisticData> list = new ArrayList<LogisticData>();
+		LogisticData data = null;
+		if (show.isSuccess()) {
+			list = show.getTraces().stream().map(bo -> {
+				LogisticData vo = new LogisticData();
+				vo.setTime(bo.getAccepttime());
+				vo.setContent(bo.getAcceptstation());
+				vo.setRemark(bo.getRemark());
+				return vo;
+			}).collect(Collectors.toList());
+
+			/*
+			 * for (KDNContent con : show.getTraces()) { data = new
+			 * LogisticData(); data.setTime(con.getAccepttime());
+			 * data.setContent(con.getAcceptstation());
+			 * data.setRemark(con.getRemark()); list.add(data); }
+			 */
+		}
+		return list;
 	}
 
 }
