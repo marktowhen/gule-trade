@@ -28,9 +28,13 @@ import com.jingyunbank.core.web.Security;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.bo.WeiboLogin;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.api.user.service.IWeiboLoginService;
+import com.jingyunbank.etrade.user.bean.ThirdLoginRegistVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -39,6 +43,9 @@ public class RegisterController {
 	private IUserService userService;
  	@Autowired
 	private ICartService cartService;
+ 	
+ 	@Autowired
+	private IWeiboLoginService weiboLoginService;
 	/**
 	 * 判断验证码是否输入正确
 	 * @param userVO
@@ -79,42 +86,23 @@ public class RegisterController {
 			}
 			checkResult = checkCode(userVO.getCode(), request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 		}
-		Users user=new Users();
-		BeanUtils.copyProperties(userVO, user);
-		user.setID(KeyGen.uuid());//generate uid here to make view visible
-		
-		UserInfo userInfo=new UserInfo();
-		userInfo.setRegip(ServletBox.ip(request));
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
+			Users user=new Users();
+			BeanUtils.copyProperties(userVO, user);
+			user.setID(KeyGen.uuid());//generate uid here to make view visible
+			
+			UserInfo userInfo=new UserInfo();
+			userInfo.setRegip(ServletBox.ip(request));
 			userService.save(user, userInfo);
-			
-			
-			Optional<Cart> candidatecart = cartService.singleCart(user.getID());
-			candidatecart.ifPresent(cart->{
-				Login.cartID(session, cart.getID());
-			});
-			
-			Login.UID(session, user.getID());
-			Login.uname(session, user.getUsername());
-			Security.authenticate(session);
-			//清空错误次数
-			session.setAttribute("loginWrongTimes", 0);
-			//记录登录历史 未完待续
-			
-			//将uid写入cookie
-			Cookie cookie = new Cookie(Login.LOGIN_USER_ID, user.getID());
-			cookie.setPath("/");
-			response.addCookie(cookie);
-			
-			UserVO vo = new UserVO();
-			BeanUtils.copyProperties(user, vo);
-			/*return Result.ok(vo);*/
+			registSuccess(user, session, response);
 			return	Result.ok("注册信息成功");
-		}else{
-			return	checkResult;
 		}
+		
+		return	checkResult;
 	}
+	
+	
 	
 	
 
@@ -139,6 +127,75 @@ public class RegisterController {
 			return Result.ok();
 		}
 		return Result.fail("验证码错误");
+	}
+	
+	/**
+	 * 注册成功后的操作
+	 * @param user
+	 * @param session
+	 * @param response
+	 * 2016年1月21日 qxs
+	 */
+	private void registSuccess(Users user, HttpSession session,HttpServletResponse response){
+		Optional<Cart> candidatecart = cartService.singleCart(user.getID());
+		candidatecart.ifPresent(cart->{
+			Login.cartID(session, cart.getID());
+		});
+		
+		Login.UID(session, user.getID());
+		Login.uname(session, user.getUsername());
+		Security.authenticate(session);
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, user.getID());
+		cookie.setPath("/");
+		response.addCookie(cookie);
+	}
+	
+	/**
+	 * 微博注册
+	 * @param userVO
+	 * @param valid
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 * 2016年1月21日 qxs
+	 */
+	@RequestMapping(value="/api/register/weibo",method=RequestMethod.POST)
+	public Result<String> regist(@Valid @RequestBody ThirdLoginRegistVO userVO,BindingResult valid,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		if(valid.hasErrors()){
+			List<ObjectError> errors = valid.getAllErrors();
+			return Result.fail(errors.stream()
+						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
+						.collect(Collectors.joining(" ; ")));
+		}
+		//验证用户名是否已存在
+		if(userService.exists(userVO.getUsername())){
+			return Result.fail("该用户名已存在。");
+		}
+		if(userService.exists(userVO.getMobile())){
+			return Result.fail("该手机号已存在。");
+		}
+		Result<String> checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_CODE_KEY_IN_SESSION);
+		//保存用户信息和个人资料信息
+		if(checkResult.isOk()){
+			Users user=new Users();
+			BeanUtils.copyProperties(userVO, user);
+			user.setID(KeyGen.uuid());//generate uid here to make view visible
+			
+			UserInfo userInfo=new UserInfo();
+			userInfo.setRegip(ServletBox.ip(request));
+			WeiboLogin weibo = new WeiboLogin();
+			BeanUtils.copyProperties(userVO, weibo);
+			weibo.setID(KeyGen.uuid());
+			weibo.setUID(user.getID());
+			weibo.setWeiboUID(userVO.getKey());
+			weiboLoginService.save(weibo, user, userInfo);
+			registSuccess(user, request.getSession(), response);
+			return	Result.ok("注册信息成功");
+		}
+		return null;
 	}
 	
 }
