@@ -10,22 +10,18 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jingyunbank.etrade.api.logistic.bo.KDNContent;
 import com.jingyunbank.etrade.api.logistic.bo.KDNShow;
 import com.jingyunbank.etrade.api.logistic.bo.LogisticData;
 import com.jingyunbank.etrade.api.logistic.service.ILogisticService;
-import com.jingyunbank.etrade.logistic.bean.LogisticDataVO;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 @Service("kdnService")
 public class KDNService implements ILogisticService {
@@ -39,7 +35,7 @@ public class KDNService implements ILogisticService {
 
 	// base64编码
 	private static String base64(String str, String charset) throws UnsupportedEncodingException {
-		String encoded = Base64.encode(str.getBytes(charset));
+		String encoded = Base64.getEncoder().encodeToString(str.getBytes(charset));
 		return encoded;
 	}
 
@@ -182,10 +178,10 @@ public class KDNService implements ILogisticService {
 	@Override
 	public List<LogisticData> getRemoteExpress(Map<Object, Object> map) throws Exception {
 		String result = getOrderTracesByJson(map);
+		//System.out.println("result::"+result);
 		ObjectMapper obj = new ObjectMapper();
 		KDNShow show = obj.readValue(result.toLowerCase(), KDNShow.class);
 		List<LogisticData> list = new ArrayList<LogisticData>();
-		LogisticData data = null;
 		if (show.isSuccess()) {
 			list = show.getTraces().stream().map(bo -> {
 				LogisticData vo = new LogisticData();
