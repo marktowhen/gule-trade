@@ -21,11 +21,16 @@ public class OrderLogisticVO {
 	private String expressno;
 	@NotBlank
 	private String expressName;
+	@NotBlank
+	private String expressCode;
+	
 	private Date addtime;
 	@NotBlank
 	private String typeCode;
 	@NotBlank
 	private String typeName;
+	
+	
 	
 	public String getID() {
 		return ID;
@@ -69,4 +74,12 @@ public class OrderLogisticVO {
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
 	}
+	public String getExpressCode() {
+		return expressCode;
+	}
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
+	}
+
+	
 }
