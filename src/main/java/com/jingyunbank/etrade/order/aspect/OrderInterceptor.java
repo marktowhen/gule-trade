@@ -36,10 +36,12 @@ public class OrderInterceptor {
 		}
 	}
 	
-	@AfterReturning("com.jingyunbank.etrade.order.aspect.Pointcuts.paysuccess() && args(extransno)")
-	public void whenPaysuccess(String extransno){
-		logger.info("用户支付成功， 支付对外订单号："+ extransno);
-		orderEventService.broadcast(extransno, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
+	@AfterReturning(value="com.jingyunbank.etrade.order.aspect.Pointcuts.paysuccess() && args(extransno)", returning="result")
+	public void whenPaysuccess(String extransno, boolean result){
+		if(result){
+			logger.info("用户支付成功， 支付对外订单号："+ extransno);
+			orderEventService.broadcast(extransno, IOrderEventService.MQ_ORDER_QUEUE_PAYSUCC);
+		}
 	}
 	
 	@AfterReturning("com.jingyunbank.etrade.order.aspect.Pointcuts.payfail() && args(extransno, note)")

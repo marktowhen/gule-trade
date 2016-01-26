@@ -192,13 +192,13 @@ public class OrderContextService implements IOrderContextService {
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
-	public void paysuccess(String extransno) throws DataRefreshingException, DataSavingException {
+	public boolean paysuccess(String extransno) throws DataRefreshingException, DataSavingException {
 		List<Orders> orders = orderService.listByExtransno(extransno);
 		orders = orders.stream()
 				.filter(x-> OrderStatusDesc.NEW_CODE.equals(x.getStatusCode()))
 				.collect(Collectors.toList());
 		if(orders.size() == 0){
-			return;
+			return false;
 		}
 		
 		List<String> oids = orders.stream().map(x->x.getID()).collect(Collectors.toList());
@@ -218,6 +218,8 @@ public class OrderContextService implements IOrderContextService {
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAID);
 		//保存订单状态追踪信息
 		orderTraceService.save(traces);
+		
+		return true;
 	}
 
 	@Override
