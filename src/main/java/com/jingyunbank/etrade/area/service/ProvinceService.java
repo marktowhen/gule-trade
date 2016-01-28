@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -23,6 +25,7 @@ public class ProvinceService implements IProvinceService {
 	private ProvinceDao provinceDao;
 
 	@Override
+	@CacheEvict("province")
 	public boolean save(Province bo) throws DataSavingException {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -35,6 +38,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
+	@CacheEvict("province")
 	public boolean remove(int id) throws DataRemovingException {
 		ProvinceEntity entity = new ProvinceEntity();
 		entity.setProvinceID(id);
@@ -47,6 +51,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
+	@CacheEvict("province")
 	public boolean refresh(Province bo) throws DataRefreshingException {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -58,6 +63,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
+	@Cacheable("province")
 	public List<Province> list(Province bo, Range range) {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -73,11 +79,13 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
+	@Cacheable("province")
 	public List<Province> list(Province bo) {
 		return list(bo, null);
 	}
 
 	@Override
+	@Cacheable("province")
 	public Province single(int id) {
 		Province bo = new Province();
 		bo.setProvinceID(id);
@@ -89,6 +97,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
+	@Cacheable("province")
 	public List<Province> listByCountry(int countryID) {
 		Province p = new Province();
 		p.setCountryID(countryID);
@@ -96,6 +105,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
+	@Cacheable("province")
 	public boolean isFaraway(int provinceID) {
 		Province province = single(provinceID);
 		if(province!=null){
