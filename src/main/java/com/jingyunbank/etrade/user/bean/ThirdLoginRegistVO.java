@@ -21,7 +21,7 @@ public class ThirdLoginRegistVO {
 	
 	private String type;//登录类型
 	private String accessToken;//授权码
-	private String key;//唯一标示
+	private String thirdLoginKey;//唯一标示
 	public String getUsername() {
 		return username;
 	}
@@ -70,11 +70,11 @@ public class ThirdLoginRegistVO {
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-	public String getKey() {
-		return key;
+	public String getThirdLoginKey() {
+		return thirdLoginKey;
 	}
-	public void setKey(String key) {
-		this.key = key;
+	public void setThirdLoginKey(String thirdLoginKey) {
+		this.thirdLoginKey = thirdLoginKey;
 	}
 	
 	

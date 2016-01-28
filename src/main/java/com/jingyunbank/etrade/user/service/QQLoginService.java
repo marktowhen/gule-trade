@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.user.bo.QQLogin;
+import com.jingyunbank.etrade.api.user.bo.UserInfo;
+import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IQQLoginService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.user.dao.QQLoginDao;
 import com.jingyunbank.etrade.user.entity.QQLoginEntity;
 
@@ -16,10 +19,12 @@ public class QQLoginService implements IQQLoginService {
 
 	@Autowired
 	private QQLoginDao qqLoginDao;
+	@Autowired
+	private IUserService userService;
 	
 	@Override
-	public QQLogin single(String accessToken) {
-		QQLoginEntity entity = qqLoginDao.selectOne(accessToken);
+	public QQLogin single(String ID) {
+		QQLoginEntity entity = qqLoginDao.selectOne(ID);
 		if(entity!=null){
 			QQLogin bo = new QQLogin();
 			BeanUtils.copyProperties(entity, bo);
@@ -40,13 +45,21 @@ public class QQLoginService implements IQQLoginService {
 	}
 
 	@Override
-	public boolean refreshLoginTime(String accessToken)
+	public boolean refreshByID(String id, String accessToken, String uid)
 			throws DataRefreshingException {
 		try {
-			return qqLoginDao.updateLoginTime(accessToken);
+			return qqLoginDao.update(id, accessToken,  uid);
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
 	}
+
+	@Override
+	public boolean save(QQLogin qq, Users user, UserInfo userInfo) throws DataSavingException {
+		save(qq);
+		userService.save(user, userInfo);
+		return true;
+	}
+
 
 }

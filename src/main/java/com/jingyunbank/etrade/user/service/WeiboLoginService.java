@@ -65,6 +65,15 @@ public class WeiboLoginService implements IWeiboLoginService {
 		}
 	}
 
+	@Override
+	public boolean refreshByID(String id, String accessToken, String uid) {
+		WeiboLoginEntity entity = new WeiboLoginEntity();
+		entity.setID(id);
+		entity.setAccessToken(accessToken);
+		entity.setUID(uid);
+		return weiboLoginDao.updateByID(id, accessToken, uid);
+	}
+
 	
 
 }

@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,16 +22,13 @@ import com.jingyunbank.core.web.Security;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.Manager;
-import com.jingyunbank.etrade.api.user.bo.Seller;
 import com.jingyunbank.etrade.api.user.bo.ManagerRole;
+import com.jingyunbank.etrade.api.user.bo.Seller;
 import com.jingyunbank.etrade.api.user.bo.Users;
-import com.jingyunbank.etrade.api.user.bo.WeiboLogin;
-import com.jingyunbank.etrade.api.user.service.IManagerService;
-import com.jingyunbank.etrade.api.user.service.IQQLoginService;
-import com.jingyunbank.etrade.api.user.service.ISellerService;
 import com.jingyunbank.etrade.api.user.service.IManagerRoleService;
+import com.jingyunbank.etrade.api.user.service.IManagerService;
+import com.jingyunbank.etrade.api.user.service.ISellerService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.api.user.service.IWeiboLoginService;
 import com.jingyunbank.etrade.user.bean.LoginUserVO;
 import com.jingyunbank.etrade.user.bean.ManagerVO;
 import com.jingyunbank.etrade.user.bean.SellerVO;
@@ -54,10 +50,6 @@ public class LoginController {
 	@Autowired
 	private ISellerService sellerService;
 	
-	@Autowired
-	private IWeiboLoginService weiboLoginService;
-	@Autowired
-	private IQQLoginService qqLoginService;
 	
 	/**
 	 * 登录   
@@ -97,22 +89,13 @@ public class LoginController {
 			return Result.fail("用户名或者密码错误！");
 		}
 		//3、成功之后
-		//用户信息放入session
-		Users users = usersOptional.get();
-		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
-		candidatecart.ifPresent(cart->{
-			Login.cartID(session, cart.getID());
-		});
-		
-		Login.UID(session, users.getID());
-		Login.uname(session, users.getUsername());
 		Security.authenticate(session);
-		
-		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
-		cookie.setPath("/");
-		cookie.setMaxAge(session.getMaxInactiveInterval());
-		response.addCookie(cookie);
+		//用户信息放入session 写入cookie
+		Users users = usersOptional.get();
+		//购物车
+		loginSuccessCar(users.getID(), session, response);
+		//用户信息
+		loginSuccess(users.getID(), users.getUsername(), session, response);
 		
 		
 		UserVO vo = new UserVO();
@@ -166,17 +149,11 @@ public class LoginController {
 		//3、成功之后
 		//用户信息放入session
 		Seller seller = sellerOptional.get();
-		Login.UID(session, seller.getID());
-		Login.uname(session, seller.getSname());
 		//商铺id放入session
 		Login.MID(session, seller.getMid());
 		Security.authenticate(session);
-		
-		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, seller.getID());
-		cookie.setPath("/");
-		cookie.setMaxAge(session.getMaxInactiveInterval());
-		response.addCookie(cookie);
+		//用户信息
+		loginSuccess(seller.getID(), seller.getSname(), session, response);
 		
 		SellerVO vo = new SellerVO();
 		BeanUtils.copyProperties(seller, vo);
@@ -226,70 +203,34 @@ public class LoginController {
 			roles[i] = list.get(i).getRole().getCode();
 		}
 		Security.authorize(session, roles);
-		//用户信息放入session
-		Login.UID(session, manager.getID());
-		Login.uname(session, manager.getMname());
 		Security.authenticate(session);
-		
-		
-		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, manager.getID());
-		cookie.setPath("/");
-		cookie.setMaxAge(session.getMaxInactiveInterval());
-		response.addCookie(cookie);
+		//用户信息放入session 写入cookie
+		loginSuccess(manager.getID(), manager.getMname(), session, response);
 		
 		ManagerVO vo = new ManagerVO();
 		BeanUtils.copyProperties(manager, vo);
 		return Result.ok(vo);
 	}
 	
-	/**
-	 * 登录   
-	 * @param request
-	 * @param session
-	 * @param loginfo 用户名/手机/邮箱
-	 * @param password 密码
-	 * @param checkCode 验证码
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value="/login/weibo/{weiboUID}",method=RequestMethod.GET)
-	public Result<Object> loginWeibo(@PathVariable String weiboUID, HttpSession session,
-						HttpServletResponse response) throws Exception{
-		
-		//2、根据用户名/手机号/邮箱查询用户信息
-		WeiboLogin weiboLogin = weiboLoginService.single(weiboUID);
-		if(weiboLogin==null){
-			return Result.ok().setCode("400");
-		}
-		
-		Optional<Users> usersOptional = userService.single(weiboLogin.getUID());
-		//是否存在该用户
-		if(!usersOptional.isPresent()){
-			return Result.fail("未找到该用户");
-		}
-		//3、成功之后
-		//用户信息放入session
-		Users users = usersOptional.get();
-		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
-		candidatecart.ifPresent(cart->{
-			Login.cartID(session, cart.getID());
-		});
-		
-		Login.UID(session, users.getID());
-		Login.uname(session, users.getUsername());
-		Security.authenticate(session);
+	
+	
+	public void loginSuccess(String uid, String username, HttpSession session,
+			HttpServletResponse response){
+		Login.UID(session, uid);
+		Login.uname(session, username);
 		
 		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, uid);
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
-		
-		
-		UserVO vo = new UserVO();
-		BeanUtils.copyProperties(users, vo);
-		return Result.ok(vo);
+	}
+	
+	public void loginSuccessCar(String uid ,HttpSession session, HttpServletResponse response){
+		Optional<Cart> candidatecart = cartService.singleCart(uid);
+		candidatecart.ifPresent(cart->{
+			Login.cartID(session, cart.getID());
+		});
 	}
 	
 }

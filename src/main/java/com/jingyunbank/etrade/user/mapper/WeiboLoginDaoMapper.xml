@@ -24,4 +24,16 @@
 	<update id="updateLoginTime">
 		update weibo_login set login_time=now() where access_token=#{key} or weibo_uid=#{key}
 	</update>
+	
+	<update id="updateByID">
+		update weibo_login set
+		<if test="UID!=null and UID!=''">
+			 uid=#{UID} , 
+		</if>
+		<if test="accessToken!=null and accessToken!=''">
+			 access_token=#{accessToken} ,
+		</if>
+		 login_time=now() where id = #{ID}
+	</update>
+	
 </mapper>

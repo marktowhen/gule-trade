@@ -12,4 +12,6 @@ public interface WeiboLoginDao {
 
 	boolean updateLoginTime(@Param("key")String accessTokenOrWeiboUID) throws Exception;
 
+	boolean updateByID(@Param("ID")String id,@Param("accessToken") String accessToken,@Param("UID") String uid);
+
 }

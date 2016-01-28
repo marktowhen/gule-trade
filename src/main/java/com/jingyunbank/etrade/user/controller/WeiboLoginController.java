@@ -1,12 +1,8 @@
 package com.jingyunbank.etrade.user.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
@@ -15,20 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
@@ -38,71 +29,67 @@ import com.jingyunbank.core.web.Security;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
-import com.jingyunbank.etrade.api.user.bo.QQLogin;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
-import com.jingyunbank.etrade.api.user.service.IQQLoginService;
+import com.jingyunbank.etrade.api.user.bo.WeiboLogin;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.api.user.service.IWeiboLoginService;
 import com.jingyunbank.etrade.user.bean.ThirdLoginBindVO;
 import com.jingyunbank.etrade.user.bean.ThirdLoginRegistVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
 @RequestMapping("/api")
-public class QQLoginController {
-	
+public class WeiboLoginController {
+
 	@Autowired
-	private IQQLoginService qqLoginService;
+	private IWeiboLoginService weiboLoginService;
 	@Autowired
 	private IUserService userService;
 	@Autowired
 	private ICartService cartService;
-
 	/**
-	 * 根据qq返回的身份认证的code 请求qq接口获取用户的唯一标示
-	 *  如果在系统中已绑定直接登录 否则跳到绑定页
+	 * 登录   
+	 * @param request
 	 * @param session
-	 * @param response
-	 * @param code
-	 * @throws Exception
-	 * 2016年1月27日 qxs
+	 * @param loginfo 用户名/手机/邮箱
+	 * @param password 密码
+	 * @param checkCode 验证码
+	 * 
+	 * @return
 	 */
-	@RequestMapping(value = "/login/qq/code", method = RequestMethod.GET)
-	public void changeState(HttpSession session, HttpServletResponse response, @RequestParam("code") String code) throws Exception{
-		//根据code获取token
-		String token = getTokenByCode(code);
-		//根据token获取openID
-		String openID = getOpenIDByToken(token);
-		//查询是否有对应用户
-		QQLogin single = qqLoginService.single(openID);
-		if(single!=null){
-			//有的话刷新token 登录
-			Optional<Users> usersOptional = userService.single(single.getUID());
-			if(usersOptional.isPresent()){
-				//3、成功之后
-				Security.authenticate(session);
-				//用户信息放入session 写入cookie
-				Users users = usersOptional.get();
-				//购物车
-				loginSuccessCar(users.getID(), session, response);
-				//用户信息
-				loginSuccess(users.getID(), users.getUsername(), session, response);
-				//跳到成功页面
-				response.sendRedirect(QQLogin.REDIRECT_URL);
-			}else{
-				response.sendRedirect(QQLogin.REDIRECT_URL);
-			}
-		}else{
-			//没有的话跳到第三方登录绑定页面
-			response.sendRedirect(QQLogin.REDIRECT_URL+"#/login/bind?type=qq&key="+openID+"&token="+token);
+	@RequestMapping(value="/login/weibo/{weiboUID}",method=RequestMethod.GET)
+	public Result<Object> weiboLogin(@PathVariable String weiboUID, HttpSession session,
+						HttpServletResponse response) throws Exception{
+		
+		//2、根据用户名/手机号/邮箱查询用户信息
+		WeiboLogin weiboLogin = weiboLoginService.single(weiboUID);
+		if(weiboLogin==null){
+			return Result.ok().setCode("400");
 		}
 		
+		Optional<Users> usersOptional = userService.single(weiboLogin.getUID());
+		//是否存在该用户
+		if(!usersOptional.isPresent()){
+			return Result.fail("未找到该用户");
+		}
+		//3、成功之后
+		Security.authenticate(session);
+		//用户信息放入session 写入cookie
+		Users users = usersOptional.get();
+		//购物车
+		loginSuccessCar(users.getID(), session, response);
+		//用户信息
+		loginSuccess(users.getID(), users.getUsername(), session, response);
 		
 		
+		UserVO vo = new UserVO();
+		BeanUtils.copyProperties(users, vo);
+		return Result.ok(vo);
 	}
 	
 	/**
-	 * qq绑定已有账号
+	 * 微博绑定已有账号
 	 * @param user
 	 * @param valid
 	 * @param session
@@ -111,9 +98,9 @@ public class QQLoginController {
 	 * @throws Exception
 	 * 2016年1月27日 qxs
 	 */
-	@RequestMapping(value="/login/bind/qq",method=RequestMethod.POST,
+	@RequestMapping(value="/login/bind/weibo",method=RequestMethod.POST,
 			consumes="application/json;charset=UTF-8")
-	public Result<UserVO> qqBind(@Valid @RequestBody ThirdLoginBindVO user, 
+	public Result<UserVO> weiboBind(@Valid @RequestBody ThirdLoginBindVO user, 
 					BindingResult valid, HttpSession session,
 					HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -134,18 +121,19 @@ public class QQLoginController {
 		}
 		//3、成功之后
 		//进行绑定
-		QQLogin qqLogin = qqLoginService.single(user.getThirdLoginKey());
-		if(qqLogin!=null){
+		WeiboLogin weiboLogin = weiboLoginService.single(user.getThirdLoginKey());
+		if(weiboLogin!=null){
 			//刷新绑定信息
-			qqLogin.setAccessToken(user.getAccessToken());
-			qqLogin.setUID(usersOptional.get().getID());
-			qqLoginService.refreshByID(qqLogin.getID(),user.getAccessToken(),usersOptional.get().getID());
+			weiboLogin.setAccessToken(user.getAccessToken());
+			weiboLogin.setUID(usersOptional.get().getID());
+			weiboLoginService.refreshByID(weiboLogin.getID(),user.getAccessToken(),usersOptional.get().getID());
 		}else{
-			qqLogin = new QQLogin();
-			qqLogin.setAccessToken(user.getAccessToken());
-			qqLogin.setID(user.getThirdLoginKey());
-			qqLogin.setUID(usersOptional.get().getID());
-			qqLoginService.save(qqLogin);
+			weiboLogin = new WeiboLogin();
+			weiboLogin.setAccessToken(user.getAccessToken());
+			weiboLogin.setID(KeyGen.uuid());
+			weiboLogin.setWeiboUID(user.getThirdLoginKey());
+			weiboLogin.setUID(usersOptional.get().getID());
+			weiboLoginService.save(weiboLogin);
 		}
 		Security.authenticate(session);
 		//用户信息放入session 写入cookie
@@ -160,9 +148,8 @@ public class QQLoginController {
 		BeanUtils.copyProperties(users, vo);
 		return Result.ok(vo);
 	}
-	
 	/**
-	 * qq注册
+	 * 微博注册
 	 * @param userVO
 	 * @param valid
 	 * @param request
@@ -171,8 +158,8 @@ public class QQLoginController {
 	 * @throws Exception
 	 * 2016年1月21日 qxs
 	 */
-	@RequestMapping(value="/register/qq",method=RequestMethod.POST)
-	public Result<String> qqRegist(@Valid @RequestBody ThirdLoginRegistVO userVO,BindingResult valid,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	@RequestMapping(value="/register/weibo",method=RequestMethod.POST)
+	public Result<String> weiboRegist(@Valid @RequestBody ThirdLoginRegistVO userVO,BindingResult valid,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
@@ -195,17 +182,18 @@ public class QQLoginController {
 			
 			UserInfo userInfo=new UserInfo();
 			userInfo.setRegip(ServletBox.ip(request));
-			QQLogin qq = new QQLogin();
-			BeanUtils.copyProperties(userVO, qq);
-			qq.setID(userVO.getThirdLoginKey());
-			qq.setUID(user.getID());
-			qq.setAccessToken(userVO.getAccessToken());
-			qqLoginService.save(qq, user, userInfo);
+			WeiboLogin weibo = new WeiboLogin();
+			BeanUtils.copyProperties(userVO, weibo);
+			weibo.setID(KeyGen.uuid());
+			weibo.setUID(user.getID());
+			weibo.setWeiboUID(userVO.getThirdLoginKey());
+			weiboLoginService.save(weibo, user, userInfo);
 			registSuccess(user, request.getSession(), response);
 			return	Result.ok("注册信息成功");
 		}
 		return checkResult;
 	}
+	
 	
 	
 	public void loginSuccess(String uid, String username, HttpSession session,
@@ -272,56 +260,6 @@ public class QQLoginController {
 		cookie.setPath("/");
 		response.addCookie(cookie);
 	}
-
-	private String getOpenIDByToken(String token) throws Exception {
-		String url = "https://graph.qq.com/oauth2.0/me?access_token=:ACCESS_TOKEN";
-		url = url.replace(":ACCESS_TOKEN", token);
-		HttpGet httpGet = new HttpGet(url);
-		HttpClient client = HttpClients.createDefault();
-		HttpResponse response = client.execute(httpGet);
-		HttpEntity entity = response.getEntity();
-		if(entity!=null){
-			BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));   
-			StringBuilder sb = new StringBuilder();   
-	        String line = null;   
-	        while ((line = reader.readLine()) != null) {   
-                sb.append(line + "/n");   
-            }
-	        
-	        Matcher m = Pattern.compile("\"openid\"\\s*:\\s*\"(\\w+)\"").matcher(sb.toString());
-
-	        if (m.find())
-	          return m.group(1);
-	        else {
-	          throw new Exception("server error!");
-	        }
-		}
-		throw new Exception("net error!");
-	}
-
-	private String getTokenByCode(String code) throws Exception {
-		String url = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=:APP_ID&client_secret=:APP_KEY&code=:AUTHORIZATION_CODE&state=:state&redirect_uri=:REDIRECT_URI";
-		url = url.replace(":APP_ID", QQLogin.APP_ID).replace(":APP_KEY", QQLogin.APP_KEY).replace(":AUTHORIZATION_CODE", code).replace(":state", "").replace(":REDIRECT_URI", QQLogin.REDIRECT_URL);
-		HttpGet httpGet = new HttpGet(url);
-		HttpClient client = HttpClients.createDefault();
-		HttpResponse response = client.execute(httpGet);
-		HttpEntity entity = response.getEntity();
-		if(entity!=null){
-			BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));   
-			StringBuilder sb = new StringBuilder();   
-	        String line = null;   
-	        while ((line = reader.readLine()) != null) {   
-                sb.append(line + "/n");   
-            }
-	        
-	        String result = sb.toString();
-	        String[] split = result.split("&");
-	        for (int i = 0; i < split.length; i++) {
-				if(split[i].indexOf("access_token")>-1){
-					return split[i].split("=")[1];
-				}
-			}
-		}
-		throw new Exception("net error!");
-	}
+	
+	
 }

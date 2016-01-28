@@ -14,7 +14,7 @@
 	</sql>
 	
 	<select id="selectOne" resultMap="QQLoginEntityResultMap">
-		select <include refid="column_list"/> from qq_login where access_token=#{accessToken}
+		select <include refid="column_list"/> from qq_login where id=#{ID}
 	</select>
 	
 	<insert id="insert">
@@ -22,8 +22,15 @@
 		values(#{ID},#{accessToken},#{UID},now())
 	</insert>
 	
-	<update id="updateLoginTime">
-		update qq_login set login_time=now() where access_token=#{accessToken}
+	<update id="update">
+		update qq_login set
+		<if test="UID!=null and UID!=''">
+			 uid=#{UID} , 
+		</if>
+		<if test="accessToken!=null and accessToken!=''">
+			 access_token=#{accessToken} ,
+		</if>
+		 login_time=now() where id=#{ID}
 	</update>
 	
 	
