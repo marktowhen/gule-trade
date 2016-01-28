@@ -37,6 +37,7 @@ import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.QQLogin;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IEmployeeService;
 import com.jingyunbank.etrade.api.user.service.IQQLoginService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.message.controller.SMSController;
@@ -54,6 +55,8 @@ public class QQLoginController {
 	private IUserService userService;
 	@Autowired
 	private ICartService cartService;
+	@Autowired
+	private IEmployeeService employeeService;
 
 	/**
 	 * 根据qq返回的身份认证的code 请求qq接口获取用户的唯一标示
@@ -91,8 +94,9 @@ public class QQLoginController {
 				if(candidatecart.isPresent()){
 					cartID = candidatecart.get().getID();
 				}
+				boolean isemployee = employeeService.isEmployee(users.getMobile());
 				//用户信息
-				LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, session, response);
+				LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, isemployee, session, response);
 				//跳到成功页面
 				response.sendRedirect(QQLogin.REDIRECT_URL);
 			}else{
@@ -160,8 +164,10 @@ public class QQLoginController {
 		if(candidatecart.isPresent()){
 			cartID = candidatecart.get().getID();
 		}
+		
+		boolean isemployee = employeeService.isEmployee(users.getMobile());
 		//用户信息
-		LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, session, response);
+		LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, isemployee, session, response);
 		
 		
 		UserVO vo = new UserVO();
@@ -215,8 +221,9 @@ public class QQLoginController {
 			if(candidatecart.isPresent()){
 				cartID = candidatecart.get().getID();
 			}
+			boolean isemployee = employeeService.isEmployee(users.getMobile());
 			//用户信息
-			LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, request.getSession(), response);
+			LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, isemployee, request.getSession(), response);
 			return	Result.ok("注册信息成功");
 		}
 		return checkResult;

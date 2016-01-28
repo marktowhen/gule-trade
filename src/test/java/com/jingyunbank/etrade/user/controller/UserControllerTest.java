@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.user.bean.LoginUserPwdVO;
+import com.jingyunbank.etrade.user.bean.LoginUserVO;
 
 public class UserControllerTest extends TestCaseBase {
 	/**
@@ -25,7 +25,7 @@ public class UserControllerTest extends TestCaseBase {
 	 */
 	@Test
 	public void testLogin() throws Exception{
-		LoginUserPwdVO user = new LoginUserPwdVO();
+		LoginUserVO user = new LoginUserVO();
 		user.setKey("username");
 		user.setPassword("12345678");
 		ObjectMapper mapper = new ObjectMapper();

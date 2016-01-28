@@ -27,6 +27,7 @@ import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IEmployeeService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
@@ -37,6 +38,8 @@ public class RegisterController {
 	private IUserService userService;
  	@Autowired
  	private ICartService cartService;
+ 	@Autowired
+ 	private IEmployeeService employeeService;
  	
 	/**
 	 * 判断验证码是否输入正确
@@ -94,8 +97,9 @@ public class RegisterController {
 			if(candidatecart.isPresent()){
 				cartID = candidatecart.get().getID();
 			}
+			boolean isemployee = employeeService.isEmployee(users.getMobile());
 			//用户信息
-			LoginController.loginSuccess(users.getID(), users.getUsername(),cartID, session, response);
+			LoginController.loginSuccess(users.getID(), users.getUsername(), cartID, isemployee, session, response);
 			return	Result.ok("注册信息成功");
 		}
 		

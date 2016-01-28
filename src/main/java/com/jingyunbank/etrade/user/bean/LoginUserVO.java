@@ -3,7 +3,7 @@ package com.jingyunbank.etrade.user.bean;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class LoginUserPwdVO {
+public class LoginUserVO {
 
 	@NotNull
 	@Size(min=4)
