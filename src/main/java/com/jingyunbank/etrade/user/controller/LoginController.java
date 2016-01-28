@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ public class LoginController {
 	@Autowired
 	private IUserService userService;
 	@Autowired
-	private ICartService cartService;
+	private  ICartService cartService;
 	@Autowired
 	private IManagerRoleService userRoleServce;
 	
@@ -89,13 +90,15 @@ public class LoginController {
 			return Result.fail("用户名或者密码错误！");
 		}
 		//3、成功之后
-		Security.authenticate(session);
 		//用户信息放入session 写入cookie
 		Users users = usersOptional.get();
-		//购物车
-		loginSuccessCar(users.getID(), session, response);
+		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
+		String cartID = null;
+		if(candidatecart.isPresent()){
+			cartID = candidatecart.get().getID();
+		}
 		//用户信息
-		loginSuccess(users.getID(), users.getUsername(), session, response);
+		loginSuccess(users.getID(), users.getUsername(),cartID, session, response);
 		
 		
 		UserVO vo = new UserVO();
@@ -151,9 +154,8 @@ public class LoginController {
 		Seller seller = sellerOptional.get();
 		//商铺id放入session
 		Login.MID(session, seller.getMid());
-		Security.authenticate(session);
 		//用户信息
-		loginSuccess(seller.getID(), seller.getSname(), session, response);
+		loginSuccess(seller.getID(), seller.getSname(),null, session, response);
 		
 		SellerVO vo = new SellerVO();
 		BeanUtils.copyProperties(seller, vo);
@@ -203,9 +205,8 @@ public class LoginController {
 			roles[i] = list.get(i).getRole().getCode();
 		}
 		Security.authorize(session, roles);
-		Security.authenticate(session);
 		//用户信息放入session 写入cookie
-		loginSuccess(manager.getID(), manager.getMname(), session, response);
+		loginSuccess(manager.getID(), manager.getMname(), null , session, response);
 		
 		ManagerVO vo = new ManagerVO();
 		BeanUtils.copyProperties(manager, vo);
@@ -214,23 +215,24 @@ public class LoginController {
 	
 	
 	
-	public void loginSuccess(String uid, String username, HttpSession session,
+	public static void loginSuccess(String uid, String username, String cartID, HttpSession session,
 			HttpServletResponse response){
+		Security.authenticate(session);
 		Login.UID(session, uid);
 		Login.uname(session, username);
+		
+		
+		if(!StringUtils.isEmpty(cartID)){
+			Login.cartID(session, cartID);
+		}
 		
 		//将uid写入cookie
 		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, uid);
 		cookie.setPath("/");
 		cookie.setMaxAge(session.getMaxInactiveInterval());
 		response.addCookie(cookie);
+		
 	}
 	
-	public void loginSuccessCar(String uid ,HttpSession session, HttpServletResponse response){
-		Optional<Cart> candidatecart = cartService.singleCart(uid);
-		candidatecart.ifPresent(cart->{
-			Login.cartID(session, cart.getID());
-		});
-	}
 	
 }
