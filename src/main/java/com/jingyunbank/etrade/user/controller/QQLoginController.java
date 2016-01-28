@@ -75,6 +75,7 @@ public class QQLoginController {
 			openID = getOpenIDByToken(token);
 		} catch (Exception e) {
 			response.sendRedirect(QQLogin.REDIRECT_URL+"#/404");
+			return;
 		}
 		//查询是否有对应用户
 		QQLogin single = qqLoginService.single(openID);
