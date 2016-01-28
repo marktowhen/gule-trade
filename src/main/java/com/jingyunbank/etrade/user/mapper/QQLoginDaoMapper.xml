@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.user.dao.QQLoginDao">
+	<resultMap type="com.jingyunbank.etrade.user.entity.QQLoginEntity" id="QQLoginEntityResultMap">
+		<id column="id" property="ID" />
+		<result column="access_token" property="accessToken" />
+		<result column="uid" property="UID" />
+		<result column="login_time" property="loginTime" />
+	</resultMap>
+	<sql id="column_list">
+		 id,access_token,uid,login_time
+	</sql>
+	
+	<select id="selectOne" resultMap="QQLoginEntityResultMap">
+		select <include refid="column_list"/> from qq_login where id=#{ID}
+	</select>
+	
+	<insert id="insert">
+		insert into qq_login( <include refid="column_list"/>)
+		values(#{ID},#{accessToken},#{UID},now())
+	</insert>
+	
+	<update id="update">
+		update qq_login set
+		<if test="UID!=null and UID!=''">
+			 uid=#{UID} , 
+		</if>
+		<if test="accessToken!=null and accessToken!=''">
+			 access_token=#{accessToken} ,
+		</if>
+		 login_time=now() where id=#{ID}
+	</update>
+	
+	
+</mapper>

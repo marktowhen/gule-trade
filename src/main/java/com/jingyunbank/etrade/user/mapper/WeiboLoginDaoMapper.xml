@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.user.dao.WeiboLoginDao">
+	<resultMap type="com.jingyunbank.etrade.user.entity.WeiboLoginEntity" id="WeiboLoginEntityResultMap">
+		<id column="id" property="ID" />
+		<result column="weibo_uid" property="weiboUID" />
+		<result column="access_token" property="accessToken" />
+		<result column="uid" property="UID" />
+		<result column="login_time" property="loginTime" />
+	</resultMap>
+	<sql id="column_list">
+		 id,weibo_uid,access_token,uid,login_time
+	</sql>
+	
+	<select id="selectOne" resultMap="WeiboLoginEntityResultMap">
+		select <include refid="column_list"/> from weibo_login where access_token=#{key} or weibo_uid=#{key}
+	</select>
+	<insert id="insert">
+		insert into weibo_login(<include refid="column_list"/>)
+		values(#{ID},#{weiboUID},#{accessToken},#{UID},now())
+	</insert>
+	<update id="updateLoginTime">
+		update weibo_login set login_time=now() where access_token=#{key} or weibo_uid=#{key}
+	</update>
+	
+	<update id="updateByID">
+		update weibo_login set
+		<if test="UID!=null and UID!=''">
+			 uid=#{UID} , 
+		</if>
+		<if test="accessToken!=null and accessToken!=''">
+			 access_token=#{accessToken} ,
+		</if>
+		 login_time=now() where id = #{ID}
+	</update>
+	
+</mapper>

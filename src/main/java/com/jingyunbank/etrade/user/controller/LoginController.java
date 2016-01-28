@@ -51,9 +51,10 @@ public class LoginController {
 	@Autowired
 	private IUserService userService;
 	@Autowired
-	private ICartService cartService;
+	private  ICartService cartService;
 	@Autowired
 	private IManagerRoleService userRoleServce;
+	
 	@Autowired
 	private IEmployeeService employeeService;
 	@Autowired
@@ -61,8 +62,9 @@ public class LoginController {
 	@Autowired
 	private ISellerService sellerService;
 	
+	
 	/**
-	 * 登录
+	 * 登录   
 	 * @param user
 	 * @param valid
 	 * @param session
@@ -72,7 +74,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<UserVO> login(@Valid @RequestBody LoginUserPwdVO user, 
+	public Result<UserVO> login(@Valid @RequestBody LoginUserVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -94,14 +96,27 @@ public class LoginController {
 				//暂时先不管
 				//return Result.fail("用户被锁");
 			}
-			//3、成功之后
-			doAfterCheck(users, session, response);
-			UserVO vo = new UserVO();
-			BeanUtils.copyProperties(users, vo);
-			return Result.ok(vo);
 		}else{
 			return Result.fail("用户名或者密码错误！");
 		}
+		//3、成功之后
+		//用户信息放入session 写入cookie
+		Users users = usersOptional.get();
+		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
+		String cartID = null;
+		if(candidatecart.isPresent()){
+			cartID = candidatecart.get().getID();
+		}
+    boolean isemployee = employeeService.isEmployee(users.getMobile());
+		Login.employee(session, isemployee);
+
+		//用户信息
+		loginSuccess(users.getID(), users.getUsername(),cartID, session, response);
+		
+		
+		UserVO vo = new UserVO();
+		BeanUtils.copyProperties(users, vo);
+		return Result.ok(vo);
 	}
 	
 	/**
@@ -146,40 +161,23 @@ public class LoginController {
 			userService.save(registerUser, userInfo);
 			userOption = Optional.of(registerUser);
 		}
-		//成功之后
-		doAfterCheck(userOption.get(), session, response);
+		//3、成功之后
+		//用户信息放入session 写入cookie
+		Users users = userOption.get();
+		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
+		String cartID = null;
+		if(candidatecart.isPresent()){
+			cartID = candidatecart.get().getID();
+		}
+    boolean isemployee = employeeService.isEmployee(users.getMobile());
+		Login.employee(session, isemployee);
+		//用户信息
+		loginSuccess(users.getID(), users.getUsername(),cartID, session, response);
 		
 		return Result.ok();
 	}
 	
-	/**
-	 * 登录成功后的操作
-	 * @param users
-	 * @param session
-	 * @param response
-	 * 2015年12月21日 qxs
-	 */
-	private void doAfterCheck(Users users, HttpSession session, HttpServletResponse response){
-		//用户信息放入session
-		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
-		candidatecart.ifPresent(cart->{
-			Login.cartID(session, cart.getID());
-		});
-		boolean isemployee = employeeService.isEmployee(users.getMobile());
-		
-		Login.UID(session, users.getID());
-		Login.uname(session, users.getUsername());
-		Login.employee(session, isemployee);
-		Security.authenticate(session);
-		
-		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, users.getID());
-		cookie.setPath("/");
-		cookie.setMaxAge(session.getMaxInactiveInterval());
-		response.addCookie(cookie);
-		
-		
-	}
+	
 	/**
 	 * 用户注销登录
 	 * @param session
@@ -191,7 +189,6 @@ public class LoginController {
 		session.invalidate();
 		return Result.ok("成功");
 	}
-	
 	
 	/**
 	 * users登录   暂时不用
@@ -205,7 +202,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login/back",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserPwdVO user, 
+	public Result<UserVO> loginBack(@Valid @RequestBody LoginUserVO user, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -268,7 +265,8 @@ public class LoginController {
 		BeanUtils.copyProperties(users, vo);
 		return Result.ok(vo);
 	}
-	
+
+
 	/**
 	 * 卖家登录   
 	 * @param request
@@ -281,7 +279,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login/seller",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserPwdVO loginUser, 
+	public Result<SellerVO> sellerLogin(@Valid @RequestBody LoginUserVO loginUser, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -303,17 +301,10 @@ public class LoginController {
 		//3、成功之后
 		//用户信息放入session
 		Seller seller = sellerOptional.get();
-		Login.UID(session, seller.getID());
-		Login.uname(session, seller.getSname());
 		//商铺id放入session
 		Login.MID(session, seller.getMid());
-		Security.authenticate(session);
-		
-		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, seller.getID());
-		cookie.setPath("/");
-		cookie.setMaxAge(session.getMaxInactiveInterval());
-		response.addCookie(cookie);
+		//用户信息
+		loginSuccess(seller.getID(), seller.getSname(),null, session, response);
 		
 		SellerVO vo = new SellerVO();
 		BeanUtils.copyProperties(seller, vo);
@@ -332,7 +323,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value="/login/manager",method=RequestMethod.POST,
 				consumes="application/json;charset=UTF-8")
-	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserPwdVO loginUser, 
+	public Result<ManagerVO> managerLogin(@Valid @RequestBody LoginUserVO loginUser, 
 						BindingResult valid, HttpSession session,
 						HttpServletResponse response) throws Exception{
 		if(valid.hasErrors()){
@@ -363,21 +354,34 @@ public class LoginController {
 			roles[i] = list.get(i).getRole().getCode();
 		}
 		Security.authorize(session, roles);
-		//用户信息放入session
-		Login.UID(session, manager.getID());
-		Login.uname(session, manager.getMname());
-		Security.authenticate(session);
-		
-		
-		//将uid写入cookie
-		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, manager.getID());
-		cookie.setPath("/");
-		cookie.setMaxAge(session.getMaxInactiveInterval());
-		response.addCookie(cookie);
+		//用户信息放入session 写入cookie
+		loginSuccess(manager.getID(), manager.getMname(), null , session, response);
 		
 		ManagerVO vo = new ManagerVO();
 		BeanUtils.copyProperties(manager, vo);
 		return Result.ok(vo);
 	}
+	
+	
+	
+	public static void loginSuccess(String uid, String username, String cartID, HttpSession session,
+			HttpServletResponse response){
+		Security.authenticate(session);
+		Login.UID(session, uid);
+		Login.uname(session, username);
+		
+		
+		if(!StringUtils.isEmpty(cartID)){
+			Login.cartID(session, cartID);
+		}
+		
+		//将uid写入cookie
+		Cookie cookie = new Cookie(Login.LOGIN_USER_ID, uid);
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
+	}
+	
 	
 }
