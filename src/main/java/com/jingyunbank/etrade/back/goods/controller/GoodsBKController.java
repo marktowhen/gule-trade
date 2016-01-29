@@ -20,6 +20,7 @@ import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.bean.GoodsListShowVO;
 import com.jingyunbank.etrade.back.goods.bean.GoodsSearchVO;
 
+
 /**
  * 商品后台管理系统
  * @author liug
