@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
@@ -36,6 +38,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	private ISalesRecordsService salesRecordsService;
 
 	@Override
+	@CacheEvict(value="goodsCache",allEntries=true)
 	public boolean save(GoodsOperation goodsOperation) {
 		int r1 = 0, r2 = 0, r3 = 0;
 		try {
@@ -78,6 +81,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	 * 修改商品信息
 	 */
 	@Override
+	@CacheEvict(value="goodsCache",allEntries=true)
 	public boolean refreshGoods(GoodsOperation goodsOperation) throws Exception {
 		int r1 = 0, r2 = 0, r3 = 0;
 		try {
@@ -106,6 +110,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
+	@CacheEvict(value="goodsCache",allEntries=true)
 	public void refreshGoodsVolume(String uid, String uname, String gid, int count)  throws DataSavingException, DataRefreshingException{
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("gid", gid);
@@ -144,6 +149,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
 	public List<BaseGoodsOperation> listBrandsByMid(String mid) throws Exception {
 		List<BaseGoodsOperation> brandslist = goodsOperationDao.selectBrandsByMid(mid).stream().map(dao -> {
 			BaseGoodsOperation bo = new BaseGoodsOperation();
@@ -154,6 +160,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "merchantCache", keyGenerator = "CustomKG")
 	public List<BaseGoodsOperation> listMerchant() throws Exception {
 		List<BaseGoodsOperation> merchantlist = goodsOperationDao.selectMerchant().stream().map(dao -> {
 			BaseGoodsOperation bo = new BaseGoodsOperation();

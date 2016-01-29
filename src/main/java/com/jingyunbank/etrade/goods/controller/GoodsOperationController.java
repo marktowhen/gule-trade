@@ -56,7 +56,7 @@ public class GoodsOperationController {
 	 */
 	public Date string2Date(String time) {
 		Date date = null;
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			date = sf.parse(time);
 		} catch (ParseException e) {

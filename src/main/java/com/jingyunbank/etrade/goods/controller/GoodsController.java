@@ -31,6 +31,7 @@ import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.goods.bean.CommonGoodsVO;
 import com.jingyunbank.etrade.goods.bean.GoodsBrandVO;
 import com.jingyunbank.etrade.goods.bean.GoodsMerchantVO;
+import com.jingyunbank.etrade.goods.bean.GoodsPriceConvert;
 import com.jingyunbank.etrade.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsStockShowVO;
 import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
@@ -55,16 +56,7 @@ public class GoodsController {
 
 	@Resource
 	protected IBrandService brandService;
-	/*
-	 * @RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
-	 * public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest
-	 * request, @PathVariable String goodsname, Page page) throws Exception {
-	 * Range range = new Range(); range.setFrom(page.getOffset());
-	 * range.setTo(page.getSize()); List<CommonGoodsVO> list =
-	 * goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
-	 * CommonGoodsVO vo = new CommonGoodsVO(); BeanUtils.copyProperties(bo, vo);
-	 * return vo; }).collect(Collectors.toList()); return Result.ok(list); }
-	 */
+	
 
 	/**
 	 * 查询品牌列表
@@ -139,39 +131,6 @@ public class GoodsController {
 	}
 
 	/**
-	 * 赋值价格区间对应的benginPrice, endPrice
-	 * 
-	 * @param goodshowvo
-	 * @param goodshowBO
-	 * @return
-	 */
-	public GoodsShow setBenginEndPrice(GoodsShowVO goodshowvo, GoodsShow goodshowBO) {
-		if (goodshowvo.getPriceFlag() == 1) {
-			goodshowBO.setBeginPrice(new BigDecimal(0));
-			goodshowBO.setEndPrice(new BigDecimal(69));
-		} else if (goodshowvo.getPriceFlag() == 2) {
-			goodshowBO.setBeginPrice(new BigDecimal(70));
-			goodshowBO.setEndPrice(new BigDecimal(199));
-		} else if (goodshowvo.getPriceFlag() == 3) {
-			goodshowBO.setBeginPrice(new BigDecimal(200));
-			goodshowBO.setEndPrice(new BigDecimal(399));
-		} else if (goodshowvo.getPriceFlag() == 4) {
-			goodshowBO.setBeginPrice(new BigDecimal(400));
-			goodshowBO.setEndPrice(new BigDecimal(799));
-		} else if (goodshowvo.getPriceFlag() == 5) {
-			goodshowBO.setBeginPrice(new BigDecimal(800));
-			goodshowBO.setEndPrice(new BigDecimal(1199));
-		} else if (goodshowvo.getPriceFlag() == 6) {
-			goodshowBO.setBeginPrice(new BigDecimal(1200));
-			goodshowBO.setEndPrice(new BigDecimal(999999));
-		} else if (goodshowvo.getPriceFlag() == 0) {
-			goodshowBO.setBeginPrice(null);
-			goodshowBO.setEndPrice(null);
-		}
-		return goodshowBO;
-	}
-
-	/**
 	 * 查询所有商品
 	 * 
 	 * @param request
@@ -192,6 +151,42 @@ public class GoodsController {
 		return Result.ok(goodslist);
 	}
 
+	// ---------------------
+	/**
+	 * 赋值价格区间对应的benginPrice, endPrice
+	 * 
+	 * @param goodshowvo
+	 * @return
+	 */
+	public GoodsPriceConvert setPrice(GoodsShowVO goodshowvo) {
+		GoodsPriceConvert price = new GoodsPriceConvert();
+		if (goodshowvo.getPriceFlag() == 1) {
+			price.setBeginPrice(new BigDecimal(0));
+			price.setEndPrice(new BigDecimal(69));
+		} else if (goodshowvo.getPriceFlag() == 2) {
+			price.setBeginPrice(new BigDecimal(70));
+			price.setEndPrice(new BigDecimal(199));
+		} else if (goodshowvo.getPriceFlag() == 3) {
+			price.setBeginPrice(new BigDecimal(200));
+			price.setEndPrice(new BigDecimal(399));
+		} else if (goodshowvo.getPriceFlag() == 4) {
+			price.setBeginPrice(new BigDecimal(400));
+			price.setEndPrice(new BigDecimal(799));
+		} else if (goodshowvo.getPriceFlag() == 5) {
+			price.setBeginPrice(new BigDecimal(800));
+			price.setEndPrice(new BigDecimal(1199));
+		} else if (goodshowvo.getPriceFlag() == 6) {
+			price.setBeginPrice(new BigDecimal(1200));
+			price.setEndPrice(new BigDecimal(999999));
+		} else if (goodshowvo.getPriceFlag() == 0) {
+			price.setBeginPrice(null);
+			price.setEndPrice(null);
+		}
+		return price;
+
+	}
+	// --------------------
+
 	/**
 	 * 根据条件查询商品信息 (商品查询)
 	 * 
@@ -203,18 +198,27 @@ public class GoodsController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> queryGoodsByWhere(HttpServletRequest request, GoodsShowVO goodshowvo, Page page)
 			throws Exception {
-		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
-		// 接收价格区间
-		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
+
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
 
-		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(goodshowBO, range).stream().map(bo -> {
-			CommonGoodsVO vo = new CommonGoodsVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
+		// 接收价格区间
+		GoodsPriceConvert price = setPrice(goodshowvo);
+
+		String[] brands = goodshowvo.getBrands();
+		String[] types = goodshowvo.getTypes();
+		int order = goodshowvo.getOrder();
+		BigDecimal beginPrice = price.getBeginPrice();
+		BigDecimal endPrice = price.getEndPrice();
+
+		List<CommonGoodsVO> goodslist = goodsService.listGoodsByWhere(brands, types, beginPrice, endPrice, order, range)
+				.stream().map(bo -> {
+					CommonGoodsVO vo = new CommonGoodsVO();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
+
 		return Result.ok(goodslist);
 	}
 
@@ -244,32 +248,39 @@ public class GoodsController {
 	 * @param page
 	 * @return @throws Exception @throws
 	 */
-	// @RequestMapping(value = "/goodsMerchantByWhere/list", method =
-	// RequestMethod.GET)
+
 	@RequestMapping(value = "/merchant/list", method = RequestMethod.GET)
 	public Result<List<GoodsMerchantVO>> queryMerchantByWhere(HttpServletRequest request, GoodsShowVO goodshowvo,
 			Page page) throws Exception {
-		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
-		// 接收价格区间
-		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
+
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
 
-		List<GoodsMerchant> list = goodsService.listMerchantByWhere(goodshowBO, range);
+		// 接收价格区间
+		GoodsPriceConvert price = setPrice(goodshowvo);
+
+		String[] brands = goodshowvo.getBrands();
+		String[] types = goodshowvo.getTypes();
+		BigDecimal beginPrice = price.getBeginPrice();
+		BigDecimal endPrice = price.getEndPrice();
+
+		List<GoodsMerchant> list = goodsService.listMerchantByWhere(brands, types, beginPrice, endPrice, range);
 		List<GoodsMerchantVO> newlist = new ArrayList<GoodsMerchantVO>();
-		for(GoodsMerchant m :list){
+		for (GoodsMerchant m : list) {
 			GoodsMerchantVO vo = new GoodsMerchantVO();
 			BeanUtils.copyProperties(m, vo);
 			vo.setBrands(brandService.listBrandsByMid(m.getMID()));
 			newlist.add(vo);
 		}
-		
-/*		List<GoodsMerchantVO> list = goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo -> {
-			GoodsMerchantVO vo = new GoodsMerchantVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());*/
+
+		/*
+		 * List<GoodsMerchantVO> list =
+		 * goodsService.listMerchantByWhere(goodshowBO, range).stream().map(bo
+		 * -> { GoodsMerchantVO vo = new GoodsMerchantVO();
+		 * BeanUtils.copyProperties(bo, vo); return vo;
+		 * }).collect(Collectors.toList());
+		 */
 
 		return Result.ok(newlist);
 	}
@@ -285,18 +296,27 @@ public class GoodsController {
 	@RequestMapping(value = "/{mid}/list", method = RequestMethod.GET)
 	public Result<List<CommonGoodsVO>> queryGoodsMerchantByWhereGoodsMax(HttpServletRequest request,
 			@PathVariable String mid, GoodsShowVO goodshowvo, Page page) throws Exception {
-		GoodsShow goodshowBO = getVo2Bo(goodshowvo);
-		// 接收价格区间
-		goodshowBO = setBenginEndPrice(goodshowvo, goodshowBO);
+
 		Range range = new Range();
 		range.setFrom(page.getOffset());
-		range.setTo(page.getSize());		
+		range.setTo(page.getSize());
 
-		List<CommonGoodsVO> list = goodsService.listMerchantByWhereGoodsMax(goodshowBO, range).stream().map(bo -> {
-			CommonGoodsVO vo = new CommonGoodsVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
+		// 接收价格区间
+		GoodsPriceConvert price = setPrice(goodshowvo);
+
+		String[] brands = goodshowvo.getBrands();
+		String[] types = goodshowvo.getTypes();
+		int order = goodshowvo.getOrder();
+		BigDecimal beginPrice = price.getBeginPrice();
+		BigDecimal endPrice = price.getEndPrice();
+
+		List<CommonGoodsVO> list = goodsService
+				.listMerchantByWhereGoodsMax(brands, types, beginPrice, endPrice, mid, order, range).stream()
+				.map(bo -> {
+					CommonGoodsVO vo = new CommonGoodsVO();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
 
@@ -344,22 +364,6 @@ public class GoodsController {
 	}
 
 	/**
-	 * 商品VO对象转成BO对象
-	 * 
-	 * @param vo
-	 * @return
-	 * @throws Exception
-	 */
-	private GoodsShow getVo2Bo(GoodsShowVO vo) throws Exception {
-		GoodsShow bo = null;
-		if (vo != null) {
-			bo = new GoodsShow();
-			BeanUtils.copyProperties(vo, bo);
-		}
-		return bo;
-	}
-
-	/**
 	 * 阿胶后台24小时热卖 待确定业务修改
 	 * 
 	 * @return
@@ -400,15 +404,24 @@ public class GoodsController {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
-		GoodsShow goodshowBO = getVo2Bo(vo);
-		// 接收价格区间
-		goodshowBO = setBenginEndPrice(vo, goodshowBO);
 
-		List<CommonGoodsVO> list = goodsService.listGoodsByGoodsResult(goodshowBO, range).stream().map(bo -> {
-			CommonGoodsVO vos = new CommonGoodsVO();
-			BeanUtils.copyProperties(bo, vos);
-			return vos;
-		}).collect(Collectors.toList());
+		// 接收价格区间
+		GoodsPriceConvert price = setPrice(vo);
+
+		String[] brands = vo.getBrands();
+		String[] types = vo.getTypes();
+		int order = vo.getOrder();
+		BigDecimal beginPrice = price.getBeginPrice();
+		BigDecimal endPrice = price.getEndPrice();
+		String goodsname = vo.getGoodsName();
+		
+		List<CommonGoodsVO> list = goodsService
+				.listGoodsByGoodsResult(brands, types, beginPrice, endPrice, goodsname, order, range).stream()
+				.map(bo -> {
+					CommonGoodsVO vos = new CommonGoodsVO();
+					BeanUtils.copyProperties(bo, vos);
+					return vos;
+				}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
 
@@ -448,16 +461,16 @@ public class GoodsController {
 	}
 
 	/**
-	 * http://localhost:8080/api/goods/stock/list?gids=1&gids=2
-	 * 根据GID 获取商品的库存 
+	 * http://localhost:8080/api/goods/stock/list?gids=1&gids=2 根据GID 获取商品的库存
+	 * 
 	 * @param request
 	 * @param gids
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/stock/list", method = RequestMethod.GET)
-	public Result<List<GoodsStockShowVO>> queryStockByGids(HttpServletRequest request,
-			@RequestParam List<String> gids) throws Exception {
+	public Result<List<GoodsStockShowVO>> queryStockByGids(HttpServletRequest request, @RequestParam List<String> gids)
+			throws Exception {
 		List<GoodsStockShowVO> list = goodsService.listGoodsStcok(gids).stream().map(bo -> {
 			GoodsStockShowVO vo = new GoodsStockShowVO();
 			BeanUtils.copyProperties(bo, vo);

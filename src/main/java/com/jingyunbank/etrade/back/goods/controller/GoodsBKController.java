@@ -20,6 +20,7 @@ import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.bean.GoodsListShowVO;
 import com.jingyunbank.etrade.back.goods.bean.GoodsSearchVO;
 
+
 /**
  * 商品后台管理系统
  * @author liug
@@ -46,10 +47,9 @@ public class GoodsBKController {
 		Range range = new Range();
 		range.setFrom(page.getOffset());
 		range.setTo(page.getSize());
-		GoodsSearch goodsSearch = new GoodsSearch();
-		BeanUtils.copyProperties(goodsSearchVO, goodsSearch);
+
 		
-		List<GoodsListShowVO> goodslist = goodsService.listGoodsByCondition(goodsSearch, range).stream().map(bo -> {
+		List<GoodsListShowVO> goodslist = goodsService.listGoodsByCondition(goodsSearchVO.getName(), goodsSearchVO.getState(), goodsSearchVO.getMID(), goodsSearchVO.getBID(), range).stream().map(bo -> {
 			GoodsListShowVO vo = new GoodsListShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;

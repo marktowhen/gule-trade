@@ -27,17 +27,17 @@ public class GoodsOperationShowVO implements Serializable{
 	private BigDecimal promotionPrice;//商品促销价格
 	private BigDecimal nowprice;//商品现价
 	private boolean state;//是否上架0否1是
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date upTime;//上架时间
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date downTime;//下架时间
 	private int count;//库存
 	private int volume;//销量
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date addTime;//添加时间
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date onSaleBeginTime;  //促销开始时间
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date onSaleEndTime;	//促销结束时间
 	private boolean onSale; //是否促销标志
 	
@@ -77,7 +77,7 @@ public class GoodsOperationShowVO implements Serializable{
 	private String note;//注意事项
 	private String storageMethods;//储藏方法
 	private String isGiftBox;//是否礼盒装
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date productionDate;//生产日期
 	private String weight;//重量
 	private String unit;//单位

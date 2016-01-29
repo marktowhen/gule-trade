@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.goods.bo.Brand;
@@ -21,6 +23,7 @@ public class BrandService implements IBrandService {
 	private BrandDao brandDao;
 
 	@Override
+	@CacheEvict(value="brandCache",allEntries=true)
 	public boolean save(Brand brand) throws Exception {
 		// TODO Auto-generated method stub
 		GoodsBrandEntity entity = new GoodsBrandEntity();
@@ -33,6 +36,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
+	
 	public Optional<Brand> singleById(String bid) throws Exception {
 		GoodsBrandEntity entity = brandDao.selectOne(bid);
 		Brand brand = null;
@@ -44,6 +48,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
+	@CacheEvict(value="brandCache",allEntries=true)
 	public boolean refreshBrand(Brand brand) throws Exception {
 		GoodsBrandEntity entity = new GoodsBrandEntity();
 		BeanUtils.copyProperties(brand, entity);
@@ -55,6 +60,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
 	public List<Brand> listBrandsByMid(String mid) throws Exception {
 		// TODO Auto-generated method stub
 		List<Brand> brands = brandDao.selectbrand(mid).stream().map(dao -> {
@@ -66,6 +72,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
 	public List<Brand> listBrands() throws Exception {
 		// TODO Auto-generated method stub
 		List<Brand> brands = brandDao.selectAllBrands().stream().map(dao -> {
@@ -77,6 +84,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
+	@CacheEvict(value="brandCache",allEntries=true)
 	public boolean delBrand(String bid) throws Exception {
 		int i = brandDao.delBrand(bid);
 		if (i > 0) {
