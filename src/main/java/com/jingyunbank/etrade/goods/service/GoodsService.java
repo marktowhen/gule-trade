@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -61,6 +62,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
+	@Cacheable(cacheNames="brandcachename", keyGenerator="CustomKG")
 	public List<ShowGoods> listBrands() throws Exception {
 		List<ShowGoods> brandslist = goodsDao.selectBrands().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
@@ -71,6 +73,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
+	@Cacheable(cacheNames="typecachename", keyGenerator="CustomKG")
 	public List<ShowGoods> listTypes() throws Exception {
 		List<ShowGoods> typeslist = goodsDao.selectTypes().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
@@ -95,6 +98,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
+	@Cacheable(cacheNames="goods", keyGenerator="CustomKG")
 	public List<ShowGoods> listGoodsByWhere(GoodsShow goodsshow, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 
