@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -23,6 +25,7 @@ public class CountryService implements ICountryService {
 	private CountryDao countryDao;
 
 	@Override
+	@CacheEvict("country")
 	public boolean save(Country bo) throws DataSavingException {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -35,6 +38,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
+	@CacheEvict("country")
 	public boolean remove(int id) throws DataRemovingException {
 		CountryEntity entity = new CountryEntity();
 		entity.setCountryID(id);
@@ -47,6 +51,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
+	@CacheEvict("country")
 	public boolean refresh(Country bo) throws DataRefreshingException {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -58,6 +63,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
+	@Cacheable("country")
 	public List<Country> list(Country bo, Range range) {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -73,11 +79,13 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
+	@Cacheable("country")
 	public List<Country> list(Country bo) {
 		return list(bo, null);
 	}
 
 	@Override
+	@Cacheable("country")
 	public Country single(int id) {
 		Country bo = new Country();
 		bo.setCountryID(id);

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -23,6 +25,7 @@ public class CityService implements ICityService {
 	private CityDao cityDao;
 
 	@Override
+	@CacheEvict("city")
 	public boolean save(City bo) throws DataSavingException {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -35,6 +38,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
+	@CacheEvict("city")
 	public boolean remove(int id) throws DataRemovingException {
 		CityEntity entity = new CityEntity();
 		entity.setCityID(id);
@@ -47,6 +51,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
+	@CacheEvict("city")
 	public boolean refresh(City bo) throws DataRefreshingException {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -58,6 +63,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
+	@Cacheable("city")
 	public List<City> list(City bo, Range range) {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -73,11 +79,13 @@ public class CityService implements ICityService {
 	}
 
 	@Override
+	@Cacheable("city")
 	public List<City> list(City bo) {
 		return list(bo, null);
 	}
 
 	@Override
+	@Cacheable("city")
 	public City single(int id) {
 		City bo = new City();
 		bo.setCityID(id);
@@ -89,6 +97,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
+	@Cacheable("city")
 	public List<City> listByProvince(int provinceID) {
 		City c = new City();
 		c.setProvinceID(provinceID);
