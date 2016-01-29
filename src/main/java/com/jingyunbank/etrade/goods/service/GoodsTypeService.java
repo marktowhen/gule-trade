@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.goods.bo.GoodsType;
@@ -21,6 +23,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	private GoodsTypeDao goodsTypeDao;
 
 	@Override
+	@CacheEvict(value="typeCache",allEntries=true)
 	public boolean save(GoodsType goodsType) throws Exception {
 		GoodsTypeEntity entity = new GoodsTypeEntity();
 		BeanUtils.copyProperties(goodsType, entity);
@@ -43,6 +46,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
+	@CacheEvict(value="typeCache",allEntries=true)
 	public boolean refreshGoodsType(GoodsType goodsType) throws Exception {
 		GoodsTypeEntity entity = new GoodsTypeEntity();
 		BeanUtils.copyProperties(goodsType, entity);
@@ -54,6 +58,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "typeCache", keyGenerator = "CustomKG")
 	public List<GoodsType> listGoodsTypesByName(String name) throws Exception {
 		List<GoodsType> goodsTypes = goodsTypeDao.selectGoodsTypes(name).stream().map(dao -> {
 			GoodsType bo = new GoodsType();
@@ -64,6 +69,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "typeCache", keyGenerator = "CustomKG")
 	public List<GoodsType> listGoodsTypes() throws Exception {
 		List<GoodsType> goodsType = goodsTypeDao.selectAllGoodsTypes().stream().map(dao -> {
 			GoodsType bo = new GoodsType();
@@ -74,6 +80,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
+	@CacheEvict(value="typeCache",allEntries=true)
 	public boolean delGoodsType(String tid) throws Exception {
 		int i = goodsTypeDao.delGoodsType(tid);
 		if (i > 0) {

@@ -25,19 +25,19 @@ public class CommonGoodsVO implements Serializable{
 	private String goodsTitle; //宝贝标题
 	private int comment; //商品评论数
 	
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date onSaleBeginTime;  //促销开始时间
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date onSaleEndTime;	//促销结束时间
 	private boolean onSale; //是否促销标志
 	
 	
 	
 	/****我的足迹 冗余浏览时间字段***/
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date visitTime;
 	/****我的收藏 冗余收藏时间字段***/
-	@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date collectTime;
 	public String getGID() {
 		return GID;

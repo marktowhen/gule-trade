@@ -103,13 +103,13 @@
 		<dependency>
 	    	<groupId>com.jingyunbank</groupId>
 			<artifactId>jingyun-core</artifactId>
-			<version>1.0.3-RELEASE</version>
+			<version>1.0.4-RELEASE</version>
 	    </dependency>
 	    
 	    <dependency>
 	    	<groupId>com.jingyunbank</groupId>
 			<artifactId>jingyun-etrade-api</artifactId>
-			<version>1.1.2-RELEASE</version>
+			<version>1.1.4-RELEASE</version>
 	    </dependency>
 	    <!-- jingyun projects end -->
 	    

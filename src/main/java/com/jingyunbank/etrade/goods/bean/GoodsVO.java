@@ -40,18 +40,18 @@ public class GoodsVO implements Serializable{
 		private BigDecimal discountPrice; // 折扣价
 		private int count; // 库存
 		private String volume; // 销量
-		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date addTime;// 商品添加时间
-		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date onSaleBeginTime;  //促销开始时间
-		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date onSaleEndTime;	//促销结束时间
 		private boolean onSale; //是否促销标志
 		
 		
-		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date upTime; //上架时间
-		@JsonFormat(pattern="yyyy-MM-dd hh:mm:ss",locale = "zh" , timezone="GMT+8")
+		@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 		private Date downTime;//下架时间
 		private BigDecimal postage; //邮费
 		private int subVolumeType; //减库存方式 (拍下减库存 0 付款减库存1)

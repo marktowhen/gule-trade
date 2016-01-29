@@ -20,7 +20,7 @@ public class SaleRecordVO implements Serializable {
 	private String uname;
 	private String GID;
 	private int count;
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", locale = "zh", timezone = "GMT+8")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
 	private Date salesDate;
 
 	public String getID() {

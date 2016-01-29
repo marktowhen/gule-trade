@@ -56,16 +56,7 @@ public class GoodsController {
 
 	@Resource
 	protected IBrandService brandService;
-	/*
-	 * @RequestMapping(value = "/{goodsname}", method = RequestMethod.GET)
-	 * public Result<List<CommonGoodsVO>> queryGoodsByName(HttpServletRequest
-	 * request, @PathVariable String goodsname, Page page) throws Exception {
-	 * Range range = new Range(); range.setFrom(page.getOffset());
-	 * range.setTo(page.getSize()); List<CommonGoodsVO> list =
-	 * goodsService.listGoodsByLikeName(goodsname, range).stream().map(bo -> {
-	 * CommonGoodsVO vo = new CommonGoodsVO(); BeanUtils.copyProperties(bo, vo);
-	 * return vo; }).collect(Collectors.toList()); return Result.ok(list); }
-	 */
+	
 
 	/**
 	 * 查询品牌列表
