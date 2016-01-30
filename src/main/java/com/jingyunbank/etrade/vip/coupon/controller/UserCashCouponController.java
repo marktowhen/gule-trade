@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -207,11 +208,9 @@ public class UserCashCouponController {
 		if(userCashCouponService.active(code, uid)){
 			if(!StringUtils.isEmpty(valid.getBody().getRemark()) && valid.getBody().getRemark().indexOf(BaseCoupon.ACCESS_ID_JYJR)>-1 ){
 				//通知景云 更改使用状态
-				PostMethod postMethod = new PostMethod(BaseCoupon.ACTIVE_COUNPON_NOTICE_URL.replace(":id", valid.getBody().getID()));
-				HttpClient client = new HttpClient();
-	            client.getHttpConnectionManager().getParams()
-	                    .setConnectionTimeout(50000);// 设置连接时间
-	            client.executeMethod(postMethod);
+				HttpPost post = new HttpPost(BaseCoupon.ACTIVE_COUNPON_NOTICE_URL.replace(":id", valid.getBody().getID()));
+				HttpClient client = HttpClients.createDefault();
+				client.execute(post);
 			}
 			return Result.ok();
 		}

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.core.web.Login;
-import com.jingyunbank.core.web.Security;
 import com.jingyunbank.core.web.ServletBox;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IEmployeeService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -38,7 +37,10 @@ public class RegisterController {
  	@Autowired
 	private IUserService userService;
  	@Autowired
-	private ICartService cartService;
+ 	private ICartService cartService;
+ 	@Autowired
+ 	private IEmployeeService employeeService;
+ 	
 	/**
 	 * 判断验证码是否输入正确
 	 * @param userVO
@@ -70,75 +72,39 @@ public class RegisterController {
 			if(userService.exists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
-			checkResult = checkCode(userVO.getCode(), request, ServletBox.SMS_CODE_KEY_IN_SESSION);
+			checkResult = SMSController.checkCode(userVO.getCode(), request, ServletBox.SMS_CODE_KEY_IN_SESSION);
 		}
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getEmail())){
 			if(userService.exists(userVO.getEmail())){
-			return Result.fail("该邮箱已存在");
+				return Result.fail("该邮箱已存在");
 			}
-			checkResult = checkCode(userVO.getCode(), request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
+			checkResult = SMSController.checkCode(userVO.getCode(), request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
 		}
-		Users user=new Users();
-		BeanUtils.copyProperties(userVO, user);
-		user.setID(KeyGen.uuid());//generate uid here to make view visible
-		
-		UserInfo userInfo=new UserInfo();
-		userInfo.setRegip(ServletBox.ip(request));
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
-			userService.save(user, userInfo);
+			Users users=new Users();
+			BeanUtils.copyProperties(userVO, users);
+			users.setID(KeyGen.uuid());//generate uid here to make view visible
 			
+			UserInfo userInfo=new UserInfo();
+			userInfo.setRegip(ServletBox.ip(request));
+			userService.save(users, userInfo);
+			//成功后操作
 			
-			Optional<Cart> candidatecart = cartService.singleCart(user.getID());
-			candidatecart.ifPresent(cart->{
-				Login.cartID(session, cart.getID());
-			});
-			
-			Login.UID(session, user.getID());
-			Login.uname(session, user.getUsername());
-			Security.authenticate(session);
-			//清空错误次数
-			session.setAttribute("loginWrongTimes", 0);
-			//记录登录历史 未完待续
-			
-			//将uid写入cookie
-			Cookie cookie = new Cookie(Login.LOGIN_USER_ID, user.getID());
-			cookie.setPath("/");
-			response.addCookie(cookie);
-			
-			UserVO vo = new UserVO();
-			BeanUtils.copyProperties(user, vo);
-			/*return Result.ok(vo);*/
+			Optional<Cart> candidatecart = cartService.singleCart(users.getID());
+			String cartID = null;
+			if(candidatecart.isPresent()){
+				cartID = candidatecart.get().getID();
+			}
+			boolean isemployee = employeeService.isEmployee(users.getMobile());
+			//用户信息
+			LoginController.loginSuccess(users.getID(), users.getUsername(), cartID, isemployee, session, response);
 			return	Result.ok("注册信息成功");
-		}else{
-			return	checkResult;
 		}
+		
+		return	checkResult;
 	}
 	
-	
-
-	/**
-	 * 验证验证码,成功后清除session
-	 * @param code
-	 * @param request
-	 * @param sessionKey 验证码在session中的name
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	private Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
-		if(StringUtils.isEmpty(code)){
-			return Result.fail("验证码不能为空");
-		}
-		String sessionCode = (String)request.getSession().getAttribute(sessionName);
-		if(StringUtils.isEmpty(sessionCode)){
-			return Result.fail("验证码未发送或已失效");
-		}
-		if(code.equals(sessionCode)){
-			request.getSession().setAttribute(sessionName, null);
-			return Result.ok();
-		}
-		return Result.fail("验证码错误");
-	}
 	
 }

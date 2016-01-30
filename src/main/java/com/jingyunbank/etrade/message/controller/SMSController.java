@@ -158,7 +158,7 @@ public class SMSController {
 	 * @return
 	 * 2015年11月10日 qxs
 	 */
-	private Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
+	public static Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
 		if(StringUtils.isEmpty(code)){
 			return Result.fail("验证码不能为空");
 		}
