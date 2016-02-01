@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
 
 public class ExpressControllerTest extends TestCaseBase {
