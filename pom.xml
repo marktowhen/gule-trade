@@ -135,12 +135,43 @@
 		
 	</dependencies>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<url>http://repo.spring.io/libs-snapshot</url>
-		</pluginRepository>
-	</pluginRepositories>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<resources>
+			       <resource>
+			           <directory>src/main/java</directory>
+			           <includes>                      
+			               <include>**/*.xml</include>
+			           </includes>
+			       </resource>
+			       <resource>
+			           <directory>src/main/resources</directory>
+			       </resource>
+			   </resources>
+			</build>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+			       <resource>
+			           <directory>src/main/java</directory>
+			           <includes>                      
+			               <include>**/*.xml</include>
+			           </includes>
+			       </resource>
+			       <resource>
+			           <directory>src/main/resources-dev</directory>
+			       </resource>
+			   </resources>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -157,20 +188,16 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<resources>
-	       <resource>
-	           <directory>src/main/java</directory>
-	           <includes>                      
-	               <include>**/*.xml</include>
-	           </includes>
-	       </resource>
-	       <resource>
-	           <directory>src/main/resources</directory>
-	       </resource>
-	   </resources>
 	   <defaultGoal>compile</defaultGoal>
 	</build>
 	
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<url>http://repo.spring.io/libs-snapshot</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<repositories>
 		<repository>
 			<id>spring-snapshots</id>
