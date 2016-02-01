@@ -16,6 +16,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.comment.dao.CommentsImgDao;
 import com.jingyunbank.etrade.comment.entity.CommentsImgEntity;
+import com.jingyunbank.etrade.config.CacheConfig;
 @Service
 public class CommentsImgService implements ICommentImgService{
 	@Autowired
@@ -42,7 +43,7 @@ public class CommentsImgService implements ICommentImgService{
 	}
 
 	@Override
-	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
+	@Cacheable(cacheNames="commentCache", keyGenerator=CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<CommentsImg> list(String commentID) {
 		return commentsImgDao.selectById(commentID)
 				.stream().map(entity -> {

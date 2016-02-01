@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.goods.bo.GoodsType;
 import com.jingyunbank.etrade.api.goods.service.IGoodsTypeService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.dao.GoodsTypeDao;
 import com.jingyunbank.etrade.goods.entity.GoodsTypeEntity;
 
@@ -58,7 +59,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "typeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "typeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<GoodsType> listGoodsTypesByName(String name) throws Exception {
 		List<GoodsType> goodsTypes = goodsTypeDao.selectGoodsTypes(name).stream().map(dao -> {
 			GoodsType bo = new GoodsType();
@@ -69,7 +70,7 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "typeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "typeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<GoodsType> listGoodsTypes() throws Exception {
 		List<GoodsType> goodsType = goodsTypeDao.selectAllGoodsTypes().stream().map(dao -> {
 			GoodsType bo = new GoodsType();

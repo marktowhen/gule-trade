@@ -17,6 +17,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.area.dao.ProvinceDao;
 import com.jingyunbank.etrade.area.entity.ProvinceEntity;
+import com.jingyunbank.etrade.config.CacheConfig;
 
 @Service("provinceService")
 public class ProvinceService implements IProvinceService {
@@ -63,7 +64,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Province> list(Province bo, Range range) {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -79,13 +80,13 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Province> list(Province bo) {
 		return list(bo, null);
 	}
 
 	@Override
-	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public Province single(int id) {
 		Province bo = new Province();
 		bo.setProvinceID(id);
@@ -97,7 +98,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Province> listByCountry(int countryID) {
 		Province p = new Province();
 		p.setCountryID(countryID);
@@ -105,7 +106,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public boolean isFaraway(int provinceID) {
 		Province province = single(provinceID);
 		if(province!=null){

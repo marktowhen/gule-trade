@@ -16,6 +16,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.posts.bo.InformationDetails;
 import com.jingyunbank.etrade.api.posts.service.IInformationDetailsService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.posts.dao.InformationDetailsDao;
 import com.jingyunbank.etrade.posts.entity.InformationDetailsEntity;
 @Service
@@ -76,7 +77,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	}
 	//通过siteid查询对应的多条信息内容
 	@Override
-	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InformationDetails> list(String sid,Range range) {
 		// TODO Auto-generated method stub
 		
@@ -101,7 +102,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	 * 查出所有的详情信息
 	 */
 	@Override
-	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InformationDetails> list(String sid) {
 		return informationDetailsDao.selectDetailBySid(sid).stream().map(entity -> {
 			InformationDetails informationDetails=new InformationDetails();
@@ -113,7 +114,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 	 * 查出添加资讯的所有信息
 	 */
 	@Override
-	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InformationDetails> list(Range range) {
 		
 		return informationDetailsDao.selectDetail(range.getFrom(),range.getTo()-range.getFrom()).stream().map(entity ->{
@@ -123,7 +124,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 		}).collect(Collectors.toList());
 	}
 	@Override
-	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InformationDetails> listByName(String name, Range range) {
 		
 		return informationDetailsDao.selectByName(name,range.getFrom(),range.getTo()-range.getFrom()).stream().map(entity ->{
@@ -133,7 +134,7 @@ public class InformationDetailsService implements IInformationDetailsService{
 		}).collect(Collectors.toList());
 	}
 	@Override
-	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public int selectmaxOrders(String id) throws Exception {
 		int max=informationDetailsDao.selectmaxOrders(); 
 		return informationDetailsDao.updateMaxOrders(id, max+1);

@@ -24,6 +24,7 @@ import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
 import com.jingyunbank.etrade.api.merchant.service.IMerchantService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
 import com.jingyunbank.etrade.merchant.dao.MerchantDao;
 import com.jingyunbank.etrade.merchant.entity.DeliveryTypeEntity;
@@ -42,7 +43,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	private MerchantDao merchantDao;
 	
 	@Override
-	@Cacheable(cacheNames = "merchantCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "merchantCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Merchant> listMerchants() throws IllegalAccessException, InvocationTargetException {
 		this.to = 5;
 		Map<String, Integer> params = new HashMap<String,Integer>();
@@ -78,7 +79,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		
 	}
 	@Override
-	@Cacheable(cacheNames = "invoiceTypeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "invoiceTypeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InvoiceType> listInvoiceType() throws IllegalAccessException, InvocationTargetException {
 		List<InvoiceType> rlist = new ArrayList<InvoiceType>();
 		List<InvoiceTypeEntity> list = merchantDao.selectInvoiceType();
@@ -143,7 +144,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "deliveryTypeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "deliveryTypeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<DeliveryType> listDeliveryType() throws IllegalAccessException, InvocationTargetException {
 		List<DeliveryType> rlist = new ArrayList<DeliveryType>();
 		List<DeliveryTypeEntity> list = merchantDao.selectDeliveryType();
@@ -197,7 +198,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 		return Optional.of(merchant);
 	}
 	@Override
-	@Cacheable(cacheNames = "invoiceTypeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "invoiceTypeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InvoiceType> listInvoiceType(String mid) throws IllegalAccessException, InvocationTargetException {
 		List<InvoiceType> rlist = new ArrayList<InvoiceType>();
 		List<InvoiceTypeEntity> list = merchantDao.selectInvoiceTypeByMid(mid);
@@ -211,7 +212,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "deliveryTypeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "deliveryTypeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<DeliveryType> listDeliveryType(String mid) throws IllegalAccessException, InvocationTargetException {
 		List<DeliveryType> rlist = new ArrayList<DeliveryType>();
 		List<DeliveryTypeEntity> list = merchantDao.selectDeliveryTypeByMid(mid);
@@ -225,7 +226,7 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "merchantCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "merchantCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Merchant> listMerchantsByCondition(Merchant merchant, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());

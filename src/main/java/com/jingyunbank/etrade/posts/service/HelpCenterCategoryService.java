@@ -19,6 +19,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.posts.bo.HelpCenterCategory;
 import com.jingyunbank.etrade.api.posts.service.IHelpCenterCategoryService;
 import com.jingyunbank.etrade.api.posts.service.IHelpCenterDetailService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.posts.dao.HelpCenterCategoryDao;
 import com.jingyunbank.etrade.posts.entity.HelpCenterCategoryEntity;
 
@@ -41,7 +42,7 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<HelpCenterCategory> listAllValid(Range range) {
 		
 		List<HelpCenterCategoryEntity> listPage = helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom());
@@ -58,7 +59,7 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<HelpCenterCategory> listAllValid() {
 		return helpCenterCategoryDao.selectValidList().stream()
 			.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());

@@ -15,6 +15,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.service.ISalesRecordsService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.dao.SalesRecordsDao;
 import com.jingyunbank.etrade.goods.entity.SalesRecordEntity;
 
@@ -37,7 +38,7 @@ public class SalesRecordsService implements ISalesRecordsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "salesRecordCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "salesRecordCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<SalesRecord> listRange(String gid, Range range)
 			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();

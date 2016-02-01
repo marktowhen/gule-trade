@@ -24,6 +24,7 @@ import com.jingyunbank.etrade.api.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.goods.bo.SalesRecord;
 import com.jingyunbank.etrade.api.goods.service.IGoodsOperationService;
 import com.jingyunbank.etrade.api.goods.service.ISalesRecordsService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.dao.GoodsOperationDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDetailEntity;
 import com.jingyunbank.etrade.goods.entity.GoodsEntity;
@@ -149,7 +150,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "brandCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<BaseGoodsOperation> listBrandsByMid(String mid) throws Exception {
 		List<BaseGoodsOperation> brandslist = goodsOperationDao.selectBrandsByMid(mid).stream().map(dao -> {
 			BaseGoodsOperation bo = new BaseGoodsOperation();
@@ -160,7 +161,7 @@ public class GoodsOperationService implements IGoodsOperationService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "merchantCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "merchantCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<BaseGoodsOperation> listMerchant() throws Exception {
 		List<BaseGoodsOperation> merchantlist = goodsOperationDao.selectMerchant().stream().map(dao -> {
 			BaseGoodsOperation bo = new BaseGoodsOperation();

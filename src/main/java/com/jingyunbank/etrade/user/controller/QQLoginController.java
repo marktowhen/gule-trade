@@ -303,7 +303,8 @@ public class QQLoginController {
                 sb.append(line);   
             }
 	        ObjectMapper obj = new ObjectMapper();
-	        HashMap<String, Object> readValue = obj.readValue(sb.toString(), HashMap.class);
+	        @SuppressWarnings("unchecked")
+			HashMap<String, Object> readValue = obj.readValue(sb.toString(), HashMap.class);
 	        if("0".equals(readValue.get("ret").toString())){
 	        	return readValue;
 	        }

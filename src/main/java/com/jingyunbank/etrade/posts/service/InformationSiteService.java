@@ -13,6 +13,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.posts.bo.InformationSite;
 import com.jingyunbank.etrade.api.posts.service.IInformationSiteService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.posts.dao.InformationSiteDao;
 import com.jingyunbank.etrade.posts.entity.InformationSiteEntity;
 @Service
@@ -35,14 +36,13 @@ public class InformationSiteService implements IInformationSiteService{
 				flag=false;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw new DataSavingException(e);
 		}
 		return flag;
 	}
 
 	@Override
-	@Cacheable(cacheNames = "informationSiteCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationSiteCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InformationSite> list(String informationID, Range range) {
 		
 		return informationSiteDao.select(informationID, range.getFrom(),range.getTo()-range.getFrom())
@@ -54,9 +54,8 @@ public class InformationSiteService implements IInformationSiteService{
 				}).collect(Collectors.toList());
 	}
 	@Override
-	@Cacheable(cacheNames = "informationSiteCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationSiteCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<InformationSite> list(String informationID) {
-		// TODO Auto-generated method stub
 		return informationSiteDao.selectSites(informationID)
 				.stream().map(entity ->{
 					InformationSite bo=new InformationSite();

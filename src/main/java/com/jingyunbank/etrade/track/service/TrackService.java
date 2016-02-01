@@ -29,6 +29,7 @@ import com.jingyunbank.etrade.api.track.bo.FootprintGoods;
 import com.jingyunbank.etrade.api.track.bo.OtherGoods;
 import com.jingyunbank.etrade.api.track.bo.RecommendGoods;
 import com.jingyunbank.etrade.api.track.service.ITrackService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.service.ServiceTemplate;
 import com.jingyunbank.etrade.track.dao.TrackDao;
 import com.jingyunbank.etrade.track.entity.AdDetailEntity;
@@ -129,7 +130,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "favoritesCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "favoritesCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<FavoritesGoods> listMerchantFavorites(String uid,String type,int from,int to) throws Exception {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
@@ -176,7 +177,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "adDetailCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "adDetailCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<AdDetail> listAdDetails(String code) throws IllegalAccessException, InvocationTargetException {
 		Map<String, String> params = new HashMap<String,String>();
 		params.put("code", code);
@@ -282,7 +283,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "modulesCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "modulesCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<AdModule> listModulesByCondition(AdModule adModule, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -297,7 +298,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "adDetailCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "adDetailCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<AdDetail> listAddetailsByCondition(AdDetail adDetail, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -341,7 +342,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 			rlt = trackDao.selectAddetailsCount(id);
 		return rlt;
 	}
-	@Cacheable(cacheNames = "recommendGoodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "recommendGoodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<RecommendGoods> listRecommendGoods(String uid,int from,int to) throws Exception {
 		this.from = from;
 		this.to = to;
@@ -387,7 +388,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return rltlist;
 	}
-	@Cacheable(cacheNames = "otherGoodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "otherGoodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<OtherGoods> listOtherGoods(String gid,String uid,int from,int to) throws Exception {
 		this.from = from;
 		this.to = to;

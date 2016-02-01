@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.posts.bo.Information;
 import com.jingyunbank.etrade.api.posts.service.IInformationService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.posts.dao.InformationDao;
 import com.jingyunbank.etrade.posts.entity.InformationEntity;
 @Service
@@ -36,17 +37,14 @@ public class InformationService implements IInformationService{
 				flag=false;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw new DataSavingException(e);
 		}
-		// TODO Auto-generated method stub
 		return flag;
 	}
 	//查出所有的资讯大标题
 	@Override
-	@Cacheable(cacheNames = "informationCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "informationCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Information> getInformation() {
-		// TODO Auto-generated method stub
 		
 		return informationDao.selectList().stream().map(entity -> {
 			Information information=new Information();

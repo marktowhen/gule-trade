@@ -17,6 +17,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.area.dao.CityDao;
 import com.jingyunbank.etrade.area.entity.CityEntity;
+import com.jingyunbank.etrade.config.CacheConfig;
 
 @Service("cityService")
 public class CityService implements ICityService {
@@ -63,7 +64,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<City> list(City bo, Range range) {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -79,13 +80,13 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<City> list(City bo) {
 		return list(bo, null);
 	}
 
 	@Override
-	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public City single(int id) {
 		City bo = new City();
 		bo.setCityID(id);
@@ -97,7 +98,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<City> listByProvince(int provinceID) {
 		City c = new City();
 		c.setProvinceID(provinceID);

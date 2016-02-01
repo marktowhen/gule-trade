@@ -24,6 +24,7 @@ import com.jingyunbank.etrade.api.goods.bo.HotGoods;
 import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.back.goods.dao.GoodsBKDao;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.dao.GoodsDao;
 import com.jingyunbank.etrade.goods.entity.GoodsDaoEntity;
 import com.jingyunbank.etrade.goods.entity.HoneyGoodsEntity;
@@ -45,7 +46,7 @@ public class GoodsService implements IGoodsService {
 	private GoodsBKDao goodsBKDao;
 
 	@Override
-	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "brandCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listBrands() throws Exception {
 		List<ShowGoods> brandslist = goodsDao.selectBrands().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
@@ -56,7 +57,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "typeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "typeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listTypes() throws Exception {
 		List<ShowGoods> typeslist = goodsDao.selectTypes().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
@@ -67,7 +68,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<HotGoods> listHotGoods() throws Exception {
 		List<HotGoods> rltlist = new ArrayList<HotGoods>();
 		List<HotGoodsEntity> goodslist = goodsDao.selectHotGoods();
@@ -82,7 +83,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listGoodsByWhere(String[] brands, String[] types, BigDecimal beginPrice, BigDecimal endPrice,
 			int order, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -112,7 +113,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listRecommend(String from, String to) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", Integer.parseInt(from));
@@ -126,7 +127,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "merchantCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "merchantCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<GoodsMerchant> listMerchantByWhere(String[] brands, String[] types, BigDecimal beginPrice,
 			BigDecimal endPrice, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -146,7 +147,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listMerchantByWhereGoodsMax(String[] brands, String[] types, BigDecimal beginPrice,
 			BigDecimal endPrice, String mid, int order, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -177,7 +178,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Hot24Goods> listHot24Goods() throws Exception {
 		List<Hot24Goods> rltlist = new ArrayList<Hot24Goods>();
 		List<Hot24GoodsEntity> goodslist = goodsDao.selectHot24Goods();
@@ -192,7 +193,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listGoodsExpand() throws Exception {
 		List<ShowGoods> list = goodsDao.selectGoodsExpand().stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();
@@ -203,7 +204,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listGoodsByGoodsResult(String[] brands, String[] types, BigDecimal beginPrice,
 			BigDecimal endPrice, String goodsname, int order, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -224,7 +225,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	//@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	//@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public Optional<ShowGoods> singleById(String gid) throws Exception {
 		GoodsDaoEntity goods = goodsDao.selectOne(gid);
 		ShowGoods showGoods = null;
@@ -237,7 +238,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listAll(Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -251,7 +252,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<HoneyGoods> listHoneyGoods(String gid) throws Exception {
 		List<HoneyGoods> rltlist = new ArrayList<HoneyGoods>();
 		List<HoneyGoodsEntity> goodslist = goodsDao.selectHoneyGoods(gid);
@@ -266,7 +267,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<GoodsList> listGoodsByCondition(String name, int state, String mid, String bid, Range range)
 			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -288,7 +289,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "brandCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listBrandsThree(Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -302,7 +303,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "typeCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "typeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listTypesThree(Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -316,7 +317,7 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "goodsCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "goodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<ShowGoods> listGoodsStcok(List<String> gids) throws Exception {
 		List<ShowGoods> stocklist = goodsDao.selectGoodsStock(gids).stream().map(dao -> {
 			ShowGoods bo = new ShowGoods();

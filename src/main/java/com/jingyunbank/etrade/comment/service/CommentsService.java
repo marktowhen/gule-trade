@@ -18,6 +18,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.comment.dao.CommentsDao;
 import com.jingyunbank.etrade.comment.entity.CommentsEntity;
+import com.jingyunbank.etrade.config.CacheConfig;
 @Service("commentService")
 public class CommentsService implements ICommentService{
 	
@@ -50,7 +51,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid查询产品的平评论
 	 */
 	@Override
-	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
+	@Cacheable(cacheNames="commentCache", keyGenerator=CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Comments> list(String gid) {
 		return commentsDao.selectCommentByGid(gid)
 				.stream().map(entity -> {
@@ -91,7 +92,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid查出总共的评论条数
 	 */
 	@Override
-	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
+	@Cacheable(cacheNames="commentCache", keyGenerator=CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public int commentCount(String gid) {
 		return commentsDao.commentCount(gid);
 	}
@@ -99,7 +100,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid和评论的级别查询好评或中评或差评
 	 */
 	@Override
-	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
+	@Cacheable(cacheNames="commentCache", keyGenerator=CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Comments> list(String gid, int commentGrade,int picture, Range range) {
 		return commentsDao.selectCommentGradeByGid(gid,commentGrade,picture,range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity -> {
@@ -112,7 +113,7 @@ public class CommentsService implements ICommentService{
 	 * 查出所有的评价信息
 	 */
 	@Override
-	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
+	@Cacheable(cacheNames="commentCache", keyGenerator=CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Comments> list() {
 		return	commentsDao.selectComment().stream().map(entity ->{
 			Comments bo=new Comments();

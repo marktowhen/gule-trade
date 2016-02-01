@@ -18,7 +18,9 @@ public class CacheConfig {
 
 	@Autowired
 	private RedisTemplate<Object, Object> redisTemplate;
-
+	
+	public static final String CUSTOM_CACHE_KEY_GENERATOR = "CUSTOM_CACHE_KEY_GENERATOR";
+	
 	@Bean
 	public CacheManager cacheManager(){
 		RedisCacheManager mgner = new RedisCacheManager(redisTemplate);
@@ -26,7 +28,7 @@ public class CacheConfig {
 		return mgner;
 	}
 	
-	@Bean(name="CustomKG")
+	@Bean(name=CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public KeyGenerator keygenerator(){
 		return new CustomKeyGenerator();
 	}

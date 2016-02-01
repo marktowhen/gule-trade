@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.goods.bo.Brand;
 import com.jingyunbank.etrade.api.goods.service.IBrandService;
+import com.jingyunbank.etrade.config.CacheConfig;
 import com.jingyunbank.etrade.goods.dao.BrandDao;
 import com.jingyunbank.etrade.goods.entity.GoodsBrandEntity;
 
@@ -60,7 +61,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "brandCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Brand> listBrandsByMid(String mid) throws Exception {
 		// TODO Auto-generated method stub
 		List<Brand> brands = brandDao.selectbrand(mid).stream().map(dao -> {
@@ -72,7 +73,7 @@ public class BrandService implements IBrandService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "brandCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "brandCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Brand> listBrands() throws Exception {
 		// TODO Auto-generated method stub
 		List<Brand> brands = brandDao.selectAllBrands().stream().map(dao -> {

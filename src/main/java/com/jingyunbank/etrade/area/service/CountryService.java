@@ -17,6 +17,7 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.area.dao.CountryDao;
 import com.jingyunbank.etrade.area.entity.CountryEntity;
+import com.jingyunbank.etrade.config.CacheConfig;
 
 @Service("countryService")
 public class CountryService implements ICountryService {
@@ -63,7 +64,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "countryCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "countryCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Country> list(Country bo, Range range) {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -79,13 +80,13 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "countryCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "countryCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<Country> list(Country bo) {
 		return list(bo, null);
 	}
 
 	@Override
-	@Cacheable(cacheNames = "countryCache", keyGenerator = "CustomKG")
+	@Cacheable(cacheNames = "countryCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public Country single(int id) {
 		Country bo = new Country();
 		bo.setCountryID(id);
