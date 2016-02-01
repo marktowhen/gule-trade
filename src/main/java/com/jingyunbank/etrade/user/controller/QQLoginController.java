@@ -2,9 +2,7 @@ package com.jingyunbank.etrade.user.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -31,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.ServletBox;
@@ -76,11 +73,9 @@ public class QQLoginController {
 		String token = null;
 		//根据token获取openID
 		String openID = null;
-		HashMap<String, Object> qqUserInfo = null;
 		try {
 			token = getTokenByCode(code);
 			openID = getOpenIDByToken(token);
-			qqUserInfo = getUserinfoByToken(token, openID);
 		} catch (Exception e) {
 			response.sendRedirect(QQLogin.REDIRECT_URL+"#/404");
 			return;
@@ -109,7 +104,7 @@ public class QQLoginController {
 			}
 		}else{
 			//没有的话跳到第三方登录绑定页面
-			response.sendRedirect(QQLogin.REDIRECT_URL+"#/login/bind?type=qq&key="+openID+"&token="+token+"&nickname="+URLEncoder.encode(qqUserInfo.get("nickname").toString(),"utf-8")+"&picture="+qqUserInfo.get("figureurl_qq_1"));
+			response.sendRedirect(QQLogin.REDIRECT_URL+"#/login/bind?type=qq&key="+openID+"&token="+token);
 		}
 		
 		
@@ -284,30 +279,6 @@ public class QQLoginController {
 					return split[i].split("=")[1];
 				}
 			}
-		}
-		throw new Exception("net error!");
-	}
-	
-	private HashMap<String, Object> getUserinfoByToken(String token, String openID) throws Exception {
-		String url = "https://graph.qq.com/user/get_user_info?access_token=:ACCESS_TOKEN&oauth_consumer_key=:APP_ID&openid=:OPEN_ID";
-		url = url.replace(":ACCESS_TOKEN", token).replace(":APP_ID", QQLogin.APP_ID).replace(":OPEN_ID", openID);
-		HttpGet httpGet = new HttpGet(url);
-		HttpClient client = HttpClients.createDefault();
-		HttpResponse response = client.execute(httpGet);
-		HttpEntity entity = response.getEntity();
-		if(entity!=null){
-			BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));   
-			StringBuilder sb = new StringBuilder();   
-	        String line = null;   
-	        while ((line = reader.readLine()) != null) {   
-                sb.append(line);   
-            }
-	        ObjectMapper obj = new ObjectMapper();
-	        HashMap<String, Object> readValue = obj.readValue(sb.toString(), HashMap.class);
-	        if("0".equals(readValue.get("ret").toString())){
-	        	return readValue;
-	        }
-	        
 		}
 		throw new Exception("net error!");
 	}
