@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
+	@CacheEvict(value="merchantCache",allEntries=true)
 	public boolean save(Merchant merchant) throws DataSavingException {
 		boolean rlt = false;
 		try {
@@ -44,6 +46,7 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
+	@CacheEvict(value="merchantCache",allEntries=true)
 	public boolean refresh(Merchant merchant) throws DataRefreshingException {
 		boolean rlt = false;
 		try {

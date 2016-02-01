@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
@@ -50,6 +52,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	@Resource
 	private TrackDao trackDao;
 	@Override
+
 	public List<FootprintGoods> listFootprintGoods(int from,int to,String uid) throws Exception {
 		this.from = from;
 		this.to = to;
@@ -74,6 +77,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 
 	@Override
+
 	public boolean saveFootprint(String uid, String gid) throws DataSavingException {
 		FootprintEntity fe = new FootprintEntity();
 		fe.setID(KeyGen.uuid());
@@ -93,6 +97,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 
 	@Override
+	@CacheEvict(value="favoritesCache",allEntries=true)
 	public boolean saveFavorites(String uid,String fid,String type) throws DataSavingException {
 		FavoritesEntity ce = new FavoritesEntity();
 		ce.setID(KeyGen.uuid());
@@ -124,6 +129,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@Cacheable(cacheNames = "favoritesCache", keyGenerator = "CustomKG")
 	public List<FavoritesGoods> listMerchantFavorites(String uid,String type,int from,int to) throws Exception {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
@@ -158,6 +164,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 
 	@Override
+	@CacheEvict(value="favoritesCache",allEntries=true)
 	public boolean removeFavoritesById(List<String> id) throws DataRemovingException {
 		boolean flag=false;
 		try {
@@ -169,6 +176,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@Cacheable(cacheNames = "adDetailCache", keyGenerator = "CustomKG")
 	public List<AdDetail> listAdDetails(String code) throws IllegalAccessException, InvocationTargetException {
 		Map<String, String> params = new HashMap<String,String>();
 		params.put("code", code);
@@ -200,6 +208,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@CacheEvict(value="modulesCache",allEntries=true)
 	public boolean saveAdmodule(AdModule adModule) throws DataSavingException {
 		boolean flag=false;
 		AdModuleEntity me = new AdModuleEntity();
@@ -218,6 +227,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@CacheEvict(value="adDetailCache",allEntries=true)
 	public boolean saveAddetail(AdDetail adDetail) throws DataSavingException {
 		boolean flag=false;
 		AdDetailEntity me = new AdDetailEntity();
@@ -235,6 +245,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@CacheEvict(value="modulesCache",allEntries=true)
 	public boolean updateAdmodule(AdModule adModule) throws DataRefreshingException {
 		boolean flag=false;
 		AdModuleEntity me = new AdModuleEntity();
@@ -252,6 +263,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@CacheEvict(value="adDetailCache",allEntries=true)
 	public boolean updateAddetail(AdDetail adDetail) throws DataRefreshingException {
 		boolean flag=false;
 		AdDetailEntity me = new AdDetailEntity();
@@ -270,6 +282,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@Cacheable(cacheNames = "modulesCache", keyGenerator = "CustomKG")
 	public List<AdModule> listModulesByCondition(AdModule adModule, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -284,6 +297,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@Cacheable(cacheNames = "adDetailCache", keyGenerator = "CustomKG")
 	public List<AdDetail> listAddetailsByCondition(AdDetail adDetail, Range range) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("from", (int) range.getFrom());
@@ -299,6 +313,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 	
 	@Override
+	@CacheEvict(value="adDetailCache",allEntries=true)
 	public boolean removeAddetail(List<String> id) throws DataRemovingException {
 		boolean flag=false;
 		try {
@@ -309,6 +324,8 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		return flag;
 	}
 	@Override
+	
+	@CacheEvict(value="modulesCache",allEntries=true)
 	public boolean removeAdmodule(List<String> id) throws DataRemovingException {
 		boolean flag=false;
 		try {
@@ -324,7 +341,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 			rlt = trackDao.selectAddetailsCount(id);
 		return rlt;
 	}
-	
+	@Cacheable(cacheNames = "recommendGoodsCache", keyGenerator = "CustomKG")
 	public List<RecommendGoods> listRecommendGoods(String uid,int from,int to) throws Exception {
 		this.from = from;
 		this.to = to;
@@ -370,7 +387,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return rltlist;
 	}
-	
+	@Cacheable(cacheNames = "otherGoodsCache", keyGenerator = "CustomKG")
 	public List<OtherGoods> listOtherGoods(String gid,String uid,int from,int to) throws Exception {
 		this.from = from;
 		this.to = to;
