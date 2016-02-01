@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -21,6 +23,7 @@ public class InformationService implements IInformationService{
 	
 	//插入新的资讯标题
 	@Override
+	@CacheEvict(cacheNames = "informationCache", allEntries=true)
 	public boolean save(Information information) throws DataSavingException {
 		boolean flag;
 		
@@ -41,6 +44,7 @@ public class InformationService implements IInformationService{
 	}
 	//查出所有的资讯大标题
 	@Override
+	@Cacheable(cacheNames = "informationCache", keyGenerator = "CustomKG")
 	public List<Information> getInformation() {
 		// TODO Auto-generated method stub
 		

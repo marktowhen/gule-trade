@@ -25,7 +25,7 @@ public class ProvinceService implements IProvinceService {
 	private ProvinceDao provinceDao;
 
 	@Override
-	@CacheEvict("province")
+	@CacheEvict(cacheNames = "provinceCache" , allEntries=true)
 	public boolean save(Province bo) throws DataSavingException {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -38,7 +38,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@CacheEvict("province")
+	@CacheEvict(cacheNames = "provinceCache" , allEntries=true)
 	public boolean remove(int id) throws DataRemovingException {
 		ProvinceEntity entity = new ProvinceEntity();
 		entity.setProvinceID(id);
@@ -51,7 +51,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@CacheEvict("province")
+	@CacheEvict(cacheNames = "provinceCache" , allEntries=true)
 	public boolean refresh(Province bo) throws DataRefreshingException {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -63,7 +63,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable("province")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
 	public List<Province> list(Province bo, Range range) {
 		ProvinceEntity entity = new ProvinceEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -79,13 +79,13 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable("province")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
 	public List<Province> list(Province bo) {
 		return list(bo, null);
 	}
 
 	@Override
-	@Cacheable("province")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
 	public Province single(int id) {
 		Province bo = new Province();
 		bo.setProvinceID(id);
@@ -97,7 +97,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable("province")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
 	public List<Province> listByCountry(int countryID) {
 		Province p = new Province();
 		p.setCountryID(countryID);
@@ -105,7 +105,7 @@ public class ProvinceService implements IProvinceService {
 	}
 
 	@Override
-	@Cacheable("province")
+	@Cacheable(cacheNames = "provinceCache", keyGenerator = "CustomKG")
 	public boolean isFaraway(int provinceID) {
 		Province province = single(provinceID);
 		if(province!=null){

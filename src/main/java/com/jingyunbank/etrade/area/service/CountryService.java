@@ -25,7 +25,7 @@ public class CountryService implements ICountryService {
 	private CountryDao countryDao;
 
 	@Override
-	@CacheEvict("country")
+	@CacheEvict(cacheNames="countryCache", allEntries=true)
 	public boolean save(Country bo) throws DataSavingException {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -38,7 +38,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	@CacheEvict("country")
+	@CacheEvict(cacheNames="countryCache", allEntries=true)
 	public boolean remove(int id) throws DataRemovingException {
 		CountryEntity entity = new CountryEntity();
 		entity.setCountryID(id);
@@ -51,7 +51,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	@CacheEvict("country")
+	@CacheEvict(cacheNames="countryCache", allEntries=true)
 	public boolean refresh(Country bo) throws DataRefreshingException {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -63,7 +63,7 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	@Cacheable("country")
+	@Cacheable(cacheNames = "countryCache", keyGenerator = "CustomKG")
 	public List<Country> list(Country bo, Range range) {
 		CountryEntity entity = new CountryEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -79,13 +79,13 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	@Cacheable("country")
+	@Cacheable(cacheNames = "countryCache", keyGenerator = "CustomKG")
 	public List<Country> list(Country bo) {
 		return list(bo, null);
 	}
 
 	@Override
-	@Cacheable("country")
+	@Cacheable(cacheNames = "countryCache", keyGenerator = "CustomKG")
 	public Country single(int id) {
 		Country bo = new Country();
 		bo.setCountryID(id);
