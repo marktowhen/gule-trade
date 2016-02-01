@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -25,6 +27,8 @@ public class CommentsService implements ICommentService{
 	/**
 	 * 保存评论的信息和图片
 	 */
+	@Override
+	@CacheEvict(cacheNames="commentCache", allEntries=true)
 	public boolean save(Comments comments) throws DataSavingException {
 		boolean flag=false;
 		int result=0;
@@ -46,6 +50,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid查询产品的平评论
 	 */
 	@Override
+	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
 	public List<Comments> list(String gid) {
 		return commentsDao.selectCommentByGid(gid)
 				.stream().map(entity -> {
@@ -59,8 +64,6 @@ public class CommentsService implements ICommentService{
 	 */
 	@Override
 	public Optional<Comments> single(String id) {
-		// TODO Auto-generated method stub
-		
 		CommentsEntity commentsEntity=commentsDao.selectById(id);
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentsEntity, comments);
@@ -71,24 +74,24 @@ public class CommentsService implements ICommentService{
 	 * 通过id删除评论
 	 */
 	@Override
+	@CacheEvict(cacheNames="commentCache", allEntries=true)
 	public void remove(String id) throws DataRemovingException {
-		// TODO Auto-generated method stub
 		try {
 			commentsDao.delete(id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	@Override
+	@CacheEvict(cacheNames="commentCache", allEntries=true)
 	public void refreshStatus(String[] ids, Comments comments) throws DataRefreshingException {
-		// TODO Auto-generated method stub
 		
 	}
 	/**
 	 * 通过gid查出总共的评论条数
 	 */
 	@Override
+	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
 	public int commentCount(String gid) {
 		return commentsDao.commentCount(gid);
 	}
@@ -96,6 +99,7 @@ public class CommentsService implements ICommentService{
 	 * 通过gid和评论的级别查询好评或中评或差评
 	 */
 	@Override
+	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
 	public List<Comments> list(String gid, int commentGrade,int picture, Range range) {
 		return commentsDao.selectCommentGradeByGid(gid,commentGrade,picture,range.getFrom(),range.getTo()-range.getFrom())
 				.stream().map(entity -> {
@@ -108,6 +112,7 @@ public class CommentsService implements ICommentService{
 	 * 查出所有的评价信息
 	 */
 	@Override
+	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
 	public List<Comments> list() {
 		return	commentsDao.selectComment().stream().map(entity ->{
 			Comments bo=new Comments();

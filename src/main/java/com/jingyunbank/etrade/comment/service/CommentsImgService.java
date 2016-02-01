@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
@@ -20,6 +22,7 @@ public class CommentsImgService implements ICommentImgService{
 	private CommentsImgDao commentsImgDao;
 
 	@Override
+	@CacheEvict(cacheNames="commentCache", allEntries=true)
 	public boolean save(CommentsImg commentsImg) throws DataSavingException {
 		boolean flag;
 		int result=0;
@@ -28,7 +31,6 @@ public class CommentsImgService implements ICommentImgService{
 		try {
 			result=commentsImgDao.insert(commentsImgEntity);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw new DataSavingException(e);
 		}
 		if(result>0){
@@ -40,6 +42,7 @@ public class CommentsImgService implements ICommentImgService{
 	}
 
 	@Override
+	@Cacheable(cacheNames="commentCache", keyGenerator="CustomKG")
 	public List<CommentsImg> list(String commentID) {
 		return commentsImgDao.selectById(commentID)
 				.stream().map(entity -> {
@@ -47,17 +50,10 @@ public class CommentsImgService implements ICommentImgService{
 				BeanUtils.copyProperties(entity, bo);
 				return bo;
 		}).collect(Collectors.toList());
-		
-		/*return commentsImgDao.selectById(id)
-				.stream().map(entity -> {
-					CommentsImg bo=new CommentsImg();
-					BeanUtils.copyProperties(entity, bo);
-					return bo;
-				}).collect(Collectors.toList());*/
-		
 	}
 
 	@Override
+	@CacheEvict(cacheNames="commentCache", allEntries=true)
 	public void remove(String id) throws DataRemovingException {
 		
 		try {
