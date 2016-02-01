@@ -29,6 +29,7 @@ public class AsyncNotifyService implements IAsyncNotifyService {
 
 	@Override
 	public void dispatch(com.jingyunbank.etrade.api.message.bo.Message message) throws NoticeDispatchException {
+		jmsTemplate.setPubSubDomain(true);
 		jmsTemplate.send(MQ_NOTIFY_TOPIC, new MessageCreator() {
 			@Override
 			public javax.jms.Message createMessage(Session session) throws JMSException {
@@ -37,17 +38,17 @@ public class AsyncNotifyService implements IAsyncNotifyService {
 		});
 	}
 	
-	@JmsListener(destination=MQ_NOTIFY_TOPIC)
+	@JmsListener(destination=MQ_NOTIFY_TOPIC, containerFactory="topicJmsListnerContainer")
 	public void consumesms(@Payload com.jingyunbank.etrade.api.message.bo.Message message) throws Exception {
 		smsService.inform(message);
 	}
 	
-	@JmsListener(destination=MQ_NOTIFY_TOPIC)
+	@JmsListener(destination=MQ_NOTIFY_TOPIC, containerFactory="topicJmsListnerContainer")
 	public void consumeemail(@Payload com.jingyunbank.etrade.api.message.bo.Message message) throws Exception {
 		emailService.inform(message);
 	}
 	
-	@JmsListener(destination=MQ_NOTIFY_TOPIC)
+	@JmsListener(destination=MQ_NOTIFY_TOPIC, containerFactory="topicJmsListnerContainer")
 	public void consumeinbox(@Payload com.jingyunbank.etrade.api.message.bo.Message message) throws Exception {
 		inboxService.inform(message);
 	}

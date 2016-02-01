@@ -63,6 +63,7 @@ public class OrderEventService implements IOrderEventService {
 	
 	@Override
 	public void broadcast(List<Orders> event, String queue){
+		jmsTemplate.setPubSubDomain(true);
 		jmsTemplate.send(queue, new MessageCreator() {
 			@Override
 			public javax.jms.Message createMessage(Session session) throws JMSException {
@@ -83,7 +84,7 @@ public class OrderEventService implements IOrderEventService {
 	}
 	
 	//计算积分
-	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
+	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC, containerFactory="topicJmsListnerContainer")
 	public void calculatePoint(String content){
 		List<Orders> orders = convert(content);
 		try {
@@ -95,7 +96,7 @@ public class OrderEventService implements IOrderEventService {
 		}
 	}
 	//发送消息提醒。
-	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
+	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC, containerFactory="topicJmsListnerContainer")
 	public void paysuccnotify(String content){
 		List<Orders> orders = convert(content);
 		if(Objects.isNull(orders) || orders.size() == 0) return;
@@ -122,7 +123,7 @@ public class OrderEventService implements IOrderEventService {
     	});
 	}
 	//更新库存
-	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
+	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC, containerFactory="topicJmsListnerContainer")
 	public void payupdatestock(String content){
 		List<Orders> orders = convert(content);
 		
@@ -144,7 +145,7 @@ public class OrderEventService implements IOrderEventService {
 	}
 	
 	//消费卡券
-	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC)
+	@JmsListener(destination=MQ_ORDER_QUEUE_PAYSUCC, containerFactory="topicJmsListnerContainer")
 	public void payconsumecoupon(String content){
 		List<Orders> orders = convert(content);
 		
@@ -165,7 +166,7 @@ public class OrderEventService implements IOrderEventService {
 	}
 	
 	//删除购物车
-	@JmsListener(destination=MQ_ORDER_QUEUE_SAVE)
+	@JmsListener(destination=MQ_ORDER_QUEUE_SAVE, containerFactory="topicJmsListnerContainer")
 	public void ordersaved(String content){
 		List<Orders> orders = convert(content);
 		List<OrderGoods> goods = new ArrayList<OrderGoods>();

@@ -40,6 +40,7 @@ public class RefundEventService implements IRefundEventService{
 	@Override
 	public void broadcast(List<Refund> event, String status)
 			throws NoticeDispatchException {
+		jmsTemplate.setPubSubDomain(true);
 		jmsTemplate.send(status, new MessageCreator() {
 			@Override
 			public javax.jms.Message createMessage(Session session) throws JMSException {
@@ -53,7 +54,7 @@ public class RefundEventService implements IRefundEventService{
 		});
 	}
 	//发送消息提醒。
-	@JmsListener(destination=MQ_REFUND_QUEUE_DONE)
+	@JmsListener(destination=MQ_REFUND_QUEUE_DONE, containerFactory="topicJmsListnerContainer")
 	public void paysuccnotify(String content){
 		List<Refund> refunds = convert(content);
 		
