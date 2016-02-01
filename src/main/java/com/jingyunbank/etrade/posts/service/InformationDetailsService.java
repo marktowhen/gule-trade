@@ -88,7 +88,6 @@ public class InformationDetailsService implements IInformationDetailsService{
 	}
 	//通过id查询出对应的一条信息的详细内容
 	@Override
-	@Cacheable(cacheNames = "informationDetailsCache", keyGenerator = "CustomKG")
 	public Optional<InformationDetails> single(String id) {
 		// TODO Auto-generated method stub
 		InformationDetailsEntity informationDetailsEntity=new InformationDetailsEntity();

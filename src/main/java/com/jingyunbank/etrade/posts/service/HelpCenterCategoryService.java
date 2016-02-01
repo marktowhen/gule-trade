@@ -32,7 +32,6 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	private IHelpCenterDetailService helpCenterDetailService;
 
 	@Override
-	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
 	public Optional<HelpCenterCategory> single(String id) {
 		HelpCenterCategoryEntity single = helpCenterCategoryDao.selectSingle(id);
 		if(single!=null){

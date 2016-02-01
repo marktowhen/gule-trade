@@ -26,7 +26,6 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	private HelpCenterDetailDao helpCenterDetailDao;
 
 	@Override
-	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
 	public Optional<HelpCenterDetail> single(String id) {
 		HelpCenterDetailEntity entity = helpCenterDetailDao.selectSingle(id);
 		if(entity!=null){
