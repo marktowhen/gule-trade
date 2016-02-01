@@ -104,12 +104,6 @@
 		<!-- db end -->
 		
 		<!-- jingyun projects start -->
-		<dependency>
-	    	<groupId>com.jingyunbank</groupId>
-			<artifactId>jingyun-core</artifactId>
-			<version>1.0.4-RELEASE</version>
-	    </dependency>
-	    
 	    <dependency>
 	    	<groupId>com.jingyunbank</groupId>
 			<artifactId>jingyun-etrade-api</artifactId>
