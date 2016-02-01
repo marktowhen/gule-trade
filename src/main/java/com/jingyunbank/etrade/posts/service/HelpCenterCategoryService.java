@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,7 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
 	public List<HelpCenterCategory> listAllValid(Range range) {
 		
 		List<HelpCenterCategoryEntity> listPage = helpCenterCategoryDao.selectValidListPage(range.getFrom(), range.getTo()-range.getFrom());
@@ -55,12 +58,14 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	}
 	
 	@Override
+	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
 	public List<HelpCenterCategory> listAllValid() {
 		return helpCenterCategoryDao.selectValidList().stream()
 			.map( entity ->{return getBoFromEntity(entity);}).collect(Collectors.toList());
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean save(HelpCenterCategory helpCenterCategory)
 			throws DataSavingException {
 		try {
@@ -71,6 +76,7 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean refresh(HelpCenterCategory helpCenterCategory)
 			throws DataRefreshingException {
 		try {
@@ -82,6 +88,7 @@ public class HelpCenterCategoryService implements IHelpCenterCategoryService {
 
 	@Override
 	@Transactional
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean remove(String id) throws DataRemovingException {
 		try {
 			helpCenterCategoryDao.updateValid(id, false);

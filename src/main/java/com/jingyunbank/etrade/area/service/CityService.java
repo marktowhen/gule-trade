@@ -25,7 +25,7 @@ public class CityService implements ICityService {
 	private CityDao cityDao;
 
 	@Override
-	@CacheEvict("city")
+	@CacheEvict(cacheNames="cityCache", allEntries=true)
 	public boolean save(City bo) throws DataSavingException {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -38,7 +38,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@CacheEvict("city")
+	@CacheEvict(cacheNames="cityCache", allEntries=true)
 	public boolean remove(int id) throws DataRemovingException {
 		CityEntity entity = new CityEntity();
 		entity.setCityID(id);
@@ -51,7 +51,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@CacheEvict("city")
+	@CacheEvict(cacheNames="cityCache", allEntries=true)
 	public boolean refresh(City bo) throws DataRefreshingException {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -63,7 +63,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@Cacheable("city")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
 	public List<City> list(City bo, Range range) {
 		CityEntity entity = new CityEntity();
 		BeanUtils.copyProperties(bo, entity);
@@ -79,13 +79,13 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@Cacheable("city")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
 	public List<City> list(City bo) {
 		return list(bo, null);
 	}
 
 	@Override
-	@Cacheable("city")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
 	public City single(int id) {
 		City bo = new City();
 		bo.setCityID(id);
@@ -97,11 +97,12 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	@Cacheable("city")
+	@Cacheable(cacheNames = "cityCache", keyGenerator = "CustomKG")
 	public List<City> listByProvince(int provinceID) {
 		City c = new City();
 		c.setProvinceID(provinceID);
 		return this.list(c);
 	}
+
 
 }

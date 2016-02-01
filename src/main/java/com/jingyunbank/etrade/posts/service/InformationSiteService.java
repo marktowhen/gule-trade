@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -20,6 +22,7 @@ public class InformationSiteService implements IInformationSiteService{
 	private InformationSiteDao informationSiteDao;
 	//添加多个标题信息
 	@Override
+	@CacheEvict(cacheNames = "informationSiteCache", allEntries=true)
 	public boolean save(InformationSite informationSite) throws DataSavingException {
 		boolean flag;
 		// TODO Auto-generated method stub
@@ -39,6 +42,7 @@ public class InformationSiteService implements IInformationSiteService{
 	}
 
 	@Override
+	@Cacheable(cacheNames = "informationSiteCache", keyGenerator = "CustomKG")
 	public List<InformationSite> list(String informationID, Range range) {
 		
 		return informationSiteDao.select(informationID, range.getFrom(),range.getTo()-range.getFrom())
@@ -50,6 +54,7 @@ public class InformationSiteService implements IInformationSiteService{
 				}).collect(Collectors.toList());
 	}
 	@Override
+	@Cacheable(cacheNames = "informationSiteCache", keyGenerator = "CustomKG")
 	public List<InformationSite> list(String informationID) {
 		// TODO Auto-generated method stub
 		return informationSiteDao.selectSites(informationID)

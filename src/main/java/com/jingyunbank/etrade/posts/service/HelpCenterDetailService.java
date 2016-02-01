@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.Range;
@@ -33,6 +35,7 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
 	public List<HelpCenterDetail> listAllValid(String categoryID) {
 		return helpCenterDetailDao.selectValidList(categoryID).stream()
 			.map( entity->{
@@ -41,6 +44,7 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 	
 	@Override
+	@Cacheable(cacheNames = "helpCenterCache", keyGenerator = "CustomKG")
 	public List<HelpCenterDetail> list(Range range) {
 		return helpCenterDetailDao.selectRange(range.getFrom(), range.getTo()-range.getFrom()).stream()
 				.map( entity->{
@@ -49,6 +53,7 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean save(HelpCenterDetail helpCenterDetail)
 			throws DataSavingException {
 		try {
@@ -59,6 +64,7 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean refresh(HelpCenterDetail helpCenterDetail)
 			throws DataRefreshingException {
 		try {
@@ -69,6 +75,7 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean remove(String id) throws DataRemovingException {
 		try {
 			return helpCenterDetailDao.updateValid(id, false);
@@ -78,6 +85,7 @@ public class HelpCenterDetailService implements IHelpCenterDetailService {
 	}
 	
 	@Override
+	@CacheEvict(cacheNames = "helpCenterCache", allEntries=true)
 	public boolean removeByCategory(String categoryID)
 			throws DataRemovingException {
 		try {
