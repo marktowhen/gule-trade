@@ -30,12 +30,9 @@ public class UserVO {
 	//private UserInfo uinfo;
 	private boolean locked;
 	private String code;
+	
+	
 	//由于password、tradepwd不返回给前台 所以在安全设置页面判断两个密码是否相同等只能放在后台
-	private boolean hasPassword;
-	private boolean hasTradepwd;
-	private boolean freeRunningTradepwd;//是否独立支付密码
-	
-	
 	public boolean isHasPassword() {
 		return !StringUtils.isEmpty(password);
 	}
