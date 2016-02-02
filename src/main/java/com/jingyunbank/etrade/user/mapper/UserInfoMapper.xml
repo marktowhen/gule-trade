@@ -67,4 +67,10 @@
 	 		 picture=#{picture}
 	 		where u.uid=#{UID}
 	 	</update>
+	 	<update id="updateIsPoint" parameterType="com.jingyunbank.etrade.user.entity.UserInfoEntity">
+	 		update users_info u set
+	 		 ispoint=#{isPoint}
+	 		where u.uid=#{UID}
+	 	</update>
+	 	
 	</mapper>

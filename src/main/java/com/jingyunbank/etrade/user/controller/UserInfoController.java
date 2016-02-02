@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +17,6 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
-import com.jingyunbank.etrade.api.vip.point.service.context.IPointContextService;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
 
 /**
@@ -31,8 +29,6 @@ import com.jingyunbank.etrade.user.bean.UserInfoVO;
 public class UserInfoController {
 	@Autowired
 	private IUserInfoService userInfoService;
-	@Autowired
-	private IPointContextService pointContextService;
 	/**
 	 * 个人资料的添加
 	 * @param session
@@ -93,16 +89,6 @@ public class UserInfoController {
 		UserInfo userInfo=new UserInfo();
 		String id = Login.UID(request);
 		userInfoVO.setUID(id);
-		if(!userInfoVO.isPoint()){
-			if(!StringUtils.isEmpty(userInfoVO.getBirthday()) && !StringUtils.isEmpty(userInfoVO.getAddress())&& !StringUtils.isEmpty(userInfoVO.getCity()) 
-					&&!StringUtils.isEmpty(userInfoVO.getCountry())&& !StringUtils.isEmpty(userInfoVO.getProvince())&&!StringUtils.isEmpty(userInfoVO.getEducation())
-					&& !StringUtils.isEmpty(userInfoVO.getJob())&& !StringUtils.isEmpty(userInfoVO.getIncome())){
-					
-				if(pointContextService.addPoint(id, 50, "信息完善啦！")){
-					userInfoVO.setPoint(true);
-				}
-			}
-		}
 		BeanUtils.copyProperties(userInfoVO, userInfo);
 		
 		if(userInfoService.refresh(userInfo)){

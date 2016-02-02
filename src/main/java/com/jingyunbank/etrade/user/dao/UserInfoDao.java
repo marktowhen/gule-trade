@@ -7,6 +7,8 @@
  */
 package com.jingyunbank.etrade.user.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.user.entity.UserInfoEntity;
 
@@ -51,4 +53,6 @@ public interface UserInfoDao {
 	 * 2015年11月11日 qxs
 	 */
 	public boolean updatePicture(UserInfoEntity userInfoEntity) throws Exception;
+	
+	public boolean updateIsPoint(@Param("UID")String uid,@Param("isPoint") boolean isPoint);
 }
