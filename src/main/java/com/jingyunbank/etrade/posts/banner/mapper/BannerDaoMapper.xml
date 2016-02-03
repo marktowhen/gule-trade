@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.posts.banner.dao.BannerDao">
+		<resultMap type="com.jingyunbank.etrade.posts.banner.entity.BannerEntity" id="BannerResultMap">
+			<id column="id" property="ID"/>
+			<result column="type" property="type"/>
+			<result column="image" property="image"/>
+			<result column="target_url" property="targetUrl"/>
+			<result column="wechat_image" property="wechatImage"/>
+			<result column="wechat_target_url" property="wechatTargetUrl"/>
+			<result column="alt" property="alt"/>
+			<result column="order" property="order"/>
+			<result column="valid" property="valid"/>
+			<result column="remark" property="remark"/>
+		</resultMap>
+		
+		<sql id="base_column_list">
+			id,type,image,target_url,wechat_image,wechat_target_url,alt,`order`,valid,remark
+		</sql>
+		
+		<select id="select" resultMap="BannerResultMap">
+			select <include refid="base_column_list"/> from banner 
+				where  valid = true 
+				<if test="type!=null and type!=''">
+					and type=#{type}
+				</if>
+				 order by type,`order` DESC
+		</select>
+		<select id="selectRange" resultMap="BannerResultMap">
+			select <include refid="base_column_list"/> from banner
+				 where  valid = true 
+				<if test="type!=null and type!=''">
+					and type=#{type}
+				</if> order by type,`order` DESC limit #{offset,javaType=LONG},#{size,javaType=LONG}
+		</select>
+		
+		<select id="count" resultType="int">
+			select count(1) from banner  where  valid = true 
+				<if test="type!=null and type!=''">
+					and type=#{type}
+				</if> 
+		</select>
+		
+		<select id="selectSingle" resultMap="BannerResultMap">
+			select <include refid="base_column_list"/> from banner where id=#{ID}
+		</select>
+		
+		<insert id="insert">
+			insert into banner(<include refid="base_column_list"/>)
+			values(#{ID},#{type},#{image},#{targetUrl},#{wechatImage},#{wechatTargetUrl},#{alt},#{order},#{valid},#{remark})
+		</insert>
+		
+		<update id="update">
+			update banner set
+			<if test="type!=null and type!=''">
+				type=#{type},
+			</if>
+			<if test="image!=null and image!=''">
+				image=#{image},
+			</if>
+			<if test="targetUrl!=null and targetUrl!=''">
+				target_url=#{targetUrl},
+			</if>
+			<if test="wechatImage!=null and wechatImage!=''">
+				wechat_image=#{wechatImage},
+			</if>
+			<if test="wechatTargetUrl!=null and wechatTargetUrl!=''">
+				wechat_target_url=#{wechatTargetUrl},
+			</if>
+			<if test="alt!=null and alt!=''">
+				alt=#{alt},
+			</if>
+			<if test="order!=0">
+				`order`=#{order},
+			</if>
+			<if test="remark!=null and remark!=''">
+				remark=#{remark},
+			</if>
+				id = #{ID}
+			where id = #{ID}
+		
+		</update>
+		
+		<update id="updateValidStatus">
+			update banner set valid=#{valid} where id = #{ID}
+		
+		</update>
+		
+	</mapper>
