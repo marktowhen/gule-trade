@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.posts.help.dao.InformationSiteDao">
+		<resultMap type="com.jingyunbank.etrade.posts.help.entity.InformationSiteEntity" id="InformationSiteResultMap">
+			<id column="id" property="ID"/>
+			<result column="information_id" property="informationID"/>
+			<result column="name" property="name"/>
+			<result column="did" property="did"/>
+			<result column="titles" property="titles"/> 
+		</resultMap>
+		<!-- 添加二级菜单中的多个标题 -->
+		<insert id="insert" parameterType="com.jingyunbank.etrade.posts.help.entity.InformationSiteEntity">
+			insert into information_site(
+			id,information_id,name
+			)values(
+			#{ID},#{informationID},#{name}
+			)
+		</insert>
+		<select id="selectSites" parameterType="String" resultMap="InformationSiteResultMap">
+			select id,information_id,name from information_site where information_id=#{informationID}
+		</select>
+		<select id="selectSitesByName" parameterType="String" resultMap="InformationSiteResultMap">
+			select id,information_id,name from information_site where name=#{name}
+		</select>
+	 	<select id="select" resultMap="InformationSiteResultMap">
+			select s.id,s.name,d.title as titles,d.id as did
+			from information_details d
+			left join information_site s  on d.sid = s.id
+			where s.information_id = #{informationID}
+			order by d.addtime desc
+			LIMIT #{from} , #{size}
+		</select>
+	</mapper>
