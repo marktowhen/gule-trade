@@ -14,7 +14,7 @@ public interface BannerDao {
 
 	boolean updateValidStatus(@Param("ID")String ID,@Param("valid") boolean valid) throws Exception;
 
-	List<BannerEntity> select(String type);
+	List<BannerEntity> select(@Param("type")String type);
 
 	int count(String type);
 	

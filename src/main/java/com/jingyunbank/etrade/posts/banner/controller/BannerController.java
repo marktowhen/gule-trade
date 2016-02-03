@@ -83,6 +83,15 @@ public class BannerController {
 		}).collect(Collectors.toList()));
 	}
 	
+	@RequestMapping(value="/list", method=RequestMethod.GET)
+	public Result<List<BannerVO>> list(@RequestParam String type) throws Exception{
+		return Result.ok(bannerService.list(type).stream().map( bo ->{
+			BannerVO vo = new BannerVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
+	}
+	
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	public Result<Integer> count(@RequestParam(required=false) String type) throws Exception{
 		
