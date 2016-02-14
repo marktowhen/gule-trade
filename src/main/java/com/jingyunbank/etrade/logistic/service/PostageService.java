@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.logistic.bo.Postage;
 import com.jingyunbank.etrade.api.logistic.service.IPostageService;
-import com.jingyunbank.etrade.api.posts.area.service.IProvinceService;
+import com.jingyunbank.etrade.api.statics.area.service.IProvinceService;
 
 @Service("postageService")
 public class PostageService implements IPostageService {

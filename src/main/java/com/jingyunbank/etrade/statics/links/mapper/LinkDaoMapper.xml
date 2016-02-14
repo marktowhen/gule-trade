@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.statics.links.dao.LinkDao">
+
+	<resultMap type="com.jingyunbank.etrade.statics.links.entity.LinkEntity"
+		id="linkMap">
+		<result column="id_" property="ID" />
+		<result column="name_" property="name" />
+		<result column="url_" property="url" />
+		<result column="img_" property="img" />
+		<result column="status_" property="status" />
+		<result column="order_" property="order" />
+	</resultMap>
+	<sql id="linkSQL">
+		`id`,`name`,`url`,`img`,`status`,`order`
+	</sql>
+
+	<insert id="insert"
+		parameterType="com.jingyunbank.etrade.statics.links.entity.LinkEntity">
+		INSERT INTO `link` (
+		<include refid="linkSQL" />
+		)
+		VALUES (#{ID},#{name},#{url},#{img},#{status},#{order})
+	</insert>
+
+	<update id="update"
+		parameterType="com.jingyunbank.etrade.statics.links.entity.LinkEntity">
+		UPDATE `link` l SET
+		<if test="name !=null and name != ''">
+			l.`name` = #{name},
+		</if>
+		<if test="url !=null and url != ''">
+			l.`url` = #{url},
+		</if>
+		<if test="img !=null and img != ''">
+			l.`img` = #{img},
+		</if>
+		<if test="order >= 0">
+			l.`order` = #{order},
+		</if>
+		l.`status` = #{status},l.id=#{ID}
+		WHERE 1=1 AND l.id=#{ID}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		UPDATE `link` l SET
+		l.`status`= FALSE
+		WHERE l.`id` = #{lid}
+	</delete>
+
+
+	<select id="select" resultMap="linkMap">
+		SELECT `id` id_,`name` name_,`url`
+		url_, `img` img_, `status` status_,`order` order_
+		FROM `link` WHERE `status` =1
+		ORDER BY order_
+	</select>
+
+	<select id="selectOne" resultMap="linkMap" parameterType="string">
+		SELECT
+		`id` id_,`name` name_,`url` url_,
+		`img` img_, `status` status_,`order`
+		order_
+		FROM `link` WHERE 1=1 AND id=#{lid}
+	</select>
+</mapper>

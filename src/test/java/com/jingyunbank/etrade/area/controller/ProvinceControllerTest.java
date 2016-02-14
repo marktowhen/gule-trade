@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.api.posts.area.service.IProvinceService;
+import com.jingyunbank.etrade.api.statics.area.service.IProvinceService;
 
 public class ProvinceControllerTest extends TestCaseBase {
 

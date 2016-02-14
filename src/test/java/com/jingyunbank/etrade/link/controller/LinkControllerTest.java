@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.goods.bean.BrandVO;
-import com.jingyunbank.etrade.posts.links.bean.LinkVO;
+import com.jingyunbank.etrade.statics.links.bean.LinkVO;
 
 public class LinkControllerTest extends TestCaseBase {
 
