@@ -23,7 +23,7 @@ public class InformationController {
 	@Autowired
 	private IInformationService informationService;
 	
-	@RequestMapping(value="/api/information/save",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/statics/information/save",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result<InformationVO> saveInformation(InformationVO informationVO,HttpServletRequest request,HttpSession session) throws Exception{
 		informationVO.setID(KeyGen.uuid());
@@ -35,7 +35,7 @@ public class InformationController {
 		return Result.fail("请检查重试");
 		
 	}
-	@RequestMapping(value="/api/information/gets",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/gets",method=RequestMethod.GET)
 	@ResponseBody
 	public Result<List<InformationVO>> getList(HttpServletRequest request,HttpSession session){
 		return Result.ok(informationService.getInformation().stream().map(bo ->{

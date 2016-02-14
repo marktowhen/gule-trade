@@ -26,7 +26,7 @@ import com.jingyunbank.etrade.api.statics.links.service.ILinkService;
 import com.jingyunbank.etrade.statics.links.bean.LinkVO;
 
 @RestController
-@RequestMapping("/api/link")
+@RequestMapping("/api/statics/link")
 public class LinkController {
 	@Autowired
 	private ILinkService linkService;

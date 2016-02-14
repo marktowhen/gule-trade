@@ -26,7 +26,7 @@ import com.jingyunbank.etrade.api.statics.help.service.IHelpCenterCategoryServic
 import com.jingyunbank.etrade.statics.help.bean.HelpCenterCategoryVO;
 
 @RestController
-@RequestMapping("/api/information/help/center/category")
+@RequestMapping("/api/statics/help/center/category")
 public class HelpCenterCategoryController {
 	
 	@Autowired

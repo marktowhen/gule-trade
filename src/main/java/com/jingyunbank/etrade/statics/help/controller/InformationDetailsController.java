@@ -40,7 +40,7 @@ public class InformationDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/information/savedetails",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/statics/information/savedetails",method=RequestMethod.PUT)
 	public Result<InformationDetailsVO> saveDetails(HttpServletRequest request,HttpSession session,@Valid @RequestBody InformationDetailsVO informationDetailsVO,BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -65,7 +65,7 @@ public class InformationDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/information/delete/{id}",method=RequestMethod.DELETE)
+	@RequestMapping(value="/api/statics/information/delete/{id}",method=RequestMethod.DELETE)
 	@ResponseBody
 	public Result<String> deleteDetails(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
 		informationDetailsService.remove(id);
@@ -80,7 +80,7 @@ public class InformationDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/information/update",method=RequestMethod.POST)
+	@RequestMapping(value="/api/statics/information/update",method=RequestMethod.POST)
 	public Result<InformationDetailsVO> updateDetsils(@RequestBody InformationDetailsVO informationDetailsVO,HttpServletRequest request,HttpSession session) throws Exception{
 		InformationDetails informationDetails=new InformationDetails();
 		BeanUtils.copyProperties(informationDetailsVO, informationDetails);
@@ -98,7 +98,7 @@ public class InformationDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/information/details",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/details",method=RequestMethod.GET)
 	@ResponseBody
 	public Result<List<InformationDetailsVO>> selectDetailBySid(@RequestParam String sid,@RequestParam int from,@RequestParam int size,HttpServletRequest request,HttpSession session) throws Exception{
 		Range range = new Range();
@@ -121,7 +121,7 @@ public class InformationDetailsController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/information/anydetails",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/anydetails",method=RequestMethod.GET)
 	@ResponseBody
 	public Result<List<InformationDetailsVO>> selectDetailsBySid(@RequestParam String sid,HttpServletRequest request,HttpSession session) throws Exception{
 	
@@ -139,7 +139,7 @@ public class InformationDetailsController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/api/information/detail/{id}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/detail/{id}",method=RequestMethod.GET)
 	public Result<InformationDetailsVO> selectDetailByid(@PathVariable String id) throws Exception{
 	Optional<InformationDetails> informationDetails=informationDetailsService.single(id);
 	InformationDetails adviceDetails=informationDetails.get();
@@ -152,7 +152,7 @@ public class InformationDetailsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/information/alldetail",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/alldetail",method=RequestMethod.GET)
 	public Result<List<InformationDetailsVO>> selectDetails(@RequestParam int from,@RequestParam int size) throws Exception{
 		Range range = new Range();
 		range.setFrom(from);
@@ -165,7 +165,7 @@ public class InformationDetailsController {
 				return vo;
 			}).collect(Collectors.toList()));
 	}
-	@RequestMapping(value="/api/information/byname/detail",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/byname/detail",method=RequestMethod.GET)
 	public Result<List<InformationDetailsVO>> selectDetailsByName(@RequestParam String name,@RequestParam int from,@RequestParam int size) throws Exception{
 		Range range = new Range();
 		range.setFrom(from);
@@ -178,7 +178,7 @@ public class InformationDetailsController {
 				return vo;
 			}).collect(Collectors.toList()));
 	}
-	@RequestMapping(value="/api/information/detail/orders/{id}",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/statics/information/detail/orders/{id}",method=RequestMethod.PUT)
 	public Result<Integer> getMaxOrders(@PathVariable String id) throws Exception{
 		
 		return Result.ok(informationDetailsService.selectmaxOrders(id));

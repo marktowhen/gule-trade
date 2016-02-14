@@ -26,7 +26,7 @@ import com.jingyunbank.etrade.api.statics.banner.service.IBannerService;
 import com.jingyunbank.etrade.statics.banner.bean.BannerVO;
 
 @RestController
-@RequestMapping("/api/banner")
+@RequestMapping("/api/statics/banner")
 public class BannerController {
 	
 	@Autowired

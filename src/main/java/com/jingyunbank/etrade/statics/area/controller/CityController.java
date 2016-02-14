@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.api.statics.area.service.ICityService;
 import com.jingyunbank.etrade.statics.area.bean.CityVO;
 
 @RestController
-@RequestMapping("/api/area/city")
+@RequestMapping("/api/statics/area/city")
 public class CityController {
 	
 	@Autowired

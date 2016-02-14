@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.api.statics.area.service.ICountryService;
 import com.jingyunbank.etrade.statics.area.bean.CountryVO;
 
 @RestController
-@RequestMapping("/api/area/country")
+@RequestMapping("/api/statics/area/country")
 public class CountryController {
 	
 	@Autowired

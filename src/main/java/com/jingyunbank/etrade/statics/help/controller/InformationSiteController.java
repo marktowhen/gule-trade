@@ -36,7 +36,7 @@ public class InformationSiteController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value="/api/information/site",method=RequestMethod.PUT)
+	@RequestMapping(value="/api/statics/information/site",method=RequestMethod.PUT)
 	@ResponseBody
 	public Result<InformationSiteVO> saveSite(InformationSiteVO informationSiteVO,HttpServletRequest request,HttpSession session) throws Exception{
 		informationSiteVO.setID(KeyGen.uuid());;
@@ -48,7 +48,7 @@ public class InformationSiteController {
 		return Result.fail("保存失败");
 		
 	}
-	@RequestMapping(value="api/information/sites/{siteid}",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/sites/{siteid}",method=RequestMethod.GET)
 	public Result<List<InformationSiteVO>> selectGetSites(@PathVariable String siteid,HttpServletRequest request,HttpSession session){
 		
 		return Result.ok(informationSiteService.list(siteid).stream().map(bo ->{
@@ -67,7 +67,7 @@ public class InformationSiteController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/api/information/site/detail",method=RequestMethod.GET)
+	@RequestMapping(value="/api/statics/information/site/detail",method=RequestMethod.GET)
 	public Result<List<InformationSiteVO>> selectGetSite(@RequestParam String informationID,@RequestParam int from,@RequestParam int size,HttpServletRequest request,HttpSession session){
 		Range range =new Range();
 		range.setFrom(from);

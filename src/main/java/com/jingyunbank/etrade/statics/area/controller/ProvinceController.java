@@ -24,7 +24,7 @@ import com.jingyunbank.etrade.api.statics.area.service.IProvinceService;
 import com.jingyunbank.etrade.statics.area.bean.ProvinceVO;
 
 @RestController
-@RequestMapping("/api/area/province")
+@RequestMapping("/api/statics/area/province")
 public class ProvinceController {
 	
 	@Autowired
