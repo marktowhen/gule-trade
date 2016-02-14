@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.area.controller;
+package com.jingyunbank.etrade.posts.area.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.etrade.api.area.bo.Province;
-import com.jingyunbank.etrade.api.area.service.IProvinceService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.area.bean.ProvinceVO;
+import com.jingyunbank.etrade.api.posts.area.bo.Province;
+import com.jingyunbank.etrade.api.posts.area.service.IProvinceService;
+import com.jingyunbank.etrade.posts.area.bean.ProvinceVO;
 
 @RestController
 @RequestMapping("/api/area/province")

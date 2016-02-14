@@ -1,25 +1,33 @@
-package com.jingyunbank.etrade.area.bean;
+package com.jingyunbank.etrade.posts.area.entity;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
+public class CityEntity implements Serializable {
 
-import org.hibernate.validator.constraints.NotEmpty;
-
-public class CityVO implements Serializable {
-
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6372741420042757340L;
-	
+	private static final long serialVersionUID = -5237758961798923189L;
 	private int cityID;
-	@NotEmpty(message="名称不能为空")
 	private String cityName;
 	private String zipCode;
-	@NotNull(message="省份不能为空")
 	private int provinceID;
+	private long offset;
+	private long size;
 	
+	public long getOffset() {
+		return offset;
+	}
+	public void setOffset(long offset) {
+		this.offset = offset;
+	}
+	public long getSize() {
+		return size;
+	}
+	public void setSize(long size) {
+		this.size = size;
+	}
 	public int getCityID() {
 		return cityID;
 	}

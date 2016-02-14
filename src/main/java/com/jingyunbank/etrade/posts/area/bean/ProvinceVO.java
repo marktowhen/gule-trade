@@ -1,21 +1,23 @@
-package com.jingyunbank.etrade.area.entity;
+package com.jingyunbank.etrade.posts.area.bean;
 
 import java.io.Serializable;
 
-public class ProvinceEntity implements Serializable {
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+public class ProvinceVO implements Serializable {
 
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6524287916350316128L;
+	private static final long serialVersionUID = -5819650834620876659L;
 	private int provinceID;
+	@NotEmpty(message="名称不能为空")
 	private String provinceName;
+	@NotNull(message="国家不能为空")
 	private int countryID;
-	
-	private long offset;
-	private long size;
-	
 	//偏远地区
 	private boolean faraway;
 	
@@ -24,19 +26,6 @@ public class ProvinceEntity implements Serializable {
 	}
 	public void setFaraway(boolean faraway) {
 		this.faraway = faraway;
-	}
-	
-	public long getOffset() {
-		return offset;
-	}
-	public void setOffset(long offset) {
-		this.offset = offset;
-	}
-	public long getSize() {
-		return size;
-	}
-	public void setSize(long size) {
-		this.size = size;
 	}
 	public int getProvinceID() {
 		return provinceID;

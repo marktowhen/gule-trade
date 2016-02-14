@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.area.controller;
+package com.jingyunbank.etrade.posts.area.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.etrade.api.area.bo.City;
-import com.jingyunbank.etrade.api.area.service.ICityService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.area.bean.CityVO;
+import com.jingyunbank.etrade.api.posts.area.bo.Country;
+import com.jingyunbank.etrade.api.posts.area.service.ICountryService;
+import com.jingyunbank.etrade.posts.area.bean.CountryVO;
 
 @RestController
-@RequestMapping("/api/area/city")
-public class CityController {
+@RequestMapping("/api/area/country")
+public class CountryController {
 	
 	@Autowired
-	private ICityService cityService;
+	private ICountryService countryService;
 	
 	/**
 	 * 新增
@@ -40,16 +40,16 @@ public class CityController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Result<String> save(@Valid CityVO vo, BindingResult valid) throws Exception{
+	public Result<String> save(@Valid CountryVO vo, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream()
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		City bo = new City();
+		Country bo = new Country();
 		BeanUtils.copyProperties(vo, bo);
-		cityService.save(bo);
+		countryService.save(bo);
 		return Result.ok();
 	}
 	
@@ -65,7 +65,7 @@ public class CityController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result<String> remove(HttpServletRequest request,@PathVariable int id) throws Exception{
-		if(cityService.remove(id)){
+		if(countryService.remove(id)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -74,14 +74,14 @@ public class CityController {
 	
 	/**
 	 * 修改
-	 * @param cityVO
+	 * @param countryVO
 	 * @return
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public Result<String> refresh(@PathVariable int id ,@Valid CityVO cityVO , BindingResult valid) throws Exception{
+	public Result<String> refresh(@PathVariable int id ,@Valid CountryVO countryVO , BindingResult valid) throws Exception{
 		
 		if(valid.hasErrors()){
 			List<ObjectError> errors = valid.getAllErrors();
@@ -89,11 +89,11 @@ public class CityController {
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		cityVO.setCityID(id);
-		City city = new City();
-		BeanUtils.copyProperties(cityVO, city);
+		countryVO.setCountryID(id);
+		Country country = new Country();
+		BeanUtils.copyProperties(countryVO, country);
 		//修改
-		if(cityService.refresh(city)){
+		if(countryService.refresh(country)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -106,11 +106,11 @@ public class CityController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public Result<CityVO> getDetail(@PathVariable int id) throws Exception{
-		City city = cityService.single(id);
-		if(city!=null){
-			CityVO vo = new CityVO();
-			BeanUtils.copyProperties(city, vo);
+	public Result<CountryVO> getDetail(@PathVariable int id) throws Exception{
+		Country country = countryService.single(id);
+		if(country!=null){
+			CountryVO vo = new CountryVO();
+			BeanUtils.copyProperties(country, vo);
 			return Result.ok(vo);
 		}
 		return Result.fail("地址不存在");
@@ -123,33 +123,17 @@ public class CityController {
 	 * 2015年11月5日 qxs
 	 */
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Result<List<CityVO>> getList(CityVO vo) throws Exception{
-		City city = new City();
-		BeanUtils.copyProperties(vo, city);
-		return Result.ok(cityService.list(city)
+	public Result<List<CountryVO>> getList(CountryVO vo) throws Exception{
+		Country country = new Country();
+		BeanUtils.copyProperties(vo, country);
+		return Result.ok(countryService.list(country)
 				.stream().map( bo->{ 
-					CityVO c = new CityVO();
+					CountryVO c = new CountryVO();
 					BeanUtils.copyProperties(bo, c);
 					return c;
 					}).collect(Collectors.toList())
 				);
 	}
 	
-	/**
-	 * 查询
-	 * @param id
-	 * @return
-	 * 2015年11月5日 qxs
-	 */
-	@RequestMapping(value="/list/{provinceID}",method=RequestMethod.GET)
-	public Result<List<CityVO>> getList(@PathVariable int provinceID) throws Exception{
-		return Result.ok(cityService.listByProvince(provinceID)
-				.stream().map( bo->{ 
-					CityVO c = new CityVO();
-					BeanUtils.copyProperties(bo, c);
-					return c;
-					}).collect(Collectors.toList())
-				);
-	}
 
 }

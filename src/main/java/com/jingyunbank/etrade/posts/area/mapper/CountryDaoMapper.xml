@@ -2,8 +2,8 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.area.dao.CountryDao">
-	<resultMap type="com.jingyunbank.etrade.area.entity.CountryEntity" id="countryResultMap">
+<mapper namespace="com.jingyunbank.etrade.posts.area.dao.CountryDao">
+	<resultMap type="com.jingyunbank.etrade.posts.area.entity.CountryEntity" id="countryResultMap">
 		<id column="country_id" property="countryID"/>
 		<result column="country_name" property="countryName" />
 	</resultMap>

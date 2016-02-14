@@ -1,8 +1,8 @@
-package com.jingyunbank.etrade.area.dao;
+package com.jingyunbank.etrade.posts.area.dao;
 
 import java.util.List;
 
-import com.jingyunbank.etrade.area.entity.ProvinceEntity;
+import com.jingyunbank.etrade.posts.area.entity.ProvinceEntity;
 
 public interface ProvinceDao {
 	

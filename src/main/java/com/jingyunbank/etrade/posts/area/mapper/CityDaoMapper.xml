@@ -2,8 +2,8 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.area.dao.CityDao">
-	<resultMap type="com.jingyunbank.etrade.area.entity.CityEntity" id="cityResultMap">
+<mapper namespace="com.jingyunbank.etrade.posts.area.dao.CityDao">
+	<resultMap type="com.jingyunbank.etrade.posts.area.entity.CityEntity" id="cityResultMap">
 		<id column="city_id" property="cityID"/>
 		<result column="city_name" property="cityName" />
 		<result column="zip_code" property="zipCode" />

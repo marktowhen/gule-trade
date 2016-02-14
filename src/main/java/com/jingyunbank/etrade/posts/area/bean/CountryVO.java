@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.area.bean;
+package com.jingyunbank.etrade.posts.area.bean;
 
 import java.io.Serializable;
 

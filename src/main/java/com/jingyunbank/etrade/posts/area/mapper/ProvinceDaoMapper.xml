@@ -2,8 +2,8 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jingyunbank.etrade.area.dao.ProvinceDao">
-	<resultMap type="com.jingyunbank.etrade.area.entity.ProvinceEntity" id="provinceResultMap">
+<mapper namespace="com.jingyunbank.etrade.posts.area.dao.ProvinceDao">
+	<resultMap type="com.jingyunbank.etrade.posts.area.entity.ProvinceEntity" id="provinceResultMap">
 		<id column="province_id" property="provinceID"/>
 		<result column="province_name" property="provinceName" />
 		<result column="country_id" property="countryID" />
