@@ -43,5 +43,20 @@ public class SalesRecordsController {
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
+	
+	/**
+	 * 销量
+	 * @param gid
+	 * @param year
+	 * @param month
+	 * @return
+	 * @throws Exception
+	 * 2016年2月14日 qxs
+	 */
+	@RequestMapping(value = "/api/goods/{gid}/sales/{year}/{month}", method = RequestMethod.GET)
+	public Result<Integer> countSalesRecords(@PathVariable String gid, @PathVariable String year,@PathVariable String month) throws Exception {
+		
+		return Result.ok(salesRecordsService.count(gid, year, month));
+	}
 
 }

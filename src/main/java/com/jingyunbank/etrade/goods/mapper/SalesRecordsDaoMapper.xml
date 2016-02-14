@@ -27,5 +27,8 @@
 		insert into sales_records (<include refid="salesrecords_columns"/>)
 		values (#{ID}, #{UID}, #{uname}, #{GID}, #{count}, #{salesDate})
 	</insert>
+	<select id="count"  resultType="int">
+		select sum(count) from sales_records where gid=#{gid} and sales_date like CONCAT(#{year},'-',#{month},'%')
+	</select>
 	
 </mapper>

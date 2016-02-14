@@ -1,8 +1,8 @@
 package com.jingyunbank.etrade.link.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.etrade.TestCaseBase;
-import com.jingyunbank.etrade.goods.bean.BrandVO;
 import com.jingyunbank.etrade.statics.links.bean.LinkVO;
 
 public class LinkControllerTest extends TestCaseBase {

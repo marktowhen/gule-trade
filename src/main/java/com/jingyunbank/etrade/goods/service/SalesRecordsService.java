@@ -54,4 +54,10 @@ public class SalesRecordsService implements ISalesRecordsService {
 		return saleList;
 	}
 
+	@Override
+	@Cacheable(cacheNames = "salesRecordCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
+	public Integer count(String gid, String year, String month) {
+		return salesRecordsDao.count(gid, year, month);
+	}
+
 }
