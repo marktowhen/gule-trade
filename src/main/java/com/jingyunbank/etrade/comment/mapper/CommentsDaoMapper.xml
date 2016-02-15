@@ -54,7 +54,7 @@
 		   			and comment_grade &lt;=6
 		   		</if>
 		   </if>
-		   <if test="picture!=0">
+		   <if test="existsImg">
 		   		and EXISTS (select 1 from comment_img img where c.id=img.comment_id)
 		   </if>
 		   order by addtime desc,sort desc
@@ -82,7 +82,7 @@
 			from comment where oid=#{oid} and gid=#{gid}
 		</select>
 		<!-- 通过gid查出该商品的总条数 -->
-		<select id="commentCount" resultType="int" parameterType="string">
+		<select id="count" resultType="int" parameterType="string">
 		select count(id) from comment where gid=#{GID}
 		</select>
 		<select id="selectComment" resultMap="ResultMap">

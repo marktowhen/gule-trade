@@ -20,4 +20,6 @@ public interface OrderGoodsDao {
 	public void updateGoodStatus(@Param("IDs") List<String> id, @Param("status") OrderStatusDesc status) throws Exception;
 	
 	public int count(@Param(value="OID") String uid,@Param("status") OrderStatusDesc status);
+
+	public void updateStatusByGid(@Param(value="OID")String oid,@Param(value="GID") String gid, @Param("status")OrderStatusDesc status);
 }

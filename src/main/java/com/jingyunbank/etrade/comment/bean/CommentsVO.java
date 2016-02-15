@@ -23,7 +23,7 @@ public class CommentsVO {
 	private int logisticsGrade;//物流级别
 	@JsonFormat(pattern="yyyy-MM-dd" ,locale="zh", timezone="GMT+8")
 	private Date addtime;//添加评价的时间
-	private int commentStatus;//评价的是否的状态
+	private int commentStatus;//该字段暂时未使用
 	private int sort;//按其排序
 	private float zongjibie;//评论商品总级别
 	private int personCount;//评论的总人数

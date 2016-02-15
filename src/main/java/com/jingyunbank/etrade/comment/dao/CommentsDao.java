@@ -8,21 +8,18 @@ import com.jingyunbank.etrade.comment.entity.CommentsEntity;
 
 public interface CommentsDao {
 	
-	public int insert(CommentsEntity commentsEntity) throws Exception;
+	public boolean insert(CommentsEntity commentsEntity) throws Exception;
 	
 	public List<CommentsEntity> selectCommentByGid(String gid);
 	
-	public List<CommentsEntity> selectCommentGradeByGid(@Param(value="GID") String gid,@Param(value="commentGrade") int commentGrade,@Param(value="picture") int picture,@Param(value="offset")long offset, @Param(value="size")long size);
+	public List<CommentsEntity> selectCommentGradeByGid(@Param(value="GID") String gid,@Param(value="commentGrade") int commentGrade,@Param(value="existsImg") boolean existsImg,@Param(value="offset")long offset, @Param(value="size")long size);
 	
 	public CommentsEntity selectById(String id);
 	
 	public void delete(String id) throws Exception;
 	
-	public boolean updateStatus(CommentsEntity commentsEntity) throws Exception;
 	
-	public boolean refreshReadStatus(CommentsEntity commentsEntity) throws Exception;
-	
-	public int commentCount(String gid);
+	public int count(String gid);
 	
 	public CommentsEntity selectCommentByOid(@Param(value="oid") String oid,@Param(value="gid") String gid);
 	

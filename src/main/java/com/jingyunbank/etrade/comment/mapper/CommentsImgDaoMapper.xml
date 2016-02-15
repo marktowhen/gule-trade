@@ -15,6 +15,16 @@
 		#{ID},#{commentID},#{picture}
 		)
 	</insert>
+	<insert id="insertMulti" parameterType="com.jingyunbank.etrade.comment.entity.CommentsImgEntity">
+		insert into comment_img(
+		id,comment_id,picture
+		)values
+		<foreach collection="list" item="item"   open="" close="" separator=",">
+			(#{item.ID},#{item.commentID},#{item.picture})
+		</foreach>
+		
+	</insert>
+	
 	<select id="selectById" resultMap="ResultMap" parameterType="String">
 		select id,comment_id,picture from comment_img where comment_id=#{commentID}
 	</select>

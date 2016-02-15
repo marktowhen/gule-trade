@@ -25,21 +25,13 @@ public class CommentsImgService implements ICommentImgService{
 	@Override
 	@CacheEvict(cacheNames="commentCache", allEntries=true)
 	public boolean save(CommentsImg commentsImg) throws DataSavingException {
-		boolean flag;
-		int result=0;
 		CommentsImgEntity commentsImgEntity=new CommentsImgEntity();
 		BeanUtils.copyProperties(commentsImg, commentsImgEntity);
 		try {
-			result=commentsImgDao.insert(commentsImgEntity);
+			return commentsImgDao.insert(commentsImgEntity);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
-		if(result>0){
-			 flag=true;
-		}else{
-			flag=false;
-			}
-		return flag;
 	}
 
 	@Override
@@ -71,6 +63,15 @@ public class CommentsImgService implements ICommentImgService{
 		CommentsImg bo = new CommentsImg();
 		BeanUtils.copyProperties(commentsImgEntity, bo);
 		return Optional.of(bo);
+	}
+
+	@Override
+	public boolean save(List<CommentsImg> imgList) throws DataSavingException {
+		return commentsImgDao.insertMulti(imgList.stream().map(bo -> {
+				CommentsImgEntity entity=new CommentsImgEntity();
+				BeanUtils.copyProperties(bo, entity);
+				return entity;
+			}).collect(Collectors.toList()));
 	}
 
 }

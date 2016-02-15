@@ -73,6 +73,12 @@
 				#{id}
 			</foreach>
 	</update>
+	<update id="updateStatusByGid">
+		update order_goods og
+		set og.status_code = #{status.code}, og.status_name = #{status.name}
+		where og.oid =#{OID} and og.gid=#{GID}
+	</update>
+	
 	<select id="count" resultType="int">
 		select count(id)
 		from order_goods og

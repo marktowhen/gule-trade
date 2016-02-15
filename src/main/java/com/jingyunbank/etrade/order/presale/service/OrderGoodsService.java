@@ -89,5 +89,15 @@ public class OrderGoodsService implements IOrderGoodsService {
 		return orderGoodsDao.count(oid, status);
 	}
 
+	@Override
+	public void refreshGoodStatus(String oid, String gid,
+			OrderStatusDesc status) throws DataRefreshingException {
+		try {
+			orderGoodsDao.updateStatusByGid(oid, gid, status);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+	}
+
 	
 }

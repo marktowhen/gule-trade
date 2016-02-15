@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.comment.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
@@ -30,14 +28,11 @@ import com.jingyunbank.etrade.api.comment.bo.CommentsImg;
 import com.jingyunbank.etrade.api.comment.service.ICommentImgService;
 import com.jingyunbank.etrade.api.comment.service.ICommentService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
-import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
-import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserInfoService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.comment.bean.CommentsImgVO;
 import com.jingyunbank.etrade.comment.bean.CommentsVO;
 import com.jingyunbank.etrade.user.bean.UserInfoVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
@@ -55,8 +50,6 @@ public class CommentsController {
 	private IUserInfoService userInfoService;
 	@Autowired
 	private IOrderGoodsService orderGoodsService;
-	@Autowired
-	private IOrderService orderService;
 	/**
 	 * 保存商品的评论信息和对应的多张图片
 	 * @param commentVO
@@ -68,44 +61,32 @@ public class CommentsController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments",method=RequestMethod.POST)
-	@ResponseBody
-	public Result<String> saveComments(@RequestParam("ogid") String ogid,@RequestBody CommentsVO commentVO,CommentsImgVO commentsImgVO,HttpServletRequest request) throws Exception{
+	public Result<String> saveComments(@RequestParam("ogid") String ogid,@RequestBody CommentsVO commentVO,HttpServletRequest request) throws Exception{
 		commentVO.setID(KeyGen.uuid());
 		Optional<OrderGoods> optional = orderGoodsService.singleOrderGoods(ogid);
 		OrderGoods	orderGoods =optional.get();
 		commentVO.setGID(orderGoods.getGID());
 		commentVO.setOID(orderGoods.getOID());
-		String id = Login.UID(request);
-		commentVO.setUID(id);
+		commentVO.setUID(Login.UID(request));
 		commentVO.setAddtime(new Date());
-		commentVO.setCommentStatus(2);
 		Comments comments=new Comments();
 		BeanUtils.copyProperties(commentVO, comments);
 
-		if(commentService.save(comments)){
-			//对保存多张图片的过程！模拟写的！有多张图片的保存
+		List<CommentsImg> imgList = null;
+		if(commentVO.getPicture().size()!=0){
+			imgList = new ArrayList<CommentsImg>();
+			for(int i=0;i<commentVO.getPicture().size();i++){
+				CommentsImg commentsImg=new CommentsImg();
+				commentsImg.setID(KeyGen.uuid());
+				commentsImg.setPicture(commentVO.getPicture().get(i));
+				commentsImg.setCommentID(commentVO.getID());
+				imgList.add(commentsImg);
+			}
+		}
+		commentService.save(comments ,imgList);
+		
 			
-			if(commentVO.getPicture().size()!=0){
-				for(int i=0;i<commentVO.getPicture().size();i++){
-					CommentsImg commentsImg=new CommentsImg();
-					commentsImg.setID(KeyGen.uuid());
-					commentsImg.setPicture(commentVO.getPicture().get(i));
-					commentsImg.setCommentID(commentVO.getID());;
-					commentImgService.save(commentsImg);
-				}
-			}
-			
-				//修改订单商品的状态
-			orderGoodsService.refreshGoodStatus(Arrays.asList(ogid), OrderStatusDesc.COMMENTED);
-			//修改订单的状态
-			if(orderGoodsService.count(orderGoods.getOID(), OrderStatusDesc.RECEIVED)==0){
-				List<String> oids=new ArrayList<String>();
-				oids.add(orderGoods.getOID());
-				orderService.refreshStatus(oids, OrderStatusDesc.COMMENTED);
-			}
-			return Result.ok("保存成功");
-			}
-		return Result.fail("保存失败！");
+		return Result.ok("保存成功");
 	}
 	
 	
@@ -120,16 +101,13 @@ public class CommentsController {
 	 */
 
 	@RequestMapping(value="/api/comments/grades",method=RequestMethod.GET)
-	@ResponseBody
 	public Result<List<CommentsVO>> getGradeComments(@RequestParam("gid") String gid,@RequestParam("commentGrade") int commentGrade,@RequestParam("picture") int picture,@RequestParam("from") int from,@RequestParam("size") int size,HttpServletRequest request,HttpSession session) throws Exception{
-		Range range = new Range();
-		range.setFrom(from);
-		range.setTo(from+size);
-		List<Comments> comments=commentService.list(gid,commentGrade,picture,range);
+		boolean existsImg = picture!=0?true:false;
+		List<Comments> comments=commentService.list(gid, commentGrade, existsImg, new Range(from, from+size));
 		List<CommentsVO> commentVOs=convert(comments);
 		return Result.ok(commentVOs);
 		
-		}
+	}
 	
 	private List<CommentsVO> convert(List<Comments> comments){
 	
@@ -147,9 +125,7 @@ public class CommentsController {
 				commentsVO.setUserVO(userVO);
 				commentsVO.setUserInfoVO(userinfoVO);
 				List<CommentsImg> commentsImgs=	commentImgService.list(comments.get(i).getID());
-				
-					commentsVO.setImgs(commentsImgs);
-				
+				commentsVO.setImgs(commentsImgs);
 				commentVOs.add(commentsVO);
 			}
 			
@@ -166,10 +142,9 @@ public class CommentsController {
 	 */
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/comments/delete/{id}",method=RequestMethod.DELETE)
-	@ResponseBody
 	public Result<String> remove(@PathVariable String id,HttpServletRequest request,HttpSession session) throws Exception{
-			commentService.remove(id);
-			return Result.ok("删除成功");
+		commentService.remove(id);
+		return Result.ok("删除成功");
 	}
 	/**
 	 * 通过gid查出评论商品的总级别
