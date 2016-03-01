@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.jingyunbank</groupId>
-	<artifactId>jingyun-etrade</artifactId>
-	<version>1.2.3-RELEASE</version>
+	<groupId>co.legu</groupId>
+	<artifactId>legu-etrade</artifactId>
+	<version>1.2.4-RELEASE</version>
 	<packaging>jar</packaging>
 
-	<name>jingyun-etrade</name>
+	<name>legu-etrade</name>
 	<url>http://maven.apache.org</url>
 
 	<!-- Inherit defaults from Spring Boot -->
@@ -105,9 +105,9 @@
 		
 		<!-- jingyun projects start -->
 	    <dependency>
-	    	<groupId>com.jingyunbank</groupId>
-			<artifactId>jingyun-etrade-api</artifactId>
-			<version>1.2.3-RELEASE</version>
+	    	<groupId>co.legu</groupId>
+			<artifactId>legu-etrade-api</artifactId>
+			<version>1.2.4-RELEASE</version>
 	    </dependency>
 	    <!-- jingyun projects end -->
 	    
@@ -200,7 +200,7 @@
 		<repository>
 			<id>nexus</id>
 			<name>Nexus Repository</name>
-			<url>http://123.57.216.118:8081/nexus/content/groups/public/</url>
+			<url>http://maven.legu.co/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -214,12 +214,12 @@
 		<repository>
 			<id>nexus-releases</id>
 			<name>Nexus Release Repository</name>
-			<url>http://123.57.216.118:8081/nexus/content/repositories/releases</url>
+			<url>http://maven.legu.co/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://123.57.216.118:8081/nexus/content/repositories/snapshots</url>
+			<url>http://maven.legu.co/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 	
