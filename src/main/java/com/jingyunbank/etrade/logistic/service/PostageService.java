@@ -18,7 +18,7 @@ public class PostageService implements IPostageService {
 	private IProvinceService provinceService;
 	
 	private static final BigDecimal FULL_NON_POSTAGE_PRICE = BigDecimal.valueOf(199);
-	private static final BigDecimal PART_NON_POSTAGE_PRICE = BigDecimal.valueOf(99);
+	private static final BigDecimal PART_NON_POSTAGE_PRICE = BigDecimal.valueOf(68);
 	private static final BigDecimal DEFAULT_POSTAGE = BigDecimal.valueOf(10);
 	
 	@Override
