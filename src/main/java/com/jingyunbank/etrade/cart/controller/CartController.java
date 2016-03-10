@@ -200,7 +200,7 @@ public class CartController {
 						);
 			}
 			//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
-			orderpostage = (orderprice.compareTo(BigDecimal.valueOf(99)) >= 0 ? BigDecimal.ZERO : orderpostage);
+			orderpostage = (orderprice.compareTo(BigDecimal.valueOf(68)) >= 0 ? BigDecimal.ZERO : orderpostage);
             order.setPostage(orderpostage);
             order.setPrice(orderprice.add(orderpostage));
             cartprice = cartprice.add(order.getPrice());

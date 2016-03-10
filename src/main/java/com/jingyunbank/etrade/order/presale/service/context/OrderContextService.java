@@ -111,7 +111,7 @@ public class OrderContextService implements IOrderContextService {
 			ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(couponType);
 			return couponStrategyService.calculate(UID, couponID, orders);
 		}else{//员工通道
-			boolean useEmployeeCoupon = true;
+			boolean useEmployeeCoupon = false;
 			if(useEmployeeCoupon && isemployee){
 				orders.forEach(order ->{order.setCouponType(BaseCoupon.EMPLOYEECOUPON);});
 				ICouponStrategyService couponStrategyService = couponStrategyResolver.resolve(BaseCoupon.EMPLOYEECOUPON);
