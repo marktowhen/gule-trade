@@ -179,7 +179,7 @@ public class WeiboLoginController {
 		if(userService.exists(userVO.getMobile())){
 			return Result.fail("该手机号已存在。");
 		}
-		Result<String> checkResult = SMSController.checkCode(userVO.getCode(), request, ServletBox.SMS_CODE_KEY_IN_SESSION);
+		Result<String> checkResult = ServletBox.checkCaptcha(userVO.getCode(), ServletBox.SMS_CODE_KEY_IN_SESSION, request);
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){
 			Users users=new Users();

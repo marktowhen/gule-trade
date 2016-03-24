@@ -72,14 +72,14 @@ public class RegisterController {
 			if(userService.exists(userVO.getMobile())){
 				return Result.fail("该手机号已存在。");
 			}
-			checkResult = SMSController.checkCode(userVO.getCode(), request, ServletBox.SMS_CODE_KEY_IN_SESSION);
+			checkResult = ServletBox.checkCaptcha(userVO.getCode(), ServletBox.SMS_CODE_KEY_IN_SESSION, request);
 		}
 		//验证邮箱是否存在
 		if(!StringUtils.isEmpty(userVO.getEmail())){
 			if(userService.exists(userVO.getEmail())){
 				return Result.fail("该邮箱已存在");
 			}
-			checkResult = SMSController.checkCode(userVO.getCode(), request, ServletBox.EMAIL_CODE_KEY_IN_SESSION);
+			checkResult = ServletBox.checkCaptcha(userVO.getCode(), ServletBox.EMAIL_CODE_KEY_IN_SESSION, request);
 		}
 		//保存用户信息和个人资料信息
 		if(checkResult.isOk()){

@@ -47,7 +47,7 @@ public class PasswordController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/password",method=RequestMethod.PUT)
 	public Result<UserVO> updatePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+		if(ServletBox.isEmailOrMobileVerifed(request.getSession())){
 			String uid = Login.UID(request);
 			userVO.setID(uid);
 			Users users=new Users();
@@ -72,7 +72,7 @@ public class PasswordController {
 	 */
 	@RequestMapping(value="/forgetpwd/checkcode",method=RequestMethod.PUT)
 	public Result<String> forgetpwdCheck(HttpServletRequest request, HttpSession session,@RequestParam("key") String key, @RequestParam("password") String password) throws Exception{
-		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+		if(ServletBox.isEmailOrMobileVerifed(request.getSession())){
 			Optional<Users> usersOptionals = userService.singleByKey(key);
 			Users users=usersOptionals.get();
 			users.setPassword(password);

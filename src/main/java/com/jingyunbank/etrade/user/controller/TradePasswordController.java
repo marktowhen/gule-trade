@@ -35,7 +35,7 @@ public class TradePasswordController {
 	@RequestMapping(value="/",method=RequestMethod.PUT)
 	public Result<UserVO> updateTradePassword(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
 		//验证交易密码的有效性
-		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+		if(ServletBox.isEmailOrMobileVerifed(request.getSession())){
 			
 			String uid = Login.UID(request);
 			userVO.setID(uid);
@@ -58,7 +58,7 @@ public class TradePasswordController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/install/tradepwd",method=RequestMethod.PUT)
 	public Result<UserVO> installTradepwd(@RequestBody UserVO userVO,HttpSession session,HttpServletRequest request) throws Exception{
-		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+		if(ServletBox.isEmailOrMobileVerifed(request.getSession())){
 			String uid = Login.UID(request);
 			Optional<Users> optional=userService.single(uid);
 			Users users=optional.get();

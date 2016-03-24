@@ -118,7 +118,7 @@ public class SMSController {
 	@RequestMapping(value="/code/check",method=RequestMethod.GET)
 	public Result<String> chenckPhoneCode(@RequestParam("code") String code,HttpServletRequest request, HttpSession session) throws Exception{
 		
-		Result<String>	checkResult = checkCode(code, request, ServletBox.SMS_CODE_KEY_IN_SESSION);
+		Result<String>	checkResult = ServletBox.checkCaptcha(code, ServletBox.SMS_CODE_KEY_IN_SESSION, request);
 		if(checkResult.isOk()){
 			ServletBox.verifyMobile(request);
 		}
@@ -148,29 +148,6 @@ public class SMSController {
 			return Result.ok();
 		}
 		return Result.fail("发送过于频繁,请稍后再试");
-	}
-	
-	/**
-	 * 验证验证码,成功后清除session
-	 * @param code
-	 * @param request
-	 * @param sessionKey 验证码在session中的name
-	 * @return
-	 * 2015年11月10日 qxs
-	 */
-	public static Result<String> checkCode(String code, HttpServletRequest request, String sessionName){
-		if(StringUtils.isEmpty(code)){
-			return Result.fail("验证码不能为空");
-		}
-		String sessionCode = (String)request.getSession().getAttribute(sessionName);
-		if(StringUtils.isEmpty(sessionCode)){
-			return Result.fail("验证码未发送或已失效");
-		}
-		if(code.equals(sessionCode)){
-			request.getSession().setAttribute(sessionName, null);
-			return Result.ok();
-		}
-		return Result.fail("验证码错误");
 	}
 	
 }

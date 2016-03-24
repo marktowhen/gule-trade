@@ -84,7 +84,7 @@ public class UserController {
 	@RequestMapping(value="/phone",method=RequestMethod.PUT)
 	public Result<String> refreshPhone(@RequestParam("mobile") String mobile, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
-		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+		if(ServletBox.isEmailOrMobileVerifed(request.getSession())){
 			Users users=new Users();
 			users.setMobile(mobile);
 			users.setID(Login.UID(request));
@@ -116,7 +116,7 @@ public class UserController {
 	@RequestMapping(value="/email",method=RequestMethod.PUT)
 	public Result<String> refreshEmail(@RequestParam("email") String email, @RequestParam("code") String code,HttpServletRequest request) throws Exception{
 		//身份验证
-		if(ServletBox.checkIfEmailMobileOK(request.getSession())){
+		if(ServletBox.isEmailOrMobileVerifed(request.getSession())){
 			Users users=new Users();
 			users.setEmail(email);
 			users.setID(Login.UID(request));

@@ -4,7 +4,7 @@
 
 	<groupId>co.legu</groupId>
 	<artifactId>legu-etrade</artifactId>
-	<version>1.2.4-RELEASE</version>
+	<version>1.2.5-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>legu-etrade</name>
@@ -107,7 +107,7 @@
 	    <dependency>
 	    	<groupId>co.legu</groupId>
 			<artifactId>legu-etrade-api</artifactId>
-			<version>1.2.4-RELEASE</version>
+			<version>1.2.5-RELEASE</version>
 	    </dependency>
 	    <!-- jingyun projects end -->
 	    
