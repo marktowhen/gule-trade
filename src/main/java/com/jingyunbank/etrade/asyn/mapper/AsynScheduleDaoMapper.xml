@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.asyn.dao.AsynScheduleDao">
+	<resultMap type="com.jingyunbank.etrade.asyn.entity.AsynScheduleEntity" id="ResultMap">
+		<id column="id" property="ID" />
+		<result column="defined_id" property="definedID" />
+		<result column="status" property="status" />
+		<result column="addtime" property="addtime" />
+		<result column="remark" property="remark" />
+	</resultMap>
+	
+	<sql id="base_column">
+		id,defined_id,status,addtime,remark
+	</sql>
+	
+	<insert id="insert">
+		insert into asyn_schedule(<include refid="base_column"/>)
+			values(#{ID},#{definedID},#{status},now(),#{remark})
+	</insert>
+	
+	<update id="updateStatus">
+		update asyn_schedule set status=#{status} where id=#{ID}
+	</update>
+	
+	<delete id="delete">
+		delete from asyn_schedule where id = #{ID}
+	</delete>
+	
+	<select id="selectOne" resultMap="ResultMap">
+		select <include refid="base_column"/> from asyn_schedule where id=#{ID}
+	</select>
+	
+	<select id="selectList" resultMap="ResultMap">
+		select <include refid="base_column"/> from asyn_schedule order by addtime limit #{offset,javaType=LONG},#{size,javaType=LONG}
+	</select>
+	
+	
+</mapper>

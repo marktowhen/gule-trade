@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.asyn.dao.AsynParamDao">
+	<resultMap type="com.jingyunbank.etrade.asyn.entity.AsynParamEntity" id="ResultMap">
+		<id column="id" property="ID" />
+		<result column="schedule_id" property="scheduleID" />
+		<result column="key" property="key" />
+		<result column="value" property="value" />
+	</resultMap>
+	<sql id="base_column">
+		id,schedule_id,key,value
+	</sql>
+	<insert id="insertMutl">
+		insert into asyn_param(<include refid="base_column"/>)
+			values
+			<foreach collection="list" item="item" separator=",">
+				(#{item.ID},#{item.scheduleID},#{item.key},#{item.value})
+			</foreach>
+	</insert>
+	
+	<select id="selectBySchedule" resultMap="ResultMap">
+		select <include refid="base_column"/> from asyn_param where schedule_id=#{scheduleID}
+	</select>
+	
+</mapper>
