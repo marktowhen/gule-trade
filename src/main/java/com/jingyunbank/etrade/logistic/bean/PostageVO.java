@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.logistic;
+package com.jingyunbank.etrade.logistic.bean;
 
 import java.math.BigDecimal;
 

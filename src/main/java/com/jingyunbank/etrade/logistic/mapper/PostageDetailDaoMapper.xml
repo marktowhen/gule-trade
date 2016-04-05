@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.logistic.dao.PostageDetailDao">
+
+	<resultMap type="com.jingyunbank.etrade.logistic.entity.PostageDetailEntity"
+		id="PostageDetailMap">
+		<result column="id" property="ID" />
+		<result column="postage_id" property="postageID" />
+		<result column="first_number" property="firstNumber" />
+		<result column="first_weight" property="firstWeight" />
+		<result column="first_volume" property="firstVolume" />
+		<result column="first_cost" property="firstCost" />
+		<result column="next_number" property="nextNumber" />
+		<result column="next_weight" property="nextWeight" />
+		<result column="next_volume" property="nextVolume" />
+		<result column="next_cost" property="nextCost" />
+		<result column="fit_area" property="fitArea" />
+		<result column="valid" property="valid" />
+	</resultMap>
+
+	<sql id="base_column">
+		id,postage_id,first_number,first_weight,first_volume,first_cost,
+		 next_number,next_weight,next_volume,next_cost,fit_area,valid
+	</sql>
+	<insert id="insert">
+		insert into postage_detail(<include refid="base_column"/>)
+		values(#{ID},#{postageID},#{firstNumber},#{firstWeight},#{firstVolume},#{first_cost},
+				#{next_number},#{next_weight},#{next_volume},#{next_cost},#{fit_area},#{valid})
+	</insert>
+	
+	<update id="updateStatus">
+		update postage_detail set valid=#{valid} where id=#{ID}
+	</update>
+	<update id="deleteByPostageID">
+		update postage_detail set valid=false where postage_id=#{postageID}
+	</update>
+	
+	<update id="update">
+		update postage_detail 
+			set first_number=#{firstNumber},
+				first_weight=#{firstWeight},
+				first_volume=#{firstVolume},
+				first_cost=#{firstCost},
+				next_number=#{nextNumber},
+				next_weight=#{nextWeight},
+				next_volume=#{nextVolume},
+				next_cost=#{nextCost},
+				fit_area=#{fitArea}
+			where id = #{ID}
+	</update>
+	<select id="selectOne" resultMap="PostageDetailMap">
+		select <include refid="base_column"/> from postage_detail where id=#{ID}
+	</select>
+	
+	<select id="selectByPostageID" resultMap="PostageDetailMap">
+		select <include refid="base_column"/> from postage_detail where postage_id=#{postageID}  and valid=true
+	</select>
+	
+	
+</mapper>

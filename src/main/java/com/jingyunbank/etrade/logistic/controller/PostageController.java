@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.logistic.bo.Postage;
 import com.jingyunbank.etrade.api.logistic.service.IPostageService;
-import com.jingyunbank.etrade.logistic.PostageVO;
+import com.jingyunbank.etrade.logistic.bean.PostageVO;
 
 @RestController
 public class PostageController {

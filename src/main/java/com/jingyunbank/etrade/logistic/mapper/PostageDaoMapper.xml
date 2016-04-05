@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.logistic.dao.PostageDao">
+
+	<resultMap type="com.jingyunbank.etrade.logistic.entity.PostageEntity"
+		id="PostageMap">
+		<result column="id" property="ID" />
+		<result column="mid" property="MID" />
+		<result column="title" property="title" />
+		<result column="express_code" property="expressCode" />
+		<result column="type" property="type" />
+		<result column="valid" property="valid" />
+	</resultMap>
+
+	<sql id="postage_column">
+		id,mid,title,express_code,type,valid 
+	</sql>
+	<insert id="insert">
+		insert into postage(<include refid="postage_column"/>)
+		values(#{ID},#{MID},#{title},#{expressCode},#{type},#{valid})
+	</insert>
+	
+	<update id="updateStatus">
+		update postage set valid=#{valid} where id=#{ID}
+	</update>
+	
+	<update id="update">
+		update postage set title=#{title},express_code=#{expressCode},type=#{type}
+			where id=#{ID}
+	</update>
+	<select id="selectOne" resultMap="PostageMap">
+		SELECT
+		<include refid="postage_column" />
+		FROM postage
+		WHERE id=#{ID}
+	</select>
+	
+	<select id="selectByMID" resultMap="PostageMap">
+		SELECT
+		<include refid="postage_column" />
+		FROM postage
+		WHERE  mid=#{MID} and valid=true
+	</select>
+	
+	
+</mapper>

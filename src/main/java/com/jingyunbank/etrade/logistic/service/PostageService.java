@@ -7,6 +7,9 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
+import com.jingyunbank.etrade.api.exception.DataRemovingException;
+import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.logistic.bo.Postage;
 import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.api.statics.area.service.IProvinceService;
@@ -46,6 +49,36 @@ public class PostageService implements IPostageService {
 			postage.setPostage(calculate(postage.getPrice(), postage.getProvince()));
 		}
 		return postages;
+	}
+
+	@Override
+	public boolean save(Postage postage) throws DataSavingException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean refresh(Postage postage) throws DataRefreshingException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean remove(String ID) throws DataRemovingException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Postage single(String ID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Postage> list(String MID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
