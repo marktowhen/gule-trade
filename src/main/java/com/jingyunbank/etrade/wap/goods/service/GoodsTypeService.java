@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.service;
+package com.jingyunbank.etrade.wap.goods.service;
 
 import java.util.List;
 import java.util.Objects;
@@ -8,15 +8,12 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.etrade.api.goods.bo.GoodsType;
-import com.jingyunbank.etrade.api.goods.service.IGoodsTypeService;
-import com.jingyunbank.etrade.config.CacheConfig;
-import com.jingyunbank.etrade.goods.dao.GoodsTypeDao;
-import com.jingyunbank.etrade.goods.entity.GoodsTypeEntity;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsType;
+import com.jingyunbank.etrade.api.wap.goods.service.IGoodsTypeService;
+import com.jingyunbank.etrade.wap.goods.dao.GoodsTypeDao;
+import com.jingyunbank.etrade.wap.goods.entity.GoodsTypeEntity;
 
 @Service("goodsTypeService")
 public class GoodsTypeService implements IGoodsTypeService {
@@ -24,15 +21,22 @@ public class GoodsTypeService implements IGoodsTypeService {
 	private GoodsTypeDao goodsTypeDao;
 
 	@Override
-	@CacheEvict(value="typeCache",allEntries=true)
-	public boolean save(GoodsType goodsType) throws Exception {
+	public void save(GoodsType goodsType) throws Exception {
 		GoodsTypeEntity entity = new GoodsTypeEntity();
 		BeanUtils.copyProperties(goodsType, entity);
-		int i = goodsTypeDao.insertGoodsType(entity);
-		if (i > 0) {
-			return true;
-		}
-		return false;
+		goodsTypeDao.insertGoodsType(entity);
+	}
+
+	@Override
+	public void refreshGoodsType(GoodsType goodsType) throws Exception {
+		GoodsTypeEntity entity = new GoodsTypeEntity();
+		BeanUtils.copyProperties(goodsType, entity);
+		goodsTypeDao.updateGoodsType(entity);
+	}
+
+	@Override
+	public void delGoodsType(String tid) throws Exception {
+		goodsTypeDao.delGoodsType(tid);
 	}
 
 	@Override
@@ -47,19 +51,6 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
-	@CacheEvict(value="typeCache",allEntries=true)
-	public boolean refreshGoodsType(GoodsType goodsType) throws Exception {
-		GoodsTypeEntity entity = new GoodsTypeEntity();
-		BeanUtils.copyProperties(goodsType, entity);
-		int i = goodsTypeDao.updateGoodsType(entity);
-		if (i > 0) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	@Cacheable(cacheNames = "typeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<GoodsType> listGoodsTypesByName(String name) throws Exception {
 		List<GoodsType> goodsTypes = goodsTypeDao.selectGoodsTypes(name).stream().map(dao -> {
 			GoodsType bo = new GoodsType();
@@ -70,7 +61,6 @@ public class GoodsTypeService implements IGoodsTypeService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = "typeCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<GoodsType> listGoodsTypes() throws Exception {
 		List<GoodsType> goodsType = goodsTypeDao.selectAllGoodsTypes().stream().map(dao -> {
 			GoodsType bo = new GoodsType();
@@ -78,16 +68,6 @@ public class GoodsTypeService implements IGoodsTypeService {
 			return bo;
 		}).collect(Collectors.toList());
 		return goodsType;
-	}
-
-	@Override
-	@CacheEvict(value="typeCache",allEntries=true)
-	public boolean delGoodsType(String tid) throws Exception {
-		int i = goodsTypeDao.delGoodsType(tid);
-		if (i > 0) {
-			return true;
-		}
-		return false;
 	}
 
 }
