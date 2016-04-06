@@ -1,16 +1,25 @@
 package com.jingyunbank.etrade.user.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
+import com.jingyunbank.etrade.api.asyn.bo.AsynSchedule;
+import com.jingyunbank.etrade.api.asyn.service.IAsynParamService;
+import com.jingyunbank.etrade.api.asyn.service.IAsynScheduleService;
+import com.jingyunbank.etrade.api.award.bo.SalesUserrelationship;
+import com.jingyunbank.etrade.api.award.service.ISalesUserrelationshipService;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
@@ -31,6 +40,13 @@ public class UserService implements IUserService{
 	private UserInfoDao userInfoDao;
 	@Autowired
 	private ICartService cartService;
+	@Autowired
+	private IAsynScheduleService asynScheduleService;
+	@Autowired
+	private IAsynParamService asynParamService;
+	@Autowired
+	private ISalesUserrelationshipService salesUserrelationshipService;
+	
 	
 	
 	@Override
@@ -55,8 +71,8 @@ public class UserService implements IUserService{
 
 	//保存用户的信息
 	@Override
-	@Transactional
-	public void save(Users user,UserInfo userInfo) throws DataSavingException {
+	@Transactional(rollbackFor={DataSavingException.class}, propagation=Propagation.REQUIRED)
+	public void save(Users user,UserInfo userInfo, String inviterUID) throws DataSavingException {
 		UserEntity userEntity=new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
 		
@@ -81,7 +97,25 @@ public class UserService implements IUserService{
 		
 		//保存用户购物车
 		cartService.save(new Cart(KeyGen.uuid(), user.getID()));
-			
+		
+		//同步三级分销数据
+		AsynSchedule schedule = new AsynSchedule();
+		schedule.setID(KeyGen.uuid());
+		schedule.setServiceName(AsynSchedule.SALES_REGISTER_SERVICE_NAME);
+		schedule.setStatus(AsynSchedule.INIT);
+		asynScheduleService.save(schedule);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("uid",user.getID());//p2p系统用户id
+		params.put("username", user.getUsername()); //p2p系统用户名
+		params.put("phone", user.getMobile());
+		params.put("password", user.getPassword());
+		if(!StringUtils.isEmpty(inviterUID)){
+			SalesUserrelationship userrelationship = salesUserrelationshipService.singleByUID(inviterUID);
+			if(userrelationship!=null){
+				params.put("referrer", userrelationship.getSID());//查询推荐人在分销系统中的id
+			}
+		}
+    	asynParamService.saveMutl(schedule.getID(),params);
 	}
 	
 

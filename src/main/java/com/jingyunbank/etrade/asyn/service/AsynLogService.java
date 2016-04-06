@@ -20,7 +20,11 @@ public class AsynLogService implements IAsynLogService {
 	public boolean save(AsynLog asynLog) throws DataSavingException {
 		AsynLogEntity entity = new AsynLogEntity();
 		BeanUtils.copyProperties(asynLog, entity);
-		return asynLogDao.insert(entity);
+		try {
+			return asynLogDao.insert(entity);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
 	}
 
 }

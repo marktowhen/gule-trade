@@ -9,11 +9,11 @@ import com.jingyunbank.etrade.asyn.entity.AsynScheduleEntity;
 
 public interface AsynScheduleDao {
 
-	boolean insert(AsynScheduleEntity entity);
+	boolean insert(AsynScheduleEntity entity) throws Exception ;
 
-	boolean updateStatus(@Param("ID")String id,@Param("status") String status);
+	boolean updateStatus(@Param("ID")String id,@Param("status") String status)throws Exception ;
 
-	boolean delete(String ID);
+	boolean delete(String ID) throws Exception ;
 
 	AsynScheduleEntity selectOne(String ID);
 

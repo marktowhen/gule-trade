@@ -8,7 +8,7 @@ import com.jingyunbank.etrade.asyn.entity.AsynParamEntity;
 
 public interface AsynParamDao {
 
-	boolean insertMutl(@Param("list")List<AsynParamEntity> entityList);
+	boolean insertMutl(@Param("list")List<AsynParamEntity> entityList) throws Exception ;
 
 	List<AsynParamEntity> selectBySchedule(String scheduleID);
 

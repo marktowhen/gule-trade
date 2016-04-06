@@ -142,7 +142,7 @@ public class SMSController {
 			message.setContent("您好，您的验证码是"+code);
 			message.getReceiveUser().setMobile(mobile);
 			message.setTitle("");
-			smsService.inform(message);
+			//smsService.inform(message);
 			request.getSession().setAttribute(mobile, new Date());
 			System.out.println("-----------------"+"您好，您的验证码是"+code);
 			return Result.ok();

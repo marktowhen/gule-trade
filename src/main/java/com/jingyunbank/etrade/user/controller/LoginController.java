@@ -155,7 +155,7 @@ public class LoginController {
 			registerUser.setID(KeyGen.uuid());
 			UserInfo userInfo=new UserInfo();
 			userInfo.setRegip(ServletBox.ip(request));
-			userService.save(registerUser, userInfo);
+			userService.save(registerUser, userInfo, null);
 			userOption = Optional.of(registerUser);
 		}
 		//3、成功之后

@@ -6,7 +6,7 @@ public class AsynScheduleEntity {
 
 
 	private String ID;
-	private String definedID;
+	private String serviceName;
 	private String status;
 	private Date addtime;
 	private Date updatetime;
@@ -17,11 +17,11 @@ public class AsynScheduleEntity {
 	public void setID(String iD) {
 		ID = iD;
 	}
-	public String getDefinedID() {
-		return definedID;
+	public String getServiceName() {
+		return serviceName;
 	}
-	public void setDefinedID(String definedID) {
-		this.definedID = definedID;
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 	public Date getAddtime() {
 		return addtime;

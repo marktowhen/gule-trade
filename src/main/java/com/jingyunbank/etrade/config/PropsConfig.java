@@ -29,6 +29,41 @@ public final class PropsConfig {
 	public final static String EMAIL_REMINDER_ENABLED = "email.reminder.enabled";
 	public final static String EMAIL_PROVIDER = "email.provider";
 	
+	
+	// 用户三级好友
+	public static final String SALES_USERREFERRAL_URL = "url.sales.level.detail";
+	public static final String SALES_USERREFERRALCOUNT_URL = "url.sales.level.count";
+	public static final String SALES_USERREFERRAL_QUERY = "url.sales.level.query";
+	// 三级总收益
+	public static final String SALES_LEVEL_SUMMARY_URL = "url.sales.level.summary";
+
+	public static final String SALES_PURCHASE_LOG = "url.sales.purchase.log";
+	public static final String SALES_PURCHASE_LOGCOUNT = "url.sales.purchase.count";
+
+	public static final String SALES_PROFIT_TOTAL = "url.sales.profit.total";
+
+	//在职用户投资收益
+	public static final String EMP_PROFIT_TOTAL = "url.emp.profit.total";
+	//在职用户投资收益
+	public static final String EMP_PROFIT_DETAIL = "url.emp.profit.detail";
+	public static final String EMP_PROFIT_COUNT = "url.emp.profit.count";
+	
+
+	/* 同步到三级分销的内容 以下 */
+
+	// 注册信息
+	public static final String SALES_REGISTER_URL = "url.sales.register";
+	// 投标信息
+	public static final String SALES_PURCHASE_URL = "url.sales.purchase";
+	// 更新用户信息
+	public static final String SALES_USERINFO_URL = "url.sales.updateuser";
+	// 实名
+	public static final String SALES_REALNAME_URL = "url.sales.realname";
+	
+	//转入佣金
+	public static final String SALES_THREE_COMMISSION = "url.three.commission";
+
+	
 	public final static ClassLoader RESOURCE_LOADER = PropsConfig.class.getClassLoader();
 	
 	public static String getString(String key){

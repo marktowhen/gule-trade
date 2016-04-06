@@ -10,7 +10,7 @@
 		<result column="value" property="value" />
 	</resultMap>
 	<sql id="base_column">
-		id,schedule_id,key,value
+		id,schedule_id,`key`, `value`
 	</sql>
 	<insert id="insertMutl">
 		insert into asyn_param(<include refid="base_column"/>)

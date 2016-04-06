@@ -4,6 +4,6 @@ import com.jingyunbank.etrade.asyn.entity.AsynLogEntity;
 
 public interface AsynLogDao {
 
-	boolean insert(AsynLogEntity entity);
+	boolean insert(AsynLogEntity entity) throws Exception ;
 
 }

@@ -5,19 +5,19 @@
 <mapper namespace="com.jingyunbank.etrade.asyn.dao.AsynScheduleDao">
 	<resultMap type="com.jingyunbank.etrade.asyn.entity.AsynScheduleEntity" id="ResultMap">
 		<id column="id" property="ID" />
-		<result column="defined_id" property="definedID" />
+		<result column="service_name" property="serviceName" />
 		<result column="status" property="status" />
 		<result column="addtime" property="addtime" />
 		<result column="remark" property="remark" />
 	</resultMap>
 	
 	<sql id="base_column">
-		id,defined_id,status,addtime,remark
+		id,service_name,status,addtime,remark
 	</sql>
 	
 	<insert id="insert">
 		insert into asyn_schedule(<include refid="base_column"/>)
-			values(#{ID},#{definedID},#{status},now(),#{remark})
+			values(#{ID},#{serviceName},#{status},now(),#{remark})
 	</insert>
 	
 	<update id="updateStatus">

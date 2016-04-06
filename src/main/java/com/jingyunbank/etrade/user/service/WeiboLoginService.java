@@ -51,7 +51,7 @@ public class WeiboLoginService implements IWeiboLoginService {
 	public boolean save(WeiboLogin login, Users user, UserInfo info)
 			throws DataSavingException {
 		save(login);
-		userService.save(user, info);
+		userService.save(user, info, null);
 		return true;
 	}
 

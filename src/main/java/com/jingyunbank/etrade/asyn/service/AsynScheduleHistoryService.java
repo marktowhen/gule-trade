@@ -21,13 +21,21 @@ public class AsynScheduleHistoryService implements IAsynScheduleHistoryService {
 			throws DataSavingException {
 		AsynScheduleHistoryEntity entity = new AsynScheduleHistoryEntity();
 		BeanUtils.copyProperties(asynHistory, entity);
-		return asynScheduleHistoryDao.insert(entity);
+		try {
+			return asynScheduleHistoryDao.insert(entity);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
 	}
 
 	@Override
 	public boolean saveFromAsynSchedule(String scheduleID)
 			throws DataSavingException {
-		return asynScheduleHistoryDao.insertFromAsynSchedule(scheduleID);
+		try {
+			return asynScheduleHistoryDao.insertFromAsynSchedule(scheduleID);
+		} catch (Exception e) {
+			throw new DataSavingException(e);
+		}
 	}
 
 }
