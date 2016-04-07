@@ -3,6 +3,8 @@ package com.jingyunbank.etrade.asyn.service.context;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,7 @@ public class SalesRegisterService implements IAsynRunService {
 	@Autowired
 	private ISalesUserrelationshipService salesUserrelationshipService;
 	
+	private Logger logger = LoggerFactory.getLogger(SalesRegisterService.class);
 	@Override
 	public void run(AsynSchedule schedule)  {
 		System.out.println("salseRegesterService----------run");
@@ -46,7 +49,7 @@ public class SalesRegisterService implements IAsynRunService {
 				//将返回的三级分销ID记录
 				SalesUserrelationship ship = new SalesUserrelationship();
 				ship.setID(KeyGen.uuid());
-				ship.setSID(new JSONObject(result.getBody()).getString("sid"));
+				ship.setSID(new JSONObject(result.getBody()).getJSONObject("body").getString("id"));
 				ship.setUID(params.get("uid"));
 				salesUserrelationshipService.save(ship);
 				schedule.setStatus(AsynSchedule.SUCCESS);
@@ -59,12 +62,15 @@ public class SalesRegisterService implements IAsynRunService {
 				//失败
 				asynScheduleService.refreshStatus(schedule.getID(), AsynSchedule.ERROR);
 				asynLogService.save(schedule.getID(), AsynSchedule.ERROR, result.getMessage());
+				logger.error("salseRegesterService:"+result.getMessage());
 			}
 			//逻辑问题 将任务移除避免重复处理
 			else{
+				schedule.setStatus(AsynSchedule.ERROR);
 				asynScheduleService.remove(schedule.getID());
 				asynScheduleHistoryService.saveFromAsynSchedule(schedule);
 				asynLogService.save(schedule.getID(), AsynSchedule.ERROR, result.getMessage());
+				logger.error("salseRegesterService:"+result.getMessage());
 			}
 			
 		} catch (Exception e) {
@@ -72,9 +78,9 @@ public class SalesRegisterService implements IAsynRunService {
 				asynScheduleService.refreshStatus(schedule.getID(), AsynSchedule.ERROR);
 				asynLogService.save(schedule.getID(), AsynSchedule.ERROR, e.getMessage());
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error("salseRegesterService:"+e1.getMessage());
 			}
-			e.printStackTrace();
+			logger.error("salseRegesterService:"+e.getMessage());
 		}
 	}
 	
