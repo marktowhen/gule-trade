@@ -56,6 +56,7 @@ public class DataConfig {
 		ds.setPassword(get("spring.datasource.password"));
 		ds.setDriverClassName(get("spring.datasource.driver-class-name"));
 		ds.setMaxActive(Integer.parseInt(get("druid.max.active")));
+		ds.setDefaultAutoCommit(false);
 		return ds;
 	}
 	
