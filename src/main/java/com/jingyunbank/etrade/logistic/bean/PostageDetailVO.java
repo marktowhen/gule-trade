@@ -1,8 +1,8 @@
-package com.jingyunbank.etrade.logistic.entity;
+package com.jingyunbank.etrade.logistic.bean;
 
 import java.math.BigDecimal;
 
-public class PostageDetailEntity {
+public class PostageDetailVO {
 
 	private String ID;
 	private String postageID;
@@ -13,17 +13,10 @@ public class PostageDetailEntity {
 	private BigDecimal firstCost;
 	private int nextNumber;
 	private double nextWeight;
-	private double nextVolume;
+	private double nextVolumn;
 	private BigDecimal nextCost;
 	private String fitArea;
 	private boolean valid;
-	
-	public boolean isFree() {
-		return free;
-	}
-	public void setFree(boolean free) {
-		this.free = free;
-	}
 	public String getID() {
 		return ID;
 	}
@@ -35,6 +28,12 @@ public class PostageDetailEntity {
 	}
 	public void setPostageID(String postageID) {
 		this.postageID = postageID;
+	}
+	public boolean isFree() {
+		return free;
+	}
+	public void setFree(boolean free) {
+		this.free = free;
 	}
 	public int getFirstNumber() {
 		return firstNumber;
@@ -72,11 +71,11 @@ public class PostageDetailEntity {
 	public void setNextWeight(double nextWeight) {
 		this.nextWeight = nextWeight;
 	}
-	public double getNextVolume() {
-		return nextVolume;
+	public double getNextVolumn() {
+		return nextVolumn;
 	}
-	public void setNextVolume(double nextVolume) {
-		this.nextVolume = nextVolume;
+	public void setNextVolumn(double nextVolumn) {
+		this.nextVolumn = nextVolumn;
 	}
 	public BigDecimal getNextCost() {
 		return nextCost;
@@ -98,4 +97,5 @@ public class PostageDetailEntity {
 	}
 	
 	
+
 }

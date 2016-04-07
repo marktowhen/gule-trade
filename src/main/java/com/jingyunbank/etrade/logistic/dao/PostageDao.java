@@ -8,11 +8,11 @@ import com.jingyunbank.etrade.logistic.entity.PostageEntity;
 
 public interface PostageDao {
 
-	boolean insert(PostageEntity postageEntity);
+	boolean insert(PostageEntity postageEntity) throws Exception;
 	
-	boolean updateStatus(@Param("ID")String ID,@Param("valid") boolean valid);
+	boolean updateStatus(@Param("ID")String ID,@Param("valid") boolean valid) throws Exception;
 	
-	boolean update(PostageEntity postageEntity);
+	boolean update(PostageEntity postageEntity) throws Exception;
 	
 	PostageEntity selectOne(String ID);
 	

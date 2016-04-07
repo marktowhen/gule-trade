@@ -8,13 +8,13 @@ import com.jingyunbank.etrade.logistic.entity.PostageDetailEntity;
 
 public interface PostageDetailDao {
 
-	public boolean insert(PostageDetailEntity postageDetailEntity);
+	public boolean insert(PostageDetailEntity postageDetailEntity) throws Exception;
 	
-	public boolean updateStatus(@Param("ID")String ID,@Param("valid") boolean valid);
+	public boolean updateStatus(@Param("ID")String ID,@Param("valid") boolean valid)  throws Exception;
 	
-	public boolean deleteByPostageID(String postageID);
+	public boolean updateStatusBatch( @Param("postageID")String postageID,@Param("valid") boolean valid)  throws Exception;
 	
-	public boolean update(PostageDetailEntity postageDetailEntity);
+	public boolean update(PostageDetailEntity postageDetailEntity)  throws Exception;
 	
 	public PostageDetailEntity selectOne(String ID);
 	
