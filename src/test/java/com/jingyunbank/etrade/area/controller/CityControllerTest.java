@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class CityControllerTest extends TestCaseBase {
 	@Test
 	public void test0() throws Exception{
 		getMockMvc().perform(
-				 put("/api/city/")
+				 post("/api/statics/area/city/")
 				 .sessionAttr(Login.LOGIN_USER_ID, "1")
 				.param("cityName", "name")
 				.param("provinceID", "2")

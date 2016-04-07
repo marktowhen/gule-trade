@@ -21,9 +21,4 @@
 			values(#{ID},#{serviceName},#{status},#{addtime},#{remark},#{finishtime})
 	</insert>
 	
-	<insert id="insertFromAsynSchedule">
-		insert into asyn_schedule_history(<include refid="base_column"/>)
-		 select id,service_name,'success',addtime,remark,now() from asyn_schedule where id=#{scheduleID}
-	</insert>
-	
 </mapper>
