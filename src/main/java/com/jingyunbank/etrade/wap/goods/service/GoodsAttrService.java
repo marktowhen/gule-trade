@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsAttr;
-import com.jingyunbank.etrade.api.wap.goods.bo.GoodsType;
 import com.jingyunbank.etrade.api.wap.goods.service.IGoodsAttrService;
 import com.jingyunbank.etrade.wap.goods.dao.GoodsAttrDao;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsAttrEntity;

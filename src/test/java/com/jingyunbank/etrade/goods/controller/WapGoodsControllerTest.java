@@ -27,6 +27,7 @@ public class WapGoodsControllerTest extends TestCaseBase {
 				.param("mid","")
 				.param("tid","")
 				.param("order","")
+				.param("name","衣")
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
@@ -50,6 +51,20 @@ public class WapGoodsControllerTest extends TestCaseBase {
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
 	
+	@Test
+	public void getinfo() throws Exception {
+		getMockMvc().perform(get("/api/wap/goods/info/g001").characterEncoding("utf-8")
+				).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
 	
+	@Test
+	public void getdetail() throws Exception {
+		getMockMvc().perform(get("/api/wap/goods/detail/g001").characterEncoding("utf-8")
+				).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
 
 }

@@ -3,124 +3,214 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.wap.goods.dao.WapGoodsDao">
-		<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuConditionEntity" 
-			id="goodsSkuConditionMap">
-			<result column="gid_" property="ID" />
-			<result column="mid_" property="MID" />
-			<result column="tid_" property="TID" />
-			<result column="gname_" property="name" />
-			<result column="price_" property="price" />
-			<result column="sale_price_" property="salePrice" />
-			<result column="path_" property="path" />
-				<collection property="attrList" javaType="ArrayList" 
-					ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrEntity">
-					<result column="attrId_" property="ID" />
-					<result column="attrname_" property="name" />
-						<collection property="valueList" javaType="ArrayList" 
-						ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity">
-							<result column="vid_" property="ID" />
-							<result column="vgid_" property="GID" />
-							<result column="value_" property="value" />
-						</collection>
-				</collection>  
-		</resultMap>
+	<resultMap
+		type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuConditionEntity"
+		id="goodsSkuConditionMap">
+		<result column="gid_" property="ID" />
+		<result column="mid_" property="MID" />
+		<result column="tid_" property="TID" />
+		<result column="gname_" property="name" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="path_" property="path" />
+		<collection property="attrList" javaType="ArrayList"
+			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrEntity">
+			<result column="attrId_" property="ID" />
+			<result column="attrname_" property="name" />
+			<collection property="valueList" javaType="ArrayList"
+				ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity">
+				<result column="vid_" property="ID" />
+				<result column="vgid_" property="GID" />
+				<result column="value_" property="value" />
+			</collection>
+		</collection>
+	</resultMap>
 
-		<!-- 展示商品map -->
-		<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsShowEntity" id="goodsMap">
-			<result column="gid_" property="GID" />
-			<result column="mid_" property="MID" />
-			<result column="tid_" property="TID" />
-			<result column="name_" property="name" />
-			<result column="path_" property="path" />
-			<result column="price_" property="price" />
-			<result column="sale_price_" property="salePrice" />
-			<result column="addtime_" property="addTime" />
-			<result column="volume_" property="volume" />
-			<result column="comment_" property="comment" />
-		</resultMap>
-		
-		
-		<!-- sku map  -->
-		<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity" id="skuMap">
-			<result column="id_" property="ID" />
-			<result column="gid_" property="GID" />
-			<result column="properties_" property="properties" />
-			<result column="propertiesValue_" property="propertiesValue" />
-			<result column="stock_" property="stock" />
-			<result column="volume_" property="volume" />
-			<result column="price_" property="price" />
-			<result column="sale_price_" property="salePrice" />
-			<result column="status_" property="status" />
-		</resultMap>
-		
-		
-		
-		<!-- 展示商品需要的属性 -->
-		<sql id="goods_list_sql">
-			DISTINCT g.id gid_, g.name name_ ,
-			g.`mid` mid_,g.`tid` tid_,g.`path` path_,
-			g.`price` price_ ,g.`sale_price` sale_price_,
-			g.`addtime` addtime_,
-			SUM(DISTINCT s.`volume`) volume_, 
-			COUNT(DISTINCT c.`id` ) comment_ 
-		</sql>
-		
-		<select id="selectGoods" parameterType="string" resultMap="goodsMap">
-			SELECT <include refid="goods_list_sql"/>
-			FROM goods g
-			LEFT JOIN goods_sku s ON g.id = s.`gid`
-			LEFT JOIN COMMENT c ON g.id=c.`gid`
-			WHERE 1=1 AND g.`status`=1
-			<if test="tid != null and tid != '' ">
-				AND g.`tid`= #{tid}	
-			</if>
-			<if test="mid != null and mid != '' ">
-				AND g.`mid`= #{mid}	
-			</if>
-			GROUP BY g.id
-			<!-- 0 默认按销量  1 录入时间  2 评论数 -->
-			<if test=" order == 0 ">
-				ORDER BY volume_ DESC
-			</if>
-			<if test=" order == 1 ">
-				ORDER BY addtime_
-			</if>
-			<if test=" order == 2 ">
-				ORDER BY comment_ DESC
-			</if>
-			<if test="order == null and order == '' ">
-				ORDER BY volume_ DESC
-			</if>
-		</select>
-		
-		
-		<!-- 商品sku条件 -->
-		<sql id="skuConditionSql">
-			g.id gid_, g.name gname_,g.`mid` mid_ ,g.tid tid_,
-			g.`price` price_ ,g.`sale_price` sale_price_ ,g.`path` path_,
-			v1.attr_id attrId_,v1.attr_name attrname_,
-			v1.id vid_ , v2.`gid` vgid_,v2.value value_ 
-		</sql>
-		<select id="selectGoodsSkuConditionByGid" resultMap="goodsSkuConditionMap" parameterType="string">
-			SELECT  <include refid="skuConditionSql"/>
-			FROM goods_attr_value v1
-			LEFT JOIN goods_attr_value v2 ON v1.id = v2.id
-			LEFT JOIN goods g ON  v1.gid=g.id
-			WHERE g.id= #{gid}
-		</select>
-		
-		<!--根据条件获取sku -->
-		<sql id="skuSql">
-			  s.`id` id_, s.`gid` gid_,  s.`properties` properties_,
-			  s.`properties_value` propertiesValue_,s.`stock` stock_,
-			  s.`volume` volume_, s.`price` price_,
-			  s.`sale_price` sale_price_, s.`status` status_
-		</sql>
-		<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
-			SELECT <include refid="skuSql"/>
-			FROM `goods_sku` s
-			WHERE  1=1 
-			AND s.`gid`= #{gid} 
-			AND s.`properties`= #{condition}
-		</select>
+	<!-- 展示商品map -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsShowEntity"
+		id="goodsMap">
+		<result column="gid_" property="GID" />
+		<result column="mid_" property="MID" />
+		<result column="tid_" property="TID" />
+		<result column="name_" property="name" />
+		<result column="path_" property="path" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="addtime_" property="addTime" />
+		<result column="volume_" property="volume" />
+		<result column="comment_" property="comment" />
+	</resultMap>
+
+
+	<!-- sku map -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity"
+		id="skuMap">
+		<result column="id_" property="ID" />
+		<result column="gid_" property="GID" />
+		<result column="properties_" property="properties" />
+		<result column="propertiesValue_" property="propertiesValue" />
+		<result column="stock_" property="stock" />
+		<result column="volume_" property="volume" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="status_" property="status" />
+		<collection property="imgList" javaType="ArrayList"
+			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsImgEntity">
+			<result column="iid_" property="ID" />
+			<result column="igid_" property="GID" />
+			<result column="iskuid_" property="skuId" />
+			<result column="ipath_" property="path" />
+		</collection>
+	</resultMap>
+
+	<!-- info map -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsInfoEntity"
+		id="infoMap">
+		<result column="id_" property="ID" />
+		<result column="gid_" property="GID" />
+		<result column="key_" property="key" />
+		<result column="value_" property="value" />
+	</resultMap>
+
+	<!-- detail Map -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsDeatilEntity"
+		id="detailMap">
+		<result column="gid_" property="GID" />
+		<result column="name_" property="name" />
+		<result column="mid_" property="MID" />
+		<result column="mname_" property="mName" />
+		<result column="mqq_" property="mQQ" />
+		<result column="tid_" property="TID" />
+		<result column="tname" property="tname" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="content_" property="content" />
+		<result column="volume_" property="volume" />
+		<result column="comment_" property="comment" />
+	</resultMap>
+
+
+	<!-- 展示商品需要的属性 -->
+	<sql id="goods_list_sql">
+		DISTINCT g.id gid_, g.name name_ ,
+		g.`mid` mid_,g.`tid`
+		tid_,g.`path` path_,
+		g.`price` price_ ,g.`sale_price` sale_price_,
+		g.`addtime` addtime_,
+		SUM(DISTINCT s.`volume`) volume_,
+		COUNT(DISTINCT
+		c.`id` ) comment_
+	</sql>
+
+	<select id="selectGoods" parameterType="string" resultMap="goodsMap">
+		SELECT
+		<include refid="goods_list_sql" />
+		FROM goods g
+		LEFT JOIN goods_sku s ON g.id = s.`gid`
+		LEFT JOIN COMMENT c
+		ON g.id=c.`gid`
+		WHERE 1=1 AND g.`status`=1
+		<if test="tid != null and tid != '' ">
+			AND g.`tid`= #{tid}
+		</if>
+		<if test="mid != null and mid != '' ">
+			AND g.`mid`= #{mid}
+		</if>
+		<if test="name != null and name != '' ">
+			AND g.`name` LIKE CONCAT(CONCAT('%', #{name}), '%')
+		</if>
+		GROUP BY g.id
+		<!-- 0 默认按销量 1 录入时间 2 评论数 -->
+		<if test=" order == 0 ">
+			ORDER BY volume_ DESC
+		</if>
+		<if test=" order == 1 ">
+			ORDER BY addtime_
+		</if>
+		<if test=" order == 2 ">
+			ORDER BY comment_ DESC
+		</if>
+		<if test="order == null and order == '' ">
+			ORDER BY volume_ DESC
+		</if>
+	</select>
+
+
+	<!-- 商品sku条件 -->
+	<sql id="skuConditionSql">
+		g.id gid_, g.name gname_,g.`mid` mid_ ,g.tid tid_,
+		g.`price` price_ ,g.`sale_price` sale_price_ ,g.`path` path_,
+		v1.attr_id attrId_,v1.attr_name attrname_,
+		v1.id vid_ , v2.`gid`
+		vgid_,v2.value value_
+	</sql>
+	<select id="selectGoodsSkuConditionByGid" resultMap="goodsSkuConditionMap"
+		parameterType="string">
+		SELECT
+		<include refid="skuConditionSql" />
+		FROM goods_attr_value v1
+		LEFT JOIN goods_attr_value v2 ON v1.id = v2.id
+		LEFT JOIN goods g ON v1.gid=g.id
+		WHERE g.id= #{gid}
+	</select>
+
+	<!--根据条件获取sku -->
+	<sql id="skuSql">
+		s.`id` id_, s.`gid` gid_, s.`properties` properties_,
+		s.`properties_value` propertiesValue_,s.`stock` stock_,
+		s.`volume`
+		volume_, s.`price` price_,
+		s.`sale_price` sale_price_, s.`status`
+		status_ ,
+		i.id iid_,i.`skuid` iskuid_,i.path ipath_,i.`gid` igid_
+	</sql>
+	<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
+		SELECT
+		<include refid="skuSql" />
+		FROM `goods_sku` s
+		LEFT JOIN `goods_img` i ON s.`id`=i.skuid
+		WHERE 1=1
+		AND s.`gid`= #{gid}
+		AND s.`properties`= #{condition}
+	</select>
+
+	<!-- 产品参数 -->
+	<select id="selectGoodsInfo" parameterType="string" resultMap="infoMap">
+		SELECT i.`id` id_,i.`gid`_,i.`key` key_,i.`value` value_
+		FROM
+		goods_info i
+		WHERE i.`gid`=#{gid}
+	</select>
+
+	<!-- goods detail -->
+	<sql id="detailSql">
+		DISTINCT g.id gid_,
+		g.name name_,
+		g.`mid` mid_,
+		m.`name`
+		mname_,
+		m.`qq` mqq_,
+		g.`tid` tid_,
+		t.`name` tname,
+		g.`price` price_,
+		g.`sale_price` sale_price_,
+		g.`content` content_,
+		SUM(DISTINCT
+		s.`volume`) volume_,
+		COUNT(DISTINCT c.`id`) comment_
+	</sql>
+
+	<select id="selectGoodsDetail" parameterType="string" resultMap="detailMap">
+		SELECT
+		<include refid="detailSql" />
+		FROM goods g
+		LEFT JOIN goods_sku s ON g.id = s.`gid`
+		LEFT JOIN COMMENT c
+		ON c.`gid` = g.`id`
+		LEFT JOIN merchant m ON g.`mid` =m.`id`
+		LEFT JOIN
+		goods_type t ON t.`id` = g.`tid`
+		WHERE 1=1 AND g.`id`= #{gid}
+	</select>
+
 </mapper>
