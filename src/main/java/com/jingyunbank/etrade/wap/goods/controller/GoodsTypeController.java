@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.goods.controller;
+package com.jingyunbank.etrade.wap.goods.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,24 +18,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-/**
- * 品牌操作管理
-* Title: BrandController
-* @author    duanxf
-* @date      2015年12月15日
- */
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.goods.bo.GoodsType;
-import com.jingyunbank.etrade.api.goods.service.IGoodsTypeService;
-import com.jingyunbank.etrade.goods.bean.GoodsTypesVO;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsType;
+import com.jingyunbank.etrade.api.wap.goods.service.IGoodsTypeService;
+import com.jingyunbank.etrade.wap.goods.bean.GoodsTypeVO;
 
 @RestController
-@RequestMapping("/api/goodstype")
+@RequestMapping("/api/goods/type")
 public class GoodsTypeController {
 	@Resource
 	private IGoodsTypeService goodsTypeService;
+
 	/**
 	 * 保存类别
 	 * 
@@ -46,8 +41,8 @@ public class GoodsTypeController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Result<String> saveGoodsType(HttpServletRequest request, @RequestBody @Valid GoodsTypesVO vo, BindingResult valid)
-			throws Exception {
+	public Result<String> saveGoodsType(HttpServletRequest request, @RequestBody @Valid GoodsTypeVO vo,
+			BindingResult valid) throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
@@ -59,31 +54,32 @@ public class GoodsTypeController {
 		BeanUtils.copyProperties(vo, goodsType);
 		goodsType.setID(KeyGen.uuid());
 		goodsType.setStatus(true);
-		if (goodsTypeService.save(goodsType)) {
-			return Result.ok("success");
-		} else {
-			return Result.fail("fail");
-		}
+		goodsTypeService.save(goodsType);
+		return Result.ok("success");
 
 	}
+
 	/**
-	 * 根据ID 获取GoodsTypesVO
+	 * 根据ID 获取GoodsTypeVO
+	 * 
 	 * @param bid
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/single/{tid}", method = RequestMethod.GET)
-	public Result<GoodsTypesVO> queryGoodsTypeById(@PathVariable String tid) throws Exception {
-		GoodsTypesVO goodsTypesVO = null;
+	public Result<GoodsTypeVO> queryGoodsTypeById(@PathVariable String tid) throws Exception {
+		GoodsTypeVO goodsTypeVO = null;
 		Optional<GoodsType> bo = goodsTypeService.singleById(tid);
 		if (Objects.nonNull(bo)) {
-			goodsTypesVO = new GoodsTypesVO();
-			BeanUtils.copyProperties(bo.get(), goodsTypesVO);
+			goodsTypeVO = new GoodsTypeVO();
+			BeanUtils.copyProperties(bo.get(), goodsTypeVO);
 		}
-		return Result.ok(goodsTypesVO);
+		return Result.ok(goodsTypeVO);
 	}
+
 	/**
 	 * 更新类别
+	 * 
 	 * @param request
 	 * @param bid
 	 * @param vo
@@ -92,52 +88,49 @@ public class GoodsTypeController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/update/{tid}", method = RequestMethod.POST)
-	public Result<String> updateBrand(HttpServletRequest request,@PathVariable String tid,  @RequestBody @Valid GoodsTypesVO vo, BindingResult valid)
-			throws Exception {
+	public Result<String> updateBrand(HttpServletRequest request, @PathVariable String tid,
+			@RequestBody @Valid GoodsTypeVO vo, BindingResult valid) throws Exception {
 		// 异常信息
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 					.collect(Collectors.joining(" ; ")));
 		}
-		
+
 		GoodsType goodsType = new GoodsType();
 		BeanUtils.copyProperties(vo, goodsType);
 		goodsType.setID(tid);
-		if (goodsTypeService.refreshGoodsType(goodsType)) {
-			return Result.ok("success");
-		} else {
-			return Result.fail("fail");
-		}
+		goodsTypeService.refreshGoodsType(goodsType);
+		return Result.ok("success");
 	}
+
 	/**
 	 * 根据名称查询
+	 * 
 	 * @param mid
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/list/{name}", method = RequestMethod.GET)
-	public Result<List<GoodsTypesVO>> listTypesByName(@PathVariable String name) throws Exception{
-		List<GoodsTypesVO> list = goodsTypeService.listGoodsTypesByName(name).stream().map(bo -> {
-			GoodsTypesVO vo = new GoodsTypesVO();
+	@RequestMapping(value = "/singleByName/{name}", method = RequestMethod.GET)
+	public Result<List<GoodsTypeVO>> listTypesByName(@PathVariable String name) throws Exception {
+		List<GoodsTypeVO> list = goodsTypeService.listGoodsTypesByName(name).stream().map(bo -> {
+			GoodsTypeVO vo = new GoodsTypeVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
 		return Result.ok(list);
 	}
-	
+
 	@RequestMapping(value = "/del/{tid}", method = RequestMethod.PUT)
-	public Result<String> delGoodsType(@PathVariable String tid) throws Exception{
-		if(goodsTypeService.delGoodsType(tid)){
-			return Result.ok("success");
-		}
-		return Result.fail("fail");
+	public Result<String> delGoodsType(@PathVariable String tid) throws Exception {
+		goodsTypeService.delGoodsType(tid);
+		return Result.ok("success");
 	}
-	
+
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Result<List<GoodsTypesVO>> getGoodsTypes() throws Exception{
-		List<GoodsTypesVO> list = goodsTypeService.listGoodsTypes().stream().map(bo -> {
-			GoodsTypesVO vo = new GoodsTypesVO();
+	public Result<List<GoodsTypeVO>> getGoodsTypes() throws Exception {
+		List<GoodsTypeVO> list = goodsTypeService.listGoodsTypes().stream().map(bo -> {
+			GoodsTypeVO vo = new GoodsTypeVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
 		}).collect(Collectors.toList());
