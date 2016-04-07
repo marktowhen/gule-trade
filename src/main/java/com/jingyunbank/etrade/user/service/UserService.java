@@ -105,6 +105,7 @@ public class UserService implements IUserService{
 		schedule.setID(KeyGen.uuid());
 		schedule.setServiceName(AsynSchedule.SALES_REGISTER_SERVICE_NAME);
 		schedule.setStatus(AsynSchedule.INIT);
+		schedule.setUID(user.getID());
 		asynScheduleService.save(schedule);
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid",user.getID());//p2p系统用户id

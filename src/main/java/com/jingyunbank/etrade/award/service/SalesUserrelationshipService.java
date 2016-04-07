@@ -38,7 +38,7 @@ public class SalesUserrelationshipService implements
 
 	@Override
 	public SalesUserrelationship singleByUID(String UID) {
-		SalesUserrelationshipEntity entity = salesUserrelationshipDao.singleByUID(UID);
+		SalesUserrelationshipEntity entity = salesUserrelationshipDao.selectByUID(UID);
 		if(entity!=null){
 			SalesUserrelationship bo = new SalesUserrelationship();
 			BeanUtils.copyProperties(entity, bo);

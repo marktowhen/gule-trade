@@ -11,6 +11,14 @@ public class AsynScheduleEntity {
 	private Date addtime;
 	private Date updatetime;
 	private String remark;
+	private String UID; //该任务关联的用户
+	
+	public String getUID() {
+		return UID;
+	}
+	public void setUID(String uID) {
+		UID = uID;
+	}
 	public String getID() {
 		return ID;
 	}
