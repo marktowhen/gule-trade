@@ -63,6 +63,8 @@
 		</collection>
 	</resultMap>
 
+
+
 	<!-- info map -->
 	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsInfoEntity"
 		id="infoMap">
@@ -211,6 +213,27 @@
 		LEFT JOIN
 		goods_type t ON t.`id` = g.`tid`
 		WHERE 1=1 AND g.`id`= #{gid}
+	</select>
+
+
+	<update id="updateStock" parameterType="string">
+		UPDATE goods_sku s SET
+		s.stock = s.stock - #{count}
+		,s.volume = s.volume + #{count}
+		WHERE s.id
+		= #{skuid}
+	</update>
+
+	<select id="selectGoodsStcokBySkuIds" parameterType="string"
+		resultMap="skuMap">
+		SELECT s.`id` id_,s.`stock` stock_ FROM goods_sku s WHERE 1=1
+		<if test="skuids !='' and skuids !=null ">
+			AND s.`id` IN
+			<foreach collection="skuids" index="index" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 	</select>
 
 </mapper>

@@ -86,9 +86,9 @@ public class WapGoodsService implements IWapGoodsService {
 			detail = new GoodsDeatil();
 			BeanUtils.copyProperties(entity, detail);
 		}
-		//获取商品的展示图片 
+		// 获取商品的展示图片
 		List<GoodsImgEntity> detailImgs = goodsImgDao.selectGoodsDetailImgs(gid);
-		//转换
+		// 转换
 		List<GoodsImg> imgList = new ArrayList<GoodsImg>();
 		detailImgs.forEach(d -> {
 			GoodsImg img = new GoodsImg();
@@ -96,8 +96,26 @@ public class WapGoodsService implements IWapGoodsService {
 			imgList.add(img);
 		});
 		detail.setImgList(imgList);
-		
+
 		return Optional.ofNullable(detail);
+	}
+
+	@Override
+	public boolean modifyStock(String skuid,String count) throws Exception {
+		if (wapGoodsDao.updateStock(skuid,count)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<GoodsSku> listStockBySkuIds(List<String> skuids) throws Exception {
+		List<GoodsSku> list = wapGoodsDao.selectGoodsStcokBySkuIds(skuids).stream().map(bo -> {
+			GoodsSku vo = new GoodsSku();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return list;
 	}
 
 }

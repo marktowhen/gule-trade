@@ -8,6 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -24,10 +27,7 @@ public class WapGoodsControllerTest extends TestCaseBase {
 	@Test
 	public void getAll() throws Exception {
 		getMockMvc().perform(get("/api/wap/goods/list").characterEncoding("utf-8")
-				.param("mid","")
-				.param("tid","")
-				.param("order","")
-				.param("name","衣")
+				
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
@@ -62,6 +62,16 @@ public class WapGoodsControllerTest extends TestCaseBase {
 	@Test
 	public void getdetail() throws Exception {
 		getMockMvc().perform(get("/api/wap/goods/detail/g001").characterEncoding("utf-8")
+				).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
+
+
+	@Test
+	public void updatestock() throws Exception {
+		getMockMvc().perform(get("/api/wap/goods/stock/list").characterEncoding("utf-8")
+				.param("skuids", new String[]{"sku001","sku002","sku003"})
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());

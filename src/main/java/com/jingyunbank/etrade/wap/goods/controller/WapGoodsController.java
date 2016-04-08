@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,7 +52,7 @@ public class WapGoodsController {
 			@RequestParam(value = "tid", required = false, defaultValue = "") String tid,
 			@RequestParam(value = "order", required = false, defaultValue = "") String order,
 			@RequestParam(value = "name", required = false, defaultValue = "") String name) throws Exception {
-		List<GoodsShowVO> list = wapGoodsService.listGoods(mid, tid, order,name).stream().map(bo -> {
+		List<GoodsShowVO> list = wapGoodsService.listGoods(mid, tid, order, name).stream().map(bo -> {
 			GoodsShowVO vo = new GoodsShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -61,10 +63,19 @@ public class WapGoodsController {
 
 	/**
 	 * 返回查询sku需要展示的条件
-	 * <p>规格:</p>
-	 *  <p>XXX XXX</p>
-      * <p>颜色:</p>
-	 *  <p>XXX XXX</p>
+	 * <p>
+	 * 规格:
+	 * </p>
+	 * <p>
+	 * XXX XXX
+	 * </p>
+	 * <p>
+	 * 颜色:
+	 * </p>
+	 * <p>
+	 * XXX XXX
+	 * </p>
+	 * 
 	 * @param gid
 	 * @return
 	 * @throws Exception
@@ -102,6 +113,7 @@ public class WapGoodsController {
 
 	/**
 	 * 获取商品详情信息
+	 * 
 	 * @param gid
 	 * @return
 	 * @throws Exception
@@ -109,7 +121,7 @@ public class WapGoodsController {
 	@RequestMapping(value = "/detail/{gid}", method = RequestMethod.GET)
 	public Result<GoodsDeatilVO> getGoodsDetail(@PathVariable String gid) throws Exception {
 		Optional<GoodsDeatil> optional = wapGoodsService.singleGoodsDetail(gid);
-		
+
 		GoodsDeatilVO vo = null;
 		if (Objects.nonNull(optional)) {
 			vo = new GoodsDeatilVO();
@@ -117,11 +129,10 @@ public class WapGoodsController {
 		}
 		return Result.ok(vo);
 	}
-	
-	
-	
+
 	/**
 	 * 获取产品参数
+	 * 
 	 * @param gid
 	 * @return
 	 * @throws Exception
@@ -136,7 +147,40 @@ public class WapGoodsController {
 
 		return Result.ok(list);
 	}
-	
-	
+
+	/**
+	 * 修改商品的库存
+	 * 
+	 * @param gid
+	 * @param skuid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/changeStock/{skuid}/{count}", method = RequestMethod.PUT)
+	public Result<String> changeVolume(@PathVariable String skuid, @PathVariable String count) throws Exception {
+		if (wapGoodsService.modifyStock(skuid, count)) {
+			return Result.ok("success");
+		}
+		return Result.fail("fail");
+	}
+
+	/**
+	 * http://localhost:8080/api/wap/goods/stock/list?gids=1&gids=2 根据GID
+	 * 获取商品的库存
+	 * @param request
+	 * @param gids
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/stock/list", method = RequestMethod.GET)
+	public Result<List<GoodsSkuVO>> queryGoodsStock(HttpServletRequest request, @RequestParam List<String> skuids)
+			throws Exception {
+		List<GoodsSkuVO> list = wapGoodsService.listStockBySkuIds(skuids).stream().map(bo -> {
+			GoodsSkuVO vo = new GoodsSkuVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
+	}
 
 }
