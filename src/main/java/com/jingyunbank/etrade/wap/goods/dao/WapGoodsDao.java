@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.jingyunbank.etrade.api.wap.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsDeatilEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsInfoEntity;
+import com.jingyunbank.etrade.wap.goods.entity.GoodsPostageEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsShowEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsSkuConditionEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity;
@@ -36,5 +37,9 @@ public interface WapGoodsDao {
 	public boolean updateStock(@Param("skuid") String skuid, @Param("count") String count) throws Exception;
 
 	public List<GoodsSkuEntity> selectGoodsStcokBySkuIds(@Param("skuids") List<String> skuids) throws Exception;
+
+	public GoodsPostageEntity selectGoodsPostage(@Param("gid") String gid) throws Exception;
+
+	public String selectPidByGid(@Param("gid") String gid) throws Exception;
 
 }

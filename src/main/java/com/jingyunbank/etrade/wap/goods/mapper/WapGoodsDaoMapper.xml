@@ -92,6 +92,26 @@
 	</resultMap>
 
 
+	<!-- postageMap -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsPostageEntity"
+		id="postageMap">
+		<result column="id_" property="GID" />
+		<result column="name_" property="name" />
+		<result column="type_" property="pType" />
+		<result column="code_" property="pCode" />
+		<result column="ename_" property="pName" />
+		<result column="free_" property="free" />
+		<result column="first_number_" property="first_number" />
+		<result column="first_weight_" property="first_weight" />
+		<result column="first_volume_" property="first_volume" />
+		<result column="first_cost_" property="first_cost" />
+		<result column="next_number_" property="next_number" />
+		<result column="next_weight_" property="next_weight" />
+		<result column="next_volume_" property="next_volume" />
+		<result column="next_cost_" property="next_cost" />
+	</resultMap>
+
+
 	<!-- 展示商品需要的属性 -->
 	<sql id="goods_list_sql">
 		DISTINCT g.id gid_, g.name name_ ,
@@ -236,4 +256,34 @@
 		</if>
 	</select>
 
+	<!-- 查询邮费标准 -->
+	<sql id="postageSql">
+		g.id id_ ,g.name name_,p.type type_ ,
+		e.code code_, e.name
+		ename_, d.free free_,
+		d.first_number first_number_, d.first_weight
+		first_weight_ ,
+		d.first_volume first_volume_,d.first_cost first_cost_,
+		d.next_number next_number_ , d.next_weight next_weight_,
+		d.next_volume
+		next_volume_ ,d.next_cost next_cost_
+	</sql>
+	<select id="selectGoodsPostage" parameterType="string"
+		resultMap="postageMap">
+		SELECT
+		<include refid="postageSql" />
+		FROM goods g
+		LEFT JOIN postage p ON g.pid = p.id
+		LEFT JOIN
+		postage_detail d ON p.id = d.postage_id
+		LEFT JOIN express e ON e.code =
+		p.express_code
+		WHERE g.pid='p001' AND d.valid=1
+	</select>
+
+
+	<select id="selectPidByGid" parameterType="string" resultType="string">
+		SELECT pid FROM goods
+		g WHERE g.id = #{gid}
+	</select>
 </mapper>

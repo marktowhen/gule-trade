@@ -76,5 +76,13 @@ public class WapGoodsControllerTest extends TestCaseBase {
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
 	}
+	
+	@Test
+	public void getPostage() throws Exception {
+		getMockMvc().perform(get("/api/wap/goods/pid/g001").characterEncoding("utf-8")
+				).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(jsonPath("$.code").value("200")).andDo(print());
+	}
 
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsDeatil;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsImg;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsInfo;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsPostage;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSkuCondition;
 import com.jingyunbank.etrade.api.wap.goods.bo.ShowGoods;
@@ -24,6 +25,7 @@ import com.jingyunbank.etrade.wap.goods.dao.GoodsImgDao;
 import com.jingyunbank.etrade.wap.goods.dao.WapGoodsDao;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsDeatilEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsImgEntity;
+import com.jingyunbank.etrade.wap.goods.entity.GoodsPostageEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsSkuConditionEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity;
 
@@ -116,6 +118,24 @@ public class WapGoodsService implements IWapGoodsService {
 			return vo;
 		}).collect(Collectors.toList());
 		return list;
+	}
+
+	@Override
+	public Optional<GoodsPostage> singleGoodsPostage(String gid) throws Exception {
+		GoodsPostageEntity entity = wapGoodsDao.selectGoodsPostage(gid);
+		GoodsPostage postage = null;
+		if (Objects.nonNull(entity)) {
+			postage = new GoodsPostage();
+			BeanUtils.copyProperties(entity, postage);
+
+		}
+		return Optional.ofNullable(postage);
+	}
+
+	@Override
+	public String singlePidByGid(String gid) throws Exception {
+		// TODO Auto-generated method stub
+		return wapGoodsDao.selectPidByGid(gid);
 	}
 
 }

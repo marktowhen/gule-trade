@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsDeatil;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsPostage;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSkuCondition;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsDeatilVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsInfoVO;
+import com.jingyunbank.etrade.wap.goods.bean.GoodsPostageVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuConditionVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
@@ -167,6 +169,7 @@ public class WapGoodsController {
 	/**
 	 * http://localhost:8080/api/wap/goods/stock/list?gids=1&gids=2 根据GID
 	 * 获取商品的库存
+	 * 
 	 * @param request
 	 * @param gids
 	 * @return
@@ -183,4 +186,30 @@ public class WapGoodsController {
 		return Result.ok(list);
 	}
 
+	/**
+	 * 根据商品获取快递信息
+	 * 
+	 * @param request
+	 * @param gid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/postage/{gid}", method = RequestMethod.GET)
+	public Result<GoodsPostageVO> queryGoodsPostage(HttpServletRequest request, @PathVariable String gid)
+			throws Exception {
+		Optional<GoodsPostage> optional = wapGoodsService.singleGoodsPostage(gid);
+
+		GoodsPostageVO vo = null;
+		if (Objects.nonNull(optional)) {
+			vo = new GoodsPostageVO();
+			BeanUtils.copyProperties(optional.get(), vo);
+		}
+		return Result.ok(vo);
+	}
+
+	@RequestMapping(value = "/pid/{gid}", method = RequestMethod.GET)
+	public Result<String> queryGoodsPostageId(HttpServletRequest request, @PathVariable String gid) throws Exception {
+		String pid = wapGoodsService.singlePidByGid(gid);
+		return Result.ok(pid);
+	}
 }
