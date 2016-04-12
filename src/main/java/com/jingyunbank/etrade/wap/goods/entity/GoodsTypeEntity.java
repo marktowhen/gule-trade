@@ -1,22 +1,20 @@
-package com.jingyunbank.etrade.goods.entity;
+package com.jingyunbank.etrade.wap.goods.entity;
 
 import java.io.Serializable;
 
 /**
- * Title: 商品类型
- * @author duanxf
- * @date 2015年11月3日
+ * 
+* Title: GoodsTypeEntity 类型
+* @author    duanxf
+* @date      2016年3月31日
  */
 public class GoodsTypeEntity implements Serializable {
 
 	private static final long serialVersionUID = -1927368923441904620L;
-	/**主键*/
-	private String ID;
-	/**类型名称*/
-	private String name;
-	
-	private boolean status;
-	private int adminsort;
+	private String ID;	//id
+	private String name; //名称
+	private boolean status; //状态 
+	private int adminsort;  //排序
 	
 	
 	

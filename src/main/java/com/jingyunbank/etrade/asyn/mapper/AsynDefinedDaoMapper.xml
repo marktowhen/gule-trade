@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.asyn.dao.AsynDefinedDao">
+	<resultMap type="com.jingyunbank.etrade.asyn.entity.AsynDefinedEntity" id="ResultMap">
+		<id column="id" property="ID" />
+		<result column="service_name" property="serviceName" />
+		<result column="valid" property="valid" />
+		<result column="remark" property="remark" />
+	</resultMap>
+	<sql id="base_column">
+		id,service_name,valid,remark
+	</sql>
+	<select id="selectOne" resultMap="ResultMap">
+		select <include refid="base_column"/> from asyn_defined where id =#{ID}
+	</select>
+	
+</mapper>

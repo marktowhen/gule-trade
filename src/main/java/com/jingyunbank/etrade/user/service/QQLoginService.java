@@ -57,7 +57,7 @@ public class QQLoginService implements IQQLoginService {
 	@Override
 	public boolean save(QQLogin qq, Users user, UserInfo userInfo) throws DataSavingException {
 		save(qq);
-		userService.save(user, userInfo);
+		userService.save(user, userInfo, null);
 		return true;
 	}
 

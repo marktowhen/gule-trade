@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,6 @@ import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.pay.bean.OrderPaymentRequestVO;
-import com.jingyunbank.etrade.pay.bean.OrderPaymentVO;
 import com.jingyunbank.etrade.pay.bean.PayOrderVO;
 
 public class PayControllerTest extends TestCaseBase{
@@ -48,7 +46,7 @@ public class PayControllerTest extends TestCaseBase{
 		String json = mapper.writeValueAsString(povo);
 		System.out.println(json);
 		getMockMvc().perform(
-					 put("/api/pay/init")
+					 put("/api/payments/detail")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
 					.sessionAttr(Login.LOGIN_USER_ID, "USER-ID")
@@ -63,20 +61,17 @@ public class PayControllerTest extends TestCaseBase{
 	}
 	@Test
 	public void testBuild() throws Exception{
-		List<OrderPaymentVO> pvos = new ArrayList<>();
-		OrderPaymentVO pvo = new OrderPaymentVO();
-		pvo.setAddtime(new Date());
-		pvo.setID("XCFSDA");
-		pvos.add(pvo);
+		List<String> oids = new ArrayList<>();
+		oids.add("xvcdfscw1r");
 		OrderPaymentRequestVO vo = new OrderPaymentRequestVO();
-		vo.setPayments(pvos);
+		vo.setOrderids(oids);
 		vo.setPipelineCode("LLPAY");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(vo);
 		System.out.println(json);
 		getMockMvc().perform(
-					 post("/api/pay/build")
+					 post("/api/payments/prepay")
 					.content(json)
 					.contentType(MediaType.APPLICATION_JSON)
 					.sessionAttr(Login.LOGIN_USER_ID, "USER-ID")
