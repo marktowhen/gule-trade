@@ -2,6 +2,8 @@ package com.jingyunbank.etrade.wap.goods.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -26,6 +28,16 @@ public class GoodsSkuEntity implements Serializable {
 	private BigDecimal price;
 	private BigDecimal salePrice;
 	private boolean status;
+
+	private List<GoodsImgEntity> imgList = new ArrayList<GoodsImgEntity>();
+
+	public List<GoodsImgEntity> getImgList() {
+		return imgList;
+	}
+
+	public void setImgList(List<GoodsImgEntity> imgList) {
+		this.imgList = imgList;
+	}
 
 	public String getID() {
 		return ID;
