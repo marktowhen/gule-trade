@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.pay.handler.wxpay;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.jingyunbank.core.fs.Bytes;
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.util.MD5;
 import com.jingyunbank.core.util.RndBuilder;
 import com.jingyunbank.core.util.UniqueSequence;
@@ -31,8 +32,8 @@ import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
 
-@Service(PayPipeline.WXPAYHANDLER)//该名称不可改！！！！
-public class WXPayHandler implements IPayHandler {
+@Service(PayPipeline.JSAPIPAYHANDLER)//该名称不可改！！！！
+public class WXJSAPIPayHandler implements IPayHandler {
 
 	@Autowired
 	private IPayPipelineService payPipelineService;
@@ -53,8 +54,8 @@ public class WXPayHandler implements IPayHandler {
 		requestParams.put("total_fee", moneyfen);//单位分
 		requestParams.put("spbill_create_ip", "124.128.245.162");//APP和网页支付提交用户端ip
 		requestParams.put("notify_url", pipeline.getNoticeUrl());//接收微信支付异步通知回调地址
-		requestParams.put("trade_type", "NATIVE");//交易类型
-		requestParams.put("product_id", UniqueSequence.next()+"");//trade_type=NATIVE，此参数必传。此id为二维码中包含的商品ID，商户自行定义。
+		requestParams.put("trade_type", "JSAPI");//交易类型
+		requestParams.put("openid", UniqueSequence.next()+"");//trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识
 		
 		String signkey = pipeline.getSignkey();
 		requestParams.put("sign", MD5.digest(compositeWXPayKeyValuePaires(requestParams, signkey)).toUpperCase());
@@ -85,11 +86,16 @@ public class WXPayHandler implements IPayHandler {
 				if(StringUtils.hasText(providedSign)
 						&& StringUtils.hasText(calculatedSign)
 						&& providedSign.equals(calculatedSign)){
-					String code_url = wxresult.getCode_url();
-					String qrcode = Bytes.base64qrcode(code_url, 300, 300);
-					Map<String, String> qrcodemap = new HashMap<String, String>();
-					qrcodemap.put("qrcode", qrcode);
-					return qrcodemap;
+					String prepay_id = wxresult.getPrepay_id();
+					String app_id = wxresult.getAppid();
+					Map<String, String> r = new HashMap<String, String>();
+					r.put("appId", app_id);
+					r.put("timeStamp", new Date().getTime()+"");
+					r.put("nonceStr", KeyGen.uuid());
+					r.put("package", "prepay_id="+prepay_id);
+					r.put("signType", "MD5");
+					r.put("paySign", MD5.digest(compositeWXPayKeyValuePaires(r, signkey)).toUpperCase());
+					return r;
 				}
 			}
 			Map<String, String> result = new HashMap<String, String>();

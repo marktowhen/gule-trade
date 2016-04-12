@@ -29,7 +29,6 @@ import com.jingyunbank.etrade.api.user.bo.UserInfo;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IEmployeeService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.UserVO;
 
 @RestController
@@ -89,7 +88,7 @@ public class RegisterController {
 			
 			UserInfo userInfo=new UserInfo();
 			userInfo.setRegip(ServletBox.ip(request));
-			userService.save(users, userInfo);
+			userService.save(users, userInfo, null);
 			//成功后操作
 			
 			Optional<Cart> candidatecart = cartService.singleCart(users.getID());

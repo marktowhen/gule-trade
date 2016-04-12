@@ -43,7 +43,6 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IEmployeeService;
 import com.jingyunbank.etrade.api.user.service.IQQLoginService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
-import com.jingyunbank.etrade.message.controller.SMSController;
 import com.jingyunbank.etrade.user.bean.ThirdLoginBindVO;
 import com.jingyunbank.etrade.user.bean.ThirdLoginRegistVO;
 import com.jingyunbank.etrade.user.bean.UserVO;
