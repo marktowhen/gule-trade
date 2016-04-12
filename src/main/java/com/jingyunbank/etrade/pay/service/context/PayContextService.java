@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
+import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.handler.IPayHandler;
 import com.jingyunbank.etrade.api.pay.handler.IPayHandlerResolver;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
@@ -24,12 +25,35 @@ public class PayContextService implements IPayContextService{
 	@Autowired
 	private IPayHandlerResolver payHandlerResolver;
 	
+//	@Override
+//	@Transactional
+//	public Map<String, String> refreshAndResolvePipeline(
+//						List<OrderPayment> payments, String pipelineCode, String pipelineName,
+//						String bankCode)
+//			throws Exception {
+//		if(payService.anyDone(payments.stream().map(x->x.getID()).collect(Collectors.toList()))){
+//			Map<String, String> map = new HashMap<String, String>();
+//			map.put("error", "订单信息已过期！");
+//			return map;
+//		}
+//		long newExtransno = UniqueSequence.next18();
+//		payments.forEach(x->{
+//			x.setExtransno(newExtransno);
+//			x.setPipelineCode(pipelineCode);
+//			x.setPipelineName(pipelineName);
+//			x.setBankCode(bankCode);
+//			
+//		});
+//		payService.refreshNOAndPipeline(payments);
+//		IPayHandler handler = payHandlerResolver.resolve(pipelineCode);
+//		return handler.prepare(payments);
+//	}
+
 	@Override
 	@Transactional
-	public Map<String, String> refreshAndResolvePipeline(
-						List<OrderPayment> payments, String pipelineCode, String pipelineName,
-						String bankCode)
+	public Map<String, String> prepay(List<String> oids, PayPipeline pipeline)
 			throws Exception {
+		List<OrderPayment> payments = payService.listPayable(oids);
 		if(payService.anyDone(payments.stream().map(x->x.getID()).collect(Collectors.toList()))){
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("error", "订单信息已过期！");
@@ -38,11 +62,12 @@ public class PayContextService implements IPayContextService{
 		long newExtransno = UniqueSequence.next18();
 		payments.forEach(x->{
 			x.setExtransno(newExtransno);
-			x.setPipelineCode(pipelineCode);
-			x.setPipelineName(pipelineName);
+			x.setPipelineCode(pipeline.getCode());
+			x.setPipelineName(pipeline.getName());
+			x.setBankCode(pipeline.getBankcode());
 		});
 		payService.refreshNOAndPipeline(payments);
-		IPayHandler handler = payHandlerResolver.resolve(pipelineCode);
-		return handler.prepare(payments, bankCode);
+		IPayHandler handler = payHandlerResolver.resolve(pipeline.getCode());
+		return handler.prepare(payments);
 	}
 }

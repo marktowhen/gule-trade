@@ -27,7 +27,7 @@ public class FastPayHandler implements IPayHandler {
 	private static PayPipeline pipeline = new PayPipeline();
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
+	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
 		
 		Map<String, String> result = new HashMap<String, String>();
 		String money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString();
@@ -51,7 +51,7 @@ public class FastPayHandler implements IPayHandler {
 		result.put("notify_url", notify_url);
 		
 		//non required
-		result.put("bank_code", bankCode);
+		result.put("bank_code", payments.get(0).getBankCode());
 		//result.put("url_return", return_url);
 		//result.put("userreq_ip", "192.168.1.1");
 		//result.put("valid_order", "10080");

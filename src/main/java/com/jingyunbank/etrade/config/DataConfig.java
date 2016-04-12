@@ -18,6 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.jingyunbank.etrade.asyn.util.SpringContextUtils;
 
 @Configuration
 @EnableTransactionManagement
@@ -62,5 +63,10 @@ public class DataConfig {
 	public PlatformTransactionManager transactionManager() throws IOException{
 		return new DataSourceTransactionManager(dataSource());
 	}
-
+	//通过beanid获取实例
+	@Bean
+	@Scope(value=ConfigurableBeanFactory.SCOPE_SINGLETON)
+	public SpringContextUtils getSpringContextUtils(){
+		return new SpringContextUtils();
+	}
 }

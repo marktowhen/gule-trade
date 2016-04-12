@@ -27,7 +27,7 @@ public class GatePayHandler implements IPayHandler {
 	private static PayPipeline pipeline = new PayPipeline();
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
+	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		String money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString();
 		String orderno = String.valueOf(payments.get(0).getExtransno());
@@ -50,7 +50,7 @@ public class GatePayHandler implements IPayHandler {
 		result.put("notify_url", notify_url);
 
 		//non required
-		result.put("bank_code", bankCode);
+		result.put("bank_code", payments.get(0).getBankCode());
 		//result.put("pay_type", "8");支付类型，1表示借记卡，8表示信用卡，不写表示都支持
 		//result.put("url_return", return_url);
 		
