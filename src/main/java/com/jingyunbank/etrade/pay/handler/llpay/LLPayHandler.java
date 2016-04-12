@@ -27,7 +27,7 @@ public class LLPayHandler implements IPayHandler {
 	private static PayPipeline pipeline = new PayPipeline();
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments, String bankCode) throws Exception {
+	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		String money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString();
 		String orderno = String.valueOf(payments.get(0).getExtransno());
