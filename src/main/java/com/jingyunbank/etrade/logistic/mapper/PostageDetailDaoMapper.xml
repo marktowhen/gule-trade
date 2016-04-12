@@ -7,6 +7,7 @@
 	<resultMap type="com.jingyunbank.etrade.logistic.entity.PostageDetailEntity"
 		id="PostageDetailMap">
 		<result column="id" property="ID" />
+		<result column="free" property="free" />
 		<result column="postage_id" property="postageID" />
 		<result column="first_number" property="firstNumber" />
 		<result column="first_weight" property="firstWeight" />
@@ -21,12 +22,12 @@
 	</resultMap>
 
 	<sql id="base_column">
-		id,postage_id,first_number,first_weight,first_volume,first_cost,
+		id,postage_id,free,first_number,first_weight,first_volume,first_cost,
 		 next_number,next_weight,next_volume,next_cost,fit_area,valid
 	</sql>
 	<insert id="insert">
 		insert into postage_detail(<include refid="base_column"/>)
-		values(#{ID},#{postageID},#{firstNumber},#{firstWeight},#{firstVolume},#{first_cost},
+		values(#{ID},#{postageID},#{free},#{firstNumber},#{firstWeight},#{firstVolume},#{first_cost},
 				#{next_number},#{next_weight},#{next_volume},#{next_cost},#{fit_area},#{valid})
 	</insert>
 	
@@ -39,7 +40,8 @@
 	
 	<update id="update">
 		update postage_detail 
-			set first_number=#{firstNumber},
+			set free=#{free},
+				first_number=#{firstNumber},
 				first_weight=#{firstWeight},
 				first_volume=#{firstVolume},
 				first_cost=#{firstCost},

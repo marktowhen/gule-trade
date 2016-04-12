@@ -126,7 +126,7 @@ public class PostageService implements IPostageService {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		for (String MID : mergeByMID.keySet()) {
-			result.add(calculateOneMerchat(mergeByMID.get(MID), city));
+			result = result.add(calculateOneMerchat(mergeByMID.get(MID), city));
 		}
 		
 		return result;
@@ -151,7 +151,7 @@ public class PostageService implements IPostageService {
 			calculate.getCalculatRule().setPostageDetail(postageDetail);
 		}
 		
-		//根据首费排序
+		//根据首费由大到小排序
 		Collections.sort(mergeRepeat, new Comparator<PostageCalculate>() {
 			@Override
 			public int compare(PostageCalculate o1, PostageCalculate o2) {
@@ -162,19 +162,18 @@ public class PostageService implements IPostageService {
 		for (int i = 0; i < mergeRepeat.size(); i++) {
 			//首费只计算一次
 			if(i==0){
-				result.add(calculateFirstCost(mergeRepeat.get(i).getCalculatRule().getPostageDetail()));
+				result = result.add(calculateFirstCost(mergeRepeat.get(i).getCalculatRule().getPostageDetail()));
 			}
 			//续费计算
-			result.add(calculateNextCost(mergeRepeat.get(i), mergeRepeat.get(i).getCalculatRule(), mergeRepeat.get(i).getCalculatRule().getPostageDetail()));
+			result = result.add(calculateNextCost(mergeRepeat.get(i), mergeRepeat.get(i).getCalculatRule(), mergeRepeat.get(i).getCalculatRule().getPostageDetail()));
 		}
 		return result;
 	}
 	
 	//计算续费
 	private BigDecimal calculateFirstCost(PostageDetail postageDetail){
-		BigDecimal result = BigDecimal.ZERO;
 		if(postageDetail.isFree()){
-			return result;
+			return BigDecimal.ZERO;
 		}
 		return postageDetail.getFirstCost();
 	}
