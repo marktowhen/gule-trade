@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.wap.goods.dao.GoodsAttrValueDao">
+
+	<insert id="insertGoodsAttrValue"
+		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity">
+		INSERT INTO `goods_attr_value` (`id`,`gid`,`attr_id`,`attr_name`,`value`)
+		VALUES  (#{ID},#{GID},#{attrId},#{attrName},#{value})
+
+	</insert>
+
+	<delete id="deleteGoodsAttrValue" parameterType="string">
+		DELETE FROM
+		goods_attr_value
+		WHERE gid = #{gid}
+	</delete>
+
+</mapper>

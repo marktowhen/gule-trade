@@ -11,7 +11,7 @@ import com.jingyunbank.etrade.wap.goods.entity.GoodsInfoEntity;
  * @author duanxf
  * @date 2016年4月11日
  */
-public interface WapGoodsInfoOperationDao {
+public interface WapGoodsInfoDao {
 
 	void insertGoodsInfo(GoodsInfoEntity entity) throws Exception;
 

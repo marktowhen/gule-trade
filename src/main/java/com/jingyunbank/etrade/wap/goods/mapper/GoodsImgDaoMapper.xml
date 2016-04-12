@@ -23,4 +23,21 @@
 		WHERE 1=1 AND i.`skuid` IS NULL
 		AND i.`gid`= #{gid}
 	</select>
+
+
+	<insert id="insertGoodsImg"
+		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsImgEntity">
+		INSERT INTO `goods_img` (`id`, `gid`, `skuid`, `path`)
+		VALUES
+		(#{ID}, #{GID}, #{skuId}, #{path})
+	</insert>
+
+	<delete id="deleteGoodsImg" parameterType="string">
+		DELETE FROM goods_img
+		WHERE gid = #{gid}
+	</delete>
+	<delete id="deleteGoodsImg" parameterType="string">
+		DELETE FROM goods_img
+		WHERE id = #{imgId}
+	</delete>
 </mapper>

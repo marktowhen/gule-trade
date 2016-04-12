@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.wap.goods.dao.WapGoodsOperationDao">
+
+	<update id="deleteGoods" parameterType="string">
+		UPDATE goods
+		SET
+		`status` =
+		FALSE
+		WHERE `id` = #{gid}
+	</update>
+	<insert id="insertGoods" parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
+		INSERT INTO `goods`
+		(`id`,`name`,`code`,`mid`,`tid`,`about`,
+		`price`,`sale_price`,`addtime`,`uptime`,`downtime`,`pid`,`path`,`content`,`status`)
+		VALUES
+		(#{ID},#{name},#{code},#{MID},#{TID},#{about},#{price},#{salePrice},
+		#{addtime},#{uptime},#{downtime},#{PID},#{path},#{content},#{status})
+	</insert>
+
+	<update id="updateGoods" parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
+		UPDATE `goods`
+		SET
+		<if test="name !=null and name != ''">
+			`name` = #{name},
+		</if>
+		<if test="code !=null and code != ''">
+			`code` = #{code},
+		</if>
+		<if test="MID !=null and MID != ''">
+			`mid` = #{MID},
+		</if>
+		<if test="TID !=null and TID != ''">
+			`tid` = #{TID},
+		</if>
+		<if test="about !=null and about != ''">
+			`about` = #{about},
+		</if>
+		<if test="price !=null and price != ''">
+			`price` = #{price},
+		</if>
+		<if test="salePrice !=null and salePrice != ''">
+			`sale_price` = #{salePrice},
+		</if>
+		<if test="addtime !=null and addtime != ''">
+			`addtime` = #{addtime},
+		</if>
+		<if test="uptime !=null and uptime != ''">
+			`uptime` = #{uptime},
+		</if>
+		<if test="downtime !=null and downtime != ''">
+			`downtime` = #{downtime},
+		</if>
+		<if test="PID !=null and PID != ''">
+			`pid` = #{PID},
+		</if>
+		<if test="path !=null and path != ''">
+			`path` = #{path},
+		</if>
+		<if test="content !=null and content != ''">
+			`content` = #{content},
+		</if>
+		`status` = #{status} ,`id` = #{ID}
+		WHERE `id` = #{ID}
+	</update>
+</mapper>

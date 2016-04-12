@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.wap.goods.dao.GoodsSkuDao">
+	<insert id="insertGoodsSku"
+		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+		INSERT INTO `goods_sku`
+		(`id`,`gid`,`properties`,`properties_value`,`stock`,`volume`,`price`,`sale_price`,`status`)
+		VALUES ( #{ID}, #{GID}, #{properties}, #{propertiesValue}, #{stock},
+		#{volume}, #{price}, #{salePrice}, #{status})
+	</insert>
+
+	<update id="updateGoodsSku"
+		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+		UPDATE `goods_sku` SET
+		<if test="GID !=null and GID != ''">
+			`gid` = #{GID},
+		</if>
+		<if test="properties !=null and properties != ''">
+			`properties` = #{properties} ,
+		</if>
+		<if test="propertiesValue !=null and propertiesValue != ''">
+			`properties_value` = #{propertiesValue},
+		</if>
+		<if test="stock >=0 ">
+			`stock` = #{stock},
+		</if>
+		<if test="price !=null and price != ''">
+			`price` = #{price},
+		</if>
+		<if test="salePrice !=null and salePrice != ''">
+			`sale_price` = #{salePrice},
+		</if>
+		`status` = #{status} , `id` = #{ID}
+		WHERE `id` = #{ID}
+	</update>
+
+	<update id="up" parameterType="string">
+		UPDATE goods_sku SET STATUS = TRUE
+		WHERE id = #{skuId }
+	</update>
+	<update id="down" parameterType="string">
+		UPDATE goods_sku SET STATUS = FALSE 
+		WHERE id = #{skuId }
+	</update>
+
+</mapper>
