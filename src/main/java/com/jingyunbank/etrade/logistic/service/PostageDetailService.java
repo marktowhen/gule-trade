@@ -12,6 +12,8 @@ import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.logistic.bo.PostageDetail;
 import com.jingyunbank.etrade.api.logistic.service.IPostageDetailService;
+import com.jingyunbank.etrade.api.statics.area.bo.City;
+import com.jingyunbank.etrade.api.statics.area.service.ICityService;
 import com.jingyunbank.etrade.logistic.dao.PostageDetailDao;
 import com.jingyunbank.etrade.logistic.entity.PostageDetailEntity;
 
@@ -20,6 +22,8 @@ public class PostageDetailService implements IPostageDetailService {
 	
 	@Autowired
 	private PostageDetailDao postageDetailDao;
+	@Autowired
+	private ICityService cityService;
 
 	@Override
 	public boolean save(PostageDetail detail) throws DataSavingException {
@@ -81,6 +85,27 @@ public class PostageDetailService implements IPostageDetailService {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	@Override
+	public PostageDetail single(String postageID, int cityID) {
+		City city = cityService.single(cityID);
+		PostageDetailEntity entity = postageDetailDao.selectByFitArea(postageID, getFitArea(city.getProvinceID(), cityID));
+		if(entity==null){
+			entity = postageDetailDao.selectByFitArea(postageID, PostageDetail.DEFAULT_FIT_AREA);
+		}
+		if(entity!=null){
+			PostageDetail bo = new PostageDetail();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}
+		
+		return null;
+	}
+	
+	
+	private String getFitArea(int proviceID, int cityID){
+		return "{"+cityID+"}";
 	}
 
 }

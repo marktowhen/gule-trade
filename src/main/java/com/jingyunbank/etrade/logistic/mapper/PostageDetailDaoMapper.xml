@@ -58,5 +58,9 @@
 		select <include refid="base_column"/> from postage_detail where postage_id=#{postageID}  and valid=true
 	</select>
 	
+	<select id="selectByFitArea" resultMap="PostageDetailMap">
+		select <include refid="base_column"/> from postage_detail where postage_id=#{postageID} and fit_area like CONCAT('%',#{fitArea} ,'%') and valid=true
+	</select>
+	
 	
 </mapper>

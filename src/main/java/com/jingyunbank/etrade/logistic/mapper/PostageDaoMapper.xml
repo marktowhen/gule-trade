@@ -44,5 +44,15 @@
 		WHERE  mid=#{MID} and valid=true
 	</select>
 	
+	<select id="selectMuti" resultMap="PostageMap">
+		SELECT
+		<include refid="postage_column" />
+		FROM postage
+		WHERE  id in 
+			<foreach collection="IDList" item="ID" open="(" separator="," close=")">
+				#{ID}
+			</foreach>
+	</select>
+	
 	
 </mapper>

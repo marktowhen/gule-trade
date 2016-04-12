@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.logistic.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.logistic.bo.Postage;
+import com.jingyunbank.etrade.api.logistic.bo.PostageCalculate;
 import com.jingyunbank.etrade.api.logistic.service.IPostageService;
-import com.jingyunbank.etrade.logistic.bean.PostageVO;
+import com.jingyunbank.etrade.logistic.bean.PostageCalculateVO;
 
 @RestController
 public class PostageController {
@@ -26,24 +27,18 @@ public class PostageController {
 	
 	
 	@RequestMapping(value="/api/logistic/postage/calculation", method=RequestMethod.PUT)
-	public Result<List<PostageVO>> calculate(@RequestBody @Valid List<PostageVO> postages, BindingResult valid ) throws Exception{
+	public Result<BigDecimal> calculate(@RequestBody @Valid List<PostageCalculateVO> postages, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
 		}
-		List<Postage> postagebo = postages.stream().map(vo -> {
-			Postage bo = new Postage();
+		if(postages.isEmpty()){
+			return Result.ok(BigDecimal.ZERO);
+		}
+		List<PostageCalculate> postagebo = postages.stream().map(vo -> {
+			PostageCalculate bo = new PostageCalculate();
 			BeanUtils.copyProperties(vo, bo);
 			return bo;
 		}).collect(Collectors.toList());
-		
-		postagebo = postageService.calculate(postagebo);
-		
-		postages = postagebo.stream().map(bo -> {
-			PostageVO vo = new PostageVO();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
-		
-		return Result.ok(postages);
+		return Result.ok(postageService.calculateMuti(postagebo, postagebo.get(0).getCity()));
 	}
 }

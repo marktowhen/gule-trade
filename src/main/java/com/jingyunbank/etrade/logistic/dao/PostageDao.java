@@ -17,4 +17,6 @@ public interface PostageDao {
 	PostageEntity selectOne(String ID);
 	
 	List<PostageEntity> selectByMID(String MID);
+
+	List<PostageEntity> selectMuti(@Param("IDList")List<String> postageIDList);
 }

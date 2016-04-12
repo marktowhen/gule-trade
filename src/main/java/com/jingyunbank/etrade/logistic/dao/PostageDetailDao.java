@@ -19,4 +19,6 @@ public interface PostageDetailDao {
 	public PostageDetailEntity selectOne(String ID);
 	
 	public List<PostageDetailEntity> selectByPostageID(String postageID);
+
+	public PostageDetailEntity selectByFitArea(@Param("postageID")String postageID, @Param("fitArea")String fitArea);
 }

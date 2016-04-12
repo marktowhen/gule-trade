@@ -22,6 +22,9 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.goods.bo.ShowGoods;
+import com.jingyunbank.etrade.api.goods.service.IGoodsService;
+import com.jingyunbank.etrade.api.logistic.bo.PostageCalculate;
 import com.jingyunbank.etrade.api.logistic.service.IPostageService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
@@ -60,6 +63,8 @@ public class OrderContextService implements IOrderContextService {
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
 	private IPostageService postageService;
+	@Autowired
+	private IGoodsService goodsService;
 	
 	//校验用户提交的订单价格，邮费以及商品的价格数量等是否相互匹配
 	private boolean verifyOrderData(List<Orders> orders) {
@@ -70,6 +75,8 @@ public class OrderContextService implements IOrderContextService {
 			BigDecimal calculatedorderpostage = BigDecimal.ZERO;//as above.
 			
 			List<OrderGoods> goods = order.getGoods();
+			//邮费 postageID必填 num/weight/volume3选1
+			List<PostageCalculate> postList = new ArrayList<PostageCalculate>();
 			for (OrderGoods orderGoods : goods) {
 				BigDecimal pprice = orderGoods.getPprice();//data from user.
 				BigDecimal price = orderGoods.getPrice();//data from user.
@@ -77,9 +84,12 @@ public class OrderContextService implements IOrderContextService {
 				BigDecimal actualprice = (Objects.nonNull(pprice) && pprice.compareTo(BigDecimal.ZERO) > 0)?
 									pprice : price;
 				calculatedorderprice = calculatedorderprice.add(actualprice.multiply(BigDecimal.valueOf(count)).setScale(2, RoundingMode.HALF_UP));
+				//查询出商品对应的运费模板id
+				
 			}
-			//计算邮费
-			calculatedorderpostage = postageService.calculate(calculatedorderprice, order.getProvince());
+			//计算邮费 
+			
+			calculatedorderpostage = postageService.calculateMuti(postList, order.getCity());
 			
 			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
 			if(calculatedorderprice.compareTo(originorderprice) != 0
