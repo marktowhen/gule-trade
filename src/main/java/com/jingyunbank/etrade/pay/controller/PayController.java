@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.pay.bo.OrderPayment;
+import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.service.IPayService;
 import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
@@ -39,10 +40,9 @@ public class PayController {
 	private IPayContextService payContextService;
 	
 	/**
-	 * 初始化订单支付接口。<p>
-	 * 查询出制定订单的支付状态信息
+	 * 查询出指定订单的支付状态信息
 	 * <p>
-	 * uri: get /api/payments?oid=xxx&oid=yyyy&oid=zxx
+	 * uri: get /api/payments/detail?oid=xxx&oid=yyyy&oid=zxx
 	 * <p>
 	 * <b>调用时机：</b><p>
 	 * <ul>
@@ -56,7 +56,7 @@ public class PayController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/payments", method=RequestMethod.GET,
+	@RequestMapping(value="/api/payments/detail", method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
 	@AuthBeforeOperation
 	public Result<List<OrderPaymentVO>> init(@RequestParam(value="oid", required=true) List<String> oids, HttpSession session) throws Exception{
@@ -89,7 +89,7 @@ public class PayController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/api/payments/info", method=RequestMethod.PUT)
+	@RequestMapping(value="/api/payments/prepay", method=RequestMethod.PUT)
 	@AuthBeforeOperation
 	public Result<Map<String, String>> build(
 				@Valid @RequestBody OrderPaymentRequestVO payvo, 
@@ -108,17 +108,20 @@ public class PayController {
 //		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 //			return Result.fail("支付密码错误！");
 //		}
-		Map<String, String> payinfo = payContextService.refreshAndResolvePipeline(
-				payvo.getPayments()
-				.stream().map(x->{
-					OrderPayment op = new OrderPayment();
-					BeanUtils.copyProperties(x, op);
-					return op;
-				})
-				.collect(Collectors.toList()), 
-				pipelineCode, pipelineName,
-				bankCode
-		);
+//		Map<String, String> payinfo = payContextService.refreshAndResolvePipeline(
+//				payvo.getPayments()
+//				.stream().map(x->{
+//					OrderPayment op = new OrderPayment();
+//					BeanUtils.copyProperties(x, op);
+//					return op;
+//				})
+//				.collect(Collectors.toList()), 
+//				pipelineCode, pipelineName,
+//				bankCode
+//		);
+		PayPipeline pipeline = new PayPipeline(pipelineCode, pipelineName, bankCode);
+		Map<String, String> payinfo = payContextService.prepay(payvo.getOrderids(), pipeline);
+		
 		if(StringUtils.hasText(payinfo.get("error"))){
 			return Result.fail(payinfo.get("error"));
 		}

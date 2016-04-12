@@ -29,14 +29,8 @@ public class OrderPaymentRequestVO {
 	@Valid
 	@NotNull
 	@Size(min=1)
-	private List<OrderPaymentVO> payments = new ArrayList<OrderPaymentVO>();
+	private List<String> orderids = new ArrayList<String>();
 	
-	public List<OrderPaymentVO> getPayments() {
-		return payments;
-	}
-	public void setPayments(List<OrderPaymentVO> payments) {
-		this.payments = payments;
-	}
 	public String getPipelineCode() {
 		return pipelineCode;
 	}
@@ -54,5 +48,11 @@ public class OrderPaymentRequestVO {
 	}
 	public void setBankCode(String bankCode) {
 		this.bankCode = bankCode;
+	}
+	public List<String> getOrderids() {
+		return orderids;
+	}
+	public void setOrderids(List<String> orderids) {
+		this.orderids = orderids;
 	}
 }
