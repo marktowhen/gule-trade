@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jingyunbank.etrade.TestCaseBase;
 import com.jingyunbank.etrade.api.logistic.bo.PostageCalculate;
-import com.jingyunbank.etrade.api.logistic.service.IPostageService;
+import com.jingyunbank.etrade.api.logistic.service.context.IPostageCalculateService;
 
 public class PostageServiceTest extends TestCaseBase {
 
 	@Autowired
-	private IPostageService postageService;
+	private IPostageCalculateService postageCalculateService;
 	
 	@Test
 	public void testSingleCaculate(){
@@ -29,7 +29,7 @@ public class PostageServiceTest extends TestCaseBase {
 			e.printStackTrace();
 		}
 		System.out.println("--------------------------------------");
-		System.out.println(""+postageService.calculate(p1));
+		System.out.println(""+postageCalculateService.calculate(p1));
 		System.out.println("--------------------------------------");
 		
 	}
@@ -58,7 +58,7 @@ public class PostageServiceTest extends TestCaseBase {
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
-		System.out.println(""+postageService.calculateMuti(list, 1));
+		System.out.println(""+postageCalculateService.calculateMuti(list, 1));
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
@@ -96,7 +96,7 @@ public class PostageServiceTest extends TestCaseBase {
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
-		System.out.println(""+postageService.calculateMuti(list, 1));
+		System.out.println(""+postageCalculateService.calculateMuti(list, 1));
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");

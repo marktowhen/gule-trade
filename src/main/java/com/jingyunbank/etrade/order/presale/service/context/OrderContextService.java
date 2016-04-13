@@ -23,7 +23,7 @@ import com.jingyunbank.core.util.UniqueSequence;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.logistic.bo.PostageCalculate;
-import com.jingyunbank.etrade.api.logistic.service.IPostageService;
+import com.jingyunbank.etrade.api.logistic.service.context.IPostageCalculateService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderLogistic;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
@@ -61,7 +61,7 @@ public class OrderContextService implements IOrderContextService {
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
-	private IPostageService postageService;
+	private IPostageCalculateService postageCalculateService;
 	@Autowired
 	private IWapGoodsService wapGoodsService;
 	
@@ -94,7 +94,7 @@ public class OrderContextService implements IOrderContextService {
 				}
 			}
 			//计算邮费 
-			calculatedorderpostage = postageService.calculateMuti(postList, order.getCity());
+			calculatedorderpostage = postageCalculateService.calculateMuti(postList, order.getCity());
 			
 			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
 			if(calculatedorderprice.compareTo(originorderprice) != 0

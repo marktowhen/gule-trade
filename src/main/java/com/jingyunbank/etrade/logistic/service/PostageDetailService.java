@@ -88,7 +88,7 @@ public class PostageDetailService implements IPostageDetailService {
 	}
 
 	@Override
-	public PostageDetail single(String postageID, int cityID) {
+	public PostageDetail singleFit(String postageID, int cityID) {
 		City city = cityService.single(cityID);
 		PostageDetailEntity entity = postageDetailDao.selectByFitArea(postageID, getFitArea(city.getProvinceID(), cityID));
 		if(entity==null){

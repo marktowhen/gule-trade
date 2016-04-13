@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.logistic.bo.PostageCalculate;
-import com.jingyunbank.etrade.api.logistic.service.IPostageService;
+import com.jingyunbank.etrade.api.logistic.service.context.IPostageCalculateService;
 import com.jingyunbank.etrade.logistic.bean.PostageCalculateVO;
 
 @RestController
 public class PostageController {
 
 	@Autowired
-	private IPostageService postageService;
+	private IPostageCalculateService postageCalculateService;
 	
 	
 	@RequestMapping(value="/api/logistic/postage/calculation", method=RequestMethod.PUT)
@@ -39,6 +39,6 @@ public class PostageController {
 			BeanUtils.copyProperties(vo, bo);
 			return bo;
 		}).collect(Collectors.toList());
-		return Result.ok(postageService.calculateMuti(postagebo, postagebo.get(0).getCity()));
+		return Result.ok(postageCalculateService.calculateMuti(postagebo, postagebo.get(0).getCity()));
 	}
 }
