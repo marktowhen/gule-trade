@@ -41,8 +41,15 @@
 		WHERE id = #{skuId }
 	</update>
 	<update id="down" parameterType="string">
-		UPDATE goods_sku SET STATUS = FALSE 
+		UPDATE goods_sku SET STATUS =
+		FALSE
 		WHERE id = #{skuId }
 	</update>
 
+	<delete id="deleteGoodsSku" parameterType="string">
+		DELETE
+		FROM
+		`goods_sku`
+		WHERE `gid` = #{gid}
+	</delete>
 </mapper>

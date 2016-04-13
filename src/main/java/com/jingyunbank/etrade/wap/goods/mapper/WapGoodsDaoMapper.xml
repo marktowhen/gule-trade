@@ -48,19 +48,13 @@
 		<result column="id_" property="ID" />
 		<result column="gid_" property="GID" />
 		<result column="properties_" property="properties" />
-		<result column="propertiesValue_" property="propertiesValue" />
+		<result column="path_" property="propertiesValue" />
 		<result column="stock_" property="stock" />
 		<result column="volume_" property="volume" />
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
-		<collection property="imgList" javaType="ArrayList"
-			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsImgEntity">
-			<result column="iid_" property="ID" />
-			<result column="igid_" property="GID" />
-			<result column="iskuid_" property="skuId" />
-			<result column="ipath_" property="path" />
-		</collection>
+		
 	</resultMap>
 
 
@@ -179,18 +173,17 @@
 	<!--根据条件获取sku -->
 	<sql id="skuSql">
 		s.`id` id_, s.`gid` gid_, s.`properties` properties_,
-		s.`properties_value` propertiesValue_,s.`stock` stock_,
+		s.`stock` stock_,
 		s.`volume`
 		volume_, s.`price` price_,
 		s.`sale_price` sale_price_, s.`status`
-		status_ ,
-		i.id iid_,i.`skuid` iskuid_,i.path ipath_,i.`gid` igid_
+		status_ , g.`path` path_
 	</sql>
 	<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
 		SELECT
 		<include refid="skuSql" />
 		FROM `goods_sku` s
-		LEFT JOIN `goods_img` i ON s.`id`=i.skuid
+		LEFT JOIN goods g  ON s.gid = g.`id`
 		WHERE 1=1
 		AND s.`gid`= #{gid}
 		AND s.`properties`= #{condition}

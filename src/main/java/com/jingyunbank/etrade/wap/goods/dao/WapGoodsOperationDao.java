@@ -2,7 +2,8 @@ package com.jingyunbank.etrade.wap.goods.dao;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.goods.entity.GoodsEntity;
+import com.jingyunbank.etrade.wap.goods.entity.GoodsEntity;
+
 
 public interface WapGoodsOperationDao {
 

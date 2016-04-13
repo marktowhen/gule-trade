@@ -36,7 +36,7 @@
 		DELETE FROM goods_img
 		WHERE gid = #{gid}
 	</delete>
-	<delete id="deleteGoodsImg" parameterType="string">
+	<delete id="deleteGoodsImgById" parameterType="string">
 		DELETE FROM goods_img
 		WHERE id = #{imgId}
 	</delete>

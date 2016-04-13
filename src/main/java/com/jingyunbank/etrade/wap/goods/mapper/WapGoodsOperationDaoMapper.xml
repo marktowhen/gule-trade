@@ -4,6 +4,53 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.wap.goods.dao.WapGoodsOperationDao">
 
+	<resultMap
+		type="com.jingyunbank.etrade.wap.goods.entity.GoodsOperationEntity"
+		id="goodsOperationMap">
+		<result column="gid_" property="ID" />
+		<result column="gid_" property="name" />
+		<result column="gid_" property="code" />
+		<result column="gid_" property="MID" />
+		<result column="gid_" property="TID" />
+		<result column="gid_" property="about" />
+		<result column="gid_" property="price" />
+		<result column="gid_" property="salePrice" />
+		<result column="gid_" property="addtime" />
+		<result column="gid_" property="uptime" />
+		<result column="gid_" property="downtime" />
+		<result column="gid_" property="PID" />
+		<result column="gid_" property="path" />
+		<result column="gid_" property="content" />
+		<result column="gid_" property="status" />
+		<collection property="imgList" javaType="ArrayList"
+			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsImgEntity">
+			<result column="gid_" property="ID" />
+			<result column="gid_" property="GID" />
+			<result column="gid_" property="skuId" />
+			<result column="gid_" property="path" />
+		</collection>
+		<collection property="attrValueList" javaType="ArrayList"
+			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity">
+			<result column="gid_" property="ID" />
+			<result column="gid_" property="GID" />
+			<result column="gid_" property="attrId" />
+			<result column="gid_" property="attrName" />
+			<result column="gid_" property="value" />
+		</collection>
+		<collection property="skuList" javaType="ArrayList"
+			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+			<result column="gid_" property="ID" />
+			<result column="gid_" property="GID" />
+			<result column="gid_" property="properties" />
+			<result column="gid_" property="propertiesValue" />
+			<result column="gid_" property="stock" />
+			<result column="gid_" property="volume" />
+			<result column="gid_" property="price" />
+			<result column="gid_" property="salePrice" />
+			<result column="gid_" property="status" />
+		</collection>
+	</resultMap>
+
 	<update id="deleteGoods" parameterType="string">
 		UPDATE goods
 		SET
@@ -65,4 +112,9 @@
 		`status` = #{status} ,`id` = #{ID}
 		WHERE `id` = #{ID}
 	</update>
+
+
+	<select id="selectGoodsByGid" parameterType="string" resultMap="goodsOperationMap">
+
+	</select>
 </mapper>

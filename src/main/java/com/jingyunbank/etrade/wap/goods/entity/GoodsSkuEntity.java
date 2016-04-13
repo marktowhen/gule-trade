@@ -29,15 +29,8 @@ public class GoodsSkuEntity implements Serializable {
 	private BigDecimal salePrice;
 	private boolean status;
 
-	private List<GoodsImgEntity> imgList = new ArrayList<GoodsImgEntity>();
 
-	public List<GoodsImgEntity> getImgList() {
-		return imgList;
-	}
 
-	public void setImgList(List<GoodsImgEntity> imgList) {
-		this.imgList = imgList;
-	}
 
 	public String getID() {
 		return ID;
