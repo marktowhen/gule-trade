@@ -88,11 +88,11 @@ public class PostageDetailService implements IPostageDetailService {
 	}
 
 	@Override
-	public PostageDetail singleFit(String postageID, int cityID) {
+	public PostageDetail singleFit(String postageID, int cityID, String transportType) {
 		City city = cityService.single(cityID);
-		PostageDetailEntity entity = postageDetailDao.selectByFitArea(postageID, getFitArea(city.getProvinceID(), cityID));
+		PostageDetailEntity entity = postageDetailDao.selectByFitArea(postageID, getFitArea(city.getProvinceID(), cityID),transportType);
 		if(entity==null){
-			entity = postageDetailDao.selectByFitArea(postageID, PostageDetail.DEFAULT_FIT_AREA);
+			entity = postageDetailDao.selectByFitArea(postageID, PostageDetail.DEFAULT_FIT_AREA,transportType);
 		}
 		if(entity!=null){
 			PostageDetail bo = new PostageDetail();
@@ -106,6 +106,11 @@ public class PostageDetailService implements IPostageDetailService {
 	
 	private String getFitArea(int proviceID, int cityID){
 		return "{"+cityID+"}";
+	}
+
+	@Override
+	public List<String> listTransportType(String postageID) {
+		return postageDetailDao.selectDistinctTransportType(postageID);
 	}
 
 }

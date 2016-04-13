@@ -19,16 +19,17 @@
 		<result column="next_cost" property="nextCost" />
 		<result column="fit_area" property="fitArea" />
 		<result column="valid" property="valid" />
+		<result column="transport_type" property="transportType" />
 	</resultMap>
 
 	<sql id="base_column">
 		id,postage_id,free,first_number,first_weight,first_volume,first_cost,
-		 next_number,next_weight,next_volume,next_cost,fit_area,valid
+		 next_number,next_weight,next_volume,next_cost,fit_area,valid,transport_type
 	</sql>
 	<insert id="insert">
 		insert into postage_detail(<include refid="base_column"/>)
 		values(#{ID},#{postageID},#{free},#{firstNumber},#{firstWeight},#{firstVolume},#{first_cost},
-				#{next_number},#{next_weight},#{next_volume},#{next_cost},#{fit_area},#{valid})
+				#{next_number},#{next_weight},#{next_volume},#{next_cost},#{fit_area},#{valid},#{transportType})
 	</insert>
 	
 	<update id="updateStatus">
@@ -49,7 +50,8 @@
 				next_weight=#{nextWeight},
 				next_volume=#{nextVolume},
 				next_cost=#{nextCost},
-				fit_area=#{fitArea}
+				fit_area=#{fitArea},
+				transport_type=#{transportType}
 			where id = #{ID}
 	</update>
 	<select id="selectOne" resultMap="PostageDetailMap">
@@ -61,8 +63,15 @@
 	</select>
 	
 	<select id="selectByFitArea" resultMap="PostageDetailMap">
-		select <include refid="base_column"/> from postage_detail where postage_id=#{postageID} and fit_area like CONCAT('%',#{fitArea} ,'%') and valid=true
+		select <include refid="base_column"/> from postage_detail 
+			where postage_id=#{postageID} and transport_type =#{transportType} and fit_area like CONCAT('%',#{fitArea} ,'%') and valid=true
 	</select>
+	
+	<select id="selectDistinctTransportType" >
+		select distinct transport_type from postage_detail 
+			where postage_id=#{postageID}  and valid=true
+	</select>
+	
 	
 	
 </mapper>

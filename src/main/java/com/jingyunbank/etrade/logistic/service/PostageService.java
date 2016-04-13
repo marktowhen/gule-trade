@@ -88,10 +88,10 @@ public class PostageService implements IPostageService {
 	
 
 	@Override
-	public Postage singleWithDetail(String ID, int cityID) {
+	public Postage singleWithDetail(String ID, int cityID, String transportType) {
 		Postage postage = this.single(ID);
 		if(postage!=null){
-			postage.setPostageDetail(postageDetailService.singleFit(ID, cityID));
+			postage.setPostageDetail(postageDetailService.singleFit(ID, cityID,transportType));
 		}
 		return postage;
 	}

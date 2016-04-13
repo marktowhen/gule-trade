@@ -88,6 +88,8 @@ public class OrderContextService implements IOrderContextService {
 					PostageCalculate post = new PostageCalculate();
 					post.setPostageID(wapGoodsService.singlePidByGid(orderGoods.getGID()));
 					post.setNumber(count);
+					//运送方式 前台传过来
+					post.setTransportType(order.getTransportType());
 					postList.add(post);
 				} catch (Exception e) {
 					e.printStackTrace();

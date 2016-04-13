@@ -31,7 +31,7 @@ public class PostageCalculateService implements IPostageCalculateService {
 	
 	@Override
 	public BigDecimal calculate(PostageCalculate postageCalculate) {
-		Postage postage = postageService.singleWithDetail(postageCalculate.getPostageID(), postageCalculate.getCity());
+		Postage postage = postageService.singleWithDetail(postageCalculate.getPostageID(), postageCalculate.getCity(),postageCalculate.getTransportType());
 		if(postage!=null){
 			//return calculateFirstCost(postage.getPostageDetail()).add(calculateNextCost(postageCalculate, postage, postage.getPostageDetail()));
 			for (IPostageCalculateRuleService postageCaculateService : postageCalculateRuleServiceList) {
@@ -78,7 +78,7 @@ public class PostageCalculateService implements IPostageCalculateService {
 		//匹配运费详情
 		for(PostageCalculate calculate : mergeRepeat){
 			calculate.setCity(city);
-			PostageDetail postageDetail = postageDetailService.singleFit(calculate.getPostageID(), city);
+			PostageDetail postageDetail = postageDetailService.singleFit(calculate.getPostageID(), city,calculate.getTransportType());
 			calculate.getCalculatRule().setPostageDetail(postageDetail);
 		}
 		

@@ -20,5 +20,7 @@ public interface PostageDetailDao {
 	
 	public List<PostageDetailEntity> selectByPostageID(String postageID);
 
-	public PostageDetailEntity selectByFitArea(@Param("postageID")String postageID, @Param("fitArea")String fitArea);
+	public PostageDetailEntity selectByFitArea(@Param("postageID")String postageID, @Param("fitArea")String fitArea,@Param("transportType") String transportType);
+
+	public List<String> selectDistinctTransportType(String postageID);
 }

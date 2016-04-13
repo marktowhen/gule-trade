@@ -17,6 +17,14 @@ public class PostageDetailVO {
 	private BigDecimal nextCost;
 	private String fitArea;
 	private boolean valid;
+	private String transportType;//运送方式
+	
+	public String getTransportType() {
+		return transportType;
+	}
+	public void setTransportType(String transportType) {
+		this.transportType = transportType;
+	}
 	public String getID() {
 		return ID;
 	}
