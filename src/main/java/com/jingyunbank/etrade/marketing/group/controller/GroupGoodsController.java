@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.group.controller;
+package com.jingyunbank.etrade.marketing.group.controller;
 
 import javax.validation.Valid;
 
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
-import com.jingyunbank.etrade.api.group.bo.GroupGoods;
-import com.jingyunbank.etrade.api.group.bo.GroupGoodsPriceSetting;
-import com.jingyunbank.etrade.api.group.service.IGroupGoodsService;
-import com.jingyunbank.etrade.group.bean.GroupGoodsVO;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
+import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
+import com.jingyunbank.etrade.marketing.group.bean.GroupGoodsVO;
 
 @RestController
 public class GroupGoodsController {

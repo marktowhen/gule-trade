@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.group.controller;
+package com.jingyunbank.etrade.marketing.group.controller;
 
 import java.util.Date;
 import java.util.Optional;
@@ -15,10 +15,10 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
-import com.jingyunbank.etrade.api.group.bo.Group;
-import com.jingyunbank.etrade.api.group.bo.GroupGoods;
-import com.jingyunbank.etrade.api.group.service.IGroupGoodsService;
-import com.jingyunbank.etrade.api.group.service.context.IGroupPurchaseContextService;
+import com.jingyunbank.etrade.api.marketing.group.bo.Group;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
+import com.jingyunbank.etrade.api.marketing.group.service.context.IGroupPurchaseContextService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 

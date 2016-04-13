@@ -1,14 +1,14 @@
-package com.jingyunbank.etrade.group.service.context;
+package com.jingyunbank.etrade.marketing.group.service.context;
 
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.jingyunbank.etrade.api.group.bo.Group;
-import com.jingyunbank.etrade.api.group.bo.GroupGoods;
-import com.jingyunbank.etrade.api.group.bo.GroupUser;
-import com.jingyunbank.etrade.api.group.service.context.IGroupPurchaseContextService;
+import com.jingyunbank.etrade.api.marketing.group.bo.Group;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
+import com.jingyunbank.etrade.api.marketing.group.service.context.IGroupPurchaseContextService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 
 @Service("groupPurchaseContextService")

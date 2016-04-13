@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.group.bean;
+package com.jingyunbank.etrade.marketing.auction.bean;
 
 import java.math.BigDecimal;
 

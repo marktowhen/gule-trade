@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.group.service;
+package com.jingyunbank.etrade.marketing.group.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.group.bo.GroupGoods;
-import com.jingyunbank.etrade.api.group.bo.GroupGoodsPriceSetting;
-import com.jingyunbank.etrade.api.group.service.IGroupGoodsService;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
+import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
 
 @Service("groupGoodsService")
 public class GroupGoodsService implements IGroupGoodsService {
