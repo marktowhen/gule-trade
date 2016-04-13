@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
@@ -37,6 +38,7 @@ public class SalesRegisterService implements IAsynRunService {
 	
 	private Logger logger = LoggerFactory.getLogger(SalesRegisterService.class);
 	@Override
+	@Transactional
 	public void run(AsynSchedule schedule)  {
 		System.out.println("salseRegesterService----------run");
 		try {
