@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.wap.goods.entity;
+package com.jingyunbank.etrade.wap.goods.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,16 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.jingyunbank.etrade.api.wap.goods.bo.GoodsImg;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-/**
- * 
- * Title: GoodsOperationShow 商品修改对象
- * 
- * @author duanxf
- * @date 2016年4月13日
- */
-public class GoodsOperationEntity implements Serializable {
+public class GoodsOperationVO implements Serializable {
 
 	/**
 	 * 
@@ -32,19 +25,43 @@ public class GoodsOperationEntity implements Serializable {
 	private BigDecimal price;
 	private BigDecimal salePrice;
 	private Date addtime;
-	private Date uptime;
-	private Date downtime;
+	private String uptime;
+	private String downtime;
 	private String PID;
 	private String path;
 	private String content;
 	private boolean status;
 	// -------------------
 	// 图片信息
-	private List<GoodsImgEntity> imgList = new ArrayList<GoodsImgEntity>();
+	private List<GoodsImgVO> imgList = new ArrayList<GoodsImgVO>();
 	// attr-value 信息
-	private List<GoodsAttrValueEntity> attrValueList = new ArrayList<GoodsAttrValueEntity>();
+	private List<GoodsAttrValueVO> attrValueList = new ArrayList<GoodsAttrValueVO>();
 	// sku 信息
-	private List<GoodsSkuEntity> skuList = new ArrayList<GoodsSkuEntity>();
+	private List<GoodsSkuVO> skuList = new ArrayList<GoodsSkuVO>();
+
+	public List<GoodsImgVO> getImgList() {
+		return imgList;
+	}
+
+	public void setImgList(List<GoodsImgVO> imgList) {
+		this.imgList = imgList;
+	}
+
+	public List<GoodsAttrValueVO> getAttrValueList() {
+		return attrValueList;
+	}
+
+	public void setAttrValueList(List<GoodsAttrValueVO> attrValueList) {
+		this.attrValueList = attrValueList;
+	}
+
+	public List<GoodsSkuVO> getSkuList() {
+		return skuList;
+	}
+
+	public void setSkuList(List<GoodsSkuVO> skuList) {
+		this.skuList = skuList;
+	}
 
 	public String getID() {
 		return ID;
@@ -118,19 +135,21 @@ public class GoodsOperationEntity implements Serializable {
 		this.addtime = addtime;
 	}
 
-	public Date getUptime() {
+	
+
+	public String getUptime() {
 		return uptime;
 	}
 
-	public void setUptime(Date uptime) {
+	public void setUptime(String uptime) {
 		this.uptime = uptime;
 	}
 
-	public Date getDowntime() {
+	public String getDowntime() {
 		return downtime;
 	}
 
-	public void setDowntime(Date downtime) {
+	public void setDowntime(String downtime) {
 		this.downtime = downtime;
 	}
 
@@ -164,30 +183,6 @@ public class GoodsOperationEntity implements Serializable {
 
 	public void setStatus(boolean status) {
 		this.status = status;
-	}
-
-	public List<GoodsImgEntity> getImgList() {
-		return imgList;
-	}
-
-	public void setImgList(List<GoodsImgEntity> imgList) {
-		this.imgList = imgList;
-	}
-
-	public List<GoodsAttrValueEntity> getAttrValueList() {
-		return attrValueList;
-	}
-
-	public void setAttrValueList(List<GoodsAttrValueEntity> attrValueList) {
-		this.attrValueList = attrValueList;
-	}
-
-	public List<GoodsSkuEntity> getSkuList() {
-		return skuList;
-	}
-
-	public void setSkuList(List<GoodsSkuEntity> skuList) {
-		this.skuList = skuList;
 	}
 
 }

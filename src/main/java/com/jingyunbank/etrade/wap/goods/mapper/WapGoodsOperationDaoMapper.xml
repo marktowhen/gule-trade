@@ -4,51 +4,23 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.wap.goods.dao.WapGoodsOperationDao">
 
-	<resultMap
-		type="com.jingyunbank.etrade.wap.goods.entity.GoodsOperationEntity"
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity"
 		id="goodsOperationMap">
-		<result column="gid_" property="ID" />
-		<result column="gid_" property="name" />
-		<result column="gid_" property="code" />
-		<result column="gid_" property="MID" />
-		<result column="gid_" property="TID" />
-		<result column="gid_" property="about" />
-		<result column="gid_" property="price" />
-		<result column="gid_" property="salePrice" />
-		<result column="gid_" property="addtime" />
-		<result column="gid_" property="uptime" />
-		<result column="gid_" property="downtime" />
-		<result column="gid_" property="PID" />
-		<result column="gid_" property="path" />
-		<result column="gid_" property="content" />
-		<result column="gid_" property="status" />
-		<collection property="imgList" javaType="ArrayList"
-			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsImgEntity">
-			<result column="gid_" property="ID" />
-			<result column="gid_" property="GID" />
-			<result column="gid_" property="skuId" />
-			<result column="gid_" property="path" />
-		</collection>
-		<collection property="attrValueList" javaType="ArrayList"
-			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity">
-			<result column="gid_" property="ID" />
-			<result column="gid_" property="GID" />
-			<result column="gid_" property="attrId" />
-			<result column="gid_" property="attrName" />
-			<result column="gid_" property="value" />
-		</collection>
-		<collection property="skuList" javaType="ArrayList"
-			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
-			<result column="gid_" property="ID" />
-			<result column="gid_" property="GID" />
-			<result column="gid_" property="properties" />
-			<result column="gid_" property="propertiesValue" />
-			<result column="gid_" property="stock" />
-			<result column="gid_" property="volume" />
-			<result column="gid_" property="price" />
-			<result column="gid_" property="salePrice" />
-			<result column="gid_" property="status" />
-		</collection>
+		<result column="id_" property="ID" />
+		<result column="name_" property="name" />
+		<result column="code_" property="code" />
+		<result column="mid_" property="MID" />
+		<result column="tid_" property="TID" />
+		<result column="about_" property="about" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="addtime_" property="addtime" />
+		<result column="uptime_" property="uptime" />
+		<result column="downtime_" property="downtime" />
+		<result column="pid_" property="PID" />
+		<result column="path_" property="path" />
+		<result column="content_" property="content" />
+		<result column="status_" property="status" />
 	</resultMap>
 
 	<update id="deleteGoods" parameterType="string">
@@ -113,8 +85,19 @@
 		WHERE `id` = #{ID}
 	</update>
 
-
+	<sql id="goodsSQL">
+		`id` id_, `name` name_ , `code` code_ ,`mid` mid_ ,`tid`
+		tid_ ,`about`
+		about_ ,`price` price_,
+		`sale_price` sale_price_
+		,`addtime` addtime_ ,`uptime`uptime_ ,`downtime`
+		downtime_ ,`pid` pid_
+		,`path` path_ ,`content` content_ ,`status`
+		status_
+	</sql>
 	<select id="selectGoodsByGid" parameterType="string" resultMap="goodsOperationMap">
-
+		SELECT
+		<include refid="goodsSQL" />
+		FROM `goods` g WHERE g.id = #{gid}
 	</select>
 </mapper>

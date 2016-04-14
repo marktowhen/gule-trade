@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.jingyunbank.etrade.wap.goods.entity.GoodsEntity;
 
-
 public interface WapGoodsOperationDao {
 
 	public void insertGoods(GoodsEntity entity) throws Exception;
@@ -13,4 +12,5 @@ public interface WapGoodsOperationDao {
 
 	public void deleteGoods(@Param("gid") String gid) throws Exception;
 
+	public GoodsEntity selectGoodsByGid(@Param("gid") String gid) throws Exception;
 }

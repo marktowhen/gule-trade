@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class GoodsVO implements Serializable {
 
 	/**
@@ -13,7 +15,7 @@ public class GoodsVO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	//-----商品属性-------
+	// -----商品属性-------
 	private String ID;
 	private String name;
 	private String code;
@@ -22,22 +24,23 @@ public class GoodsVO implements Serializable {
 	private String about;
 	private BigDecimal price;
 	private BigDecimal salePrice;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
 	private Date addtime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
 	private Date uptime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
 	private Date downtime;
 	private String PID;
 	private String path;
 	private String content;
 	private boolean status;
-    //-------------------
-	//图片信息
+	// -------------------
+	// 图片信息
 	private List<GoodsImgVO> imgList = new ArrayList<GoodsImgVO>();
-	//attr-value 信息
+	// attr-value 信息
 	private List<GoodsAttrValueVO> attrValueList = new ArrayList<GoodsAttrValueVO>();
-	//sku 信息
+	// sku 信息
 	private List<GoodsSkuVO> skuList = new ArrayList<GoodsSkuVO>();
-	
-	
 
 	public List<GoodsImgVO> getImgList() {
 		return imgList;

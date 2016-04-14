@@ -206,7 +206,7 @@ public class WapGoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void a2() throws Exception {
 		getMockMvc()
-				.perform(put("/api/goods/operation/info/delete/1").contentType(MediaType.APPLICATION_JSON)
+				.perform(get("/api/goods/operation/view/zMK5wllGSKa2RNznqS1Xrw").contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))

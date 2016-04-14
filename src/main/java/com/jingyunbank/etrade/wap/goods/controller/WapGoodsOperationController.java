@@ -1,6 +1,9 @@
 package com.jingyunbank.etrade.wap.goods.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,7 +31,7 @@ import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperationShow;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsOperationService;
-import com.jingyunbank.etrade.wap.goods.bean.GoodsAttrVO;
+import com.jingyunbank.etrade.wap.goods.bean.GoodsOperationVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
 /**
@@ -45,6 +48,23 @@ public class WapGoodsOperationController {
 	private IWapGoodsOperationService wapGoodsOperationService;
 
 	/**
+	 * String 转Date
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public Date string2Date(String time) {
+		Date date = null;
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			date = sf.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+
+	/**
 	 * 添加商品
 	 * 
 	 * @param request
@@ -54,8 +74,8 @@ public class WapGoodsOperationController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Result<String> saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsVO vo, BindingResult valid)
-			throws Exception {
+	public Result<String> saveGoods(HttpServletRequest request, @RequestBody @Valid GoodsOperationVO vo,
+			BindingResult valid) throws Exception {
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
@@ -66,6 +86,13 @@ public class WapGoodsOperationController {
 		BeanUtils.copyProperties(vo, goods);
 		goods.setID(KeyGen.uuid());
 		goods.setStatus(true);
+		goods.setAddtime(new Date());
+		if (vo.getUptime() != null && vo.getUptime() != "") {
+			goods.setUptime(string2Date(vo.getUptime()));
+		}
+		if (vo.getDowntime() != null && vo.getDowntime() != "") {
+			goods.setDowntime(string2Date(vo.getDowntime()));
+		}
 
 		// ------- sku信息---
 		List<GoodsSku> skuList = vo.getSkuList().stream().map(sku -> {
@@ -118,7 +145,7 @@ public class WapGoodsOperationController {
 	 */
 	@RequestMapping(value = "/update/{gid}", method = RequestMethod.POST)
 	public Result<String> updateGoods(HttpServletRequest request, @PathVariable String gid,
-			@RequestBody @Valid GoodsVO vo, BindingResult valid) throws Exception {
+			@RequestBody @Valid GoodsOperationVO vo, BindingResult valid) throws Exception {
 		if (valid.hasErrors()) {
 			List<ObjectError> errors = valid.getAllErrors();
 			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
@@ -128,6 +155,12 @@ public class WapGoodsOperationController {
 		Goods goods = new Goods();
 		BeanUtils.copyProperties(vo, goods);
 		goods.setID(gid);
+		if (vo.getUptime() != null && vo.getUptime() != "") {
+			goods.setUptime(string2Date(vo.getUptime()));
+		}
+		if (vo.getDowntime() != null && vo.getDowntime() != "") {
+			goods.setDowntime(string2Date(vo.getDowntime()));
+		}
 
 		// ------- sku信息---
 		List<GoodsSku> skuList = vo.getSkuList().stream().map(sku -> {
@@ -169,6 +202,7 @@ public class WapGoodsOperationController {
 
 	/**
 	 * 商品修改回显
+	 * 
 	 * @param request
 	 * @param gid
 	 * @return
@@ -182,7 +216,6 @@ public class WapGoodsOperationController {
 			vo = new GoodsVO();
 			BeanUtils.copyProperties(optional.get(), vo);
 		}
-		//TODO sql语句没完
 		return Result.ok(vo);
 	}
 
@@ -217,4 +250,6 @@ public class WapGoodsOperationController {
 		}
 		return Result.fail("fail");
 	}
+	
+	
 }

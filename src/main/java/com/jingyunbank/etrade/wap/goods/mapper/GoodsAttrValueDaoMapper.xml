@@ -4,10 +4,22 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.wap.goods.dao.GoodsAttrValueDao">
 
+	<resultMap
+		type="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity"
+		id="attrValueMap">
+		<result column="id_" property="ID" />
+		<result column="gid_" property="GID" />
+		<result column="attrId_" property="attrId" />
+		<result column="attrName_" property="attrName" />
+		<result column="value_" property="value" />
+	</resultMap>
+
 	<insert id="insertGoodsAttrValue"
 		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrValueEntity">
-		INSERT INTO `goods_attr_value` (`id`,`gid`,`attr_id`,`attr_name`,`value`)
-		VALUES  (#{ID},#{GID},#{attrId},#{attrName},#{value})
+		INSERT INTO `goods_attr_value`
+		(`id`,`gid`,`attr_id`,`attr_name`,`value`)
+		VALUES
+		(#{ID},#{GID},#{attrId},#{attrName},#{value})
 
 	</insert>
 
@@ -17,4 +29,12 @@
 		WHERE gid = #{gid}
 	</delete>
 
+	<select id="selectGoodsAttrValue" parameterType="string"
+		resultMap="attrValueMap">
+		SELECT v.`id` id_, v.`gid` gid_, v.`attr_id` attrId_ ,
+		v.`attr_name` attrName_, v.`value` value_
+		FROM goods_attr_value v
+		WHERE v.`gid`= #{gid}
+		ORDER BY v.`attr_name`
+	</select>
 </mapper>

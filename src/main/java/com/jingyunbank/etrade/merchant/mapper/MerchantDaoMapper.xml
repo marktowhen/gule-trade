@@ -3,126 +3,155 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jingyunbank.etrade.merchant.dao.MerchantDao">
-	<resultMap  id="rlt_merchant" type="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
-	     <id column="id" property="ID"/>
-    	 <result column="name" property="name"/>
-    	 <result column="ename" property="ename"/>
-    	 <result column="code" property="code"/>
-    	 <result column="address" property="address"/>
-    	 <result column="scale" property="scale"/>
-    	 <result column="employee_num" property="employeeNum"/>
-    	 <result column="tel" property="tel"/>
-    	 <result column="zipcode" property="zipcode"/>
-    	 <result column="qq" property="qq"/>
-    	 <result column="two_dimension_code" property="twoDimensionCode"/>
-    	 <result column="register_date" property="registerDate"/>
-    	 <result column="admin_sort_num" property="adminSortNum"/>
-    	 <result column="merchant_desc" property="merchantDesc"/>
-    	 <result column="img_path" property="imgPath"/>
-    	 <result column="invoice_flag" property="invoiceFlag"/>
+	<resultMap id="rlt_merchant"
+		type="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
+		<id column="id" property="ID" />
+		<result column="name" property="name" />
+		<result column="ename" property="ename" />
+		<result column="code" property="code" />
+		<result column="address" property="address" />
+		<result column="scale" property="scale" />
+		<result column="employee_num" property="employeeNum" />
+		<result column="tel" property="tel" />
+		<result column="zipcode" property="zipcode" />
+		<result column="qq" property="qq" />
+		<result column="two_dimension_code" property="twoDimensionCode" />
+		<result column="register_date" property="registerDate" />
+		<result column="admin_sort_num" property="adminSortNum" />
+		<result column="merchant_desc" property="merchantDesc" />
+		<result column="img_path" property="imgPath" />
+		<result column="invoice_flag" property="invoiceFlag" />
 	</resultMap>
-	<resultMap  id="rlt_invoicetype" type="com.jingyunbank.etrade.merchant.entity.InvoiceTypeEntity">
-		 <result column="code" property="code"/>
-    	 <result column="name" property="name"/>
-    	 <result column="remark" property="remark"/>
+	<resultMap id="rlt_invoicetype"
+		type="com.jingyunbank.etrade.merchant.entity.InvoiceTypeEntity">
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="remark" property="remark" />
 	</resultMap>
-	
+
+
+
+	<select id="selectMerchantBySellerId" resultMap="rlt_merchant"
+		parameterType="string">
+		SELECT m.`id` ,m.`name` FROM merchant m
+		LEFT JOIN seller s ON s.`mid` =m.`id`
+		WHERE s.`mid` = (
+		SELECT e.mid FROM seller e WHERE e.`id`= #{sellerId}
+		)
+	</select>
+
+
 	<!--查询推荐商家列表 -->
-	<select id = "selectMerchants" resultMap="rlt_merchant" >
-	select id,name,ename,code,address,scale,employee_num,tel
-	,zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level 
-	 from merchant ORDER BY admin_sort_num limit #{from},#{to};
+	<select id="selectMerchants" resultMap="rlt_merchant">
+		select id,name,ename,code,address,scale,employee_num,tel
+		,zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level
+		from merchant ORDER BY admin_sort_num limit #{from},#{to};
 	</select>
 	<!--添加商家信息 -->
-	<insert id="insertMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
-			INSERT INTO merchant(id,name,ename,code,address,scale,employee_num,tel,
-			zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level)
-			VALUES 
-			(#{ID},#{name},#{ename},#{code},#{address},#{scale},#{employeeNum},#{tel},
-			#{zipcode},#{qq},#{twoDimensionCode},#{registerDate},#{adminSortNum},#{merchantDesc},#{imgPath},#{invoiceFlag},#{level});
+	<insert id="insertMerchant"
+		parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
+		INSERT INTO merchant(id,name,ename,code,address,scale,employee_num,tel,
+		zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level)
+		VALUES
+		(#{ID},#{name},#{ename},#{code},#{address},#{scale},#{employeeNum},#{tel},
+		#{zipcode},#{qq},#{twoDimensionCode},#{registerDate},#{adminSortNum},#{merchantDesc},#{imgPath},#{invoiceFlag},#{level});
 	</insert>
 	<!--查询所有发票类型列表 -->
-	<select id = "selectInvoiceType" resultMap="rlt_invoicetype" >
-	select code,name,remark from invoice_type ORDER BY code;
+	<select id="selectInvoiceType" resultMap="rlt_invoicetype">
+		select code,name,remark from invoice_type ORDER BY code;
 	</select>
 	<!--添加商家发票类型信息 -->
-	<insert id="insertMerchantInvoiceType" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantInvoiceEntity">
-			INSERT INTO merchant_invoice(id,mid,code)
-			VALUES 
-			(#{ID},#{MID},#{code});
+	<insert id="insertMerchantInvoiceType"
+		parameterType="com.jingyunbank.etrade.merchant.entity.MerchantInvoiceEntity">
+		INSERT INTO merchant_invoice(id,mid,code)
+		VALUES
+		(#{ID},#{MID},#{code});
 	</insert>
 	<!--修改商家信息 -->
-	<update id="updateMerchant" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
-			update merchant set
-			name = #{name},
-			ename = #{ename},
-			code = #{code},
-			address = #{address},
-			scale = #{scale},
-			employee_num = #{employeeNum},
-			tel = #{tel},
-			zipcode = #{zipcode},
-			qq = #{qq},
-			two_dimension_code = #{twoDimensionCode},
-			register_date = #{registerDate},
-			admin_sort_num = #{adminSortNum},
-			merchant_desc = #{merchantDesc},
-			img_path = #{imgPath},
-			level = #{level},
-			invoice_flag = #{invoiceFlag} 
-			where id = #{ID}
+	<update id="updateMerchant"
+		parameterType="com.jingyunbank.etrade.merchant.entity.MerchantEntity">
+		update merchant set
+		name = #{name},
+		ename = #{ename},
+		code = #{code},
+		address = #{address},
+		scale = #{scale},
+		employee_num = #{employeeNum},
+		tel = #{tel},
+		zipcode = #{zipcode},
+		qq = #{qq},
+		two_dimension_code = #{twoDimensionCode},
+		register_date = #{registerDate},
+		admin_sort_num = #{adminSortNum},
+		merchant_desc = #{merchantDesc},
+		img_path = #{imgPath},
+		level = #{level},
+		invoice_flag = #{invoiceFlag}
+		where id = #{ID}
 	</update>
 	<!--删除商家和发票类型关联信息 -->
 	<delete id="deleteMerchantInvoiceType" parameterType="String">
-		delete from merchant_invoice where mid = #{mid}
+		delete from
+		merchant_invoice where mid = #{mid}
 	</delete>
-	<resultMap  id="rlt_deliverytype" type="com.jingyunbank.etrade.merchant.entity.DeliveryTypeEntity">
-		 <result column="code" property="code"/>
-    	 <result column="name" property="name"/>
-    	 <result column="description" property="description"/>
+	<resultMap id="rlt_deliverytype"
+		type="com.jingyunbank.etrade.merchant.entity.DeliveryTypeEntity">
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="description" property="description" />
 	</resultMap>
 	<!--查询所有发票类型列表 -->
-	<select id = "selectDeliveryType" resultMap="rlt_deliverytype" >
-	select code,name,description from delivery_type ORDER BY code;
+	<select id="selectDeliveryType" resultMap="rlt_deliverytype">
+		select code,name,description from delivery_type ORDER BY code;
 	</select>
 	<!--添加商家发票类型信息 -->
-	<insert id="insertMerchantDeliveryType" parameterType="com.jingyunbank.etrade.merchant.entity.MerchantDeliveryEntity">
-			INSERT INTO merchant_delivery(id,mid,code)
-			VALUES 
-			(#{ID},#{MID},#{code});
+	<insert id="insertMerchantDeliveryType"
+		parameterType="com.jingyunbank.etrade.merchant.entity.MerchantDeliveryEntity">
+		INSERT INTO merchant_delivery(id,mid,code)
+		VALUES
+		(#{ID},#{MID},#{code});
 	</insert>
 	<!--删除商家和发票类型关联信息 -->
 	<delete id="deleteMerchantDeliveryType" parameterType="String">
-		delete from merchant_delivery where mid = #{mid}
+		delete
+		from merchant_delivery where mid = #{mid}
 	</delete>
 	<!-- 通过mid查询商家的信息 -->
- 	<select id="selectMerchantByMid" resultMap="rlt_merchant">
- 			select  id,name,ename,code,address,scale,employee_num,tel
-	,zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level  from merchant where id=#{mid}
- 	</select>
- 	
- 	<!--查询所有发票类型列表 -->
-	<select id = "selectInvoiceTypeByMid" resultMap="rlt_invoicetype" parameterType="String">
-	select a.code as code,a.name as name,a.remark as remark from invoice_type a,merchant_invoice b
-	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	<select id="selectMerchantByMid" resultMap="rlt_merchant">
+		select id,name,ename,code,address,scale,employee_num,tel
+		,zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level
+		from merchant where id=#{mid}
 	</select>
-	
+
 	<!--查询所有发票类型列表 -->
-	<select id = "selectDeliveryTypeByMid" resultMap="rlt_deliverytype" parameterType="String">
-	select a.code as code,a.name as name,a.description as description from delivery_type a,merchant_delivery b
-	where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	<select id="selectInvoiceTypeByMid" resultMap="rlt_invoicetype"
+		parameterType="String">
+		select a.code as code,a.name as name,a.remark as remark from invoice_type
+		a,merchant_invoice b
+		where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
+	</select>
+
+	<!--查询所有发票类型列表 -->
+	<select id="selectDeliveryTypeByMid" resultMap="rlt_deliverytype"
+		parameterType="String">
+		select a.code as code,a.name as name,a.description as description from
+		delivery_type a,merchant_delivery b
+		where a.`code` = b.`code` and b.mid = #{mid} ORDER BY a.code;
 	</select>
 	<!--根据条件查询所有商家列表 -->
 	<select id="selectMerchantsByCondition" parameterType="java.util.Map"
 		resultMap="rlt_merchant">
-		select  id,name,ename,code,address,scale,employee_num,tel
-	,zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level  from merchant  m
-		where m.name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
+		select id,name,ename,code,address,scale,employee_num,tel
+		,zipcode,qq,two_dimension_code,register_date,admin_sort_num,merchant_desc,img_path,invoice_flag,level
+		from merchant m
+		where m.name LIKE CONCAT(CONCAT('%', #{merchantName}),
+		'%')
 		LIMIT #{from} , #{size}
 	</select>
 	<!-- 查询商家数量 -->
-	<select id="selectMerchantsCount" parameterType="java.util.Map" resultType="int">
-		select count(1) from 
+	<select id="selectMerchantsCount" parameterType="java.util.Map"
+		resultType="int">
+		select count(1) from
 		merchant m
 		where m.name LIKE CONCAT(CONCAT('%', #{merchantName}), '%')
 	</select>
