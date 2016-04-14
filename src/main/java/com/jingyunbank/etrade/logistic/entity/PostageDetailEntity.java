@@ -18,6 +18,14 @@ public class PostageDetailEntity {
 	private String fitArea;
 	private boolean valid;
 	private String transportType;//运送方式
+	private String fitAreaName;//适用地区的文字说明 如山东省等
+	
+	public String getFitAreaName() {
+		return fitAreaName;
+	}
+	public void setFitAreaName(String fitAreaName) {
+		this.fitAreaName = fitAreaName;
+	}
 	
 	public String getTransportType() {
 		return transportType;

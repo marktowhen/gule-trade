@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 public class PostageCalculateVO {
 	@NotNull
@@ -15,7 +17,15 @@ public class PostageCalculateVO {
 	private int number;
 	private double weight;
 	private double volume;
+	@NotEmpty
+	private String tansportType;
 	
+	public String getTansportType() {
+		return tansportType;
+	}
+	public void setTansportType(String tansportType) {
+		this.tansportType = tansportType;
+	}
 	public String getPostageID() {
 		return postageID;
 	}

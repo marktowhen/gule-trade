@@ -2,22 +2,45 @@ package com.jingyunbank.etrade.logistic.bean;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.Min;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class PostageDetailVO {
 
 	private String ID;
 	private String postageID;
 	private boolean free;
+	@Min(0)
 	private int firstNumber;
+	@Min(0)
 	private double firstWeight;
+	@Min(0)
 	private double firstVolume;
+	@Min(0)
 	private BigDecimal firstCost;
+	@Min(0)
 	private int nextNumber;
+	@Min(0)
 	private double nextWeight;
+	@Min(0)
 	private double nextVolumn;
+	@Min(0)
 	private BigDecimal nextCost;
-	private String fitArea;
 	private boolean valid;
+	@NotEmpty
 	private String transportType;//运送方式
+	@NotEmpty
+	private String fitArea;
+	@NotEmpty
+	private String fitAreaName;//适用地区的文字说明 如山东省等
+	
+	public String getFitAreaName() {
+		return fitAreaName;
+	}
+	public void setFitAreaName(String fitAreaName) {
+		this.fitAreaName = fitAreaName;
+	}
 	
 	public String getTransportType() {
 		return transportType;

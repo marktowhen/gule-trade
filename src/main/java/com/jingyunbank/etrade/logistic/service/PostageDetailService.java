@@ -113,4 +113,24 @@ public class PostageDetailService implements IPostageDetailService {
 		return postageDetailDao.selectDistinctTransportType(postageID);
 	}
 
+	@Override
+	public boolean save(List<PostageDetail> details) throws DataSavingException {
+		
+		return postageDetailDao.insertMuti(details.stream().map(bo->{
+			PostageDetailEntity entity = new PostageDetailEntity();
+			BeanUtils.copyProperties(bo, entity);
+			return entity;
+		}).collect(Collectors.toList()));
+	}
+
+	@Override
+	public boolean deleteBatch(String postageID) throws DataRemovingException {
+		// TODO Auto-generated method stub
+		try {
+			return postageDetailDao.deleteBatch(postageID);
+		} catch (Exception e) {
+			throw new DataRemovingException(e);
+		}
+	}
+
 }

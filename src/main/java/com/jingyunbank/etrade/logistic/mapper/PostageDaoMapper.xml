@@ -9,17 +9,16 @@
 		<result column="id" property="ID" />
 		<result column="mid" property="MID" />
 		<result column="title" property="title" />
-		<result column="express_code" property="expressCode" />
 		<result column="type" property="type" />
 		<result column="valid" property="valid" />
 	</resultMap>
 
 	<sql id="postage_column">
-		id,mid,title,express_code,type,valid 
+		id,mid,title,type,valid 
 	</sql>
 	<insert id="insert">
 		insert into postage(<include refid="postage_column"/>)
-		values(#{ID},#{MID},#{title},#{expressCode},#{type},#{valid})
+		values(#{ID},#{MID},#{title},#{type},#{valid})
 	</insert>
 	
 	<update id="updateStatus">
@@ -27,7 +26,7 @@
 	</update>
 	
 	<update id="update">
-		update postage set title=#{title},express_code=#{expressCode},type=#{type}
+		update postage set title=#{title},type=#{type}
 			where id=#{ID}
 	</update>
 	<select id="selectOne" resultMap="PostageMap">

@@ -23,4 +23,8 @@ public interface PostageDetailDao {
 	public PostageDetailEntity selectByFitArea(@Param("postageID")String postageID, @Param("fitArea")String fitArea,@Param("transportType") String transportType);
 
 	public List<String> selectDistinctTransportType(String postageID);
+
+	public boolean insertMuti(@Param("details")List<PostageDetailEntity> details);
+	
+	public boolean deleteBatch( @Param("postageID")String postageID)  throws Exception;
 }
