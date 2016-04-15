@@ -77,13 +77,14 @@ public class PostageController {
 		
 	}	
 	
-	@RequestMapping(value="/", method=RequestMethod.PUT)
-	public Result<String> refresh(@RequestBody @Valid PostageVO postageVO , BindingResult valid ) throws Exception{
+	@RequestMapping(value="/{ID}", method=RequestMethod.PUT)
+	public Result<String> refresh(@RequestBody @Valid PostageVO postageVO ,@PathVariable String ID, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
 		}
 		Postage postage = new Postage();
 		BeanUtils.copyProperties(postageVO, postage);
+		postage.setID(ID);
 		
 		List<PostageDetail> postageDetailList = postageVO.getPostageDetailList().stream().map( vo->{
 			PostageDetail bo = new PostageDetail();
@@ -137,6 +138,13 @@ public class PostageController {
 		return Result.fail("未找到");
 		
 	}	
+	
+	@RequestMapping(value="/{ID}", method=RequestMethod.DELETE)
+	public Result<String> remove(@PathVariable String ID ) throws Exception{
+		postageManageService.remove(ID);
+		return Result.ok();
+		
+	}
 	
 	private PostageVO getPostageVOByBo(Postage bo){
 		PostageVO postageVO = new PostageVO();

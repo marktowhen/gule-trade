@@ -20,7 +20,9 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.statics.area.bo.Province;
+import com.jingyunbank.etrade.api.statics.area.service.ICityService;
 import com.jingyunbank.etrade.api.statics.area.service.IProvinceService;
+import com.jingyunbank.etrade.statics.area.bean.CityVO;
 import com.jingyunbank.etrade.statics.area.bean.ProvinceVO;
 
 @RestController
@@ -29,6 +31,8 @@ public class ProvinceController {
 	
 	@Autowired
 	private IProvinceService provinceService;
+	@Autowired
+	private ICityService cityService;
 	
 	/**
 	 * 新增
@@ -130,6 +134,31 @@ public class ProvinceController {
 				.stream().map( bo->{ 
 					ProvinceVO c = new ProvinceVO();
 					BeanUtils.copyProperties(bo, c);
+					return c;
+					}).collect(Collectors.toList())
+				);
+	}
+	
+	/**
+	 * 查询
+	 * @param id
+	 * @return
+	 * 2015年11月5日 qxs
+	 */
+	@RequestMapping(value="/city/list",method=RequestMethod.GET)
+	public Result<List<ProvinceVO>> listWithCity(ProvinceVO vo) throws Exception{
+		Province province = new Province();
+		BeanUtils.copyProperties(vo, province);
+		return Result.ok(provinceService.list(province)
+				.stream().map( bo->{ 
+					ProvinceVO c = new ProvinceVO();
+					BeanUtils.copyProperties(bo, c);
+					c.setCityList(cityService.listByProvince(bo.getProvinceID()).stream().map(city->{
+						CityVO cityVO = new CityVO();
+						BeanUtils.copyProperties(city, cityVO);
+						return cityVO;
+					}).collect(Collectors.toList()));
+					
 					return c;
 					}).collect(Collectors.toList())
 				);

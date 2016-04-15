@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.statics.area.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +22,14 @@ public class ProvinceVO implements Serializable {
 	//偏远地区
 	private boolean faraway;
 	
+	private List<CityVO> cityList ;
+	
+	public List<CityVO> getCityList() {
+		return cityList;
+	}
+	public void setCityList(List<CityVO> cityList) {
+		this.cityList = cityList;
+	}
 	public boolean isFaraway() {
 		return faraway;
 	}
