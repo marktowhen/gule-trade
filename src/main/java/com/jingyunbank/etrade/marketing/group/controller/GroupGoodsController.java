@@ -1,5 +1,8 @@
 package com.jingyunbank.etrade.marketing.group.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
@@ -36,6 +40,15 @@ public class GroupGoodsController {
 			goodsbo.getPriceSettings().add(bo);
 		});
 		groupGoodsService.save(goodsbo);
+		
+		return Result.ok();
+	}
+	
+	@RequestMapping(value="/api/group/goods/list", method=RequestMethod.POST)
+	public Result<List<GroupGoodsVO>> list(HttpSession session) throws Exception{
+		
+		String mid = Login.MID(session);
+		groupGoodsService.list();
 		
 		return Result.ok();
 	}

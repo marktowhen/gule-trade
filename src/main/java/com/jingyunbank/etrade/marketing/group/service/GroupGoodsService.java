@@ -26,4 +26,9 @@ public class GroupGoodsService implements IGroupGoodsService {
 		return Optional.ofNullable(null);
 	}
 
+	@Override
+	public List<GroupGoods> list() {
+		return null;
+	}
+
 }
