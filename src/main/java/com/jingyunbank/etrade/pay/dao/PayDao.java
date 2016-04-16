@@ -19,4 +19,6 @@ public interface PayDao {
 	public int countDone(@Param("pids") List<String> pids);
 	
 	public void updateStatus(@Param("extransno")String extransno, @Param("done")boolean done) throws Exception;
+
+	public List<OrderPaymentEntity> selectPaid(@Param("oids") List<String> oids);
 }

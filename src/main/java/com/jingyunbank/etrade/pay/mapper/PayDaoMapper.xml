@@ -52,6 +52,17 @@
 				#{oid}
 			</foreach>
 	</select>
+	<select id="selectPaid" resultMap="OrderPaymentEntityResultMap">
+		select <include refid="order_payment_columns"/>
+		from order_payment
+		where 
+			done = 1
+			and exists (select 1 from orders o where o.id = oid and o.status_code = 'PAID')
+			and oid in
+			<foreach collection="oids" item="oid" open="(" separator="," close=")">
+				#{oid}
+			</foreach>
+	</select>
 	<select id="countDone" resultType="int">
 		select count(id) from order_payment 
 		where done = 1 and id in 

@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.pay.service.context;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,25 @@ public class PayContextService implements IPayContextService{
 		});
 		payService.refreshNOAndPipeline(payments);
 		IPayHandler handler = payHandlerResolver.resolve(pipeline.getCode());
-		return handler.prepare(payments);
+		return handler.prepay(payments);
+	}
+
+	@Override
+	public Map<String, String> prefund(String oids) throws Exception {
+		List<OrderPayment> payments = payService.listPaid(Arrays.asList(oids));
+		if(!payService.allDone(payments.stream().map(x->x.getID()).collect(Collectors.toList()))){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("error", "存在未支付的订单，无法退款！");
+			return map;
+		}
+		if(payments.size() != 1){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("error", "订单信息有误！");
+			return map;
+		}
+		OrderPayment payment = payments.get(0);
+		String pipeline = payments.get(0).getPipelineCode();
+		IPayHandler handler = payHandlerResolver.resolve(pipeline);
+		return handler.prefund(payment);
 	}
 }
