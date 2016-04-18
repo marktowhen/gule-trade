@@ -25,7 +25,7 @@ public class AlipayHandler implements IPayHandler {
 	private static PayPipeline pipeline = new PayPipeline();
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
+	public Map<String, String> prepay(List<OrderPayment> payments) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("service", "create_direct_pay_by_user");
 		//合作身份者ID，以2088开头由16位纯数字组成的字符串
@@ -80,6 +80,12 @@ public class AlipayHandler implements IPayHandler {
 	@PostConstruct
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.ALIPAY);
+	}
+
+	@Override
+	public Map<String, String> prefund(OrderPayment payment) throws Exception {
+		//to be implemented.
+		return null;
 	}
 
 }
