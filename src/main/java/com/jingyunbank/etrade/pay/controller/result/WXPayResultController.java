@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
+import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
 @Controller
 public class WXPayResultController {
 	@Autowired
-	private IOrderContextService orderContextService;
+	private IPayContextService payContextService;
 	@Autowired
 	private IPayPipelineService payPipelineService;
 	
@@ -53,7 +53,7 @@ public class WXPayResultController {
 						&& StringUtils.hasText(calculatedSign)
 						&& providedSign.equals(calculatedSign)){
 					
-					orderContextService.paysuccess(extorderno);
+					payContextService.paysucc(extorderno);
 					
 					StringBuilder sbuilder = new StringBuilder();
 					sbuilder.append("<xml>\n")
@@ -65,7 +65,7 @@ public class WXPayResultController {
 					}
 					return;
 				}
-				orderContextService.payfail(extorderno, "支付结果的签名校验失败："+calculatedSign);
+				payContextService.payfail(extorderno, "支付结果的签名校验失败："+calculatedSign);
 				StringBuilder sbuilder = new StringBuilder();
 				sbuilder.append("<xml>\n")
 				.append("<return_code><![CDATA[FAIL]]></return_code>\n")
