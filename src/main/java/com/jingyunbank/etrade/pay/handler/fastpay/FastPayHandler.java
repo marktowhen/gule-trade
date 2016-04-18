@@ -27,7 +27,7 @@ public class FastPayHandler implements IPayHandler {
 	private static PayPipeline pipeline = new PayPipeline();
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
+	public Map<String, String> prepay(List<OrderPayment> payments) throws Exception {
 		
 		Map<String, String> result = new HashMap<String, String>();
 		String money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b)).toString();
@@ -78,6 +78,13 @@ public class FastPayHandler implements IPayHandler {
 	@PostConstruct
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.FASTPAY);
+	}
+
+	@Override
+	public Map<String, String> prefund(OrderPayment payment) throws Exception {
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("error", "不支持该操作");
+		return result;
 	}
 
 }

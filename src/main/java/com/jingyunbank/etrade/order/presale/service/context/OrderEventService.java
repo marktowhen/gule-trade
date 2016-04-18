@@ -35,6 +35,7 @@ import com.jingyunbank.etrade.api.message.service.context.ISyncNotifyService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
+import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderEventService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
@@ -60,6 +61,8 @@ public class OrderEventService implements IOrderEventService {
 	private ICartService cartService;
 	@Autowired
 	private IOrderService orderService;
+	@Autowired
+	private IOrderContextService orderContextService;
 	
 	@Override
 	public void broadcast(List<Orders> event, String queue){
@@ -190,6 +193,26 @@ public class OrderEventService implements IOrderEventService {
 		}
 		return orders;
 	}
+	
+	//删除购物车
+	@JmsListener(destination="PAYSUCCESS_CALLBACK", containerFactory="queueJmsListnerContainer")
+	public void paysuccess(String content){
+		try {
+			orderContextService.paysuccess(content);
+		} catch (DataRefreshingException | DataSavingException e) {
+			logger.error("处理支付成功是出现异常：" + e.toString());
+		}
+	}
+	
+	@JmsListener(destination="PAYFAILURE_CALLBACK", containerFactory="queueJmsListnerContainer")
+	public void payfail(String content){
+		try {
+			orderContextService.payfail(content, "");
+		} catch (DataRefreshingException | DataSavingException e) {
+			logger.error("处理支付失败时出现异常：" + e.toString());
+		}
+	}
+	
 	
 	private Logger logger = LoggerFactory.getLogger(OrderEventService.class);
 

@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
+import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
 @Controller
 public class JdpayResultController {
 	
 	@Autowired
-	private IOrderContextService orderContextService;
+	private IPayContextService payContextService;
 	
 	@RequestMapping(value="/api/payments/result/jd", method={RequestMethod.GET, RequestMethod.POST})
 	public void payresult (HttpServletRequest request, HttpServletResponse response) throws Exception{
@@ -43,13 +43,13 @@ public class JdpayResultController {
 			{
 				// 支付成功，商户 根据自己业务做相应逻辑处理
 				// 此处加入商户系统的逻辑处理（例如判断金额，判断支付状态(20成功,30失败)，更新订单状态等等）......
-				orderContextService.paysuccess(v_oid);
+				payContextService.paysucc(v_oid);
 			}else{
-				orderContextService.payfail(v_oid, "");
+				payContextService.payfail(v_oid, "");
 			}
 		}else{
 			//支付失败
-			orderContextService.payfail(v_oid, "");
+			payContextService.payfail(v_oid, "");
 		}
 	}
 }
