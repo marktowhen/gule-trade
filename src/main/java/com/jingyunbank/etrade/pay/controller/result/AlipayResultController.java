@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
+import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
 @Controller
 public class AlipayResultController {
 	@Autowired
-	private IOrderContextService orderContextService;
+	private IPayContextService payContextService;
 	@Autowired
 	private IPayPipelineService payPipelineService;
 	
@@ -91,7 +91,7 @@ public class AlipayResultController {
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
 					//如果有做过处理，不执行商户的业务程序
-				orderContextService.paysuccess(out_trade_no);
+				payContextService.paysucc(out_trade_no);
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 			}
@@ -99,7 +99,7 @@ public class AlipayResultController {
 			return ("success");	//请不要修改或删除
 			//////////////////////////////////////////////////////////////////////////////////////////
 		}else{//验证失败
-			orderContextService.payfail(out_trade_no, "支付结果的签名校验失败："+calculatedSign);
+			payContextService.payfail(out_trade_no, "支付结果的签名校验失败："+calculatedSign);
 			return ("fail");
 		}
 	}

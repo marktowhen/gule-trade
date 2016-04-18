@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.jms.JMSException;
+import javax.jms.Session;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +30,8 @@ public class PayContextService implements IPayContextService{
 	private IPayService payService;
 	@Autowired
 	private IPayHandlerResolver payHandlerResolver;
+	@Autowired
+	private JmsTemplate jmsTemplate;
 	
 //	@Override
 //	@Transactional
@@ -90,4 +97,34 @@ public class PayContextService implements IPayContextService{
 		IPayHandler handler = payHandlerResolver.resolve(pipeline);
 		return handler.prefund(payment);
 	}
+
+	@Override
+	public boolean paysucc(String extrano) throws Exception {
+		
+		
+		
+		jmsTemplate.setPubSubDomain(false);
+		jmsTemplate.send("PAYSUCCESS_CALLBACK", new MessageCreator() {
+			@Override
+			public javax.jms.Message createMessage(Session session) throws JMSException {
+					return session.createTextMessage(extrano);
+			}
+		});
+		
+		return false;
+	}
+
+	@Override
+	public void payfail(String extrano, String reason) throws Exception {
+		
+
+		jmsTemplate.setPubSubDomain(false);
+		jmsTemplate.send("PAYFAILURE_CALLBACK", new MessageCreator() {
+			@Override
+			public javax.jms.Message createMessage(Session session) throws JMSException {
+					return session.createTextMessage(extrano);
+			}
+		});
+	}
+	
 }
