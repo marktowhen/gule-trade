@@ -7,8 +7,8 @@
 	<resultMap type="com.jingyunbank.etrade.logistic.entity.PostageDetailEntity"
 		id="PostageDetailMap">
 		<result column="id" property="ID" />
-		<result column="free" property="free" />
 		<result column="postage_id" property="postageID" />
+		<result column="free" property="free" />
 		<result column="first_number" property="firstNumber" />
 		<result column="first_weight" property="firstWeight" />
 		<result column="first_volume" property="firstVolume" />
@@ -29,16 +29,16 @@
 	</sql>
 	<insert id="insert">
 		insert into postage_detail(<include refid="base_column"/>)
-		values(#{ID},#{postageID},#{free},#{firstNumber},#{firstWeight},#{firstVolume},#{first_cost},
-				#{next_number},#{next_weight},#{next_volume},#{next_cost},#{fit_area},#{valid},#{transportType},#{fitAreaName})
+		values(#{ID},#{postageID},#{free},#{firstNumber},#{firstWeight},#{firstVolume},#{firstCost},
+				#{nextNumber},#{nextWeight},#{nextVolume},#{nextCost},#{fitArea},#{valid},#{transportType},#{fitAreaName})
 	</insert>
 	
 	<insert id="insertMuti">
 		insert into postage_detail(<include refid="base_column"/>)
 		values
-		<foreach collection="details" index="detail" separator=",">
-			(#{detail.ID},#{detail.postageID},#{detail.free},#{detail.firstNumber},#{detail.firstWeight},#{detail.firstVolume},#{detail.first_cost},
-				#{detail.next_number},#{detail.next_weight},#{detail.next_volume},#{detail.next_cost},#{detail.fit_area},#{detail.valid},#{detail.transportType},#{detail.fitAreaName})
+		<foreach collection="details" item="detail" separator=",">
+			(#{detail.ID},#{detail.postageID},#{detail.free},#{detail.firstNumber},#{detail.firstWeight},#{detail.firstVolume},#{detail.firstCost},
+				#{detail.nextNumber},#{detail.nextWeight},#{detail.nextVolume},#{detail.nextCost},#{detail.fitArea},#{detail.valid},#{detail.transportType},#{detail.fitAreaName})
 		</foreach>
 	</insert>
 	

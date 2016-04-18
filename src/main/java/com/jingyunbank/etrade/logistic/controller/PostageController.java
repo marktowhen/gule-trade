@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.logistic.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.logistic.bo.Postage;
 import com.jingyunbank.etrade.api.logistic.bo.PostageDetail;
 import com.jingyunbank.etrade.api.logistic.service.IPostageDetailService;
@@ -55,20 +57,23 @@ public class PostageController {
 //		return Result.ok(postageCalculateService.calculateMuti(postagebo, postagebo.get(0).getCity()));
 //	}
 	
-	@RequestMapping(value="/", method=RequestMethod.POST)
-	public Result<String> save(@RequestBody @Valid PostageVO postageVO , BindingResult valid ) throws Exception{
+	@RequestMapping(value="/", method=RequestMethod.POST,
+			consumes="application/json;charset=UTF-8")
+	public Result<String> save(@RequestBody @Valid PostageVO postageVO , BindingResult valid ,HttpSession session) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
 		}
-		postageVO.setID(KeyGen.uuid());
 		Postage postage = new Postage();
 		BeanUtils.copyProperties(postageVO, postage);
-		
+		postage.setID(KeyGen.uuid());
+		postage.setMID(Login.MID(session));
+		postage.setValid(true);
 		List<PostageDetail> postageDetailList = postageVO.getPostageDetailList().stream().map( vo->{
 			PostageDetail bo = new PostageDetail();
 			BeanUtils.copyProperties(vo, bo);
 			bo.setID(KeyGen.uuid());
 			bo.setPostageID(postage.getID());
+			bo.setValid(true);
 			return bo;
 		}).collect(Collectors.toList());
 		
@@ -99,30 +104,28 @@ public class PostageController {
 	
 	/**
 	 * 查詢店鋪运费模板
-	 * @param MID
 	 * @return
 	 * @throws Exception
 	 * 2016年4月14日 qxs
 	 */
-	@RequestMapping(value="/list/{MID}", method=RequestMethod.GET)
-	public Result<List<PostageVO>> list(@PathVariable String MID ) throws Exception{
+	@RequestMapping(value="/list", method=RequestMethod.GET)
+	public Result<List<PostageVO>> list(HttpSession  session) throws Exception{
 		
-		return Result.ok(postageService.list(MID).stream().map( postage->{
+		return Result.ok(postageService.list(Login.MID(session)).stream().map( postage->{
 			return getPostageVOByBo(postage);
 		}).collect(Collectors.toList()));
 	}
 	
 	/**
 	 * 查詢店鋪运费模板及模板详情
-	 * @param MID
 	 * @return
 	 * @throws Exception
 	 * 2016年4月14日 qxs
 	 */
-	@RequestMapping(value="/list/{MID}/detail", method=RequestMethod.GET)
-	public Result<List<PostageVO>> listWithDetail(@PathVariable String MID ) throws Exception{
+	@RequestMapping(value="/list/detail", method=RequestMethod.GET)
+	public Result<List<PostageVO>> listWithDetail(HttpSession  session  ) throws Exception{
 		
-		return Result.ok(postageManageService.listOneShopWithDetail(MID).stream().map( postage->{
+		return Result.ok(postageManageService.listOneShopWithDetail(Login.MID(session)).stream().map( postage->{
 					return getPostageVOByBo(postage);
 				}).collect(Collectors.toList()));
 		
@@ -149,11 +152,13 @@ public class PostageController {
 	private PostageVO getPostageVOByBo(Postage bo){
 		PostageVO postageVO = new PostageVO();
 		BeanUtils.copyProperties(bo, postageVO);
-		postageVO.setPostageDetailList(bo.getPostageDetailList().stream().map( detail->{
-											PostageDetailVO detailVO = new PostageDetailVO();
-											BeanUtils.copyProperties(detail, postageVO);
-											return detailVO;
-										}).collect(Collectors.toList()));
+		if(bo.getPostageDetailList()!=null){
+			postageVO.setPostageDetailList(bo.getPostageDetailList().stream().map( detail->{
+				PostageDetailVO detailVO = new PostageDetailVO();
+				BeanUtils.copyProperties(detail, postageVO);
+				return detailVO;
+			}).collect(Collectors.toList()));
+		}
 		return postageVO;
 	}
 	

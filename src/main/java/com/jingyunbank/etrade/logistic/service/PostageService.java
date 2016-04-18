@@ -34,7 +34,7 @@ public class PostageService implements IPostageService {
 	@Override
 	public boolean save(Postage postage) throws DataSavingException {
 		PostageEntity entity = new PostageEntity();
-		BeanUtils.copyProperties(entity, postage);
+		BeanUtils.copyProperties(postage, entity);
 		try {
 			return postageDao.insert(entity);
 		} catch (Exception e) {
@@ -45,7 +45,7 @@ public class PostageService implements IPostageService {
 	@Override
 	public boolean refresh(Postage postage) throws DataRefreshingException {
 		PostageEntity entity = new PostageEntity();
-		BeanUtils.copyProperties(entity, postage);
+		BeanUtils.copyProperties(postage, entity);
 		try {
 			return postageDao.update(entity);
 		} catch (Exception e) {
