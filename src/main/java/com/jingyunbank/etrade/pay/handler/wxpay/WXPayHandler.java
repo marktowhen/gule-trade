@@ -40,7 +40,7 @@ public class WXPayHandler implements IPayHandler {
 	private static PayPipeline pipeline = new PayPipeline();
 	
 	@Override
-	public Map<String, String> prepare(List<OrderPayment> payments) throws Exception {
+	public Map<String, String> prepay(List<OrderPayment> payments) throws Exception {
 		BigDecimal money = payments.stream().map(x->x.getMoney()).reduce(BigDecimal.ZERO, (a, b)->a.add(b));
 		String moneyfen = money.multiply(BigDecimal.valueOf(100)).setScale(0, RoundingMode.HALF_UP).toString();
 		Map<String, String> requestParams = new HashMap<String, String>();
@@ -126,5 +126,10 @@ public class WXPayHandler implements IPayHandler {
 	@PostConstruct
 	public void postprocessor(){
 		pipeline = payPipelineService.single(PayPipeline.WXPAY);
+	}
+
+	@Override
+	public Map<String, String> prefund(OrderPayment payment) throws Exception {
+		return null;
 	}
 }

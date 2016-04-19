@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.util.MD5;
-import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.pay.bo.PayPipeline;
 import com.jingyunbank.etrade.api.pay.service.IPayPipelineService;
+import com.jingyunbank.etrade.api.pay.service.context.IPayContextService;
 
 @Controller
 public class GatepayResultController {
 	@Autowired
-	private IOrderContextService orderContextService;
+	private IPayContextService payContextService;
 	@Autowired
 	private IPayPipelineService payPipelineService;
 	
@@ -63,7 +63,7 @@ public class GatepayResultController {
         	String calcSign = MD5.digest(compositeGatewayKeyValuePaires(payresult, key));
             if (!sign.equalsIgnoreCase(calcSign))
             {
-            	orderContextService.payfail(extransno, "支付结果的签名校验失败："+calcSign);
+            	payContextService.payfail(extransno, "支付结果的签名校验失败："+calcSign);
             	result.put("ret_code", "9999");
             	result.put("ret_msg", "签名校验失败");
             	OutputStream opstream = response.getOutputStream();
@@ -72,7 +72,7 @@ public class GatepayResultController {
             	return;
             }
         } catch (Exception e){
-        	orderContextService.payfail(extransno, e.getMessage().substring(0, 250));
+        	payContextService.payfail(extransno, e.getMessage().substring(0, 250));
         	result.put("ret_code", "9999");
         	result.put("ret_msg", "签名校验失败");
         	OutputStream opstream = response.getOutputStream();
@@ -81,7 +81,7 @@ public class GatepayResultController {
         	return;
         }
 
-        orderContextService.paysuccess(extransno);
+        payContextService.paysucc(extransno);
 		result.put("ret_code", "0000");
     	result.put("ret_msg", "交易成功");
     	OutputStream opstream = response.getOutputStream();

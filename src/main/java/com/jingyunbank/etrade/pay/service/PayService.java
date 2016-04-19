@@ -112,4 +112,16 @@ public class PayService implements IPayService{
 			throw new DataRefreshingException(e);
 		}
 	}
+
+	@Override
+	public List<OrderPayment> listPaid(List<String> oids) {
+		List<OrderPaymentEntity> entities = payDao.selectPaid(oids);
+		List<OrderPayment> bos = new ArrayList<OrderPayment>();
+		entities.forEach(e -> {
+			OrderPayment op = new OrderPayment();
+			BeanUtils.copyProperties(e, op);
+			bos.add(op);
+		});
+		return bos;
+	}
 }
