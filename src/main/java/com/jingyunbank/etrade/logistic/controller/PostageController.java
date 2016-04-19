@@ -144,6 +144,8 @@ public class PostageController {
 	
 	@RequestMapping(value="/{ID}", method=RequestMethod.DELETE)
 	public Result<String> remove(@PathVariable String ID ) throws Exception{
+		//如果仍有商品使用该运费模板 不允许删除
+		
 		postageManageService.remove(ID);
 		return Result.ok();
 		
@@ -155,7 +157,7 @@ public class PostageController {
 		if(bo.getPostageDetailList()!=null){
 			postageVO.setPostageDetailList(bo.getPostageDetailList().stream().map( detail->{
 				PostageDetailVO detailVO = new PostageDetailVO();
-				BeanUtils.copyProperties(detail, postageVO);
+				BeanUtils.copyProperties(detail, detailVO);
 				return detailVO;
 			}).collect(Collectors.toList()));
 		}

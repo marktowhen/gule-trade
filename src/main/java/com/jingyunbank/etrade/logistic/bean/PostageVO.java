@@ -16,6 +16,7 @@ public class PostageVO {
 	@Valid
 	private List<PostageDetailVO> postageDetailList;
 	
+	
 	public List<PostageDetailVO> getPostageDetailList() {
 		return postageDetailList;
 	}

@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -29,6 +31,10 @@ public class PostageDetailService implements IPostageDetailService {
 	public boolean save(PostageDetail detail) throws DataSavingException {
 		PostageDetailEntity entity = new PostageDetailEntity();
 		BeanUtils.copyProperties(detail, entity);
+		if(StringUtils.isEmpty(entity.getID())){
+			entity.setID(KeyGen.uuid());
+		}
+		entity.setValid(true);
 		try {
 			return postageDetailDao.insert(entity);
 		} catch (Exception e) {
@@ -119,6 +125,10 @@ public class PostageDetailService implements IPostageDetailService {
 		return postageDetailDao.insertMuti(details.stream().map(bo->{
 			PostageDetailEntity entity = new PostageDetailEntity();
 			BeanUtils.copyProperties(bo, entity);
+			if(StringUtils.isEmpty(entity.getID())){
+				entity.setID(KeyGen.uuid());
+			}
+			entity.setValid(true);
 			return entity;
 		}).collect(Collectors.toList()));
 	}
