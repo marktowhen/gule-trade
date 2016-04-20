@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.asyn.bo.AsynSchedule;
+import com.jingyunbank.etrade.api.asyn.service.IAsynLogService;
 import com.jingyunbank.etrade.api.asyn.service.IAsynParamService;
 import com.jingyunbank.etrade.api.asyn.service.IAsynScheduleService;
 import com.jingyunbank.etrade.api.award.bo.SalesUserrelationship;
@@ -46,6 +46,8 @@ public class UserService implements IUserService{
 	private IAsynParamService asynParamService;
 	@Autowired
 	private ISalesUserrelationshipService salesUserrelationshipService;
+	@Autowired
+	private IAsynLogService asynLogService;
 	
 	
 	
@@ -71,7 +73,7 @@ public class UserService implements IUserService{
 
 	//保存用户的信息
 	@Override
-	@Transactional(rollbackFor={DataSavingException.class}, propagation=Propagation.REQUIRED)
+	@Transactional
 	public void save(Users user,UserInfo userInfo, String inviterUID) throws DataSavingException {
 		UserEntity userEntity=new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
@@ -103,6 +105,7 @@ public class UserService implements IUserService{
 		schedule.setID(KeyGen.uuid());
 		schedule.setServiceName(AsynSchedule.SALES_REGISTER_SERVICE_NAME);
 		schedule.setStatus(AsynSchedule.INIT);
+		schedule.setUID(user.getID());
 		asynScheduleService.save(schedule);
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid",user.getID());//p2p系统用户id
@@ -116,6 +119,9 @@ public class UserService implements IUserService{
 			}
 		}
     	asynParamService.saveMutl(schedule.getID(),params);
+    	//日志
+    	asynLogService.save(schedule.getID(),schedule.getStatus(),"");
+    	
 	}
 	
 

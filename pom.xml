@@ -126,6 +126,12 @@
 			<artifactId>httpclient</artifactId>
 		</dependency>
 		<!-- http components end -->
+		<!-- json start -->
+        <dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+		</dependency>
+		<!-- json end -->
 		
 	</dependencies>
 

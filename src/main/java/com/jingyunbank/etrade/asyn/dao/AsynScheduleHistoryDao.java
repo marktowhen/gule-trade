@@ -6,5 +6,4 @@ public interface AsynScheduleHistoryDao {
 	
 	boolean insert(AsynScheduleHistoryEntity entity) throws Exception ;
 
-	boolean insertFromAsynSchedule(String scheduleID) throws Exception ;
 }

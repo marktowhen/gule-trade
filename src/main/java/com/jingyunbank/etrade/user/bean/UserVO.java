@@ -31,7 +31,14 @@ public class UserVO {
 	private boolean locked;
 	private String code;
 	
+	private String inviterUID;
 	
+	public String getInviterUID() {
+		return inviterUID;
+	}
+	public void setInviterUID(String inviterUID) {
+		this.inviterUID = inviterUID;
+	}
 	//由于password、tradepwd不返回给前台 所以在安全设置页面判断两个密码是否相同等只能放在后台
 	public boolean isHasPassword() {
 		return !StringUtils.isEmpty(password);

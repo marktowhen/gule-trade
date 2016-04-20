@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.asyn.bo.AsynSchedule;
 import com.jingyunbank.etrade.api.asyn.bo.AsynScheduleHistory;
 import com.jingyunbank.etrade.api.asyn.service.IAsynScheduleHistoryService;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
@@ -29,10 +30,12 @@ public class AsynScheduleHistoryService implements IAsynScheduleHistoryService {
 	}
 
 	@Override
-	public boolean saveFromAsynSchedule(String scheduleID)
+	public boolean saveFromAsynSchedule(AsynSchedule schedule)
 			throws DataSavingException {
+		AsynScheduleHistoryEntity entity = new AsynScheduleHistoryEntity();
+		BeanUtils.copyProperties(schedule, entity);
 		try {
-			return asynScheduleHistoryDao.insertFromAsynSchedule(scheduleID);
+			return asynScheduleHistoryDao.insert(entity);
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}

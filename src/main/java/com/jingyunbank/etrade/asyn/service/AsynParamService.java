@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.asyn.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,6 +75,19 @@ public class AsynParamService implements IAsynParamService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Map<String, String> getMap(String scheduleID) {
+		List<AsynParam> list = this.list(scheduleID);
+		Map<String, String> map = new HashMap<String, String>();
+		if(list!=null && !list.isEmpty()){
+			for (AsynParam asynParam : list) {
+				map.put(asynParam.getKey(), asynParam.getValue());
+			}
+			return map;
+		}
+		return map;
 	}
 
 }
