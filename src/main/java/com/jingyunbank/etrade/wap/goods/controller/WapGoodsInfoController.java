@@ -21,22 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsInfo;
-import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsInfoOperationService;
+import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsInfoService;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsInfoVO;
 
 /**
  * 
- * Title: WapGoodsInfoOperationController 商品info
+ * Title: WapGoodsInfoController 商品info
  * 
  * @author duanxf
  * @date 2016年4月11日
  */
 @RestController
 @RequestMapping("/api/goods/operation/info")
-public class WapGoodsInfoOperationController {
+public class WapGoodsInfoController {
 	@Autowired
-	private IWapGoodsInfoOperationService wapGoodsOperationService;
+	private IWapGoodsInfoService wapGoodsInfoService;
 
 	@Autowired
 	private IWapGoodsService wapGoodsService;
@@ -63,7 +63,7 @@ public class WapGoodsInfoOperationController {
 			info.setID(KeyGen.uuid());
 			GoodsInfo infoBO = new GoodsInfo();
 			BeanUtils.copyProperties(info, infoBO);
-			wapGoodsOperationService.saveGoodsInfo(infoBO);
+			wapGoodsInfoService.saveGoodsInfo(infoBO);
 		}
 		return Result.ok("success");
 	}
@@ -87,7 +87,8 @@ public class WapGoodsInfoOperationController {
 	}
 
 	/**
-	 * 修改goods info 
+	 * 修改goods info
+	 * 
 	 * @param request
 	 * @param goodsInfoVOList
 	 * @param gid
@@ -104,16 +105,16 @@ public class WapGoodsInfoOperationController {
 			return Result.fail(errors.stream().map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 					.collect(Collectors.joining(" ; ")));
 		}
-		
-		//delete all info 
-		wapGoodsOperationService.removeGoodsInfo(gid);
-		//insert info
+
+		// delete all info
+		wapGoodsInfoService.removeGoodsInfo(gid);
+		// insert info
 		for (GoodsInfoVO info : goodsInfoVOList) {
 			info.setID(KeyGen.uuid());
 			info.setGID(gid);
 			GoodsInfo infoBO = new GoodsInfo();
 			BeanUtils.copyProperties(info, infoBO);
-			wapGoodsOperationService.saveGoodsInfo(infoBO);
+			wapGoodsInfoService.saveGoodsInfo(infoBO);
 		}
 
 		return Result.ok("success");
@@ -129,7 +130,7 @@ public class WapGoodsInfoOperationController {
 	 */
 	@RequestMapping(value = "/delete/{infoId}", method = RequestMethod.PUT)
 	public Result<String> deleteGoodsInfo(HttpServletRequest request, @PathVariable String infoId) throws Exception {
-		wapGoodsOperationService.removeGoodsInfoById(infoId);
+		wapGoodsInfoService.removeGoodsInfoById(infoId);
 		return Result.ok("success");
 	}
 }

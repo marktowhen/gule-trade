@@ -29,15 +29,7 @@ public class GoodsSkuVO implements Serializable {
 	private BigDecimal salePrice;
 	private boolean status;
 
-	private List<GoodsImgVO> imgList = new ArrayList<GoodsImgVO>();
 
-	public List<GoodsImgVO> getImgList() {
-		return imgList;
-	}
-
-	public void setImgList(List<GoodsImgVO> imgList) {
-		this.imgList = imgList;
-	}
 
 	public String getID() {
 		return ID;

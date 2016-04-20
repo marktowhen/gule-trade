@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.wap.goods.dao.GoodsSkuDao">
+
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity"
+		id="skuMap">
+		<result column="id_" property="ID" />
+		<result column="gid_" property="GID" />
+		<result column="properties_" property="properties" />
+		<result column="properties_value_" property="propertiesValue" />
+		<result column="stock_" property="stock" />
+		<result column="volume_" property="volume" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="status_" property="status" />
+	</resultMap>
+
+
+	<insert id="insertGoodsSku"
+		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+		INSERT INTO `goods_sku`
+		(`id`,`gid`,`properties`,`properties_value`,`stock`,`volume`,`price`,`sale_price`,`status`)
+		VALUES ( #{ID}, #{GID}, #{properties}, #{propertiesValue}, #{stock},
+		#{volume}, #{price}, #{salePrice}, #{status})
+	</insert>
+
+	<update id="updateGoodsSku"
+		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+		UPDATE `goods_sku` SET
+		<if test="GID !=null and GID != ''">
+			`gid` = #{GID},
+		</if>
+		<if test="properties !=null and properties != ''">
+			`properties` = #{properties} ,
+		</if>
+		<if test="propertiesValue !=null and propertiesValue != ''">
+			`properties_value` = #{propertiesValue},
+		</if>
+		<if test="stock >=0 ">
+			`stock` = #{stock},
+		</if>
+		<if test="price !=null and price != ''">
+			`price` = #{price},
+		</if>
+		<if test="salePrice !=null and salePrice != ''">
+			`sale_price` = #{salePrice},
+		</if>
+		`status` = #{status} , `id` = #{ID}
+		WHERE `id` = #{ID}
+	</update>
+
+	<update id="up" parameterType="string">
+		UPDATE goods_sku SET STATUS = TRUE
+		WHERE id = #{skuId }
+	</update>
+	<update id="down" parameterType="string">
+		UPDATE goods_sku SET STATUS =
+		FALSE
+		WHERE id = #{skuId }
+	</update>
+
+	<delete id="deleteGoodsSku" parameterType="string">
+		DELETE
+		FROM
+		`goods_sku`
+		WHERE `gid` = #{gid}
+	</delete>
+
+
+	<select id="selectGoodsSKuByGid" parameterType="string"
+		resultMap="skuMap">
+		SELECT s.`id` id_, s.`gid` gid_, s.`properties` properties_,
+		s.`properties_value` properties_value_,
+		s.`stock` stock_,
+		s.`volume`
+		volume_,
+		s.`price` price_,
+		s.`sale_price` sale_price_,
+		s.`status` status_
+		FROM `goods_sku` s
+		WHERE 1=1
+		AND s.`gid`= #{gid}
+	</select>
+</mapper>

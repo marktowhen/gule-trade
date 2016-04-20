@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataRemovingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
+import com.jingyunbank.etrade.api.goods.bo.Brand;
 import com.jingyunbank.etrade.api.merchant.bo.DeliveryType;
 import com.jingyunbank.etrade.api.merchant.bo.InvoiceType;
 import com.jingyunbank.etrade.api.merchant.bo.Merchant;
@@ -250,5 +252,16 @@ public class MerchantService extends ServiceTemplate implements IMerchantService
 	@Override
 	public boolean isAutotrophic(String mid) {
 		return merchantDao.isAutotrophic(mid);
+	}
+
+	@Override
+	public Optional<Merchant> getMerchantBySellerId(String sellerId) throws Exception {
+		MerchantEntity entity = merchantDao.selectMerchantBySellerId(sellerId);
+		Merchant m  =null;
+		if (Objects.nonNull(entity)) {
+			m = new Merchant();
+			BeanUtils.copyProperties(entity, m);
+		}
+		return Optional.ofNullable(m);
 	}
 }
