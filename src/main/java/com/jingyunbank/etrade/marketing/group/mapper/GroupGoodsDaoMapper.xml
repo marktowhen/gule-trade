@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.group.dao.GroupGoodsDao">
+	<resultMap type="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity" id="GroupGoodsEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="skuid" property="SKUID" javaType="String"/>
+		<result column="duration" property="duration" jdbcType="INTEGER"/>
+		<result column="deadline" property="deadline" javaType="java.util.Date"/>
+		<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
+		<result column="show" property="show" javaType="Boolean"/>
+		<result column="commission" property="commission" jdbcType="DECIMAL"/>
+		<collection property="priceSettings" javaType="ArrayList" ofType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsPriceSettingEntity">
+			<id column="gpsid" property="ID" javaType="String"/>
+			<result column="ggid" property="GGID" javaType="String"/>
+			<result column="floor" property="floor" jdbcType="INTEGER"/>
+			<result column="ceiling" property="ceiling" jdbcType="INTEGER"/>
+			<result column="price" property="price" jdbcType="DECIMAL"/>
+		</collection>
+	</resultMap>
+	<sql id="group_goods_columns">
+		`id`, `skuid`, `duration`, `deadline`, `minpeople`, `commission`,
+	    `upperlimit`, `deposit`, `show`, `addtime`
+	</sql>
+	<sql id="group_goods_join_price_setting_columns">
+		g.`id`, g.`skuid`, g.`duration`, g.`deadline`, g.`minpeople`, g.`commission`,
+	    g.`upperlimit`, g.`deposit`, g.`show`, g.`addtime`,
+	    ps.`id` as gpsid, ps.`ggid`, ps.`floor`, ps.`ceiling`, ps.`price`
+	</sql>
+	<insert id="insert" parameterType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity">
+		insert into group_goods
+			(<include refid="group_goods_columns"/>)
+		values
+			(#{ID}, #{SKUID}, #{duration}, #{deadline}, #{minpeople}, #{commission}, 
+			#{upperlimit}, #{deposit}, #{show}, #{addtime})
+	</insert>
+	<select id="selectOne" resultMap="GroupGoodsEntityResultMap" parameterType="String" >
+		select <include refid="group_goods_join_price_setting_columns"/>
+		from group_goods g
+		left join group_goods_price_setting ps on g.id = ps.ggid
+		where g.id = #{ggid}
+	</select>
+	<select id="selectMany" resultMap="GroupGoodsEntityResultMap">
+		select <include refid="group_goods_columns"/>
+		from group_goods 
+		order by addtime desc
+		limit #{from}, #{size}
+	</select>
+</mapper>
