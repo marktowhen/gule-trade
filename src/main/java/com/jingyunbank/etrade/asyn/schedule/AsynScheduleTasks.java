@@ -18,16 +18,14 @@ public class AsynScheduleTasks {
 	@Autowired
 	private IAsynScheduleService asynScheduleService;
 	
-	@Scheduled(initialDelay=(1*60*1000))//1 minute
+	@Scheduled(fixedDelay=(1*60*1000))//1 minute
 	public void runAsynSchedule(){
 		Range range = new Range(0, 10);
-		while(true){
-			List<AsynSchedule> list = asynScheduleService.list(range);
-			if(list!=null && !list.isEmpty()){
-				for (AsynSchedule asynSchedule : list) {
-					IAsynRunService service = (IAsynRunService)SpringContextUtils.getBeanById(asynSchedule.getServiceName());
-					service.run(asynSchedule);
-				}
+		List<AsynSchedule> list = asynScheduleService.list(range);
+		if(list!=null && !list.isEmpty()){
+			for (AsynSchedule asynSchedule : list) {
+				IAsynRunService service = (IAsynRunService)SpringContextUtils.getBeanById(asynSchedule.getServiceName());
+				service.run(asynSchedule);
 			}
 		}
 	}
