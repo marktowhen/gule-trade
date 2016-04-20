@@ -38,7 +38,7 @@ public class GroupPurchaseController {
 	@Autowired
 	private IUserService userService;
 
-	// 开团
+	// 开团 提交订单
 	@AuthBeforeOperation
 	@RequestMapping(value = "/purchase/start/{groupgoodsid}", method = RequestMethod.POST)
 	public Result<GroupVO> start(@PathVariable String groupgoodsid,
@@ -63,7 +63,7 @@ public class GroupPurchaseController {
 		return Result.ok(vo);
 	}
 
-	// 参团
+	// 参团 提交订单
 	@AuthBeforeOperation
 	@RequestMapping(value = "/purchase/join/{groupid}", method = RequestMethod.POST)
 	public Result<String> join(@PathVariable String groupid, HttpSession session)

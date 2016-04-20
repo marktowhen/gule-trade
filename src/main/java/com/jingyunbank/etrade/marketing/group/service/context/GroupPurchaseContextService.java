@@ -38,6 +38,8 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		guser.setUser(user);
 		guser.setPaid(goods.getDeposit());
 		//save group user
+		
+		
 	}
 
 	@Override
@@ -46,6 +48,7 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		GroupGoods goods = group.getGoods();
 		if(users.size() < goods.getMinpeople()){//未满
 			//refund.
+			
 		}else{//满团
 			
 		}

@@ -4,27 +4,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.jingyunbank.etrade.api.user.bo.Users;
-
 public class GroupEntity {
 
-	private GroupGoodsEntity goods;
 	private String ID;
-	private Users leader;
+	private String leaderUID;
 	private Date start;
 	private List<GroupUserEntity> buyers = new ArrayList<GroupUserEntity>();
 	
-	public GroupGoodsEntity getGoods() {
-		return goods;
+	private String groupGoodsID;
+	private String status;//该团的状态
+	
+	public String getGroupGoodsID() {
+		return groupGoodsID;
 	}
-	public void setGoods(GroupGoodsEntity goods) {
-		this.goods = goods;
+	public void setGroupGoodsID(String groupGoodsID) {
+		this.groupGoodsID = groupGoodsID;
 	}
-	public Users getLeader() {
-		return leader;
+	public String getStatus() {
+		return status;
 	}
-	public void setLeader(Users leader) {
-		this.leader = leader;
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getLeaderUID() {
+		return leaderUID;
+	}
+	public void setLeaderUID(String leaderUID) {
+		this.leaderUID = leaderUID;
 	}
 	public Date getStart() {
 		return start;
