@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.asyn.bo.AsynSchedule;
@@ -24,7 +23,6 @@ public class AsynScheduleService implements IAsynScheduleService {
 	private AsynScheduleDao asynScheduleDao;
 
 	@Override
-	@Transactional
 	public boolean save(AsynSchedule asynSchedule) throws DataSavingException {
 		AsynScheduleEntity entity = new AsynScheduleEntity();
 		BeanUtils.copyProperties(asynSchedule, entity);

@@ -88,7 +88,7 @@ public class RegisterController {
 			
 			UserInfo userInfo=new UserInfo();
 			userInfo.setRegip(ServletBox.ip(request));
-			userService.save(users, userInfo, null);
+			userService.save(users, userInfo, userVO.getInviterUID());
 			//成功后操作
 			
 			Optional<Cart> candidatecart = cartService.singleCart(users.getID());

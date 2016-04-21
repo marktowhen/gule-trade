@@ -8,6 +8,6 @@ public interface SalesUserrelationshipDao {
 
 	SalesUserrelationshipEntity selectBySID(String sID);
 
-	SalesUserrelationshipEntity singleByUID(String uID);
+	SalesUserrelationshipEntity selectByUID(String uID);
 
 }

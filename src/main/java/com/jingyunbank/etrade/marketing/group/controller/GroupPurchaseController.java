@@ -26,6 +26,7 @@ import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.marketing.group.bean.GroupVO;
 
 @RestController
+@RequestMapping("/api/marketing/group")
 public class GroupPurchaseController {
 
 	@Autowired
@@ -39,7 +40,7 @@ public class GroupPurchaseController {
 
 	// 开团
 	@AuthBeforeOperation
-	@RequestMapping(value = "/api/group/purchase/start/{groupgoodsid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/purchase/start/{groupgoodsid}", method = RequestMethod.POST)
 	public Result<GroupVO> start(@PathVariable String groupgoodsid,
 			HttpSession session) throws Exception {
 
@@ -64,7 +65,7 @@ public class GroupPurchaseController {
 
 	// 参团
 	@AuthBeforeOperation
-	@RequestMapping(value = "/api/group/purchase/join/{groupid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/purchase/join/{groupid}", method = RequestMethod.POST)
 	public Result<String> join(@PathVariable String groupid, HttpSession session)
 			throws Exception {
 

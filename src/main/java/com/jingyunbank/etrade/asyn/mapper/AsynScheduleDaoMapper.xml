@@ -6,18 +6,19 @@
 	<resultMap type="com.jingyunbank.etrade.asyn.entity.AsynScheduleEntity" id="ResultMap">
 		<id column="id" property="ID" />
 		<result column="service_name" property="serviceName" />
+		<result column="uid" property="UID" />
 		<result column="status" property="status" />
 		<result column="addtime" property="addtime" />
 		<result column="remark" property="remark" />
 	</resultMap>
 	
 	<sql id="base_column">
-		id,service_name,status,addtime,remark
+		id,service_name,uid,status,addtime,remark
 	</sql>
 	
 	<insert id="insert">
 		insert into asyn_schedule(<include refid="base_column"/>)
-			values(#{ID},#{serviceName},#{status},now(),#{remark})
+			values(#{ID},#{serviceName},#{UID},#{status},now(),#{remark})
 	</insert>
 	
 	<update id="updateStatus">
