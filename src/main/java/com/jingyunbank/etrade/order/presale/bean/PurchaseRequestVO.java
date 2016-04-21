@@ -9,8 +9,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.jingyunbank.core.lang.Patterns;
 
 /**
@@ -28,6 +26,8 @@ import com.jingyunbank.core.lang.Patterns;
  */
 public class PurchaseRequestVO {
 
+	@Min(1)
+	private int city;
 	@NotNull
 	private String receiver;//收货人姓名
 	@NotNull
@@ -54,11 +54,6 @@ public class PurchaseRequestVO {
 	
 	private boolean employee;//是否是员工购买
 	
-	@Min(1)
-	private int city;
-	@NotEmpty(message="运送方式不能为空")
-	private String transportType;
-	
 	@Valid
 	@NotNull
 	@Size(min=1)
@@ -69,12 +64,6 @@ public class PurchaseRequestVO {
 	}
 	public void setCity(int city) {
 		this.city = city;
-	}
-	public String getTransportType() {
-		return transportType;
-	}
-	public void setTransportType(String transportType) {
-		this.transportType = transportType;
 	}
 	public String getReceiver() {
 		return receiver;

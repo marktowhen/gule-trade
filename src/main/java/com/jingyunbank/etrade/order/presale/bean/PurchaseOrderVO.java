@@ -41,6 +41,8 @@ public class PurchaseOrderVO {
 	@NotBlank
 	private String type;
 	
+	private String extradata;//附加数据，可以是团购id，竞拍id等附加信息
+	
 	@Valid
 	@NotNull
 	@Size(min=1)
@@ -140,5 +142,13 @@ public class PurchaseOrderVO {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getExtradata() {
+		return extradata;
+	}
+
+	public void setExtradata(String extradata) {
+		this.extradata = extradata;
 	}
 }
