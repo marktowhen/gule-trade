@@ -39,6 +39,17 @@ public class GoodsOperationVO implements Serializable {
 	// sku 信息
 	private List<GoodsSkuVO> skuList = new ArrayList<GoodsSkuVO>();
 
+	private List<GoodsInfoVO> infoList = new ArrayList<GoodsInfoVO>();
+	
+	
+	public List<GoodsInfoVO> getInfoList() {
+		return infoList;
+	}
+
+	public void setInfoList(List<GoodsInfoVO> infoList) {
+		this.infoList = infoList;
+	}
+
 	public List<GoodsImgVO> getImgList() {
 		return imgList;
 	}

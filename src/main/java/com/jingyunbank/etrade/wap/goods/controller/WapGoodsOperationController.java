@@ -27,6 +27,7 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.wap.goods.bo.Goods;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsAttrValue;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsImg;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsInfo;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperationShow;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
@@ -120,13 +121,22 @@ public class WapGoodsOperationController {
 			img.setGID(goods.getID());
 			return img;
 		}).collect(Collectors.toList());
-		// ------------------
+		// -------info信息-----------
+
+		List<GoodsInfo> infoList = vo.getInfoList().stream().map(info -> {
+			GoodsInfo bo = new GoodsInfo();
+			BeanUtils.copyProperties(info, bo);
+			bo.setID(KeyGen.uuid());
+			bo.setGID(goods.getID());
+			return bo;
+		}).collect(Collectors.toList());
+		// ----------------------------------
 		GoodsOperation goodsOperation = new GoodsOperation();
 		goodsOperation.setGoods(goods);
 		goodsOperation.setAttrValueList(attrValueList);
 		goodsOperation.setSkuList(skuList);
 		goodsOperation.setImgList(imgList);
-
+		goodsOperation.setInfoList(infoList);
 		if (wapGoodsOperationService.saveGoods(goodsOperation)) {
 			return Result.ok("success");
 		}
@@ -188,12 +198,22 @@ public class WapGoodsOperationController {
 			img.setGID(goods.getID());
 			return img;
 		}).collect(Collectors.toList());
+		// -------info信息-----------
+
+		List<GoodsInfo> infoList = vo.getInfoList().stream().map(info -> {
+			GoodsInfo bo = new GoodsInfo();
+			BeanUtils.copyProperties(info, bo);
+			bo.setID(KeyGen.uuid());
+			bo.setGID(goods.getID());
+			return bo;
+		}).collect(Collectors.toList());
 
 		GoodsOperation goodsOperation = new GoodsOperation();
 		goodsOperation.setGoods(goods);
 		goodsOperation.setAttrValueList(attrValueList);
 		goodsOperation.setSkuList(skuList);
 		goodsOperation.setImgList(imgList);
+		goodsOperation.setInfoList(infoList);
 		if (wapGoodsOperationService.modfiyGoods(goodsOperation)) {
 			return Result.ok("success");
 		}
@@ -250,6 +270,5 @@ public class WapGoodsOperationController {
 		}
 		return Result.fail("fail");
 	}
-	
-	
+
 }
