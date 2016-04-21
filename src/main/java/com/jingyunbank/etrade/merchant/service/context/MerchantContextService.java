@@ -35,8 +35,6 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 		boolean rlt = false;
 		try {
 			merchantService.saveMerchant(merchant);
-			merchantService.saveMerchantInvoiceType(merchant);
-			merchantService.saveMerchantDeliveryType(merchant);
 			rlt = true;
 		} catch (Exception e) {
 			throw new DataSavingException(e);
@@ -51,10 +49,6 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 		boolean rlt = false;
 		try {
 			merchantService.updateMerchant(merchant);
-			merchantService.removeMerchantInvoiceType(merchant);
-			merchantService.saveMerchantInvoiceType(merchant);
-			merchantService.removeMerchantDeliveryType(merchant);
-			merchantService.saveMerchantDeliveryType(merchant);
 			rlt = true;
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
@@ -66,14 +60,7 @@ public class MerchantContextService extends ServiceTemplate implements IMerchant
 	public Optional<Merchant> singleByMID(String mid) throws IllegalAccessException, InvocationTargetException {
 		
 		Optional<Merchant> merchant = merchantService.getMerchant(mid);
-		Merchant bo = merchant.get();
-		//根据MID查询发票类型信息
-		List<InvoiceType> listinvoice = merchantService.listInvoiceType(mid);
-		//根据MID查询邮寄类型信息
-		List<DeliveryType> listdelivery = merchantService.listDeliveryType(mid);
-		bo.setInvoiceList(listinvoice);
-		bo.setDeliverylist(listdelivery);
-		return merchant;
+		return  merchant;
 	}
 	
 }
