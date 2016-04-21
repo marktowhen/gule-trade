@@ -89,7 +89,7 @@ public class OrderContextService implements IOrderContextService {
 					post.setPostageID(wapGoodsService.singlePidByGid(orderGoods.getGID()));
 					post.setNumber(count);
 					//运送方式 前台传过来
-					post.setTransportType(order.getTransportType());
+					post.setTransportType(order.getDeliveryTypeCode());
 					postList.add(post);
 				} catch (Exception e) {
 					e.printStackTrace();

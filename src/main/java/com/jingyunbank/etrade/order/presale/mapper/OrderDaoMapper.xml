@@ -31,6 +31,7 @@
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 		<result column="note" property="note" javaType="String"/>
 		<result column="employee" property="employee" javaType="Boolean"/>
+		<result column="type" property="type" javaType="String"/>
 		<collection property="goods" javaType="ArrayList" ofType="com.jingyunbank.etrade.order.presale.entity.OrderGoodsEntity">
 			<result column="ogid" property="ID" javaType="String"/>
 			<result column="gid" property="GID" javaType="String"/>
@@ -48,19 +49,19 @@
 	<sql id="orders_columns">
 		id, orderno, receiver, uid, uname, mid, mname, address, mobile, zipcode, addtime, 
 		paytype_code, paytype_name, deliverytype_code, deliverytype_name, coupon_id, coupon_type, coupon_reduce,
-		status_code, status_name, price, payout, postage, note, invoice_type, invoice_title, employee
+		status_code, status_name, price, payout, postage, note, invoice_type, invoice_title, employee, type
 	</sql>
 	<sql id="payments_join_orders_columns">
 		o.id, o.orderno, o.receiver, o.uid, o.uname, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, o.coupon_id, o.coupon_type, o.coupon_reduce,
-		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.invoice_type, o.invoice_title, o.employee,
+		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.invoice_type, o.invoice_title, o.employee, o.type,
 		og.id as ogid, og.gid, og.count, og.gname, og.oid
 	</sql>
 	<sql id="goods_join_orders_columns">
 		o.id, o.orderno, o.receiver, o.uid, o.uname, o.mid, o.mname, o.address, o.mobile, o.zipcode, o.addtime, 
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
-		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.employee,
+		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.employee, o.type,
 		img.thumb_path_1 as imgpath, og.gid as gid, 
 		og.gname as gname, og.count as count, og.pprice as gpprice, og.payout as gpayout,
 		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
@@ -74,7 +75,7 @@
 				 #{mobile}, #{zipcode}, #{addtime}, #{paytypeCode}, #{paytypeName}, 
 				 #{deliveryTypeCode}, #{deliveryTypeName}, #{couponID}, #{couponType}, #{couponReduce},
 				 #{statusCode}, #{statusName}, #{price}, #{payout}, #{postage}, #{note},
-				 #{invoiceType}, #{invoiceTitle}, #{employee}
+				 #{invoiceType}, #{invoiceTitle}, #{employee}, #{type}
 			 )
 	</insert>
 	<insert id="insertMany">
@@ -87,7 +88,7 @@
 			 #{order.mobile}, #{order.zipcode}, #{order.addtime},  #{order.paytypeCode}, #{order.paytypeName}, 
 			 #{order.deliveryTypeCode}, #{order.deliveryTypeName}, #{order.couponID}, #{order.couponType}, #{order.couponReduce},
 			 #{order.statusCode}, #{order.statusName}, #{order.price}, #{order.payout}, #{order.postage}, #{order.note},
-			 #{order.invoiceType}, #{order.invoiceTitle}, #{order.employee}
+			 #{order.invoiceType}, #{order.invoiceTitle}, #{order.employee}, #{order.type}
 			)
 		</foreach>
 	</insert>
