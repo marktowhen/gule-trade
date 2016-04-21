@@ -27,17 +27,17 @@ public class WapGoodsOperationControllerTest extends TestCaseBase {
 	@Test
 	public void testAddGoods() throws Exception {
 		GoodsOperationVO vo = new GoodsOperationVO();
-		vo.setName("测试增加商品-421");
+		vo.setName("3测试增加商品-421");
 		vo.setAddtime(new Date());
-		vo.setPath("测试商品展示图片-421");
+		vo.setPath("3测试商品展示图片-421");
 
 		
 		//-------img---------------
 		List<GoodsImgVO> imgList = new ArrayList<GoodsImgVO>();
 		GoodsImgVO imgVO1 = new GoodsImgVO();
-		imgVO1.setPath("测试增加---0001-421.jpg");
+		imgVO1.setPath("3测试增加---0001-421.jpg");
 		GoodsImgVO imgVO2 = new GoodsImgVO();
-		imgVO2.setPath("测试增加---0002-421.jpg");
+		imgVO2.setPath("3测试增加---0002-421.jpg");
 		
 		imgList.add(imgVO1);
 		imgList.add(imgVO2);
@@ -65,9 +65,9 @@ public class WapGoodsOperationControllerTest extends TestCaseBase {
 		//-------sku---------------
 		List<GoodsSkuVO> skuList = new ArrayList<GoodsSkuVO>();
 		GoodsSkuVO s1 = new GoodsSkuVO();
-		s1.setProperties("测试sku-1-421");
+		s1.setPropertiesValue("红色2@大大2");
 		GoodsSkuVO s2 = new GoodsSkuVO();
-		s2.setProperties("测试sku-2-421");
+		s2.setPropertiesValue("黄色2@小小2");
 		
 		skuList.add(s1);
 		skuList.add(s2);

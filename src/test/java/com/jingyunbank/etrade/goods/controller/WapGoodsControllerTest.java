@@ -36,7 +36,7 @@ public class WapGoodsControllerTest extends TestCaseBase {
 	
 	@Test
 	public void getcon() throws Exception {
-		getMockMvc().perform(get("/api/wap/goods/condition/zMK5wllGSKa2RNznqS1Xrw").characterEncoding("utf-8")
+		getMockMvc().perform(get("/api/wap/goods/condition/2sPeuBudS3iap2lqFZF6xg").characterEncoding("utf-8")
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
@@ -53,7 +53,7 @@ public class WapGoodsControllerTest extends TestCaseBase {
 	
 	@Test
 	public void getinfo() throws Exception {
-		getMockMvc().perform(get("/api/wap/goods/info/g001").characterEncoding("utf-8")
+		getMockMvc().perform(get("/api/wap/goods/info/2sPeuBudS3iap2lqFZF6xg").characterEncoding("utf-8")
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
@@ -61,7 +61,7 @@ public class WapGoodsControllerTest extends TestCaseBase {
 	
 	@Test
 	public void getdetail() throws Exception {
-		getMockMvc().perform(get("/api/wap/goods/detail/zMK5wllGSKa2RNznqS1Xrw").characterEncoding("utf-8")
+		getMockMvc().perform(get("/api/wap/goods/detail/2sPeuBudS3iap2lqFZF6xg").characterEncoding("utf-8")
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());
@@ -71,7 +71,7 @@ public class WapGoodsControllerTest extends TestCaseBase {
 	@Test
 	public void updatestock() throws Exception {
 		getMockMvc().perform(get("/api/wap/goods/stock/list").characterEncoding("utf-8")
-				.param("skuids", new String[]{"sku001","sku002","sku003"})
+				.param("skuids", new String[]{"2uV3CB-tQLS3IgzJPPwukg","AwsPBjlFRPKZOeVT-cb_5w","HsnCaknTTIGALhc02kx_Og"})
 				).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(jsonPath("$.code").value("200")).andDo(print());

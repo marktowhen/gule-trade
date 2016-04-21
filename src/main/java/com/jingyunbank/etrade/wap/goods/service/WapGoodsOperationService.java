@@ -9,8 +9,8 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsAttrValue;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsImg;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsInfo;
@@ -73,6 +73,16 @@ public class WapGoodsOperationService implements IWapGoodsOperationService {
 			for (GoodsSku sku : goodsOperation.getSkuList()) {
 				GoodsSkuEntity goodsSkuEntity = new GoodsSkuEntity();
 				BeanUtils.copyProperties(sku, goodsSkuEntity);
+				String values = goodsSkuEntity.getPropertiesValue();
+				String[] v = values.split("@");
+				for (String s : v) {
+					String aid = StringUtils.trimAllWhitespace(goodsAttrValueDao.selectAttrIdByGidAndValue(goodsEntity.getID(), s));
+					if (goodsSkuEntity.getProperties() == null || goodsSkuEntity.getProperties() == "") {
+						goodsSkuEntity.setProperties(aid);
+					} else {
+						goodsSkuEntity.setProperties(goodsSkuEntity.getProperties() + "," + aid);
+					}
+				}
 				goodsSkuDao.insertGoodsSku(goodsSkuEntity);
 			}
 			// 保存info
@@ -198,6 +208,12 @@ public class WapGoodsOperationService implements IWapGoodsOperationService {
 		operation.setSkuList(skuList);
 		operation.setInfoList(infoList);
 		return Optional.ofNullable(operation);
+	}
+
+	@Override
+	public void delGoodsByGid(String gid) throws Exception {
+		// TODO Auto-generated method stub
+		wapGoodsOperationDao.deleteGoods(gid);
 	}
 
 }
