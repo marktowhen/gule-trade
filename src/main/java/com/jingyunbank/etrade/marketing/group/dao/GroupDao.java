@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.marketing.group.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.jingyunbank.etrade.marketing.group.entity.GroupEntity;
 
 public interface GroupDao {
@@ -7,4 +9,6 @@ public interface GroupDao {
 	public boolean insert(GroupEntity entity) throws Exception;
 	
 	public GroupEntity selectOne(String ID);
+	
+	public boolean updateStatus(@Param("ID")String ID, @Param("status")String status) throws Exception;
 }

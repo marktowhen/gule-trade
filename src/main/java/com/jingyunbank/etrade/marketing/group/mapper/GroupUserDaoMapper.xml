@@ -25,5 +25,10 @@
 				from group_user  where id=#{ID}
 	</select>
 	
+	<select id="selectList" resultMap="GroupUserEntityResultMap">
+		select <include refid="base_column"/>  
+				from group_user  where group_id=#{groupID}
+	</select>
+	
 	
 </mapper>

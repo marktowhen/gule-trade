@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.group.dao.GroupOrderDao">
+	<resultMap type="com.jingyunbank.etrade.marketing.group.entity.GroupOrderEntity" id="GroupOrderEntityResultMap">
+		<id column="id" property="ID" />
+		<result column="group_id" property="groupID" />
+		<result column="group_user_id" property="groupUserID" />
+		<result column="oid" property="OID" />
+		<result column="orderno" property="orderno" />
+		<result column="type" property="type" />
+	</resultMap>
+	
+	<sql id="base_column">
+		id,group_id,group_user_id,oid,orderno,type
+	</sql>
+	
+	<insert id="insert">
+		insert into group_order (<include refid="base_column"/>) values(#{ID},#{groupID},#{groupUserID},#{OID},#{orderno},#{type})
+	</insert>
+	
+	<select id="selectOne" resultMap="GroupOrderEntityResultMap">
+		select <include refid="base_column"/> from group_order where id=#{ID}
+	</select>
+	
+	<select id="selectList" resultMap="GroupOrderEntityResultMap">
+		select <include refid="base_column"/> from group_order where group_user_id=#{groupUserID}
+	</select>
+	
+</mapper>

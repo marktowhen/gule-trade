@@ -9,7 +9,6 @@
 		<result column="start" property="start" javaType="java.util.Date"/>
 		<result column="group_goods_id" property="groupGoodsID" javaType="String"/>
 		<result column="status" property="status" javaType="String"/>
-		
 		<collection property="buyers" javaType="ArrayList" ofType="com.jingyunbank.etrade.marketing.group.entity.GroupUserEntity">
 			<id column="buyers_id" property="ID" />
 			<result column="buyers_group_id" property="groupID" />
@@ -35,6 +34,10 @@
 		select <include refid="group_with_buyers"/>  
 				from groups g LEFT JOIN group_user gu on g.id=gu.group_id where g.id=#{ID}
 	</select>
+	
+	<update id="updateStatus">
+		update groups set status=#{status} where id=#{ID}
+	</update>
 	
 	
 </mapper>
