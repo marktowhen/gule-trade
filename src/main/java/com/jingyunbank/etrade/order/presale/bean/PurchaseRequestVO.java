@@ -28,8 +28,6 @@ import com.jingyunbank.core.lang.Patterns;
  */
 public class PurchaseRequestVO {
 
-	@Min(1)
-	private int province;
 	@NotNull
 	private String receiver;//收货人姓名
 	@NotNull
@@ -155,12 +153,6 @@ public class PurchaseRequestVO {
 	}
 	public void setUname(String uname) {
 		this.uname = uname;
-	}
-	public int getProvince() {
-		return province;
-	}
-	public void setProvince(int province) {
-		this.province = province;
 	}
 	public boolean isEmployee() {
 		return employee;

@@ -33,6 +33,8 @@ public class OrdersInCartVO implements Serializable{
 	private Date addtime;
 	
 	private String note;
+	@NotBlank
+	private String type;
 	@Valid
 	@NotNull
 	@Size(min=1)
@@ -91,6 +93,12 @@ public class OrdersInCartVO implements Serializable{
 	}
 	public void setGoods(List<GoodsInCartVO> goods) {
 		this.goods = goods;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

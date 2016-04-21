@@ -34,6 +34,7 @@ public class OrderEntity {
 	private BigDecimal payout;
 	private String note;
 	private boolean employee;
+	private String type;
 	
 	private List<OrderGoodsEntity> goods = new ArrayList<OrderGoodsEntity>();
 	
@@ -204,5 +205,11 @@ public class OrderEntity {
 	}
 	public void setEmployee(boolean employee) {
 		this.employee = employee;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 }

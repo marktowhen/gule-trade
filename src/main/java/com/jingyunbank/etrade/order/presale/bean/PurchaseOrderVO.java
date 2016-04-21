@@ -10,6 +10,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
  * 订单确认请求（购物请求）中的订单信息。每一个商家将会生成一个订单。
  */
@@ -36,6 +38,8 @@ public class PurchaseOrderVO {
 	private Date addtime;
 	
 	private String note;
+	@NotBlank
+	private String type;
 	
 	@Valid
 	@NotNull
@@ -128,5 +132,13 @@ public class PurchaseOrderVO {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }
