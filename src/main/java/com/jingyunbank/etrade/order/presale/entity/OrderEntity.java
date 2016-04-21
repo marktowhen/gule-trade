@@ -35,6 +35,7 @@ public class OrderEntity {
 	private String note;
 	private boolean employee;
 	private String type;
+	private String extradata;//附加数据，可以是团购id，竞拍id等附加信息
 	
 	private List<OrderGoodsEntity> goods = new ArrayList<OrderGoodsEntity>();
 	
@@ -211,5 +212,11 @@ public class OrderEntity {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getExtradata() {
+		return extradata;
+	}
+	public void setExtradata(String extradata) {
+		this.extradata = extradata;
 	}
 }
