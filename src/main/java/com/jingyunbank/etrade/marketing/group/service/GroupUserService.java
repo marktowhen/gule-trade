@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
@@ -50,6 +51,15 @@ public class GroupUserService implements IGroupUserService {
 			BeanUtils.copyProperties(entity, bo);
 			return bo;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean refreshStatus(String ID, String status) throws DataRefreshingException {
+		try {
+			return groupUserDao.updateStatus(ID, status);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
 	}
 
 }

@@ -68,25 +68,29 @@ public class GroupPurchaseController {
 		}
 		String uid = Login.UID(session);
 		Optional<Users> leader = userService.single(uid);
-		if (!leader.isPresent())
-			return Result.fail("不合法的操作，请先登录认证身份。");
 		//业务校验 比如库存 团购截止时间等
 		Result<String> startMatch = groupPurchaseContextService.startMatch(goods.get());
 		if(startMatch.isBad()){
 			return Result.fail(startMatch.getMessage());
 		}
+		//组装group
 		Group group = new Group();
 		group.setID(KeyGen.uuid());
-		group.setGoods(goods.get());
-		group.setLeader(leader.get());
+		group.setGroupGoodsID(goods.get().getID());
+		group.setLeaderUID(leader.get().getID());
 		group.setStart(new Date());
+		group.setStatus(Group.NEW_STATUS);
+		group.setLeader(leader.get());
+		group.setGoods(goods.get());
 		
-		
+		//组装订单
 		purchase.setUID(uid);
 		purchase.setUname(Login.uname(session));
 		purchase.setEmployee(Login.employee(session));
-		List<Orders> orders = populateOrderData(purchase, session);
-		
+		Orders orders = populateOrderData(purchase, session).get(0);
+		orders.setExtradata(group.getID());
+		orders.setType(Orders.GROUP_ORDER_TYPE);
+		//提交
 		groupPurchaseContextService.start(leader.get(), group, orders);
 		GroupVO vo = new GroupVO();
 		BeanUtils.copyProperties(group, vo);
@@ -96,18 +100,35 @@ public class GroupPurchaseController {
 	// 参团 
 	@AuthBeforeOperation
 	@RequestMapping(value = "/purchase/join/{groupid}", method = RequestMethod.POST)
-	public Result<String> join(@PathVariable String groupid, HttpSession session)
+	public Result<String> join(@PathVariable String groupid,
+			@Valid @RequestBody PurchaseRequestVO purchase,
+			BindingResult valid,  HttpSession session)
 			throws Exception {
 
 		Optional<Group> group = groupService.single(groupid);
 		if (!group.isPresent()) {
 			return Result.fail("您申请加入的团不存在。");
 		}
+		Optional<GroupGoods> goods = groupGoodsService.single(group.get().getGroupGoodsID());
+		if (!goods.isPresent()) {
+			return Result.fail("团购商品不存在。");
+		}
+		group.get().setGoods(goods.get());
 		String uid = Login.UID(session);
 		Optional<Users> user = userService.single(uid);
-		if (!user.isPresent())
-			return Result.fail("不合法的操作，请先登录认证身份。");
-		groupPurchaseContextService.join(user.get(), group.get(), null);
+		//业务校验 比如库存 团购截止时间等
+		Result<String> joinMatch = groupPurchaseContextService.joinMatch(group.get());
+		if(joinMatch.isBad()){
+			return Result.fail(joinMatch.getMessage());
+		}
+		//组装订单
+		purchase.setUID(uid);
+		purchase.setUname(Login.uname(session));
+		purchase.setEmployee(Login.employee(session));
+		Orders order = populateOrderData(purchase, session).get(0);
+		order.setExtradata(group.get().getID());
+		order.setType(Orders.GROUP_ORDER_TYPE);
+		groupPurchaseContextService.join(user.get(), group.get(), order);
 		return Result.ok();
 	}
 	

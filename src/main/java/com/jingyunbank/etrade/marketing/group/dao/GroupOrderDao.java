@@ -11,4 +11,6 @@ public interface GroupOrderDao {
 	public GroupOrderEntity selectOne(String ID) ;
 	
 	public List<GroupOrderEntity> selectList(String groupUserID);
+
+	public GroupOrderEntity selectByOID(String OID);
 }

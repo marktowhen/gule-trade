@@ -24,6 +24,10 @@
 		select <include refid="base_column"/> from group_order where id=#{ID}
 	</select>
 	
+	<select id="selectByOID" resultMap="GroupOrderEntityResultMap">
+		select <include refid="base_column"/> from group_order where oid=#{OID}
+	</select>
+	
 	<select id="selectList" resultMap="GroupOrderEntityResultMap">
 		select <include refid="base_column"/> from group_order where group_user_id=#{groupUserID}
 	</select>

@@ -29,6 +29,8 @@
 		select <include refid="base_column"/>  
 				from group_user  where group_id=#{groupID}
 	</select>
-	
+	<update id="updateStatus">
+		update group_user set status=#{status} where id=#{ID}
+	</update>
 	
 </mapper>

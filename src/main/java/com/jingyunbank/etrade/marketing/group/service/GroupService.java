@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.marketing.group.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -10,8 +11,11 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.marketing.group.bo.Group;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupService;
+import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.marketing.group.dao.GroupDao;
 import com.jingyunbank.etrade.marketing.group.entity.GroupEntity;
@@ -25,6 +29,8 @@ public class GroupService implements IGroupService{
 	private IUserService userService;
 	@Autowired
 	private IGroupGoodsService groupGoodsService;
+	@Autowired
+	private IGroupUserService groupUserService;
 
 	@Override
 	public Optional<Group> single(String groupid) {
@@ -56,6 +62,28 @@ public class GroupService implements IGroupService{
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
+	}
+
+	@Override
+	public boolean isLeader(String groupID, String uid) {
+		Optional<Group> group = this.single(groupID);
+		if(group.isPresent()){
+			return group.get().getLeaderUID().equals(uid);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean full(String groupID) {
+		Optional<Group> group = this.single(groupID);
+		if(group.isPresent()){
+			Optional<GroupGoods> goods = groupGoodsService.single(group.get().getGroupGoodsID());
+			List<GroupUser> gUser = groupUserService.list(groupID);
+			if(goods.isPresent() && gUser.size()>=goods.get().getMinpeople()){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

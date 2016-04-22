@@ -51,4 +51,15 @@ public class GroupOrderService implements IGroupOrderService {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public Optional<GroupOrder> singleByOID(String OID) {
+		GroupOrderEntity entity = groupOrderDao.selectByOID(OID);
+		if(entity!=null){
+			GroupOrder bo = new GroupOrder();
+			BeanUtils.copyProperties(entity, bo);
+			return Optional.of(bo);
+		}
+		return Optional.empty();
+	}
+
 }
