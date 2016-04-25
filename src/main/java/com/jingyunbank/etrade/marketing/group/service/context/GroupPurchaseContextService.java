@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +22,6 @@ import com.jingyunbank.etrade.api.marketing.group.service.IGroupOrderService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
 import com.jingyunbank.etrade.api.marketing.group.service.context.IGroupPurchaseContextService;
-import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -32,7 +29,7 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 @Service("groupPurchaseContextService")
 public class GroupPurchaseContextService implements IGroupPurchaseContextService{
 
-	private Logger logger = LoggerFactory.getLogger(GroupPurchaseContextService.class);
+	//private Logger logger = LoggerFactory.getLogger(GroupPurchaseContextService.class);
 	@Autowired
 	private IGroupService groupService;
 	@Autowired
@@ -66,6 +63,15 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		orderList.add(orders);
 		orderContextService.save(orderList);
 		
+		GroupOrder go = new GroupOrder();
+		go.setGroupID(group.getID());
+		go.setGroupUserID(user.getID());
+		go.setID(KeyGen.uuid());
+		go.setOID(orders.getID());
+		go.setOrderno(orders.getOrderno());
+		go.setType(GroupOrder.TYPE_FULL);
+		groupOrderService.save(go);
+		
 	}
 
 	
@@ -85,6 +91,15 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		List<Orders> orderList = new ArrayList<Orders>();
 		orderList.add(orders);
 		orderContextService.save(orderList);
+		
+		GroupOrder go = new GroupOrder();
+		go.setGroupID(group.getID());
+		go.setGroupUserID(user.getID());
+		go.setID(KeyGen.uuid());
+		go.setOID(orders.getID());
+		go.setOrderno(orders.getOrderno());
+		go.setType(GroupOrder.TYPE_FULL);
+		groupOrderService.save(go);
 		
 	}
 
@@ -121,24 +136,6 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 			Optional<GroupUser> gu = groupUserService.single(go.get().getGroupUserID());
 			if(gu.isPresent()){
 				groupUserService.refreshStatus(gu.get().getID(), gu.get().getStatus(), order.getStatusCode());
-				if(OrderStatusDesc.PAID_CODE.equals(order.getStatusCode())){
-					Optional<Group> group = groupService.single(gu.get().getGroupID());
-					//支付定金成功 ->
-					if(GroupOrder.TYPE_DEPOSIT.equals(go.get().getType())){
-						//如果是团长 -> 开团
-						if(group.get().getLeaderUID().equals(gu.get().getUID())){
-							groupService.refreshStatus(group.get().getID(), group.get().getStatus(), GroupUser.STATUS_DEPOSIT_PAID);
-						}else if(groupService.full(group.get().getID())){
-							//团员支付定金成功 ->判断如果满团 形成尾款订单 通知团员支付
-							groupService.addBalancePayment(group.get());
-						}
-						
-					}else{
-						//尾款支付成功 ->判断如果全部支付完成->推动group状态
-						
-					}
-					
-				}
 			}
 		}
 	}

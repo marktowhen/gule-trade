@@ -43,14 +43,9 @@
 				from group_user  where group_id=#{groupID} and status=#{status}
 	</select>
 	
-	<select id="selectListUnPayDeposit" resultMap="GroupUserEntityResultMap">
+	<select id="selectListUnPay" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column"/>  
-				from group_user  where group_id=#{groupID} and status in ('NEW','DEPOSIT_PAYFAIL')
-	</select>
-	
-	<select id="selectListUnPayBalance" resultMap="GroupUserEntityResultMap">
-		select <include refid="base_column"/>  
-				from group_user  where group_id=#{groupID} and status in ('DEPOSIT_PAID','BALANCE_PAYMENT_PAYFAIL')
+				from group_user  where group_id=#{groupID} and status in ('NEW','PAYFAIL')
 	</select>
 	
 	

@@ -101,8 +101,8 @@ public class GroupUserService implements IGroupUserService {
 	}
 
 	@Override
-	public List<GroupUser> listUnPayDeposit(String groupID) {
-		return groupUserDao.selectListUnPayDeposit(groupID).stream().map( entity->{
+	public List<GroupUser> listUnPay(String groupID) {
+		return groupUserDao.selectListUnPay(groupID).stream().map( entity->{
 			GroupUser bo = new GroupUser();
 			BeanUtils.copyProperties(entity, bo);
 			return bo;
@@ -110,12 +110,10 @@ public class GroupUserService implements IGroupUserService {
 	}
 
 	@Override
-	public List<GroupUser> listUnPayBalance(String groupID) {
-		return groupUserDao.selectListUnPayBalance(groupID).stream().map( entity->{
-			GroupUser bo = new GroupUser();
-			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+	public void refound(List<GroupUser> groupUserList) {
+		// TODO Auto-generated method stub
+		
 	}
+
 
 }

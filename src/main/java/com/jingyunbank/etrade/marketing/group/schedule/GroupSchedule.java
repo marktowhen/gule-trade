@@ -39,7 +39,7 @@ public class GroupSchedule {
 	@Autowired
 	private IOrderService orderService;
 	
-	//团长未支付定金 组团失败
+	//团长未支付成功 组团失败
 	@Scheduled(fixedDelay=(60*1000))//
 	public void checkStart() throws DataRefreshingException{
 		//查出新建团购且团长未支付押金的列表
@@ -49,7 +49,7 @@ public class GroupSchedule {
 				Optional<GroupUser> gu = groupUserService.single(group.getID(), group.getLeaderUID());
 				if(gu.isPresent()){
 					//如果未支付且支付超时 将团购置为超时状态
-					if(GroupUser.STATUS_CLOSED.equals(gu.get().getStatus())){
+					if(GroupUser.STATUS_TIME_OUT.equals(gu.get().getStatus())){
 						groupService.refreshStatus(group.getID(), group.getStatus(), "TIME_OUT");
 					}
 				}
@@ -73,10 +73,9 @@ public class GroupSchedule {
 					if(timeOut.before(new Date()) || new Date().after(groupGoods.get().getDeadline())){
 						groupService.refreshStatus(group.getID(), group.getStatus(), "TIME_OUT");
 						//退还定金   更改order状态->退款
-						
 						//发消息通知
-						List<GroupUser> groupUserList = groupUserService.list(group.getID(), GroupUser.STATUS_DEPOSIT_PAID);
-						
+						List<GroupUser> groupUserList = groupUserService.list(group.getID(), GroupUser.STATUS_PAID);
+						groupUserService.refound(groupUserList);
 						
 					}
 				}
@@ -84,24 +83,24 @@ public class GroupSchedule {
 		}
 	}
 	
-	//定金逾期未支付 退团
+	//逾期未支付 退团
 	@Scheduled(fixedDelay=(60*1000))//
-	public void checkDeposit() throws DataRefreshingException, DataSavingException{
+	public void checkPay() throws DataRefreshingException, DataSavingException{
 		//查出召集中的团购
 		List<Group> groupList = groupService.list(Group.STATUS_CONVENING);
 		if(!groupList.isEmpty()){
 			for (Group group : groupList) {
 				List<String> timeOutOIDs = new ArrayList<String>();
-				//查出未支付定金的用户
-				List<GroupUser> groupUserList = groupUserService.listUnPayDeposit(group.getID());
+				//查出未支付的用户
+				List<GroupUser> groupUserList = groupUserService.listUnPay(group.getID());
 				for (GroupUser groupUser : groupUserList) {
 					//判断如果支付超时
-					Date timeOut =new Date( groupUser.getJointime().getTime()+PropsConfig.getLong(PropsConfig.GROUP_DEPOSIT_TIME_OUT));
+					Date timeOut =new Date( groupUser.getJointime().getTime()+PropsConfig.getLong(PropsConfig.GROUP_PAY_TIME_OUT));
 					if(timeOut.before(new Date())){
 						//关闭该团购订单
 						groupUserService.refreshStatus(groupUser.getID(), groupUser.getStatus(), "TIME_OUT");
 						//收集要关闭的订单id
-						Optional<GroupOrder> groupOrder = groupOrderService.single(groupUser.getID(), GroupOrder.TYPE_DEPOSIT);
+						Optional<GroupOrder> groupOrder = groupOrderService.single(groupUser.getID(), GroupOrder.TYPE_FULL);
 						if(groupOrder.isPresent()){
 							timeOutOIDs.add(groupOrder.get().getOID());
 						}
@@ -113,37 +112,21 @@ public class GroupSchedule {
 		}
 	}
 	
-	//尾款逾期未支付
-	@Scheduled(fixedDelay=(60*1000))//
-	public void checkBalancePayment() throws DataRefreshingException, DataSavingException{
-		//查出召集中的团购
-		List<Group> groupList = groupService.list(Group.STATUS_DEPOSIT_PAID);
-		if(!groupList.isEmpty()){
-			for (Group group : groupList) {
-				List<String> timeOutOIDs = new ArrayList<String>();
-				//查出未支付尾款的用户
-				List<GroupUser> groupUserList = groupUserService.listUnPayBalance(group.getID());
-				for (GroupUser groupUser : groupUserList) {
-					//判断如果支付超时
-					Optional<GroupOrder> groupOrder = groupOrderService.single(groupUser.getID(), GroupOrder.TYPE_BALANCE_PAYMENT);
-					if(groupOrder.isPresent()){
-						//下单时间是否超时
-						Date timeOut =new Date( orderService.single(groupOrder.get().getOID()).get().getAddtime().getTime()+PropsConfig.getLong(PropsConfig.GROUP_BALANCE_PAYMENT_TIME_OUT));
-						if(timeOut.before(new Date())){
-							//关闭该团购订单
-							groupUserService.refreshStatus(groupUser.getID(), groupUser.getStatus(), "TIME_OUT");
-							//收集要关闭的订单id
-							timeOutOIDs.add(groupOrder.get().getOID());
-						}
-					}
-				}
-				//为防止用户支付已关闭的团购订单 更改Orders状态
-				orderContextService.cancel(timeOutOIDs, "超时关闭");
-			}
-		}
-	}
-	
-	//groupGoods deadline
+	//groupGoods deadline 未组团成功的
+
+
+//select gu.* from group_user gu 
+//	LEFT JOIN groups g ON gu.group_id=g.id
+//	inner JOIN group_goods gg on g.group_goods_id = gg.id and gg.deadline < now() and gg.deadline> (now()-60*5 )
+//
+//where
+// g.`status`='CONVENING' and gu.`status`='PAID' 
+
+//结果集如果没满团 就退款
+
+
+	//全部支付成功的 组团成功
+	//count('PAID') >= group_goods(minpeople) and 没有 PAYFAIL的
 	
 	
 	
