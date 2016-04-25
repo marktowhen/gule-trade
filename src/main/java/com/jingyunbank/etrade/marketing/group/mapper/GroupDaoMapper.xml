@@ -39,5 +39,10 @@
 		update groups set status=#{status} where id=#{ID}
 	</update>
 	
+	<select id="selectList" resultMap="GroupEntityResultMap">
+		select <include refid="base_column"/>  
+				from groups g where g.status=#{status}
+	</select>
+	
 	
 </mapper>

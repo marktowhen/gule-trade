@@ -62,4 +62,15 @@ public class GroupOrderService implements IGroupOrderService {
 		return Optional.empty();
 	}
 
+	@Override
+	public Optional<GroupOrder> single(String groupUserID, String orderType) {
+		GroupOrderEntity entity = groupOrderDao.selectListByType(groupUserID, orderType);
+		if(entity!=null){
+			GroupOrder bo = new GroupOrder();
+			BeanUtils.copyProperties(entity, bo);
+			return Optional.of(bo);
+		}
+		return Optional.empty();
+	}
+
 }

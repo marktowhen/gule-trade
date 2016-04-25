@@ -62,6 +62,12 @@ public final class PropsConfig {
 	
 	//转入佣金
 	public static final String SALES_THREE_COMMISSION = "url.three.commission";
+	//团购定金支付超时时间 秒
+	public static final String GROUP_DEPOSIT_TIME_OUT = "group.deposit.time.out";
+	//团购尾款支付超时时间 秒
+	public static final String GROUP_BALANCE_PAYMENT_TIME_OUT = "group.balance.payment.time.out";
+	
+	
 
 	
 	public final static ClassLoader RESOURCE_LOADER = PropsConfig.class.getClassLoader();

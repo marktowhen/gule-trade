@@ -32,4 +32,9 @@
 		select <include refid="base_column"/> from group_order where group_user_id=#{groupUserID}
 	</select>
 	
+	<select id="selectListByType" resultMap="GroupOrderEntityResultMap">
+		select <include refid="base_column"/> from group_order where group_user_id=#{groupUserID} and type=#{type}
+	</select>
+	
+	
 </mapper>

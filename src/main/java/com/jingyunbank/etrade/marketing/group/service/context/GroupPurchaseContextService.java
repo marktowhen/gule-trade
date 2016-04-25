@@ -15,7 +15,6 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.flow.bo.FlowStatus;
 import com.jingyunbank.etrade.api.flow.service.IFlowStatusService;
 import com.jingyunbank.etrade.api.marketing.group.bo.Group;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
@@ -25,6 +24,7 @@ import com.jingyunbank.etrade.api.marketing.group.service.IGroupOrderService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
 import com.jingyunbank.etrade.api.marketing.group.service.context.IGroupPurchaseContextService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -57,7 +57,7 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		user.setJointime(new Date());
 		user.setUID(leader.getID());
 		user.setPaid(group.getGoods().getDeposit());
-		user.setStatus(GroupUser.NEW_STATUS);
+		user.setStatus(GroupUser.STATUS_NEW);
 		//save group user
 		groupUserService.save(user);
 		
@@ -78,7 +78,7 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		guser.setJointime(new Date());
 		guser.setUID(user.getID());
 		guser.setPaid(group.getGoods().getDeposit());
-		guser.setStatus(GroupUser.NEW_STATUS);
+		guser.setStatus(GroupUser.STATUS_NEW);
 		//save group user
 		groupUserService.save(guser);
 		//保存订单
@@ -120,11 +120,24 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		if(go.isPresent()){
 			Optional<GroupUser> gu = groupUserService.single(go.get().getGroupUserID());
 			if(gu.isPresent()){
-				Optional<FlowStatus> groupUserFlowStatus = flowStatusService.single(GroupUser.FLOW_TYPE, gu.get().getStatus(), order.getStatusCode());
-				if(groupUserFlowStatus.isPresent()){
-					groupUserService.refreshStatus(gu.get().getID(), groupUserFlowStatus.get().getNextStatus());
-				}else{
-					logger.error("FLOW_STATUS表未配置->flow_type:"+GroupUser.FLOW_TYPE+",current_status:"+gu.get().getStatus()+",flag:"+order.getStatusCode());
+				groupUserService.refreshStatus(gu.get().getID(), gu.get().getStatus(), order.getStatusCode());
+				if(OrderStatusDesc.PAID_CODE.equals(order.getStatusCode())){
+					Optional<Group> group = groupService.single(gu.get().getGroupID());
+					//支付定金成功 ->
+					if(GroupOrder.TYPE_DEPOSIT.equals(go.get().getType())){
+						//如果是团长 -> 开团
+						if(group.get().getLeaderUID().equals(gu.get().getUID())){
+							groupService.refreshStatus(group.get().getID(), group.get().getStatus(), GroupUser.STATUS_DEPOSIT_PAID);
+						}else if(groupService.full(group.get().getID())){
+							//团员支付定金成功 ->判断如果满团 形成尾款订单 通知团员支付
+							groupService.addBalancePayment(group.get());
+						}
+						
+					}else{
+						//尾款支付成功 ->判断如果全部支付完成->推动group状态
+						
+					}
+					
 				}
 			}
 		}

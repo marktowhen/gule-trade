@@ -79,7 +79,7 @@ public class GroupPurchaseController {
 		group.setGroupGoodsID(goods.get().getID());
 		group.setLeaderUID(leader.get().getID());
 		group.setStart(new Date());
-		group.setStatus(Group.NEW_STATUS);
+		group.setStatus(Group.STATUS_NEW);
 		group.setLeader(leader.get());
 		group.setGoods(goods.get());
 		
