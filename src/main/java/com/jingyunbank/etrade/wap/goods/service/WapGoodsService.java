@@ -37,12 +37,14 @@ public class WapGoodsService implements IWapGoodsService {
 	private GoodsImgDao goodsImgDao;
 
 	@Override
-	public List<ShowGoods> listGoods(String mid, String tid, String order, String name) throws Exception {
-		List<ShowGoods> list = wapGoodsDao.selectGoods(mid, tid, order, name).stream().map(bo -> {
-			ShowGoods vo = new ShowGoods();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
+	public List<ShowGoods> listGoods(String mid, String tid, String order, String name, String from, String size)
+			throws Exception {
+		List<ShowGoods> list = wapGoodsDao
+				.selectGoods(mid, tid, order, name, Integer.parseInt(from), Integer.parseInt(size)).stream().map(bo -> {
+					ShowGoods vo = new ShowGoods();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
 		return list;
 	}
 
@@ -103,8 +105,8 @@ public class WapGoodsService implements IWapGoodsService {
 	}
 
 	@Override
-	public boolean modifyStock(String skuid,String count) throws Exception {
-		if (wapGoodsDao.updateStock(skuid,count)) {
+	public boolean modifyStock(String skuid, String count) throws Exception {
+		if (wapGoodsDao.updateStock(skuid, count)) {
 			return true;
 		}
 		return false;

@@ -21,6 +21,7 @@
 		<result column="path_" property="path" />
 		<result column="content_" property="content" />
 		<result column="status_" property="status" />
+		<result column="isSale_" property="isSale" />
 	</resultMap>
 
 	<update id="deleteGoods" parameterType="string">
@@ -33,10 +34,10 @@
 	<insert id="insertGoods" parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
 		INSERT INTO `goods`
 		(`id`,`name`,`code`,`mid`,`tid`,`about`,
-		`price`,`sale_price`,`addtime`,`uptime`,`downtime`,`pid`,`path`,`content`,`status`)
+		`price`,`sale_price`,`addtime`,`uptime`,`downtime`,`pid`,`path`,`content`,`status`,`is_sale`)
 		VALUES
 		(#{ID},#{name},#{code},#{MID},#{TID},#{about},#{price},#{salePrice},
-		#{addtime},#{uptime},#{downtime},#{PID},#{path},#{content},#{status})
+		#{addtime},#{uptime},#{downtime},#{PID},#{path},#{content},#{status},#{isSale})
 	</insert>
 
 	<update id="updateGoods" parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
@@ -81,7 +82,7 @@
 		<if test="content !=null and content != ''">
 			`content` = #{content},
 		</if>
-		`status` = #{status} ,`id` = #{ID}
+		`status` = #{status} ,`is_sale` = #{isSale},`id` = #{ID}
 		WHERE `id` = #{ID}
 	</update>
 
@@ -93,7 +94,7 @@
 		,`addtime` addtime_ ,`uptime`uptime_ ,`downtime`
 		downtime_ ,`pid` pid_
 		,`path` path_ ,`content` content_ ,`status`
-		status_
+		status_, `is_sale` isSale_
 	</sql>
 	<select id="selectGoodsByGid" parameterType="string" resultMap="goodsOperationMap">
 		SELECT

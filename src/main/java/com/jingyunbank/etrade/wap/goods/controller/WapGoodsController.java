@@ -53,8 +53,10 @@ public class WapGoodsController {
 			@RequestParam(value = "mid", required = false, defaultValue = "") String mid,
 			@RequestParam(value = "tid", required = false, defaultValue = "") String tid,
 			@RequestParam(value = "order", required = false, defaultValue = "") String order,
-			@RequestParam(value = "name", required = false, defaultValue = "") String name) throws Exception {
-		List<GoodsShowVO> list = wapGoodsService.listGoods(mid, tid, order, name).stream().map(bo -> {
+			@RequestParam(value = "name", required = false, defaultValue = "") String name,
+			@RequestParam(value = "from", required = false, defaultValue = "") String from,
+			@RequestParam(value = "size", required = false, defaultValue = "") String size) throws Exception {
+		List<GoodsShowVO> list = wapGoodsService.listGoods(mid, tid, order, name,from,size).stream().map(bo -> {
 			GoodsShowVO vo = new GoodsShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;

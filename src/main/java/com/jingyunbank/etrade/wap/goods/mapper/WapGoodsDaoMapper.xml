@@ -39,6 +39,7 @@
 		<result column="addtime_" property="addTime" />
 		<result column="volume_" property="volume" />
 		<result column="comment_" property="comment" />
+		<result column="isSale_" property="isSale" />
 	</resultMap>
 
 
@@ -83,6 +84,8 @@
 		<result column="content_" property="content" />
 		<result column="volume_" property="volume" />
 		<result column="comment_" property="comment" />
+		<result column="about_" property="about" />
+		<result column="isSale_" property="isSale" />
 	</resultMap>
 
 
@@ -114,8 +117,10 @@
 		g.`price` price_ ,g.`sale_price` sale_price_,
 		g.`addtime` addtime_,
 		SUM(DISTINCT s.`volume`) volume_,
+		g.is_sale isSale_,
 		COUNT(DISTINCT
-		c.`id` ) comment_
+		c.`id` ) comment_,
+		CASE g.is_sale WHEN '1' THEN g.sale_price WHEN '0'  THEN g.price ELSE g.price END AS nowprice
 	</sql>
 
 	<select id="selectGoods" parameterType="string" resultMap="goodsMap">
@@ -136,19 +141,17 @@
 			AND g.`name` LIKE CONCAT(CONCAT('%', #{name}), '%')
 		</if>
 		GROUP BY g.id
-		<!-- 0 默认按销量 1 录入时间 2 评论数 -->
+		<!-- 0 默认按销量 1 价格 2 评论数 -->
 		<if test=" order == 0 ">
 			ORDER BY volume_ DESC
 		</if>
 		<if test=" order == 1 ">
-			ORDER BY addtime_
+			ORDER BY nowprice 
 		</if>
 		<if test=" order == 2 ">
-			ORDER BY comment_ DESC
-		</if>
-		<if test="order == null and order == '' ">
 			ORDER BY volume_ DESC
 		</if>
+		LIMIT  #{from} , #{size}
 	</select>
 
 
@@ -210,6 +213,8 @@
 		g.`price` price_,
 		g.`sale_price` sale_price_,
 		g.`content` content_,
+		g.`about` about_,
+		g.is_sale isSale_,
 		SUM(DISTINCT
 		s.`volume`) volume_,
 		COUNT(DISTINCT c.`id`) comment_
