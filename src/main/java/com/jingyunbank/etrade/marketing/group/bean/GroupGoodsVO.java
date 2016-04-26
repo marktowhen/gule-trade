@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,8 +18,8 @@ public class GroupGoodsVO {
 	private String ID;
 	@NotBlank
 	private String SKUID;
-	@NotBlank
-	private long duration;//开团后团的时间长度，minutes
+	@Min(1)
+	private long duration;//开团后团的时间长度，second
 	@NotBlank
 	private Date deadline;//团购截止日期
 	private boolean upperlimit;//是否设置人数上限 
