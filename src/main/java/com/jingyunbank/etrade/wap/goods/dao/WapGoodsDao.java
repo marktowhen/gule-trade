@@ -1,11 +1,9 @@
 package com.jingyunbank.etrade.wap.goods.dao;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.api.wap.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsDeatilEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsInfoEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsPostageEntity;
