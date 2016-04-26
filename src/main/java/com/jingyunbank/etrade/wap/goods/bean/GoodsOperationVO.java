@@ -31,6 +31,8 @@ public class GoodsOperationVO implements Serializable {
 	private String path;
 	private String content;
 	private boolean status;
+	private boolean isSale;
+	
 	// -------------------
 	// 图片信息
 	private List<GoodsImgVO> imgList = new ArrayList<GoodsImgVO>();
@@ -38,6 +40,27 @@ public class GoodsOperationVO implements Serializable {
 	private List<GoodsAttrValueVO> attrValueList = new ArrayList<GoodsAttrValueVO>();
 	// sku 信息
 	private List<GoodsSkuVO> skuList = new ArrayList<GoodsSkuVO>();
+
+	private List<GoodsInfoVO> infoList = new ArrayList<GoodsInfoVO>();
+	
+	
+	
+	
+	public boolean isSale() {
+		return isSale;
+	}
+
+	public void setSale(boolean isSale) {
+		this.isSale = isSale;
+	}
+
+	public List<GoodsInfoVO> getInfoList() {
+		return infoList;
+	}
+
+	public void setInfoList(List<GoodsInfoVO> infoList) {
+		this.infoList = infoList;
+	}
 
 	public List<GoodsImgVO> getImgList() {
 		return imgList;

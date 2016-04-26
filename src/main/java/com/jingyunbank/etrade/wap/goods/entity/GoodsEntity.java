@@ -33,8 +33,18 @@ public class GoodsEntity implements Serializable {
 	private String path;
 	private String content;
 	private boolean status;
+	private boolean isSale;
 	
 	
+	
+
+	public boolean isSale() {
+		return isSale;
+	}
+
+	public void setSale(boolean isSale) {
+		this.isSale = isSale;
+	}
 
 	public String getPath() {
 		return path;
