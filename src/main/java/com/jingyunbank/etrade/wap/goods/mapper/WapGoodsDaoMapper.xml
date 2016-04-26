@@ -43,6 +43,18 @@
 	</resultMap>
 
 
+	<!-- 收藏商品map -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsShowEntity"
+		id="favMap">
+		<result column="gid_" property="GID" />
+		<result column="id_" property="MID" />
+		<result column="name_" property="name" />
+		<result column="path_" property="path" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="isSale_" property="isSale" />
+	</resultMap>
+
 	<!-- sku map -->
 	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity"
 		id="skuMap">
@@ -55,7 +67,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
-		
+
 	</resultMap>
 
 
@@ -117,10 +129,12 @@
 		g.`price` price_ ,g.`sale_price` sale_price_,
 		g.`addtime` addtime_,
 		SUM(DISTINCT s.`volume`) volume_,
-		g.is_sale isSale_,
+		g.is_sale
+		isSale_,
 		COUNT(DISTINCT
 		c.`id` ) comment_,
-		CASE g.is_sale WHEN '1' THEN g.sale_price WHEN '0'  THEN g.price ELSE g.price END AS nowprice
+		CASE g.is_sale WHEN '1' THEN
+		g.sale_price WHEN '0' THEN g.price ELSE g.price END AS nowprice
 	</sql>
 
 	<select id="selectGoods" parameterType="string" resultMap="goodsMap">
@@ -146,12 +160,12 @@
 			ORDER BY volume_ DESC
 		</if>
 		<if test=" order == 1 ">
-			ORDER BY nowprice 
+			ORDER BY nowprice
 		</if>
 		<if test=" order == 2 ">
 			ORDER BY volume_ DESC
 		</if>
-		LIMIT  #{from} , #{size}
+		LIMIT #{from} , #{size}
 	</select>
 
 
@@ -179,16 +193,18 @@
 		s.`stock` stock_,
 		s.`volume`
 		volume_, s.`price` price_,
-		s.`sale_price` sale_price_, s.`status`
+		s.`sale_price`
+		sale_price_, s.`status`
 		status_ , g.`path` path_
 	</sql>
 	<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
 		SELECT
 		<include refid="skuSql" />
 		FROM `goods_sku` s
-		LEFT JOIN goods g  ON s.gid = g.`id`
+		LEFT JOIN goods g ON s.gid = g.`id`
 		WHERE 1=1
-		AND s.`gid`= #{gid}
+		AND
+		s.`gid`= #{gid}
 		AND s.`properties`= #{condition}
 	</select>
 
@@ -217,7 +233,8 @@
 		g.is_sale isSale_,
 		SUM(DISTINCT
 		s.`volume`) volume_,
-		COUNT(DISTINCT c.`id`) comment_
+		COUNT(DISTINCT
+		c.`id`) comment_
 	</sql>
 
 	<select id="selectGoodsDetail" parameterType="string" resultMap="detailMap">
@@ -283,5 +300,15 @@
 	<select id="selectPidByGid" parameterType="string" resultType="string">
 		SELECT pid FROM goods
 		g WHERE g.id = #{gid}
+	</select>
+
+	<select id="selectFavGoods" parameterType="string" resultMap="favMap">
+		SELECT f.id id_,g.id gid_, g.name name_, g.path path_,
+		g.price price_,g.sale_price sale_price_ ,g.is_sale isSale_
+		FROM favorites f
+		LEFT JOIN goods g ON f.fid = g.id
+		WHERE 1=1 AND  g.status=1 AND f.type= #{type}
+		AND f.uid= #{uid}
+
 	</select>
 </mapper>

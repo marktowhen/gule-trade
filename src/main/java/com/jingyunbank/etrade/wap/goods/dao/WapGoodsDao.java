@@ -23,8 +23,8 @@ import com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity;
 public interface WapGoodsDao {
 
 	public List<GoodsShowEntity> selectGoods(@Param("mid") String mid, @Param("tid") String tid,
-			@Param("order") String order, @Param("name") String name,@Param("from") int from
-			,@Param("size") int size) throws Exception;
+			@Param("order") String order, @Param("name") String name, @Param("from") int from, @Param("size") int size)
+					throws Exception;
 
 	public GoodsSkuConditionEntity selectGoodsSkuConditionByGid(@Param("gid") String gid) throws Exception;
 
@@ -42,5 +42,7 @@ public interface WapGoodsDao {
 	public GoodsPostageEntity selectGoodsPostage(@Param("gid") String gid) throws Exception;
 
 	public String selectPidByGid(@Param("gid") String gid) throws Exception;
+
+	public List<GoodsShowEntity> selectFavGoods(@Param("uid") String uid, @Param("type") int type) throws Exception;
 
 }

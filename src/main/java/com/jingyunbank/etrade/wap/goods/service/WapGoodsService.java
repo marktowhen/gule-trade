@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.wap.goods.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -138,6 +137,17 @@ public class WapGoodsService implements IWapGoodsService {
 	public String singlePidByGid(String gid) throws Exception {
 		// TODO Auto-generated method stub
 		return wapGoodsDao.selectPidByGid(gid);
+	}
+
+	@Override
+	public List<ShowGoods> listFavGoods(String uid, int type) throws Exception {
+		List<ShowGoods> list = wapGoodsDao
+				.selectFavGoods(uid,type).stream().map(bo -> {
+					ShowGoods vo = new ShowGoods();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
+		return list;
 	}
 
 }
