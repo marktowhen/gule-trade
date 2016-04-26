@@ -95,7 +95,7 @@
 	</select>
 	
 	<select id="selectListStartSuccess" resultMap="GroupEntityResultMap">
-		select <include refid="group_with_goods"/> from groups g
+		select <include refid="group_with_buyers"/> from groups g
 			LEFT JOIN  group_user gu  ON gu.group_id=g.id
 		where g.`status`='NEW' 
 			and gu.status='PAID'

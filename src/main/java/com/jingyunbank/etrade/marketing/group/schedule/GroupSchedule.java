@@ -46,4 +46,7 @@ public class GroupSchedule {
 	public void finish() {
 		groupRobotService.finish();
 	}
+	
+	//到货之后计算团长佣金
+	
 }
