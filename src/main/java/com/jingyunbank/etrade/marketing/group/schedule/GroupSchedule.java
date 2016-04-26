@@ -1,134 +1,49 @@
 package com.jingyunbank.etrade.marketing.group.schedule;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.jingyunbank.etrade.api.exception.DataRefreshingException;
-import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.marketing.group.bo.Group;
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupOrder;
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
-import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
-import com.jingyunbank.etrade.api.marketing.group.service.IGroupOrderService;
-import com.jingyunbank.etrade.api.marketing.group.service.IGroupService;
-import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
-import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
-import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
-import com.jingyunbank.etrade.config.PropsConfig;
+import com.jingyunbank.etrade.api.marketing.group.service.context.IGroupRobotService;
 
 @Component
 public class GroupSchedule {
 	
 	@Autowired
-	private IGroupService groupService;
-	@Autowired
-	private IGroupUserService groupUserService;
-	@Autowired
-	private IGroupGoodsService groupGoodsService;
-	@Autowired
-	private IOrderContextService orderContextService;
-	@Autowired
-	private IGroupOrderService groupOrderService;
-	@Autowired
-	private IOrderService orderService;
-	
+	private IGroupRobotService groupRobotService;
 	//团长未支付成功 组团失败
 	@Scheduled(fixedDelay=(60*1000))//
-	public void checkStart() throws DataRefreshingException{
-		//查出新建团购且团长未支付押金的列表
-		List<Group> groupList = groupService.list(Group.STATUS_NEW);
-		if(!groupList.isEmpty()){
-			for (Group group : groupList) {
-				Optional<GroupUser> gu = groupUserService.single(group.getID(), group.getLeaderUID());
-				if(gu.isPresent()){
-					//如果未支付且支付超时 将团购置为超时状态
-					if(GroupUser.STATUS_TIME_OUT.equals(gu.get().getStatus())){
-						groupService.refreshStatus(group.getID(), group.getStatus(), "TIME_OUT");
-					}
-				}
-			}
-		}
+	public void closeUnstartGroup() {
+		groupRobotService.closeUnstartGroup();
 	}
 	
-	
-	//到期未组团成功的 退还押金
+	//团长未支付成功 开团成功
 	@Scheduled(fixedDelay=(60*1000))//
-	public void checkConvening() throws DataRefreshingException{
-		//查出召集中的团购
-		List<Group> groupList = groupService.list(Group.STATUS_CONVENING);
-		if(!groupList.isEmpty()){
-			for (Group group : groupList) {
-				Optional<GroupGoods> groupGoods = groupGoodsService.single(group.getGroupGoodsID());
-				if( groupGoods.isPresent()){
-					
-					//如果未支付且支付超时 将团购置为超时状态
-					Date timeOut =new Date( group.getStart().getTime()+groupGoods.get().getDuration());
-					if(timeOut.before(new Date()) || new Date().after(groupGoods.get().getDeadline())){
-						groupService.refreshStatus(group.getID(), group.getStatus(), "TIME_OUT");
-						//退还定金   更改order状态->退款
-						//发消息通知
-						List<GroupUser> groupUserList = groupUserService.list(group.getID(), GroupUser.STATUS_PAID);
-						groupUserService.refound(groupUserList);
-						
-					}
-				}
-			}
-		}
+	public void startSuccess() {
+		groupRobotService.startSuccess();
+	}
+	
+	//指定时间段内未组团成功的 退还押金
+	@Scheduled(fixedDelay=(60*1000))//
+	public void closeConveneFailGroup(){
+		groupRobotService.closeConveneFailGroup();
 	}
 	
 	//逾期未支付 退团
 	@Scheduled(fixedDelay=(60*1000))//
-	public void checkPay() throws DataRefreshingException, DataSavingException{
-		//查出召集中的团购
-		List<Group> groupList = groupService.list(Group.STATUS_CONVENING);
-		if(!groupList.isEmpty()){
-			for (Group group : groupList) {
-				List<String> timeOutOIDs = new ArrayList<String>();
-				//查出未支付的用户
-				List<GroupUser> groupUserList = groupUserService.listUnPay(group.getID());
-				for (GroupUser groupUser : groupUserList) {
-					//判断如果支付超时
-					Date timeOut =new Date( groupUser.getJointime().getTime()+PropsConfig.getLong(PropsConfig.GROUP_PAY_TIME_OUT));
-					if(timeOut.before(new Date())){
-						//关闭该团购订单
-						groupUserService.refreshStatus(groupUser.getID(), groupUser.getStatus(), "TIME_OUT");
-						//收集要关闭的订单id
-						Optional<GroupOrder> groupOrder = groupOrderService.single(groupUser.getID(), GroupOrder.TYPE_FULL);
-						if(groupOrder.isPresent()){
-							timeOutOIDs.add(groupOrder.get().getOID());
-						}
-					}
-				}
-				//为防止用户支付已关闭的团购订单 更改Orders状态
-				orderContextService.cancel(timeOutOIDs, "超时关闭");
-			}
-		}
+	public void payTimeout() {
+		groupRobotService.payTimeout();
 	}
 	
-	//groupGoods deadline 未组团成功的
-
-
-//select gu.* from group_user gu 
-//	LEFT JOIN groups g ON gu.group_id=g.id
-//	inner JOIN group_goods gg on g.group_goods_id = gg.id and gg.deadline < now() and gg.deadline> (now()-60*5 )
-//
-//where
-// g.`status`='CONVENING' and gu.`status`='PAID' 
-
-//结果集如果没满团 就退款
-
-
-	//全部支付成功的 组团成功
-	//count('PAID') >= group_goods(minpeople) and 没有 PAYFAIL的
+	//团购到期 满团组团成功  没满团解散
+	@Scheduled(fixedDelay=(60*1000))//
+	public void expire() {
+		groupRobotService.expire();
+	}
 	
-	
-	
-
+	//组团成功的
+	@Scheduled(fixedDelay=(60*1000))//
+	public void finish() {
+		groupRobotService.finish();
+	}
 }

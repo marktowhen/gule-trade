@@ -9,11 +9,18 @@ public class GroupEntity {
 	private String ID;
 	private String leaderUID;
 	private Date start;
-	private List<GroupUserEntity> buyers = new ArrayList<GroupUserEntity>();
 	
 	private String groupGoodsID;
 	private String status;//该团的状态
+	private List<GroupUserEntity> buyers = new ArrayList<GroupUserEntity>();
+	private GroupGoodsEntity goods ;
 	
+	public GroupGoodsEntity getGoods() {
+		return goods;
+	}
+	public void setGoods(GroupGoodsEntity goods) {
+		this.goods = goods;
+	}
 	public String getGroupGoodsID() {
 		return groupGoodsID;
 	}

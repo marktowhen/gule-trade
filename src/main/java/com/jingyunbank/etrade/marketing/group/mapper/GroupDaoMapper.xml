@@ -9,6 +9,13 @@
 		<result column="start" property="start" javaType="java.util.Date"/>
 		<result column="group_goods_id" property="groupGoodsID" javaType="String"/>
 		<result column="status" property="status" javaType="String"/>
+		<association property="goods" javaType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity">
+			<id column="gid" property="ID"/>
+			<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+			<result column="duration" property="duration" jdbcType="INTEGER"/>
+			<result column="deadline" property="deadline" javaType="java.util.Date"/>
+			<result column="skuid" property="SKUID" javaType="String"/>
+		</association>
 		<collection property="buyers" javaType="ArrayList" ofType="com.jingyunbank.etrade.marketing.group.entity.GroupUserEntity">
 			<id column="buyers_id" property="ID" />
 			<result column="buyers_group_id" property="groupID" />
@@ -26,6 +33,18 @@
 		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid
 	</sql>
 	
+	<sql id="group_with_buyers_goods">
+		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
+		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid,
+		gg.id gid ,gg.minpeople minpeople,gg.duration,gg.deadline ,gg.skuid
+	</sql>
+	
+	<sql id="group_with_goods">
+		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
+		gg.id gid ,gg.minpeople minpeople,gg.duration,gg.deadline ,gg.skuid
+	</sql>
+	
+	
 	<insert id="insert">
 		insert into groups (<include refid="base_column"/>) values(#{ID},#{leaderUID},#{start},#{groupGoodsID},#{status})
 	</insert>
@@ -42,6 +61,44 @@
 	<select id="selectList" resultMap="GroupEntityResultMap">
 		select <include refid="base_column"/>  
 				from groups g where g.status=#{status}
+	</select>
+	
+	<select id="selectListOnDeadline" resultMap="GroupEntityResultMap">
+		select <include refid="group_with_buyers_goods"/> from groups g
+			LEFT JOIN  group_user gu  ON gu.group_id=g.id
+			inner JOIN group_goods gg on g.group_goods_id = gg.id and gg.deadline &lt;= now() and gg.deadline &gt; (now()-60*#{minute} )
+		where
+		 g.`status`='CONVENING' and gu.`status`='PAID' 
+	</select>
+	
+	<select id="selectListOnSuccess" resultMap="GroupEntityResultMap">
+		select <include refid="group_with_buyers_goods"/> from groups g
+			LEFT JOIN  group_user gu  ON gu.group_id=g.id
+			inner JOIN group_goods gg on g.group_goods_id = gg.id 
+		where g.`status`='CONVENING' 
+		 	and( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )&gt;=gg.minpeople
+
+	</select>
+	
+	<select id="selectListStartFail" resultMap="GroupEntityResultMap">
+		select <include refid="group_with_buyers"/> from groups g
+			LEFT JOIN  group_user gu  ON gu.group_id=g.id and g.leader_uid = gu.uid
+		where g.`status`='NEW' and gu.status = 'CLOSED'
+
+	</select>
+	
+	<select id="selectListConvening" resultMap="GroupEntityResultMap">
+		select <include refid="group_with_goods"/> from groups g
+			inner JOIN group_goods gg on g.group_goods_id = gg.id 
+		where g.`status`='CONVENING' 
+			and ( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )&lt;gg.minpeople
+	</select>
+	
+	<select id="selectListStartSuccess" resultMap="GroupEntityResultMap">
+		select <include refid="group_with_goods"/> from groups g
+			LEFT JOIN  group_user gu  ON gu.group_id=g.id
+		where g.`status`='NEW' 
+			and gu.status='PAID'
 	</select>
 	
 	

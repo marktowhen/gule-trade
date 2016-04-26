@@ -72,4 +72,15 @@ public class GroupGoodsService implements IGroupGoodsService {
 		return bos;
 	}
 
+	@Override
+	public Optional<GroupGoods> singleByGroupID(String groupID) {
+		GroupGoodsEntity enity = groupGoodsDao.selectOneByGroupID(groupID);
+		if(Objects.nonNull(enity)){
+			GroupGoods bo = new GroupGoods();
+			BeanUtils.copyProperties(enity, bo, "priceSettings", "groups");
+			return Optional.of(bo);
+		}
+		return Optional.empty();
+	}
+
 }

@@ -115,8 +115,49 @@ public class GroupService implements IGroupService{
 	}
 
 	@Override
-	public void addBalancePayment(Group group) {
-		
+	public List<Group> listOnDeadline(int minute) {
+		return groupDao.selectListOnDeadline(minute).stream().map( entity->{
+			Group bo = new Group();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<Group> listOnSuccess() {
+		return groupDao.selectListOnSuccess().stream().map( entity->{
+			Group bo = new Group();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Group> listStartFail() {
+		return groupDao.selectListStartFail().stream().map( entity->{
+			Group bo = new Group();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Group> listConvening() {
+		return groupDao.selectListConvening().stream().map( entity->{
+			Group bo = new Group();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Group> listStartSuccess() {
+		return groupDao.selectListStartSuccess().stream().map( entity->{
+			Group bo = new Group();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
+	}
+
 
 }

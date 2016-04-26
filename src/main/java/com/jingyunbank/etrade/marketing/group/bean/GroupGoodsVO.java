@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 public class GroupGoodsVO {
 
@@ -31,7 +32,14 @@ public class GroupGoodsVO {
 	//团长佣金
 	private BigDecimal commission;
 	private boolean show;//是否上架
-	
+	@NotEmpty
+	private String GID;
+	public String getGID() {
+		return GID;
+	}
+	public void setGID(String gID) {
+		GID = gID;
+	}
 	public String getID() {
 		return ID;
 	}

@@ -101,19 +101,24 @@ public class GroupUserService implements IGroupUserService {
 	}
 
 	@Override
-	public List<GroupUser> listUnPay(String groupID) {
-		return groupUserDao.selectListUnPay(groupID).stream().map( entity->{
+	public List<GroupUser> listUnPay() {
+		return groupUserDao.selectListUnPay().stream().map( entity->{
 			GroupUser bo = new GroupUser();
 			BeanUtils.copyProperties(entity, bo);
 			return bo;
 		}).collect(Collectors.toList());
 	}
 
+	
+
 	@Override
-	public void refound(List<GroupUser> groupUserList) {
-		// TODO Auto-generated method stub
+	public void notice(GroupUser user, String message) {
+		System.out.println("===============================================");
+		System.out.println("notice---"+message);
+		System.out.println("===============================================");
 		
 	}
+
 
 
 }

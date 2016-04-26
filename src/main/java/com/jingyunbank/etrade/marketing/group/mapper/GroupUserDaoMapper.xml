@@ -45,9 +45,8 @@
 	
 	<select id="selectListUnPay" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column"/>  
-				from group_user  where group_id=#{groupID} and status in ('NEW','PAYFAIL')
+				from group_user  where  status in ('NEW','PAYFAIL')
 	</select>
-	
 	
 	
 	

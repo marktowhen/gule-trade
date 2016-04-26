@@ -20,6 +20,7 @@ public interface GroupUserDao {
 
 	public List<GroupUserEntity> selectListWithStatus(@Param("groupID")String groupID, @Param("status")String status);
 
-	public List<GroupUserEntity> selectListUnPay(String groupID);
+	public List<GroupUserEntity> selectListUnPay();
+
 
 }
