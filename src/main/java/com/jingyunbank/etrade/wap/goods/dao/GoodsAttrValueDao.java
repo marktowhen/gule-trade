@@ -20,4 +20,7 @@ public interface GoodsAttrValueDao {
 	public void deleteGoodsAttrValue(@Param("gid") String gid) throws Exception;
 
 	public List<GoodsAttrValueEntity> selectGoodsAttrValue(@Param("gid") String gid) throws Exception;
+	
+	//根据GID和value 值获取attr id
+	public String selectAttrIdByGidAndValue(@Param("gid") String gid, @Param("value") String value);
 }

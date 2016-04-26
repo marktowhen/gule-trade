@@ -115,29 +115,7 @@ public class MerchantController {
 		return Result.ok(merchantVO);
 	}
 
-	/**
-	 * 获取发票类型
-	 * 
-	 * @param request
-	 * @param session
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
-	@RequestMapping("/invoicetype/list")
-	public Result<List<InvoiceTypeVO>> getInvoiceType(HttpServletRequest request, HttpSession session)
-			throws Exception {
-		// 转成VO
-		List<InvoiceType> list = merchantService.listInvoiceType();
-		List<InvoiceTypeVO> rlist = new ArrayList<InvoiceTypeVO>();
-		InvoiceTypeVO vo = null;
-		for (InvoiceType bo : list) {
-			vo = new InvoiceTypeVO();
-			BeanUtils.copyProperties(bo, vo);
-			rlist.add(vo);
-		}
-		return Result.ok(rlist);
-	}
+	
 
 	/**
 	 * 商家修改
@@ -164,29 +142,7 @@ public class MerchantController {
 		return Result.ok(merchantVO);
 	}
 
-	/**
-	 * 获取快递类型
-	 * 
-	 * @param request
-	 * @param session
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
-	@RequestMapping("/deliverytype/list")
-	public Result<List<DeliveryTypeVO>> getDeliveryType(HttpServletRequest request, HttpSession session)
-			throws Exception {
-		// 转成VO
-		List<DeliveryType> list = merchantService.listDeliveryType();
-		List<DeliveryTypeVO> rlist = new ArrayList<DeliveryTypeVO>();
-		DeliveryTypeVO vo = null;
-		for (DeliveryType bo : list) {
-			vo = new DeliveryTypeVO();
-			BeanUtils.copyProperties(bo, vo);
-			rlist.add(vo);
-		}
-		return Result.ok(rlist);
-	}
+	
 
 	/**
 	 * 通过mid查询商家信息

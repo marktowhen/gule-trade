@@ -27,6 +27,7 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.wap.goods.bo.Goods;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsAttrValue;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsImg;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsInfo;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperationShow;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
@@ -94,15 +95,7 @@ public class WapGoodsOperationController {
 			goods.setDowntime(string2Date(vo.getDowntime()));
 		}
 
-		// ------- sku信息---
-		List<GoodsSku> skuList = vo.getSkuList().stream().map(sku -> {
-			GoodsSku goodsSku = new GoodsSku();
-			BeanUtils.copyProperties(sku, goodsSku);
-			goodsSku.setID(KeyGen.uuid());
-			goodsSku.setGID(goods.getID());
-			goodsSku.setStatus(true);
-			return goodsSku;
-		}).collect(Collectors.toList());
+
 
 		// -------属性信息---
 		List<GoodsAttrValue> attrValueList = vo.getAttrValueList().stream().map(attrValue -> {
@@ -112,6 +105,17 @@ public class WapGoodsOperationController {
 			av.setGID(goods.getID());
 			return av;
 		}).collect(Collectors.toList());
+		
+		// ------- sku信息---
+		List<GoodsSku> skuList = vo.getSkuList().stream().map(sku -> {
+			GoodsSku goodsSku = new GoodsSku();
+			BeanUtils.copyProperties(sku, goodsSku);
+			goodsSku.setID(KeyGen.uuid());
+			goodsSku.setGID(goods.getID());
+			goodsSku.setStatus(true);
+			return goodsSku;
+		}).collect(Collectors.toList());
+		
 		// --------图片信息---
 		List<GoodsImg> imgList = vo.getImgList().stream().map(imgvo -> {
 			GoodsImg img = new GoodsImg();
@@ -120,13 +124,22 @@ public class WapGoodsOperationController {
 			img.setGID(goods.getID());
 			return img;
 		}).collect(Collectors.toList());
-		// ------------------
+		// -------info信息-----------
+
+		List<GoodsInfo> infoList = vo.getInfoList().stream().map(info -> {
+			GoodsInfo bo = new GoodsInfo();
+			BeanUtils.copyProperties(info, bo);
+			bo.setID(KeyGen.uuid());
+			bo.setGID(goods.getID());
+			return bo;
+		}).collect(Collectors.toList());
+		// ----------------------------------
 		GoodsOperation goodsOperation = new GoodsOperation();
 		goodsOperation.setGoods(goods);
 		goodsOperation.setAttrValueList(attrValueList);
 		goodsOperation.setSkuList(skuList);
 		goodsOperation.setImgList(imgList);
-
+		goodsOperation.setInfoList(infoList);
 		if (wapGoodsOperationService.saveGoods(goodsOperation)) {
 			return Result.ok("success");
 		}
@@ -188,12 +201,22 @@ public class WapGoodsOperationController {
 			img.setGID(goods.getID());
 			return img;
 		}).collect(Collectors.toList());
+		// -------info信息-----------
+
+		List<GoodsInfo> infoList = vo.getInfoList().stream().map(info -> {
+			GoodsInfo bo = new GoodsInfo();
+			BeanUtils.copyProperties(info, bo);
+			bo.setID(KeyGen.uuid());
+			bo.setGID(goods.getID());
+			return bo;
+		}).collect(Collectors.toList());
 
 		GoodsOperation goodsOperation = new GoodsOperation();
 		goodsOperation.setGoods(goods);
 		goodsOperation.setAttrValueList(attrValueList);
 		goodsOperation.setSkuList(skuList);
 		goodsOperation.setImgList(imgList);
+		goodsOperation.setInfoList(infoList);
 		if (wapGoodsOperationService.modfiyGoods(goodsOperation)) {
 			return Result.ok("success");
 		}
@@ -252,4 +275,11 @@ public class WapGoodsOperationController {
 	}
 	
 	
+
+	@RequestMapping(value = "/del/{gid}", method = RequestMethod.POST)
+	public Result<String> del(HttpServletRequest request, @PathVariable String gid) throws Exception {
+		wapGoodsOperationService.delGoodsByGid(gid);
+		return Result.ok("success");
+	}
+
 }
