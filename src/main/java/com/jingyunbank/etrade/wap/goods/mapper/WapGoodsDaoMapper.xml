@@ -13,6 +13,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="path_" property="path" />
+		<result column="isSale_" property="isSale" />
 		<collection property="attrList" javaType="ArrayList"
 			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrEntity">
 			<result column="attrId_" property="ID" />
@@ -68,6 +69,20 @@
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
 
+	</resultMap>
+
+	<!-- skus map  by gid -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity"
+		id="skus">
+		<result column="id_" property="ID" />
+		<result column="gid_" property="GID" />
+		<result column="properties_" property="properties" />
+		<result column="properties_value_" property="propertiesValue" />
+		<result column="stock_" property="stock" />
+		<result column="volume_" property="volume" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="status_" property="status" />
 	</resultMap>
 
 
@@ -172,7 +187,8 @@
 	<!-- 商品sku条件 -->
 	<sql id="skuConditionSql">
 		g.id gid_, g.name gname_,g.`mid` mid_ ,g.tid tid_,
-		g.`price` price_ ,g.`sale_price` sale_price_ ,g.`path` path_,
+		g.`price` price_ ,g.`sale_price` sale_price_ ,g.`path`
+		path_,g.`is_sale` isSale_ ,
 		v1.attr_id attrId_,v1.attr_name attrname_,
 		v1.id vid_ , v2.`gid`
 		vgid_,v2.value value_
@@ -304,11 +320,24 @@
 
 	<select id="selectFavGoods" parameterType="string" resultMap="favMap">
 		SELECT f.id id_,g.id gid_, g.name name_, g.path path_,
-		g.price price_,g.sale_price sale_price_ ,g.is_sale isSale_
+		g.price
+		price_,g.sale_price sale_price_ ,g.is_sale isSale_
 		FROM favorites f
 		LEFT JOIN goods g ON f.fid = g.id
-		WHERE 1=1 AND  g.status=1 AND f.type= #{type}
+		WHERE 1=1 AND g.status=1 AND f.type=
+		#{type}
 		AND f.uid= #{uid}
+	</select>
+
+	<select id="selectSkusByGid" parameterType="string" resultMap="skus">
+
+		SELECT s.`id` id_, s.`gid` gid_, s.`properties` properties_,
+		s.`stock` stock_, s.`volume` volume_, s.`price` price_,
+		s.`sale_price` sale_price_, s.`status` status_ , g.`path` path_,
+		s.properties_value properties_value_
+		FROM `goods_sku` s LEFT JOIN goods g ON s.gid = g.`id`
+		WHERE 1=1 AND s.`gid`= #{gid}
+
 
 	</select>
 </mapper>
