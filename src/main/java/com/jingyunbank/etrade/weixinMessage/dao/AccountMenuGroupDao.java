@@ -2,7 +2,7 @@ package com.jingyunbank.etrade.weixinMessage.dao;
 
 import java.util.List;
 
-import com.jingyunbank.etrade.weixinMessage.bean.AccountMenuGroup;
+import com.jingyunbank.etrade.api.weixinMessage.bo.AccountMenuGroup;
 import com.jingyunbank.etrade.weixinMessage.util.Pagination;
 
 
