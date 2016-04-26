@@ -118,6 +118,22 @@ public class WapGoodsController {
 		}
 		return Result.ok(vo);
 	}
+	
+	
+	/**
+	 * 根据属性获取对应的sku
+	 * 
+	 * @param condition
+	 * @param gid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/skus/{gid}", method = RequestMethod.GET)
+	public Result<List<GoodsSkuVO>> getGoodsSku(@PathVariable String gid) throws Exception {
+		List<GoodsSku>  skus = wapGoodsService.getSkusByGid(gid);
+		List<GoodsSkuVO>  list = null;
+		return Result.ok(list);
+	}
 
 	/**
 	 * 获取商品详情信息
