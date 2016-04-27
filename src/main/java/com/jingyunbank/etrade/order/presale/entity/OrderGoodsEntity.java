@@ -18,6 +18,7 @@ public class OrderGoodsEntity implements Serializable{
 	private String UID;
 	private long orderno;
 	private String GID;//商品id
+	private String SKUID;
 	private String gname;
 	private BigDecimal pprice;
 	private BigDecimal price;//订单生成时的商品价格
@@ -141,5 +142,11 @@ public class OrderGoodsEntity implements Serializable{
 	}
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
+	}
+	public String getSKUID() {
+		return SKUID;
+	}
+	public void setSKUID(String sKUID) {
+		SKUID = sKUID;
 	}
 }

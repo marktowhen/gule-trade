@@ -13,6 +13,7 @@
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="uname" property="uname" javaType="String"/>
 		<result column="gid" property="GID" javaType="String"/>
+		<result column="skuid" property="SKUID" javaType="String"/>
 		<result column="gname" property="gname" javaType="String"/>
 		<result column="mid" property="MID" javaType="String"/>
 		<result column="mname" property="mname" javaType="String"/>
@@ -29,11 +30,11 @@
 		id, uid
 	</sql>
 	<sql id="goods_in_cart_columns">
-		id, cart_id, uid, uname, gid, gname, mid, mname, addtime, price, count, pprice
+		id, cart_id, uid, uname, gid, gname, mid, mname, addtime, price, count, pprice,skuid
 	</sql>
 	<sql id="goods_in_cart_columns_to_show">
 		gic.id, gic.cart_id, gic.uid, gic.uname, gic.gid, gic.gname, gic.mid, 
-		gic.mname, gic.addtime, gic.price, gic.count, gic.pprice,
+		gic.mname, gic.addtime, gic.price, gic.count, gic.pprice, gic.skuid,
 		gs.count as stock, gimg.thumb_path_1 as imgpath, gs.postage as postage
 	</sql>
 	<select id="selectOne" parameterType="String" resultMap="CartEntityResultMap">
@@ -87,7 +88,7 @@
 			(<include refid="goods_in_cart_columns"/>)
 		values
 			(#{ID}, #{cartID}, #{UID}, #{uname}, #{GID}, #{gname}, #{MID}, #{mname}, 
-			#{addtime}, #{price}, #{count}, #{pprice})
+			#{addtime}, #{price}, #{count}, #{pprice}, #{skuid})
 	</insert>
 	<insert id="insertManyGoods" parameterType="com.jingyunbank.etrade.cart.entity.GoodsInCartEntity">
 		insert into goods_in_cart
@@ -95,7 +96,7 @@
 		values
 			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
 				(#{g.ID}, #{g.cartID}, #{g.UID}, #{uname}, #{g.GID}, #{g.gname}, #{g.MID}, 
-				#{g.mname}, #{g.addtime}, #{g.price}, #{g.count}, #{pprice})
+				#{g.mname}, #{g.addtime}, #{g.price}, #{g.count}, #{pprice}, #{skuid})
 			</foreach>
 	</insert>
 	<update id="update" parameterType="com.jingyunbank.etrade.cart.entity.GoodsInCartEntity">

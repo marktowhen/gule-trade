@@ -44,7 +44,6 @@ public class WxApController {
 	public @ResponseBody String doGet(HttpServletRequest request,@PathVariable String account) {
 		//如果是多账号，根据url中的account参数获取对应的MpAccount处理即可
 		
-		System.out.println("配置连接    。。。。。。。。qqqqq");
 		MpAccount mpAccount = WxMemoryCacheClient.getSingleMpAccount();//获取缓存中的唯一账号
 		if(mpAccount != null){
 			//String token = mpAccount.getToken();//获取token，进行验证；
@@ -53,12 +52,6 @@ public class WxApController {
 			String timestamp = request.getParameter("timestamp");// 时间戳
 			String nonce = request.getParameter("nonce");// 随机数
 			String echostr = request.getParameter("echostr");// 随机字符串
-			System.out.println("开始校验  在这里 token会被写死     地址会被写死  。。。。。");
-			System.out.println("开始校验  在这里 token会被写死     地址会被写死  。。。。。"+token);
-			System.out.println("开始校验  在这里 token会被写死     地址会被写死  。。。。。"+signature);
-			System.out.println("开始校验  在这里 token会被写死     地址会被写死  。。。。。"+timestamp);
-			System.out.println("开始校验  在这里 token会被写死     地址会被写死  。。。。。"+nonce);
-			System.out.println("开始校验  在这里 token会被写死     地址会被写死  。。。。。"+echostr);
 			// 校验成功返回  echostr，成功成为开发者；否则返回error，接入失败
 			if (SignUtil.validSign(signature, token, timestamp, nonce)) {
 				return echostr;

@@ -8,6 +8,7 @@
 		<result column="oid" property="OID" javaType="String"/>
 		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
 		<result column="gid" property="GID" javaType="String"/>
+		<result column="skuid" property="SKUID" javaType="String"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="gname" property="gname" javaType="String"/>
 		<result column="status_code" property="statusCode" javaType="String"/>
@@ -24,11 +25,12 @@
 		<result column="postage" property="postage" jdbcType="DECIMAL"/>
 	</resultMap>
 	<sql id="order_goods_column">
-		id, oid,uid, orderno, gid, gname, addtime, status_code, status_name, price, pprice, payout, coupon_reduce, count
+		id, oid,uid, orderno, gid, gname, addtime, status_code, status_name, 
+		price, pprice, payout, coupon_reduce, count, skuid
 	</sql>
 	<sql id="select_order_goods_column">
 		og.id, og.oid, og.uid, og.orderno, og.gid, og.gname, og.addtime, og.status_code, og.status_name,
-		og.price, og.pprice, og.payout, og.coupon_reduce, og.count, o.mid, o.mname, o.postage,
+		og.price, og.pprice, og.payout, og.coupon_reduce, og.count, o.mid, o.mname, o.postage, og.skuid,
 		img.thumb_path_1 as imgpath
 	</sql>
 	<insert id="insertMany">
@@ -38,7 +40,7 @@
 			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
 				(#{g.ID}, #{g.OID}, #{g.UID}, #{g.orderno}, #{g.GID}, #{g.gname}, 
 				#{g.addtime}, #{g.statusCode}, #{g.statusName}, #{g.price}, #{g.pprice}, #{g.payout}, 
-				#{g.couponReduce}, #{g.count})
+				#{g.couponReduce}, #{g.count}, #{g.skuid})
 			</foreach>
 	</insert>
 	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">

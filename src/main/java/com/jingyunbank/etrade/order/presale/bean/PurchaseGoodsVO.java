@@ -16,6 +16,9 @@ public class PurchaseGoodsVO {
 	@NotNull
 	@Size(min=1, max=22)
 	private String GID;
+	@NotNull
+	@Size(min=1, max=22)
+	private String SKUID;
 	private String gname;
 	private BigDecimal pprice;//商品下单时的促销价
 	@NotNull
@@ -60,5 +63,11 @@ public class PurchaseGoodsVO {
 	}
 	public void setPprice(BigDecimal pprice) {
 		this.pprice = pprice;
+	}
+	public String getSKUID() {
+		return SKUID;
+	}
+	public void setSKUID(String sKUID) {
+		SKUID = sKUID;
 	}
 }
