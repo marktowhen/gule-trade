@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
@@ -29,6 +30,7 @@ public class GroupGoodsController {
 	@Autowired
 	private IGroupGoodsService groupGoodsService;
 	
+	@AuthBeforeOperation
 	@RequestMapping(value="/goods/addition", method=RequestMethod.POST)
 	public Result<String> add(@RequestBody @Valid GroupGoodsVO goods, BindingResult valid) throws Exception{
 		if(valid.hasErrors()){

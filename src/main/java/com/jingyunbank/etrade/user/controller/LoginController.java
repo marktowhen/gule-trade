@@ -225,6 +225,11 @@ public class LoginController {
 		//用户信息
 		loginSuccess(seller.getID(), seller.getSname(),null, false, session, response);
 		
+		Cookie cookie = new Cookie(Login.LOGIN_MERCHANT_ID, seller.getMid());
+		cookie.setPath("/");
+		cookie.setMaxAge(session.getMaxInactiveInterval());
+		response.addCookie(cookie);
+		
 		SellerVO vo = new SellerVO();
 		BeanUtils.copyProperties(seller, vo);
 		return Result.ok(vo);

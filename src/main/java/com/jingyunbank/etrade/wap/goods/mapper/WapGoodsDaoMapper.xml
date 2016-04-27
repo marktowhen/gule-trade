@@ -13,6 +13,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="path_" property="path" />
+		<result column="isSale_" property="isSale" />
 		<collection property="attrList" javaType="ArrayList"
 			ofType="com.jingyunbank.etrade.wap.goods.entity.GoodsAttrEntity">
 			<result column="attrId_" property="ID" />
@@ -39,8 +40,21 @@
 		<result column="addtime_" property="addTime" />
 		<result column="volume_" property="volume" />
 		<result column="comment_" property="comment" />
+		<result column="isSale_" property="isSale" />
 	</resultMap>
 
+
+	<!-- 收藏商品map -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsShowEntity"
+		id="favMap">
+		<result column="gid_" property="GID" />
+		<result column="id_" property="MID" />
+		<result column="name_" property="name" />
+		<result column="path_" property="path" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="isSale_" property="isSale" />
+	</resultMap>
 
 	<!-- sku map -->
 	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity"
@@ -54,7 +68,21 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
-		
+
+	</resultMap>
+
+	<!-- skus map  by gid -->
+	<resultMap type="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity"
+		id="skus">
+		<result column="id_" property="ID" />
+		<result column="gid_" property="GID" />
+		<result column="properties_" property="properties" />
+		<result column="properties_value_" property="propertiesValue" />
+		<result column="stock_" property="stock" />
+		<result column="volume_" property="volume" />
+		<result column="price_" property="price" />
+		<result column="sale_price_" property="salePrice" />
+		<result column="status_" property="status" />
 	</resultMap>
 
 
@@ -83,6 +111,8 @@
 		<result column="content_" property="content" />
 		<result column="volume_" property="volume" />
 		<result column="comment_" property="comment" />
+		<result column="about_" property="about" />
+		<result column="isSale_" property="isSale" />
 	</resultMap>
 
 
@@ -114,8 +144,12 @@
 		g.`price` price_ ,g.`sale_price` sale_price_,
 		g.`addtime` addtime_,
 		SUM(DISTINCT s.`volume`) volume_,
+		g.is_sale
+		isSale_,
 		COUNT(DISTINCT
-		c.`id` ) comment_
+		c.`id` ) comment_,
+		CASE g.is_sale WHEN '1' THEN
+		g.sale_price WHEN '0' THEN g.price ELSE g.price END AS nowprice
 	</sql>
 
 	<select id="selectGoods" parameterType="string" resultMap="goodsMap">
@@ -136,26 +170,25 @@
 			AND g.`name` LIKE CONCAT(CONCAT('%', #{name}), '%')
 		</if>
 		GROUP BY g.id
-		<!-- 0 默认按销量 1 录入时间 2 评论数 -->
+		<!-- 0 默认按销量 1 价格 2 评论数 -->
 		<if test=" order == 0 ">
 			ORDER BY volume_ DESC
 		</if>
 		<if test=" order == 1 ">
-			ORDER BY addtime_
+			ORDER BY nowprice
 		</if>
 		<if test=" order == 2 ">
-			ORDER BY comment_ DESC
-		</if>
-		<if test="order == null and order == '' ">
 			ORDER BY volume_ DESC
 		</if>
+		LIMIT #{from} , #{size}
 	</select>
 
 
 	<!-- 商品sku条件 -->
 	<sql id="skuConditionSql">
 		g.id gid_, g.name gname_,g.`mid` mid_ ,g.tid tid_,
-		g.`price` price_ ,g.`sale_price` sale_price_ ,g.`path` path_,
+		g.`price` price_ ,g.`sale_price` sale_price_ ,g.`path`
+		path_,g.`is_sale` isSale_ ,
 		v1.attr_id attrId_,v1.attr_name attrname_,
 		v1.id vid_ , v2.`gid`
 		vgid_,v2.value value_
@@ -176,16 +209,18 @@
 		s.`stock` stock_,
 		s.`volume`
 		volume_, s.`price` price_,
-		s.`sale_price` sale_price_, s.`status`
+		s.`sale_price`
+		sale_price_, s.`status`
 		status_ , g.`path` path_
 	</sql>
 	<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
 		SELECT
 		<include refid="skuSql" />
 		FROM `goods_sku` s
-		LEFT JOIN goods g  ON s.gid = g.`id`
+		LEFT JOIN goods g ON s.gid = g.`id`
 		WHERE 1=1
-		AND s.`gid`= #{gid}
+		AND
+		s.`gid`= #{gid}
 		AND s.`properties`= #{condition}
 	</select>
 
@@ -210,9 +245,12 @@
 		g.`price` price_,
 		g.`sale_price` sale_price_,
 		g.`content` content_,
+		g.`about` about_,
+		g.is_sale isSale_,
 		SUM(DISTINCT
 		s.`volume`) volume_,
-		COUNT(DISTINCT c.`id`) comment_
+		COUNT(DISTINCT
+		c.`id`) comment_
 	</sql>
 
 	<select id="selectGoodsDetail" parameterType="string" resultMap="detailMap">
@@ -278,5 +316,28 @@
 	<select id="selectPidByGid" parameterType="string" resultType="string">
 		SELECT pid FROM goods
 		g WHERE g.id = #{gid}
+	</select>
+
+	<select id="selectFavGoods" parameterType="string" resultMap="favMap">
+		SELECT f.id id_,g.id gid_, g.name name_, g.path path_,
+		g.price
+		price_,g.sale_price sale_price_ ,g.is_sale isSale_
+		FROM favorites f
+		LEFT JOIN goods g ON f.fid = g.id
+		WHERE 1=1 AND g.status=1 AND f.type=
+		#{type}
+		AND f.uid= #{uid}
+	</select>
+
+	<select id="selectSkusByGid" parameterType="string" resultMap="skus">
+
+		SELECT s.`id` id_, s.`gid` gid_, s.`properties` properties_,
+		s.`stock` stock_, s.`volume` volume_, s.`price` price_,
+		s.`sale_price` sale_price_, s.`status` status_ , g.`path` path_,
+		s.properties_value properties_value_
+		FROM `goods_sku` s LEFT JOIN goods g ON s.gid = g.`id`
+		WHERE 1=1 AND s.`gid`= #{gid}
+
+
 	</select>
 </mapper>

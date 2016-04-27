@@ -1,11 +1,11 @@
 package com.jingyunbank.etrade.wap.goods.controller;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
+import com.jingyunbank.etrade.api.track.service.ITrackService;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsDeatil;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsPostage;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
@@ -35,7 +38,8 @@ public class WapGoodsController {
 
 	@Autowired
 	private IWapGoodsService wapGoodsService;
-
+	@Resource
+	protected ITrackService trackService;
 	/**
 	 * 展示商品的信息
 	 * 
@@ -53,8 +57,10 @@ public class WapGoodsController {
 			@RequestParam(value = "mid", required = false, defaultValue = "") String mid,
 			@RequestParam(value = "tid", required = false, defaultValue = "") String tid,
 			@RequestParam(value = "order", required = false, defaultValue = "") String order,
-			@RequestParam(value = "name", required = false, defaultValue = "") String name) throws Exception {
-		List<GoodsShowVO> list = wapGoodsService.listGoods(mid, tid, order, name).stream().map(bo -> {
+			@RequestParam(value = "name", required = false, defaultValue = "") String name,
+			@RequestParam(value = "from", required = false, defaultValue = "") String from,
+			@RequestParam(value = "size", required = false, defaultValue = "") String size) throws Exception {
+		List<GoodsShowVO> list = wapGoodsService.listGoods(mid, tid, order, name,from,size).stream().map(bo -> {
 			GoodsShowVO vo = new GoodsShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
@@ -111,6 +117,25 @@ public class WapGoodsController {
 			BeanUtils.copyProperties(optional.get(), vo);
 		}
 		return Result.ok(vo);
+	}
+	
+	
+	/**
+	 * 根据属性获取对应的sku
+	 * 
+	 * @param condition
+	 * @param gid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/skus/{gid}", method = RequestMethod.GET)
+	public Result<List<GoodsSkuVO>> getGoodsSku(@PathVariable String gid) throws Exception {
+		List<GoodsSku>  skus = wapGoodsService.getSkusByGid(gid);
+		return Result.ok(skus.stream().map(bo->{
+			GoodsSkuVO vo = new GoodsSkuVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
 	}
 
 	/**
@@ -207,9 +232,60 @@ public class WapGoodsController {
 		return Result.ok(vo);
 	}
 
+	/**
+	 * 根据商品ID 获取 快递ID
+	 * @param request
+	 * @param gid
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/pid/{gid}", method = RequestMethod.GET)
 	public Result<String> queryGoodsPostageId(HttpServletRequest request, @PathVariable String gid) throws Exception {
 		String pid = wapGoodsService.singlePidByGid(gid);
 		return Result.ok(pid);
+	}
+	
+	/**
+	 * 收藏商品
+	 * @param request
+	 * @param gid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/favorite/save/{gid}", method = RequestMethod.POST)
+	@AuthBeforeOperation
+	public Result<String> saveFav(HttpServletRequest request, @PathVariable String gid) throws Exception {
+		boolean flag = false;
+		String uid = Login.UID(request);
+		flag = trackService.isFavoritesExists(uid, gid, "2");
+		if (flag) {
+			return Result.fail("您已经收藏过该商品！");
+		}
+		flag = trackService.saveFavorites(uid, gid, "2");
+		if (flag) {
+			return Result.ok("success");
+		} else {
+			return Result.fail("fail");
+		}
+	}
+	
+	
+	/**
+	 * 获取我的收藏
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/favorite/list", method = RequestMethod.GET)
+	@AuthBeforeOperation
+	public Result<List<GoodsShowVO>> favList(HttpServletRequest request) throws Exception {
+		String uid = Login.UID(request);
+	    int type = 2; //2代表收藏的是商品
+		List<GoodsShowVO> list = wapGoodsService.listFavGoods(uid,type).stream().map(bo -> {
+			GoodsShowVO vo = new GoodsShowVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList());
+		return Result.ok(list);
 	}
 }

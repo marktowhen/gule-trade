@@ -1,7 +1,6 @@
 package com.jingyunbank.etrade.wap.goods.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,12 +36,14 @@ public class WapGoodsService implements IWapGoodsService {
 	private GoodsImgDao goodsImgDao;
 
 	@Override
-	public List<ShowGoods> listGoods(String mid, String tid, String order, String name) throws Exception {
-		List<ShowGoods> list = wapGoodsDao.selectGoods(mid, tid, order, name).stream().map(bo -> {
-			ShowGoods vo = new ShowGoods();
-			BeanUtils.copyProperties(bo, vo);
-			return vo;
-		}).collect(Collectors.toList());
+	public List<ShowGoods> listGoods(String mid, String tid, String order, String name, String from, String size)
+			throws Exception {
+		List<ShowGoods> list = wapGoodsDao
+				.selectGoods(mid, tid, order, name, Integer.parseInt(from), Integer.parseInt(size)).stream().map(bo -> {
+					ShowGoods vo = new ShowGoods();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
 		return list;
 	}
 
@@ -103,8 +104,8 @@ public class WapGoodsService implements IWapGoodsService {
 	}
 
 	@Override
-	public boolean modifyStock(String skuid,String count) throws Exception {
-		if (wapGoodsDao.updateStock(skuid,count)) {
+	public boolean modifyStock(String skuid, String count) throws Exception {
+		if (wapGoodsDao.updateStock(skuid, count)) {
 			return true;
 		}
 		return false;
@@ -136,6 +137,26 @@ public class WapGoodsService implements IWapGoodsService {
 	public String singlePidByGid(String gid) throws Exception {
 		// TODO Auto-generated method stub
 		return wapGoodsDao.selectPidByGid(gid);
+	}
+
+	@Override
+	public List<ShowGoods> listFavGoods(String uid, int type) throws Exception {
+		List<ShowGoods> list = wapGoodsDao
+				.selectFavGoods(uid,type).stream().map(bo -> {
+					ShowGoods vo = new ShowGoods();
+					BeanUtils.copyProperties(bo, vo);
+					return vo;
+				}).collect(Collectors.toList());
+		return list;
+	}
+
+	@Override
+	public List<GoodsSku> getSkusByGid(String gid) throws Exception {
+		return wapGoodsDao.selectSkusByGid(gid).stream().map( entity->{
+			GoodsSku bo = new GoodsSku();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
 	}
 
 }

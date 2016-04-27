@@ -22,4 +22,6 @@ public interface OrderGoodsDao {
 	public int count(@Param(value="OID") String uid,@Param("status") OrderStatusDesc status);
 
 	public void updateStatusByGid(@Param(value="OID")String oid,@Param(value="GID") String gid, @Param("status")OrderStatusDesc status);
+
+	public OrderGoodsEntity selectByGID(@Param(value="OID")String oID,@Param(value="GID") String gID);
 }

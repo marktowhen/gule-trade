@@ -34,7 +34,14 @@
 		SELECT v.`id` id_, v.`gid` gid_, v.`attr_id` attrId_ ,
 		v.`attr_name` attrName_, v.`value` value_
 		FROM goods_attr_value v
-		WHERE v.`gid`= #{gid}
+		WHERE
+		v.`gid`= #{gid}
 		ORDER BY v.`attr_name`
+	</select>
+
+	<select id="selectAttrIdByGidAndValue" parameterType="string"
+		resultType="string">
+		SELECT id FROM goods_attr_value v
+		WHERE 1=1 AND v.gid = #{gid} AND v.value = #{value}
 	</select>
 </mapper>

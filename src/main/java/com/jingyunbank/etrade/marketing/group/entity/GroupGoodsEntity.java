@@ -22,7 +22,13 @@ public class GroupGoodsEntity {
 	private Date addtime;
 	
 	private List<GroupEntity> groups = new ArrayList<GroupEntity>();
-	
+	private String GID;
+	public String getGID() {
+		return GID;
+	}
+	public void setGID(String gID) {
+		GID = gID;
+	}
 	
 	public String getID() {
 		return ID;

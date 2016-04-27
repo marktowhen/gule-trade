@@ -16,4 +16,6 @@ public interface GroupGoodsDao {
 	public List<GroupGoodsEntity> selectMany(@Param("from") long from, 
 			@Param("size") int size) ;
 
+	public GroupGoodsEntity selectOneByGroupID(String groupID);
+
 }
