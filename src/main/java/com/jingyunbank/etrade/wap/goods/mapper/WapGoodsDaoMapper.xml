@@ -221,7 +221,7 @@
 		WHERE 1=1
 		AND
 		s.`gid`= #{gid}
-		AND s.`properties`= #{condition}
+		AND s.`properties` LIKE CONCAT(CONCAT('%', #{condition}), '%')
 	</select>
 
 	<!-- 产品参数 -->
