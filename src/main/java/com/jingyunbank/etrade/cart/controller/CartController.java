@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.cart.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +28,9 @@ import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.cart.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.logistic.service.IPostageService;
+import com.jingyunbank.etrade.api.order.presale.bo.Orders;
+import com.jingyunbank.etrade.api.user.bo.Address;
+import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.cart.bean.CartVO;
 import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
@@ -41,6 +45,9 @@ public class CartController {
 	private ICartService cartService;
 	@Autowired
 	private IPostageService postageService;
+	
+	@Autowired
+	private IAddressService addressService;
 	
 	/**
 	 *	uri : get /api/cart/goods/list/:uid
@@ -173,15 +180,53 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
 	public Result<CartVO> clearing(@Valid @RequestBody CartVO cart,
-					BindingResult valid, HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			return Result.fail("您提交的订单信息有误，请核实后重新提交。");
-		}
+			BindingResult valid, HttpSession session) throws Exception{
+//		if(valid.hasErrors()){
+//			return Result.fail("您提交的订单信息有误，请核实后重新提交。");
+//		}
+		CartVO cart1 = new CartVO();
+		List<OrdersInCartVO> iorders = new ArrayList<OrdersInCartVO>();
+		OrdersInCartVO ovo = new OrdersInCartVO();
+		ovo.setMID("m1");
+		ovo.setMname("乐谷微商城");
+		ovo.setPostage(new BigDecimal(0));
+		ovo.setType(Orders.BASE_ORDER_TYPE);
+		List<GoodsInCartVO> gvos = new ArrayList<GoodsInCartVO>();
+		GoodsInCartVO gvo = new GoodsInCartVO();
+		gvo.setGID("6J5oe2uzTVuUCP-P3-sJbA");
+		gvo.setGname("牛仔裤");
+		gvo.setMID("m1");
+		gvo.setMname("乐谷微商城");
+		gvo.setPrice(new BigDecimal(888));
+		gvo.setCount(2);
+		gvos.add(gvo);
 		
-		List<OrdersInCartVO> orders = cart.getOrders();
+		GoodsInCartVO gvo1 = new GoodsInCartVO();
+		gvo1.setGID("6J5oe2uzTVuUCP-P3-sJbA");
+		gvo1.setGname("牛仔裤");
+		gvo1.setMID("m1");
+		gvo1.setMname("乐谷微商城");
+		gvo1.setPrice(new BigDecimal(888));
+		gvo1.setCount(2);
+		gvos.add(gvo1);
+		ovo.setGoods(gvos);
+		iorders.add(ovo);
+		cart1.setOrders(iorders);
+		
+		String uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
+		Optional<Address> addressc = addressService.getDefaultAddress(uid);
+		if(addressc.isPresent()){
+			Address addr = addressc.get();
+			cart1.setAddress(addr.getProvinceName()+"-"+addr.getCityName()+"-"+addr.getAddress());
+			cart1.setAddressid(addr.getID());
+			cart1.setCity(addr.getCity());
+			cart1.setMobile(addr.getMobile());
+			cart1.setReceiver(addr.getReceiver());
+		}
+		List<OrdersInCartVO> orders = cart1.getOrders();
 		BigDecimal cartprice = BigDecimal.ZERO;
 		BigDecimal cartpricewithoutpostage = BigDecimal.ZERO;
 		for (OrdersInCartVO order : orders) {
@@ -206,12 +251,12 @@ public class CartController {
             cartprice = cartprice.add(order.getPrice());
             cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
 		}
-		cart.setTotalPrice(cartprice);
-		cart.setTotalPriceWithoutPostage(cartpricewithoutpostage);
+		cart1.setTotalPrice(cartprice);
+		cart1.setTotalPriceWithoutPostage(cartpricewithoutpostage);
 		
 		ObjectMapper mapper = new ObjectMapper();
-		session.setAttribute(GOODS_IN_CART_TO_CLEARING, mapper.writeValueAsString(cart));
-		return Result.ok(cart);
+		session.setAttribute(GOODS_IN_CART_TO_CLEARING, mapper.writeValueAsString(cart1));
+		return Result.ok(cart1);
 	}
 	
 	/**
@@ -221,7 +266,7 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@AuthBeforeOperation
+	//@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing/list", method=RequestMethod.GET)
 	public Result<CartVO> listClearing(HttpSession session) throws Exception{
 		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);
