@@ -67,7 +67,7 @@ public class WXJSAPIPayHandler implements IPayHandler {
 		requestParams.put("spbill_create_ip", "124.128.245.162");//APP和网页支付提交用户端ip
 		requestParams.put("notify_url", pipeline.getNoticeUrl());//接收微信支付异步通知回调地址
 		requestParams.put("trade_type", "JSAPI");//交易类型
-		requestParams.put("openid", UniqueSequence.next()+"");//trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识
+		requestParams.put("openid", "ovgcZs4yQJbcUXiDkS3Ajnryfal4");//trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识
 		
 		String signkey = pipeline.getSignkey();
 		requestParams.put("sign", MD5.digest(compositeWXPayKeyValuePaires(requestParams, signkey)).toUpperCase());
@@ -133,7 +133,7 @@ public class WXJSAPIPayHandler implements IPayHandler {
 	private String compositeWXPayKeyValuePaires(Map<String, String> result, String key) {
 		StringBuilder builder = new StringBuilder();
 		result.entrySet().stream()
-			.filter(x-> !x.getKey().equals("sign") && !x.getKey().equals("class"))
+			.filter(x-> !x.getKey().equals("sign") && !x.getKey().equals("class") && !x.getKey().equals("code_url"))
 			.sorted((x, y)->x.getKey().compareTo(y.getKey())).forEach((x)->{
 				builder.append(x.getKey()).append("=").append(x.getValue()).append("&");
 		});
