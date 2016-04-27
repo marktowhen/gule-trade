@@ -357,8 +357,6 @@ public class WxApiClient {
 	public static JSONObject sendTemplateMessage(TemplateMessage tplMsg,MpAccount mpAccount){
 		if(tplMsg != null){
 			String accessToken = getAccessToken(mpAccount);
-			System.out.println(tplMsg.toString());
-			System.out.println(mpAccount.toString());
 			return WxApi.httpsRequest(WxApi.getSendTemplateMessageUrl(accessToken), HttpMethod.POST, tplMsg.toString());
 		}
 		return null;

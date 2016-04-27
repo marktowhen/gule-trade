@@ -25,6 +25,11 @@ public class SignUtil {
 		Arrays.sort(paramArr);
 		StringBuilder sb = new StringBuilder(paramArr[0]);
 		sb.append(paramArr[1]).append(paramArr[2]);
+		
+		System.out.println(signature+"onnnn");
+		System.out.println(tocken+"twooo");
+		System.out.println(timestamp+"thre");
+		System.out.println(nonce+"foru uuu");
 		String ciphertext = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");

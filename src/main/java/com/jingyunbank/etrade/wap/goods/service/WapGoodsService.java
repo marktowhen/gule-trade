@@ -19,7 +19,6 @@ import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSkuCondition;
 import com.jingyunbank.etrade.api.wap.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
-import com.jingyunbank.etrade.order.presale.entity.OrderTraceEntity;
 import com.jingyunbank.etrade.wap.goods.dao.GoodsImgDao;
 import com.jingyunbank.etrade.wap.goods.dao.WapGoodsDao;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsDeatilEntity;
@@ -60,7 +59,7 @@ public class WapGoodsService implements IWapGoodsService {
 	}
 
 	@Override
-	public Optional<GoodsSku> singleGoodsSku(String gid, String condition) throws Exception {
+	public GoodsSku singleGoodsSku(String gid, String condition) throws Exception {
 		GoodsSkuEntity entity = wapGoodsDao.selectGoodsSku(gid, condition);
 		GoodsSku sku = null;
 		if (Objects.nonNull(entity)) {
@@ -68,7 +67,7 @@ public class WapGoodsService implements IWapGoodsService {
 			BeanUtils.copyProperties(entity, sku);
 
 		}
-		return Optional.ofNullable(sku);
+		return sku;
 	}
 
 	@Override

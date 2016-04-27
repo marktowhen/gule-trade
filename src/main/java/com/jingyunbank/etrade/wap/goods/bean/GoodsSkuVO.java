@@ -2,8 +2,6 @@ package com.jingyunbank.etrade.wap.goods.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 
@@ -28,8 +26,21 @@ public class GoodsSkuVO implements Serializable {
 	private BigDecimal price;
 	private BigDecimal salePrice;
 	private boolean status;
+	private boolean sale;
+	
+	
 
 
+
+
+
+	public boolean isSale() {
+		return sale;
+	}
+
+	public void setSale(boolean sale) {
+		this.sale = sale;
+	}
 
 	public String getID() {
 		return ID;

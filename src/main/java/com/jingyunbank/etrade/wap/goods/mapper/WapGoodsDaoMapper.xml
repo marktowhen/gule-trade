@@ -53,7 +53,7 @@
 		<result column="path_" property="path" />
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
-		<result column="isSale_" property="isSale" />
+		<result column="isSale_" property="sale" />
 	</resultMap>
 
 	<!-- sku map -->
@@ -68,6 +68,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
+		<result column="is_sale_ " property="sale" />
 
 	</resultMap>
 
@@ -83,6 +84,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
+		<result column="is_sale_ " property="isSale" />
 	</resultMap>
 
 
@@ -210,8 +212,10 @@
 		s.`volume`
 		volume_, s.`price` price_,
 		s.`sale_price`
-		sale_price_, s.`status`
-		status_ , g.`path` path_
+		sale_price_, s.`is_sale`
+		is_sale_ ,s.`status`
+		status_ , 
+		g.`path` path_
 	</sql>
 	<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
 		SELECT
@@ -221,7 +225,7 @@
 		WHERE 1=1
 		AND
 		s.`gid`= #{gid}
-		AND s.`properties` LIKE CONCAT(CONCAT('%', #{condition}), '%')
+		AND s.`properties` =  #{condition}
 	</select>
 
 	<!-- 产品参数 -->
@@ -334,7 +338,7 @@
 		SELECT s.`id` id_, s.`gid` gid_, s.`properties` properties_,
 		s.`stock` stock_, s.`volume` volume_, s.`price` price_,
 		s.`sale_price` sale_price_, s.`status` status_ , g.`path` path_,
-		s.properties_value properties_value_
+		s.properties_value properties_value_ , s.`is_sale` is_sale_
 		FROM `goods_sku` s LEFT JOIN goods g ON s.gid = g.`id`
 		WHERE 1=1 AND s.`gid`= #{gid}
 
