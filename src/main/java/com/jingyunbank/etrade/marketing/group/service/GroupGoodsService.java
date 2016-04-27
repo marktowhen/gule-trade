@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
@@ -31,11 +32,14 @@ public class GroupGoodsService implements IGroupGoodsService {
 	@Override
 	@Transactional
 	public void save(GroupGoods goods) throws DataSavingException {
+		goods.setID(KeyGen.uuid());
 		List<GroupGoodsPriceSetting> priceSettings = goods.getPriceSettings();
 		List<GroupGoodsPriceSettingEntity> sentities = new ArrayList<GroupGoodsPriceSettingEntity>();
 		priceSettings.forEach(bo -> {
 			GroupGoodsPriceSettingEntity en = new GroupGoodsPriceSettingEntity();
 			BeanUtils.copyProperties(bo, en);
+			en.setID(KeyGen.uuid());
+			en.setGGID(goods.getID());
 			sentities.add(en);
 		});
 		GroupGoodsEntity entity = new GroupGoodsEntity();

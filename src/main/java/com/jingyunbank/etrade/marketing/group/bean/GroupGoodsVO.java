@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class GroupGoodsVO {
 
 	private String ID;
@@ -20,7 +22,8 @@ public class GroupGoodsVO {
 	private String SKUID;
 	@Min(1)
 	private long duration;//开团后团的时间长度，second
-	@NotBlank
+	@NotNull
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date deadline;//团购截止日期
 	private boolean upperlimit;//是否设置人数上限 
 	private int minpeople;//最少成团人数
