@@ -108,15 +108,16 @@ public class WapGoodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/single/{gid}/{condition}", method = RequestMethod.GET)
-	public Result<GoodsSkuVO> getGoodsSku(@PathVariable String condition, @PathVariable String gid) throws Exception {
-		Optional<GoodsSku> optional = wapGoodsService.singleGoodsSku(gid, condition);
+	@RequestMapping(value = "/single/{gid}", method = RequestMethod.GET)
+	public Result<GoodsSkuVO> getGoodsSku( String  conditions, @PathVariable String gid) throws Exception {
+		GoodsSku optional = wapGoodsService.singleGoodsSku(gid, conditions);
 		GoodsSkuVO vo = null;
 		if (Objects.nonNull(optional)) {
 			vo = new GoodsSkuVO();
-			BeanUtils.copyProperties(optional.get(), vo);
+			BeanUtils.copyProperties(optional, vo);
+			return Result.ok(vo);
 		}
-		return Result.ok(vo);
+		return Result.ok(null);
 	}
 	
 	

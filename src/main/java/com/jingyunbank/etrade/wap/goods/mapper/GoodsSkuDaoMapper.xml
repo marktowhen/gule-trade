@@ -21,9 +21,9 @@
 	<insert id="insertGoodsSku"
 		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
 		INSERT INTO `goods_sku`
-		(`id`,`gid`,`properties`,`properties_value`,`stock`,`volume`,`price`,`sale_price`,`status`)
+		(`id`,`gid`,`properties`,`properties_value`,`stock`,`volume`,`price`,`sale_price`,`status`,`is_sale`)
 		VALUES ( #{ID}, #{GID}, #{properties}, #{propertiesValue}, #{stock},
-		#{volume}, #{price}, #{salePrice}, #{status})
+		#{volume}, #{price}, #{salePrice}, #{status},#{sale})
 	</insert>
 
 	<update id="updateGoodsSku"

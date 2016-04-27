@@ -60,7 +60,7 @@ public class WapGoodsService implements IWapGoodsService {
 	}
 
 	@Override
-	public Optional<GoodsSku> singleGoodsSku(String gid, String condition) throws Exception {
+	public GoodsSku singleGoodsSku(String gid, String condition) throws Exception {
 		GoodsSkuEntity entity = wapGoodsDao.selectGoodsSku(gid, condition);
 		GoodsSku sku = null;
 		if (Objects.nonNull(entity)) {
@@ -68,7 +68,7 @@ public class WapGoodsService implements IWapGoodsService {
 			BeanUtils.copyProperties(entity, sku);
 
 		}
-		return Optional.ofNullable(sku);
+		return sku;
 	}
 
 	@Override
