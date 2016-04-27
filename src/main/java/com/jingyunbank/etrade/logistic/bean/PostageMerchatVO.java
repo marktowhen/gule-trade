@@ -15,7 +15,7 @@ public class PostageMerchatVO {
 	private BigDecimal postage;
 	@Size(min=1)
 	@Valid
-	private List<PostageCalculateByGIDVO> postageList;
+	private List<PostageCalculateByGIDVO> goods;
 	public String getMID() {
 		return MID;
 	}
@@ -29,11 +29,10 @@ public class PostageMerchatVO {
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
 	}
-	public List<PostageCalculateByGIDVO> getPostageList() {
-		return postageList;
+	public List<PostageCalculateByGIDVO> getGoods() {
+		return goods;
 	}
-	public void setPostageList(List<PostageCalculateByGIDVO> postageList) {
-		this.postageList = postageList;
+	public void setGoods(List<PostageCalculateByGIDVO> goods) {
+		this.goods = goods;
 	}
-	
 }

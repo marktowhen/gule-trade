@@ -48,7 +48,7 @@ public class PostageController {
 	private IWapGoodsService wapGoodsService;
 	
 	
-	@RequestMapping(value="/api/logistic/postage/calculation", method=RequestMethod.PUT)
+	@RequestMapping(value="/calculation", method=RequestMethod.PUT)
 	public Result<BigDecimal> calculate(@RequestBody @Valid PostageCalculateByGIDVO postagesVO, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
@@ -59,14 +59,14 @@ public class PostageController {
 		return Result.ok(postageCalculateService.calculate(bo));
 	}
 	
-	@RequestMapping(value="/api/logistic/postage/calculation/muti", method=RequestMethod.PUT)
+	@RequestMapping(value="/calculation/muti", method=RequestMethod.PUT)
 	public Result<PostageCalculateResultVO> calculateByGID(@RequestBody @Valid PostageCalculateResultVO postages, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
 		}
 		postages.setTotal(BigDecimal.ZERO);
-		postages.getMerchatList().stream().forEach(oneMerchat->{
-			List<PostageCalculate> postagebo = oneMerchat.getPostageList().stream().map(vo -> {
+		postages.getMerchants().stream().forEach(oneMerchat->{
+			List<PostageCalculate> postagebo = oneMerchat.getGoods().stream().map(vo -> {
 				PostageCalculate bo = new PostageCalculate();
 				BeanUtils.copyProperties(vo, bo);
 				try {

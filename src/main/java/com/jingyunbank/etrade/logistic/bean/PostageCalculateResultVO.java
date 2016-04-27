@@ -12,19 +12,17 @@ public class PostageCalculateResultVO {
 	//merchatList 里再包含gid的list
 	@Valid
 	@Size(min=1)
-	private List<PostageMerchatVO> merchatList;
+	private List<PostageMerchatVO> merchants;
 	public BigDecimal getTotal() {
 		return total;
 	}
 	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
-	public List<PostageMerchatVO> getMerchatList() {
-		return merchatList;
+	public List<PostageMerchatVO> getMerchants() {
+		return merchants;
 	}
-	public void setMerchatList(List<PostageMerchatVO> merchatList) {
-		this.merchatList = merchatList;
+	public void setMerchants(List<PostageMerchatVO> merchants) {
+		this.merchants = merchants;
 	}
-	
-	
 }
