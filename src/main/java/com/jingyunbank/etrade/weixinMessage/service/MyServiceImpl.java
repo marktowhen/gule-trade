@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.weixinMessage.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import com.jingyunbank.etrade.api.weixinMessage.bo.MsgBase;
 import com.jingyunbank.etrade.api.weixinMessage.bo.MsgNews;
 import com.jingyunbank.etrade.api.weixinMessage.bo.MsgRequest;
 import com.jingyunbank.etrade.api.weixinMessage.bo.MsgText;
+import com.jingyunbank.etrade.api.weixinMessage.bo.TemplateMessage;
 import com.jingyunbank.etrade.api.weixinMessage.service.MyService;
 import com.jingyunbank.etrade.weixinMessage.dao.AccountFansDao;
 import com.jingyunbank.etrade.weixinMessage.dao.AccountMenuDao;
@@ -29,6 +32,7 @@ import com.jingyunbank.etrade.weixinMessage.process.MsgType;
 import com.jingyunbank.etrade.weixinMessage.process.MsgXmlUtil;
 import com.jingyunbank.etrade.weixinMessage.process.WxApi;
 import com.jingyunbank.etrade.weixinMessage.process.WxApiClient;
+import com.jingyunbank.etrade.weixinMessage.process.WxMemoryCacheClient;
 import com.jingyunbank.etrade.weixinMessage.process.WxMessageBuilder;
 
 import net.sf.json.JSONArray;
@@ -40,39 +44,35 @@ import net.sf.json.JSONObject;
 
 @Service
 public class MyServiceImpl implements MyService{
-
-	@Autowired
-	private MsgBaseDao msgBaseDao;
-	
-	@Autowired
-	private MsgNewsDao msgNewsDao;
-	
-	@Autowired
-	private AccountMenuDao menuDao;
-	
-	@Autowired
-	private AccountMenuGroupDao menuGroupDao;
 	
 	@Autowired
 	private AccountFansDao fansDao;
-
+   
 	@Override
-	public String processMsg(MsgRequest msgRequest, MpAccount mpAccount) {
-		// TODO Auto-generated method stub
+	public String sendMessageToUser(String templateId,String userId, Map<String, String> dataMap) {
+		//根据userId查询用户openid
+		MpAccount mpAccount = WxMemoryCacheClient.getSingleMpAccount();//获取缓存中的唯一账号
+		TemplateMessage tplMsg = new TemplateMessage();
+		tplMsg.setOpenid(null);
+		//微信公众号号的template id，开发者自行处理参数
+		tplMsg.setTemplateId(templateId); 
+		tplMsg.setUrl("http://mp.weixin.qq.com/");
+		tplMsg.setDataMap(dataMap);
+		
+		JSONObject result = WxApiClient.sendTemplateMessage(tplMsg, mpAccount);
+		try {
+			if(result.getInt("errcode") != 0){
+				System.out.println("send fail");
+			}else{
+				System.out.println("send success");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	@Override
-	public boolean syncAccountFansList(MpAccount mpAccount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	@Override
-	public AccountFans syncAccountFans(String openId, MpAccount mpAccount, boolean merge) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 
 
