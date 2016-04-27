@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.wap.goods.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,14 +77,25 @@ public class WapGoodsOperationService implements IWapGoodsOperationService {
 				BeanUtils.copyProperties(sku, goodsSkuEntity);
 				String values = goodsSkuEntity.getPropertiesValue();
 				String[] v = values.split("@");
-				for (String s : v) {
-					String aid = StringUtils.trimAllWhitespace(goodsAttrValueDao.selectAttrIdByGidAndValue(goodsEntity.getID(), s));
+				
+				//用于给ID进行排序
+				List<String> arrs = new ArrayList<String>();
+				for (int i = 0; i < v.length; i++) {
+					String aid = StringUtils
+							.trimAllWhitespace(goodsAttrValueDao.selectAttrIdByGidAndValue(goodsEntity.getID(), v[i]));
+					arrs.add(aid);
+				}
+				Object[] v_values = arrs.toArray();
+				Arrays.sort(v_values);
+				//排序后赋值给属性
+				for (Object s : v_values) {
 					if (goodsSkuEntity.getProperties() == null || goodsSkuEntity.getProperties() == "") {
-						goodsSkuEntity.setProperties(aid);
+						goodsSkuEntity.setProperties((String) s);
 					} else {
-						goodsSkuEntity.setProperties(goodsSkuEntity.getProperties() + "," + aid);
+						goodsSkuEntity.setProperties(goodsSkuEntity.getProperties() + "," + (String) s);
 					}
 				}
+				
 				goodsSkuDao.insertGoodsSku(goodsSkuEntity);
 			}
 			// 保存info
