@@ -30,9 +30,16 @@ public class UserVO {
 	//private UserInfo uinfo;
 	private boolean locked;
 	private String code;
-	
+	private String openId;
 	private String inviterUID;
 	
+	
+	public String getOpenId() {
+		return openId;
+	}
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
 	public String getInviterUID() {
 		return inviterUID;
 	}

@@ -14,9 +14,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-import com.jingyunbank.etrade.weixin.bean.SNSUserInfo;
-import com.jingyunbank.etrade.weixin.bean.WeixinOauth2Token;
+import com.jingyunbank.etrade.weixin.entity.SNSUserInfo;
+import com.jingyunbank.etrade.weixin.entity.WeixinOauth2Token;
 import com.jingyunbank.etrade.weixin.util.MyX509TrustManager;
+import com.jingyunbank.etrade.weixin.vo.SNSUserInfoVo;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -31,26 +32,6 @@ import net.sf.json.JSONObject;
  */
 public class GetAccessToken{
 	
-	
-	public static String GetCodeRequest = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect"; 
-
-	/**
-	 * 用户同意授权获取code值
-	 * @param appId
-	 * @param redirect_uri
-	 * @param scope
-	 * @return
-	 */
-	public static String getCodeRequest(String appId,String redirect_uri,String scope){
-		
-		String result=null;
-		GetCodeRequest = GetCodeRequest.replace("APPID", appId);
-		GetCodeRequest = GetCodeRequest.replace("REDIRECT_URI",redirect_uri);
-		GetCodeRequest = GetCodeRequest.replace("SCOPE",scope);
-		result=GetCodeRequest;
-		return result;
-		
-	}
 	
 	
 	/**
@@ -151,25 +132,25 @@ public class GetAccessToken{
 	 * @param openId
 	 * @return
 	 */
-	public static SNSUserInfo  getUserInfo(String accessToken,String openId){
-		SNSUserInfo snsuserInfo=null;
+	public static SNSUserInfoVo  getUserInfo(String accessToken,String openId){
+		SNSUserInfoVo snsuserInfoVo=null;
 		//拼接请求地址
 		String requestUrl="https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
 		
 		JSONObject jsonObject = GetAccessToken.httpsRequest(requestUrl, "GET", null);
 		if(null!=jsonObject){
-			snsuserInfo=new SNSUserInfo();
-			snsuserInfo.setOpenId(jsonObject.getString("openid"));
-			snsuserInfo.setUsername(jsonObject.getString("nickname"));
-			snsuserInfo.setSex(jsonObject.getInt("sex"));
-			snsuserInfo.setCountry(jsonObject.getString("country"));
-			snsuserInfo.setProvice(jsonObject.getString("provice"));
-			snsuserInfo.setCity(jsonObject.getString("city"));
-			snsuserInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
-			snsuserInfo.setPrivilegeList(JSONArray.toList(jsonObject.getJSONArray("privilege"),List.class));
+			snsuserInfoVo=new SNSUserInfoVo();
+			snsuserInfoVo.setOpenId(jsonObject.getString("openid"));
+			snsuserInfoVo.setNickname(jsonObject.getString("nickname"));
+			snsuserInfoVo.setSex(jsonObject.getInt("sex"));
+			snsuserInfoVo.setCountry(jsonObject.getString("country"));
+			/*snsuserInfo.setProvice(jsonObject.getString("provice"));
+			snsuserInfo.setCity(jsonObject.getString("city"));*/
+			snsuserInfoVo.setHeadImgUrl(jsonObject.getString("headimgurl"));
+			snsuserInfoVo.setPrivilegeList(JSONArray.toList(jsonObject.getJSONArray("privilege"),List.class));
 		}
-		return snsuserInfo;
+		return snsuserInfoVo;
 		
 	}
 	

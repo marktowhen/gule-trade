@@ -1,21 +1,14 @@
-package com.jingyunbank.etrade.weixin.bean;
+package com.jingyunbank.etrade.weixin.vo;
 
-import java.io.Serializable;
 import java.util.List;
 
-/**
- * 通过网页授权获取用户的信息
- * @author Administrator 
- * @date 2016年4月21日
-	@todo TODO
- */
-public class SNSUserInfo implements Serializable{
+public class SNSUserInfoVo {
 
-	private static final long serialVersionUID = 6177015489632279670L;
+	private String id;
 
 	private String openId;
 	
-	private String username;//用户的昵称
+	private String nickname;//用户的昵称
 	
 	private int sex;
 	
@@ -28,6 +21,21 @@ public class SNSUserInfo implements Serializable{
 	private String headImgUrl;//用户的头像链接
 	
 	private List<String> privilegeList;//用户的特权信息
+
+	
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * @return the openId
@@ -44,17 +52,17 @@ public class SNSUserInfo implements Serializable{
 	}
 
 	/**
-	 * @return the username
+	 * @return the nickname
 	 */
-	public String getUsername() {
-		return username;
+	public String getNickname() {
+		return nickname;
 	}
 
 	/**
-	 * @param username the username to set
+	 * @param nickname the nickname to set
 	 */
-	public void setUsername(String username) {
-		this.username = username;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	/**
@@ -140,7 +148,5 @@ public class SNSUserInfo implements Serializable{
 	public void setPrivilegeList(List<String> privilegeList) {
 		this.privilegeList = privilegeList;
 	}
-	
-	
 
 }
