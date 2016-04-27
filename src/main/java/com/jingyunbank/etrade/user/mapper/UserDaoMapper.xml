@@ -12,6 +12,7 @@
 		<result column="tradepwd" property="tradepwd" jdbcType="VARCHAR"/>
 		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
 		<result column="locked" property="locked"/>
+		<result column="openid" property="openId"/>
 	</resultMap>
 	<sql id="column_list">
 		ID,username,mobile,email,password,tradepwd,nickname,locked
@@ -19,9 +20,9 @@
 	<!-- 添加注册用户 -->
 	<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserEntity">
 	insert into users
-	(id,username,mobile,email,password,tradepwd,nickname,locked)
+	(id,username,mobile,email,password,tradepwd,nickname,locked,openid)
 	values
-	(#{ID},#{username},#{mobile},#{email},#{password},#{tradepwd},#{nickname},#{locked})
+	(#{ID},#{username},#{mobile},#{email},#{password},#{tradepwd},#{nickname},#{locked},#{openId})
 	</insert>
 	<!-- 检验手机号是否已存在 -->
 	<select id="phoneExists" resultType="int" parameterType="string">
