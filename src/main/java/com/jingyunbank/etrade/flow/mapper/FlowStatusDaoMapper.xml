@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.flow.dao.FlowStatusDao">
+	<resultMap type="com.jingyunbank.etrade.flow.entity.FlowStatusEntity" id="ResultMap">
+		<id column="id" property="ID" />
+		<result column="flow_type" property="flowType" />
+		<result column="current_status" property="currentStatus" />
+		<result column="next_status" property="nextStatus" />
+		<result column="flag" property="flag" />
+		<result column="remark" property="remark" />
+	</resultMap>
+	<sql id="base_column">
+		id,flow_type,current_status,next_status,flag,remark
+	</sql>
+	<select id="selectOne" resultMap="ResultMap">
+		select <include refid="base_column"/> from flow_status 
+			where flow_type =#{flowType} and current_status =#{currentStatus} and flag =#{flag} 
+	</select>
+	
+</mapper>

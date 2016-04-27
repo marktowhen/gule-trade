@@ -57,6 +57,13 @@
 		left join orders o on og.oid = o.id
 		where og.id=#{id}	
 	</select>
+	<select id="selectByGID" parameterType="String" resultMap="OrderGoodsEntityResultMap">
+		select <include refid="select_order_goods_column"/>
+		from order_goods og
+		left join goods_img img on og.gid = img.gid
+		left join orders o on og.oid = o.id
+		where og.oid=#{OID}	 and og.gid=#{GID}
+	</select>
 	<update id="updateStatus">
 		update order_goods og
 		set og.status_code = #{status.code}, og.status_name = #{status.name}

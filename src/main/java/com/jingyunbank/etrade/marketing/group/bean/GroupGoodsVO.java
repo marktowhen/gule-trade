@@ -6,19 +6,24 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class GroupGoodsVO {
 
 	private String ID;
 	@NotBlank
 	private String SKUID;
-	@NotBlank
-	private long duration;//开团后团的时间长度，minutes
-	@NotBlank
+	@Min(1)
+	private long duration;//开团后团的时间长度，second
+	@NotNull
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date deadline;//团购截止日期
 	private boolean upperlimit;//是否设置人数上限 
 	private int minpeople;//最少成团人数
@@ -31,7 +36,14 @@ public class GroupGoodsVO {
 	//团长佣金
 	private BigDecimal commission;
 	private boolean show;//是否上架
-	
+	@NotEmpty
+	private String GID;
+	public String getGID() {
+		return GID;
+	}
+	public void setGID(String gID) {
+		GID = gID;
+	}
 	public String getID() {
 		return ID;
 	}

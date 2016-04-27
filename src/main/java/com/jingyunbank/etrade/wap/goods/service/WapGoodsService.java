@@ -152,8 +152,11 @@ public class WapGoodsService implements IWapGoodsService {
 
 	@Override
 	public List<GoodsSku> getSkusByGid(String gid) throws Exception {
-		List<GoodsSkuEntity> entities =  wapGoodsDao.selectSkusByGid(gid);
-		return null;
+		return wapGoodsDao.selectSkusByGid(gid).stream().map( entity->{
+			GoodsSku bo = new GoodsSku();
+			BeanUtils.copyProperties(entity, bo);
+			return bo;
+		}).collect(Collectors.toList());
 	}
 
 }

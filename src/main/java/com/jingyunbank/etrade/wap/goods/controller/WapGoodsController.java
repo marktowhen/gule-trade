@@ -131,8 +131,11 @@ public class WapGoodsController {
 	@RequestMapping(value = "/skus/{gid}", method = RequestMethod.GET)
 	public Result<List<GoodsSkuVO>> getGoodsSku(@PathVariable String gid) throws Exception {
 		List<GoodsSku>  skus = wapGoodsService.getSkusByGid(gid);
-		List<GoodsSkuVO>  list = null;
-		return Result.ok(list);
+		return Result.ok(skus.stream().map(bo->{
+			GoodsSkuVO vo = new GoodsSkuVO();
+			BeanUtils.copyProperties(bo, vo);
+			return vo;
+		}).collect(Collectors.toList()));
 	}
 
 	/**
