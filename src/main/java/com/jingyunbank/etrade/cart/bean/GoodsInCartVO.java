@@ -24,6 +24,9 @@ public class GoodsInCartVO implements Serializable {
 	@Size(min=1, max=22)
 	private String GID;
 	@NotBlank
+	@Size(min=1, max=22)
+	private String SKUID;
+	@NotBlank
 	private String gname;
 	@NotBlank
 	@Size(min=1, max=22)
@@ -123,5 +126,11 @@ public class GoodsInCartVO implements Serializable {
 	}
 	public void setUname(String uname) {
 		this.uname = uname;
+	}
+	public String getSKUID() {
+		return SKUID;
+	}
+	public void setSKUID(String sKUID) {
+		SKUID = sKUID;
 	}
 }

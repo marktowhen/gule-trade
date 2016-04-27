@@ -1,7 +1,5 @@
 package com.jingyunbank.etrade.logistic.bean;
 
-import java.math.BigDecimal;
-
 import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -10,14 +8,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class PostageCalculateByGIDVO {
 	@NotEmpty
 	private String GID;
-	private BigDecimal price;
 	@Min(1)
 	private int city;
 	private int number;
 	private double weight;
 	private double volume;
 	@NotEmpty
-	private String tansportType;
+	private String transportType;
 	
 	public String getGID() {
 		return GID;
@@ -25,17 +22,11 @@ public class PostageCalculateByGIDVO {
 	public void setGID(String gID) {
 		GID = gID;
 	}
-	public String getTansportType() {
-		return tansportType;
+	public String getTransportType() {
+		return transportType;
 	}
-	public void setTansportType(String tansportType) {
-		this.tansportType = tansportType;
-	}
-	public BigDecimal getPrice() {
-		return price;
-	}
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setTransportType(String transportType) {
+		this.transportType = transportType;
 	}
 	public int getCity() {
 		return city;

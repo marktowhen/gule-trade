@@ -11,6 +11,7 @@ public class OrderGoodsVO {
 	private String UID;
 	private long orderno;
 	private String GID;//商品id
+	private String SKUID;
 	private String gname;
 	private BigDecimal pprice;//促销价
 	private BigDecimal price;//订单生成时的商品价格
@@ -135,5 +136,11 @@ public class OrderGoodsVO {
 	}
 	public void setPostage(BigDecimal postage) {
 		this.postage = postage;
+	}
+	public String getSKUID() {
+		return SKUID;
+	}
+	public void setSKUID(String sKUID) {
+		SKUID = sKUID;
 	}
 }

@@ -90,13 +90,14 @@ public class OrderContextService implements IOrderContextService {
 					post.setNumber(count);
 					//运送方式 前台传过来
 					post.setTransportType(order.getDeliveryTypeCode());
+					post.setCity(order.getCity());
 					postList.add(post);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			//计算邮费 
-			calculatedorderpostage = postageCalculateService.calculateMuti(postList, order.getCity());
+			calculatedorderpostage = postageCalculateService.calculateMuti(postList);
 			
 			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
 			if(calculatedorderprice.compareTo(originorderprice) != 0
