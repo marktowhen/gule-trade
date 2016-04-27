@@ -15,11 +15,15 @@ import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsShow;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
+import com.jingyunbank.etrade.api.wap.goods.bo.Goods;
+import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.marketing.group.dao.GroupGoodsDao;
 import com.jingyunbank.etrade.marketing.group.dao.GroupGoodsPriceSettingDao;
 import com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity;
 import com.jingyunbank.etrade.marketing.group.entity.GroupGoodsPriceSettingEntity;
+import com.jingyunbank.etrade.marketing.group.entity.GroupGoodsShowEntity;
 
 @Service("groupGoodsService")
 public class GroupGoodsService implements IGroupGoodsService {
@@ -65,13 +69,11 @@ public class GroupGoodsService implements IGroupGoodsService {
 	}
 
 	@Override
-	public List<GroupGoods> list(Range range) {
-		List<GroupGoodsEntity> entities = groupGoodsDao.selectMany(range.getFrom(),(int) (range.getTo() - range.getFrom()));
-		List<GroupGoods> bos = new ArrayList<GroupGoods>();
+	public List<GroupGoodsShow> list(Range range) {
+		List<GroupGoodsShowEntity> entities = groupGoodsDao.selectMany(range.getFrom(),(int) (range.getTo() - range.getFrom()));
+		List<GroupGoodsShow> bos = new ArrayList<GroupGoodsShow>();
 		entities.forEach(entity -> {
-			GroupGoods bo = new GroupGoods();
-			BeanUtils.copyProperties(entity, bo, "priceSettings", "groups");
-			bos.add(bo);
+			bos.add(getShowBoFromEntity(entity));
 		});
 		return bos;
 	}
@@ -85,6 +87,23 @@ public class GroupGoodsService implements IGroupGoodsService {
 			return Optional.of(bo);
 		}
 		return Optional.empty();
+	}
+	
+	private GroupGoodsShow getShowBoFromEntity(GroupGoodsShowEntity entity){
+		GroupGoodsShow bo = new GroupGoodsShow();
+		BeanUtils.copyProperties(entity, bo, "priceSettings", "groups");
+		if(Objects.nonNull(entity.getGoods())){
+			Goods goodsBo = new Goods();
+			BeanUtils.copyProperties(entity.getGoods(), goodsBo);
+			bo.setGoods(goodsBo);
+		}
+		if(Objects.nonNull(entity.getSku())){
+			GoodsSku sku = new GoodsSku();
+			BeanUtils.copyProperties(entity.getSku(), sku);
+			bo.setSku(sku);
+		}
+		
+		return bo;
 	}
 
 }

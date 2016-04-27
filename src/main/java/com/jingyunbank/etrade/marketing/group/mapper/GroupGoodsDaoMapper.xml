@@ -44,17 +44,48 @@
 		left join group_goods_price_setting ps on g.id = ps.ggid
 		where g.id = #{ggid}
 	</select>
-	<select id="selectMany" resultMap="GroupGoodsEntityResultMap">
-		select <include refid="group_goods_columns"/>
-		from group_goods 
-		order by addtime desc
-		limit #{from}, #{size}
-	</select>
 	
 	<select id="selectOneByGroupID" resultMap="GroupGoodsEntityResultMap" parameterType="String" >
 		select <include refid="group_goods_columns"/>
 		from group_goods g
 		left join group gp on g.id=gp.group_goods_id
 		where gp.id = #{groupID}
+	</select>
+	
+	<resultMap type="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsShowEntity" id="GroupGoodsShowEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="skuid" property="SKUID" javaType="String"/>
+		<result column="gid" property="GID" javaType="String"/>
+		<result column="duration" property="duration" jdbcType="INTEGER"/>
+		<result column="deadline" property="deadline" javaType="java.util.Date"/>
+		<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
+		<result column="show" property="show" javaType="Boolean"/>
+		<result column="commission" property="commission" jdbcType="DECIMAL"/>
+		<result column="show_price" property="showPrice" jdbcType="DECIMAL"/>
+		<association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
+			<result column="g_name" property="name" javaType="String"/>
+			<result column="g_path" property="path" javaType="String"/>
+		</association>
+		<association property="sku" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+			<result column="k_volume" property="volume" />
+			<result column="k_properties_value" property="propertiesValue" javaType="String"/>
+		</association>
+	</resultMap>
+	<sql id="show_goods">
+			gg.`id`, gg.`skuid`, gg.`duration`, gg.`deadline`, gg.`minpeople`, gg.`commission`,
+			    gg.`upperlimit`, gg.`deposit`, gg.`show`, gg.`addtime`,gg.gid,
+			g.`name` g_name ,g.path g_path, 
+			k.volume k_volume,k.properties_value k_properties_value,
+			(select MIN(price) from group_goods_price_setting price where price.ggid=gg.id) show_price
+	</sql>
+	<select id="selectMany" resultMap="GroupGoodsShowEntityResultMap">
+		SELECT 
+			<include refid="show_goods"/>
+		from group_goods gg LEFT JOIN goods g on gg.gid=g.id
+		LEFT JOIN goods_sku k on gg.skuid = k.id 
+		order by gg.addtime desc
+		limit #{from}, #{size}
 	</select>
 </mapper>

@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.marketing.group.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -20,8 +21,12 @@ import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsShow;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
+import com.jingyunbank.etrade.marketing.group.bean.GroupGoodsShowVO;
 import com.jingyunbank.etrade.marketing.group.bean.GroupGoodsVO;
+import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
+import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
 @RestController
 @RequestMapping("/api/marketing/group")
@@ -51,16 +56,14 @@ public class GroupGoodsController {
 	
 	//列出指定商家的团购商品，参数指定列出的条数
 	@RequestMapping(value="/goods/list", method=RequestMethod.GET)
-	public Result<List<GroupGoodsVO>> list(@RequestParam int offset, @RequestParam int size) throws Exception{
+	public Result<List<GroupGoodsShowVO>> list(@RequestParam int offset, @RequestParam int size) throws Exception{
 		
 		size = size == 0? 10 : size;
 		Range range = new Range(offset, size + offset);
-		List<GroupGoods> bos = groupGoodsService.list(range);
-		List<GroupGoodsVO> vos = new ArrayList<GroupGoodsVO>();
+		List<GroupGoodsShow> bos = groupGoodsService.list(range);
+		List<GroupGoodsShowVO> vos = new ArrayList<GroupGoodsShowVO>();
 		bos.forEach(bo -> {
-			GroupGoodsVO vo = new GroupGoodsVO();
-			BeanUtils.copyProperties(bo, vo, "priceSettings", "groups");
-			vos.add(vo);
+			vos.add(getShowVOFromBo(bo));
 		});
 		return Result.ok(vos);
 	}
@@ -76,6 +79,23 @@ public class GroupGoodsController {
 			return Result.ok(vo);
 		}
 		return Result.fail("未找到指定的团购商品！");
+	}
+	
+	private GroupGoodsShowVO getShowVOFromBo(GroupGoodsShow showBo){
+		GroupGoodsShowVO vo = new GroupGoodsShowVO();
+		BeanUtils.copyProperties(showBo, vo, "priceSettings", "groups");
+		if(Objects.nonNull(showBo.getGoods())){
+			GoodsVO goodsBo = new GoodsVO();
+			BeanUtils.copyProperties(showBo.getGoods(), goodsBo);
+			vo.setGoods(goodsBo);
+		}
+		if(Objects.nonNull(showBo.getSku())){
+			GoodsSkuVO sku = new GoodsSkuVO();
+			BeanUtils.copyProperties(showBo.getSku(), sku);
+			vo.setSku(sku);
+		}
+		
+		return vo;
 	}
 	
 }
