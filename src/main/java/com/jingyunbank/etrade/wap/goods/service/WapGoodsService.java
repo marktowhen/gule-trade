@@ -19,7 +19,6 @@ import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSkuCondition;
 import com.jingyunbank.etrade.api.wap.goods.bo.ShowGoods;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
-import com.jingyunbank.etrade.order.presale.entity.OrderTraceEntity;
 import com.jingyunbank.etrade.wap.goods.dao.GoodsImgDao;
 import com.jingyunbank.etrade.wap.goods.dao.WapGoodsDao;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsDeatilEntity;
