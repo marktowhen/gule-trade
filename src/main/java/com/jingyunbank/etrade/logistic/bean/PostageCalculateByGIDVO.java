@@ -17,7 +17,7 @@ public class PostageCalculateByGIDVO {
 	private double weight;
 	private double volume;
 	@NotEmpty
-	private String tansportType;
+	private String transportType;
 	
 	public String getGID() {
 		return GID;
@@ -25,11 +25,11 @@ public class PostageCalculateByGIDVO {
 	public void setGID(String gID) {
 		GID = gID;
 	}
-	public String getTansportType() {
-		return tansportType;
+	public String getTransportType() {
+		return transportType;
 	}
-	public void setTansportType(String tansportType) {
-		this.tansportType = tansportType;
+	public void setTransportType(String transportType) {
+		this.transportType = transportType;
 	}
 	public BigDecimal getPrice() {
 		return price;

@@ -12,37 +12,37 @@ public class GroupSchedule {
 	@Autowired
 	private IGroupRobotService groupRobotService;
 	//团长未支付成功 组团失败
-	@Scheduled(fixedDelay=(60*1000))//
+//	@Scheduled(fixedDelay=(60*1000))//
 	public void closeUnstartGroup() {
 		groupRobotService.closeUnstartGroup();
 	}
 	
 	//团长未支付成功 开团成功
-	@Scheduled(fixedDelay=(60*1000))//
+//	@Scheduled(fixedDelay=(60*1000))//
 	public void startSuccess() {
 		groupRobotService.startSuccess();
 	}
 	
 	//指定时间段内未组团成功的 退还押金
-	@Scheduled(fixedDelay=(60*1000))//
+//	@Scheduled(fixedDelay=(60*1000))//
 	public void closeConveneFailGroup(){
 		groupRobotService.closeConveneFailGroup();
 	}
 	
 	//逾期未支付 退团
-	@Scheduled(fixedDelay=(60*1000))//
+//	@Scheduled(fixedDelay=(60*1000))//
 	public void payTimeout() {
 		groupRobotService.payTimeout();
 	}
 	
 	//团购到期 满团组团成功  没满团解散
-	@Scheduled(fixedDelay=(60*1000))//
+//	@Scheduled(fixedDelay=(60*1000))//
 	public void expire() {
 		groupRobotService.expire();
 	}
 	
 	//组团成功的
-	@Scheduled(fixedDelay=(60*1000))//
+	//@Scheduled(fixedDelay=(60*1000))//
 	public void finish() {
 		groupRobotService.finish();
 	}

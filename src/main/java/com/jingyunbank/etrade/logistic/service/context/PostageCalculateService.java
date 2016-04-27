@@ -47,7 +47,7 @@ public class PostageCalculateService implements IPostageCalculateService {
 
 	@Override
 	//分别计算不同店铺的运费再累加
-	public BigDecimal calculateMuti(List<PostageCalculate> postageCalculateList, int city) {
+	public BigDecimal calculateMuti(List<PostageCalculate> postageCalculateList) {
 		
 		//查出所需运费模板
 		List<Postage> postageList = getPostageByCalculateList(postageCalculateList);
@@ -58,7 +58,7 @@ public class PostageCalculateService implements IPostageCalculateService {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		for (String MID : mergeByMID.keySet()) {
-			result = result.add(calculateOneMerchat(mergeByMID.get(MID), city));
+			result = result.add(calculateOneMerchat(mergeByMID.get(MID)));
 		}
 		
 		return result;
@@ -71,14 +71,13 @@ public class PostageCalculateService implements IPostageCalculateService {
 	 * @return
 	 * 2016年4月11日 qxs
 	 */
-	private BigDecimal calculateOneMerchat(List<PostageCalculate> list, int city) {
+	public BigDecimal calculateOneMerchat(List<PostageCalculate> list) {
 		BigDecimal result = BigDecimal.ZERO;
 		//将同一运费模板的数据合并
 		List<PostageCalculate> mergeRepeat = mergeRepeat(list);
 		//匹配运费详情
 		for(PostageCalculate calculate : mergeRepeat){
-			calculate.setCity(city);
-			PostageDetail postageDetail = postageDetailService.singleFit(calculate.getPostageID(), city,calculate.getTransportType());
+			PostageDetail postageDetail = postageDetailService.singleFit(calculate.getPostageID(), calculate.getCity(),calculate.getTransportType());
 			calculate.getCalculatRule().setPostageDetail(postageDetail);
 		}
 		
