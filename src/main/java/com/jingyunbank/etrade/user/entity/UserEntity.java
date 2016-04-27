@@ -24,7 +24,7 @@ public class UserEntity {
 	private String nickname;
 	//private UserInfo uinfo;
 	private boolean locked;
-	
+	private String openId;
 	public String getID() {
 		return ID;
 	}
@@ -79,4 +79,11 @@ public class UserEntity {
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
+	public String getOpenId() {
+		return openId;
+	}
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+	
 }

@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.weixin.bean;
+package com.jingyunbank.etrade.weixin.entity;
 
 import java.io.Serializable;
 

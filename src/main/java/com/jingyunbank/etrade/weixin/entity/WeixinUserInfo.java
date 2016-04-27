@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.weixin.bean;
+package com.jingyunbank.etrade.weixin.entity;
 
 import java.io.Serializable;
 
@@ -12,6 +12,8 @@ public class WeixinUserInfo implements Serializable{
 
 	private static final long serialVersionUID = 3606518825269995999L;
 
+	private String id;
+	
 	private String openId;
 	
 	private int subscribe;//关注状态(1:关注;0:为关注)为关注时取不到任何数据
@@ -29,6 +31,21 @@ public class WeixinUserInfo implements Serializable{
 	private String language;
 	
 	private String headImgUrl;//用户的头像
+
+	
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * @return the openId
