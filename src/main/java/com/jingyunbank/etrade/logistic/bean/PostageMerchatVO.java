@@ -12,7 +12,7 @@ public class PostageMerchatVO {
 
 	@NotEmpty
 	private String MID;
-	private BigDecimal price;
+	private BigDecimal postage;
 	@Size(min=1)
 	@Valid
 	private List<PostageCalculateByGIDVO> postageList;
@@ -23,11 +23,11 @@ public class PostageMerchatVO {
 		MID = mID;
 	}
 	
-	public BigDecimal getPrice() {
-		return price;
+	public BigDecimal getPostage() {
+		return postage;
 	}
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
 	}
 	public List<PostageCalculateByGIDVO> getPostageList() {
 		return postageList;

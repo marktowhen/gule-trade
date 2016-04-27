@@ -59,7 +59,7 @@ public class PostageController {
 		return Result.ok(postageCalculateService.calculate(bo));
 	}
 	
-	@RequestMapping(value="/api/logistic/postage/calculation/goods", method=RequestMethod.PUT)
+	@RequestMapping(value="/api/logistic/postage/calculation/muti", method=RequestMethod.PUT)
 	public Result<PostageCalculateResultVO> calculateByGID(@RequestBody @Valid PostageCalculateResultVO postages, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
@@ -77,8 +77,8 @@ public class PostageController {
 				return bo;
 			}).collect(Collectors.toList());
 			
-			oneMerchat.setPrice(postageCalculateService.calculateOneMerchat(postagebo));
-			postages.getTotal().add(oneMerchat.getPrice());
+			oneMerchat.setPostage(postageCalculateService.calculateOneMerchat(postagebo));
+			postages.getTotal().add(oneMerchat.getPostage());
 		});
 		
 		return Result.ok(postages);
