@@ -58,7 +58,7 @@ public class PostageServiceTest extends TestCaseBase {
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
-		System.out.println(""+postageCalculateService.calculateMuti(list, 1));
+		System.out.println(""+postageCalculateService.calculateMuti(list));
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
@@ -96,7 +96,7 @@ public class PostageServiceTest extends TestCaseBase {
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
-		System.out.println(""+postageCalculateService.calculateMuti(list, 1));
+		System.out.println(""+postageCalculateService.calculateMuti(list));
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------");

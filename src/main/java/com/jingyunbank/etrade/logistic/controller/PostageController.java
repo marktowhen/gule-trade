@@ -28,7 +28,7 @@ import com.jingyunbank.etrade.api.logistic.service.context.IPostageCalculateServ
 import com.jingyunbank.etrade.api.logistic.service.context.IPostageManageService;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
 import com.jingyunbank.etrade.logistic.bean.PostageCalculateByGIDVO;
-import com.jingyunbank.etrade.logistic.bean.PostageCalculateVO;
+import com.jingyunbank.etrade.logistic.bean.PostageCalculateResultVO;
 import com.jingyunbank.etrade.logistic.bean.PostageDetailVO;
 import com.jingyunbank.etrade.logistic.bean.PostageVO;
 
@@ -49,40 +49,39 @@ public class PostageController {
 	
 	
 	@RequestMapping(value="/api/logistic/postage/calculation", method=RequestMethod.PUT)
-	public Result<BigDecimal> calculate(@RequestBody @Valid List<PostageCalculateVO> postages, BindingResult valid ) throws Exception{
+	public Result<BigDecimal> calculate(@RequestBody @Valid PostageCalculateByGIDVO postagesVO, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
 		}
-		if(postages.isEmpty()){
-			return Result.ok(BigDecimal.ZERO);
-		}
-		List<PostageCalculate> postagebo = postages.stream().map(vo -> {
-			PostageCalculate bo = new PostageCalculate();
-			BeanUtils.copyProperties(vo, bo);
-			return bo;
-		}).collect(Collectors.toList());
-		return Result.ok(postageCalculateService.calculateMuti(postagebo, postagebo.get(0).getCity()));
+		PostageCalculate bo = new PostageCalculate();
+		BeanUtils.copyProperties(postagesVO, bo);
+		bo.setPostageID(wapGoodsService.singlePidByGid(postagesVO.getGID()));
+		return Result.ok(postageCalculateService.calculate(bo));
 	}
 	
-	@RequestMapping(value="/api/logistic/postage/calculation/goods", method=RequestMethod.PUT)
-	public Result<BigDecimal> calculateByGID(@RequestBody @Valid List<PostageCalculateByGIDVO> postages, BindingResult valid ) throws Exception{
+	@RequestMapping(value="/api/logistic/postage/calculation/muti", method=RequestMethod.PUT)
+	public Result<PostageCalculateResultVO> calculateByGID(@RequestBody @Valid PostageCalculateResultVO postages, BindingResult valid ) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据有误，请核实后重新提交。");
 		}
-		if(postages.isEmpty()){
-			return Result.ok(BigDecimal.ZERO);
-		}
-		List<PostageCalculate> postagebo = postages.stream().map(vo -> {
-			PostageCalculate bo = new PostageCalculate();
-			BeanUtils.copyProperties(vo, bo);
-			try {
-				bo.setPostageID(wapGoodsService.singlePidByGid(vo.getGID()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return bo;
-		}).collect(Collectors.toList());
-		return Result.ok(postageCalculateService.calculateMuti(postagebo, postagebo.get(0).getCity()));
+		postages.setTotal(BigDecimal.ZERO);
+		postages.getMerchatList().stream().forEach(oneMerchat->{
+			List<PostageCalculate> postagebo = oneMerchat.getPostageList().stream().map(vo -> {
+				PostageCalculate bo = new PostageCalculate();
+				BeanUtils.copyProperties(vo, bo);
+				try {
+					bo.setPostageID(wapGoodsService.singlePidByGid(vo.getGID()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return bo;
+			}).collect(Collectors.toList());
+			
+			oneMerchat.setPostage(postageCalculateService.calculateOneMerchat(postagebo));
+			postages.getTotal().add(oneMerchat.getPostage());
+		});
+		
+		return Result.ok(postages);
 	}
 	
 	@RequestMapping(value="/", method=RequestMethod.POST,
