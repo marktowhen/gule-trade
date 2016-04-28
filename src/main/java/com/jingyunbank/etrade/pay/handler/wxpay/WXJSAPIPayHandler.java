@@ -63,7 +63,7 @@ public class WXJSAPIPayHandler implements IPayHandler {
 		requestParams.put("body", payments.get(0).getMname());//商品或支付单简要描述
 		requestParams.put("out_trade_no", String.valueOf(payments.get(0).getExtransno()));//商户系统内部的订单号
 		requestParams.put("fee_type", "CNY");//默认人民币：CNY
-		requestParams.put("total_fee", moneyfen);//单位分
+		requestParams.put("total_fee", 1+""/**moneyfen*/);//单位分
 		requestParams.put("spbill_create_ip", "124.128.245.162");//APP和网页支付提交用户端ip
 		requestParams.put("notify_url", pipeline.getNoticeUrl());//接收微信支付异步通知回调地址
 		requestParams.put("trade_type", "JSAPI");//交易类型
@@ -149,16 +149,16 @@ public class WXJSAPIPayHandler implements IPayHandler {
 	@Override
 	public Map<String, String> prefund(OrderPayment payment) throws Exception {
 		KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-        FileInputStream instream = new FileInputStream(new File("E:/Documents/支付中心/微信支付/cert11/apiclient_cert.p12"));
+        FileInputStream instream = new FileInputStream(new File("E:/Documents/支付中心/微信支付/zhonghuaejiao.cert/apiclient_cert.p12"));
         try {
-            keyStore.load(instream, "1310348201".toCharArray());
+            keyStore.load(instream, "1294062701".toCharArray());
         } finally {
             instream.close();
         }
 
         // Trust own CA and all self-signed certs
         SSLContext sslcontext = SSLContexts.custom()
-                .loadKeyMaterial(keyStore, "1310348201".toCharArray())
+                .loadKeyMaterial(keyStore, "1294062701".toCharArray())
                 .build();
         // Allow TLSv1 protocol only
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
@@ -171,16 +171,16 @@ public class WXJSAPIPayHandler implements IPayHandler {
                 .build();
         try {
         	Map<String, String> requestParams = new HashMap<String, String>();
-    		requestParams.put("appid", "wx545cb7b5501b1d9c");//公众账号ID
-    		requestParams.put("mch_id", "1310348201");//商户号
+    		requestParams.put("appid", "wx104070783e1981df");//公众账号ID
+    		requestParams.put("mch_id", "1294062701");//商户号
     		requestParams.put("nonce_str", new String(new RndBuilder().length(16).hasletter(true).next()));//随机字符串，不长于32位
-    		requestParams.put("out_trade_no", "190882525474411873");//商户系统内部的订单号
+    		requestParams.put("out_trade_no", "3054325997621501089");//商户系统内部的订单号
     		requestParams.put("out_refund_no", UniqueSequence.next()+"");
-    		requestParams.put("total_fee", ""+79900);//单位分
+    		requestParams.put("total_fee", ""+1);//单位分
     		requestParams.put("refund_fee", ""+1);//APP和网页支付提交用户端ip
-    		requestParams.put("op_user_id", "1310348201");//交易类型
+    		requestParams.put("op_user_id", "1294062701");//交易类型
     		
-    		String signkey = "";
+    		String signkey = "zhonghuaejiao2wx104070783e1981df";
     		requestParams.put("sign", MD5.digest(compositeWXPayKeyValuePaires(requestParams, signkey)).toUpperCase());
     		
             HttpPost httppost = new HttpPost("https://api.mch.weixin.qq.com/secapi/pay/refund");
