@@ -40,7 +40,7 @@
 			<foreach collection="goods" item="g" index="i" open="" separator="," close="">
 				(#{g.ID}, #{g.OID}, #{g.UID}, #{g.orderno}, #{g.GID}, #{g.gname}, 
 				#{g.addtime}, #{g.statusCode}, #{g.statusName}, #{g.price}, #{g.pprice}, #{g.payout}, 
-				#{g.couponReduce}, #{g.count}, #{g.skuid})
+				#{g.couponReduce}, #{g.count}, #{g.SKUID})
 			</foreach>
 	</insert>
 	<select id="selectByUID" resultMap="OrderGoodsEntityResultMap">

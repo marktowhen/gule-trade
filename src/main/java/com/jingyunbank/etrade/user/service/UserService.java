@@ -168,4 +168,15 @@ public class UserService implements IUserService{
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public Users selUserByUserId(String userId) {
+		Users user=null;
+		UserEntity userEntity=userDao.selectOne(userId);
+		Optional<Users> users=getUsersByEntity(userEntity);
+		if(users.isPresent()){
+			user=users.get();
+		}
+		return user;
+	}
+
 }
