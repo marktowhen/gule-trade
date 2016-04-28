@@ -48,7 +48,12 @@
 				from group_user  where  status in ('NEW','PAYFAIL')
 	</select>
 	
-	
+	<select id="count" resultType="java.lang.Integer">
+		select count(1) from group_user where group_id=#{groupID}
+		<if test="status!=null and ''!=status">
+			and status=#{status}
+		</if>
+	</select>
 	
 	
 </mapper>

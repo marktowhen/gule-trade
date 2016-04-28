@@ -119,6 +119,12 @@ public class GroupUserService implements IGroupUserService {
 		
 	}
 
+	@Override
+	public Integer count(String groupID, String status) {
+		// TODO Auto-generated method stub
+		return groupUserDao.count(groupID, status);
+	}
+
 
 
 }

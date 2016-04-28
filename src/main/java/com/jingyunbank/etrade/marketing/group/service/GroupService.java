@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.marketing.group.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +23,8 @@ import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.marketing.group.dao.GroupDao;
 import com.jingyunbank.etrade.marketing.group.entity.GroupEntity;
+import com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity;
+import com.jingyunbank.etrade.marketing.group.entity.GroupUserEntity;
 
 @Service("groupService")
 public class GroupService implements IGroupService{
@@ -93,11 +96,7 @@ public class GroupService implements IGroupService{
 
 	@Override
 	public List<Group> list(String status) {
-		return groupDao.selectList(status).stream().map( entity->{
-			Group bo = new Group();
-			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+		return convertEntityToBo( groupDao.selectList(status));
 	}
 
 	@Override
@@ -115,48 +114,61 @@ public class GroupService implements IGroupService{
 	}
 
 	@Override
-	public List<Group> listOnDeadline(int minute) {
-		return groupDao.selectListOnDeadline(minute).stream().map( entity->{
-			Group bo = new Group();
-			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+	public List<Group> listOnDeadline() {
+		return convertEntityToBo( groupDao.selectListOnDeadline());
 	}
 
 	@Override
 	public List<Group> listOnSuccess() {
-		return groupDao.selectListOnSuccess().stream().map( entity->{
-			Group bo = new Group();
-			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+		return convertEntityToBo( groupDao.selectListOnSuccess());
 	}
 
 	@Override
 	public List<Group> listStartFail() {
-		return groupDao.selectListStartFail().stream().map( entity->{
-			Group bo = new Group();
-			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+		return convertEntityToBo(groupDao.selectListStartFail());
 	}
 
 	@Override
-	public List<Group> listConvening() {
-		return groupDao.selectListConvening().stream().map( entity->{
-			Group bo = new Group();
-			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+	public List<Group> listConveneTimeOut() {
+		return convertEntityToBo(groupDao.selectListConveneTimeOut());
 	}
 
 	@Override
 	public List<Group> listStartSuccess() {
-		return groupDao.selectListStartSuccess().stream().map( entity->{
-			Group bo = new Group();
+		return convertEntityToBo(groupDao.selectListStartSuccess());
+	}
+	
+	private List<Group> convertEntityToBo(List<GroupEntity> entityList){
+		if(entityList!=null){
+			return entityList.stream().map( entity->{
+				Group bo = new Group();
+				BeanUtils.copyProperties(entity, bo, "buyers","goods");
+				
+				bo.setBuyers(converUserEnToBo(entity.getBuyers()));
+				bo.setGoods(converGoodsEnToBo(entity.getGoods()));
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return new ArrayList<Group>();
+	}
+	
+	private List<GroupUser> converUserEnToBo(List<GroupUserEntity> entityList){
+		if(entityList!=null){
+			return entityList.stream().map( entity->{
+				GroupUser bo = new GroupUser();
+				BeanUtils.copyProperties(entity, bo);
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return new ArrayList<GroupUser>();
+	}
+	
+	private GroupGoods converGoodsEnToBo(GroupGoodsEntity entity){
+		GroupGoods bo = new GroupGoods();
+		if(entity!=null){
 			BeanUtils.copyProperties(entity, bo);
-			return bo;
-		}).collect(Collectors.toList());
+		}
+		return bo;
 	}
 
 

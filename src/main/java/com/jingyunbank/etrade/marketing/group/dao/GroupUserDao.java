@@ -22,5 +22,7 @@ public interface GroupUserDao {
 
 	public List<GroupUserEntity> selectListUnPay();
 
+	public Integer count(@Param("groupID")String groupID, @Param("status")String status);
+
 
 }

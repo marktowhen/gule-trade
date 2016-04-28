@@ -75,7 +75,7 @@ public class GroupGoodsController {
 		Optional<GroupGoods> boc = groupGoodsService.single(ggid);
 		if(boc.isPresent()){
 			GroupGoodsVO vo = new GroupGoodsVO();
-			BeanUtils.copyProperties(boc.get(), vo, "priceSettings");
+			BeanUtils.copyProperties(boc.get(), vo);
 			return Result.ok(vo);
 		}
 		return Result.fail("未找到指定的团购商品！");
