@@ -2,7 +2,6 @@ package com.jingyunbank.etrade.marketing.group.service.context;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jingyunbank.etrade.api.marketing.group.bo.Group;
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupOrderService;
@@ -77,20 +75,13 @@ public class GroupRobotService implements IGroupRobotService{
 	@Transactional
 	public void closeConveneFailGroup()  {
 		//查出召集中的团购
-		List<Group> groupList = groupService.listConvening();
+		List<Group> groupList = groupService.listConveneTimeOut();
 		if(!groupList.isEmpty()){
 			for (Group group : groupList) {
 				try {
-					GroupGoods groupGoods = group.getGoods();
-					if( Objects.nonNull(groupGoods)){
-						//如果未支付且支付超时 将团购置为超时状态
-						Date timeOut =new Date( group.getStart().getTime()+groupGoods.getDuration());
-						if(timeOut.before(new Date()) || new Date().after(groupGoods.getDeadline())){
-							//解散
-							group.setBuyers(groupUserService.list(group.getID(), GroupUser.STATUS_PAID));
-							groupPurchaseContextService.dismiss(group);
-						}
-					}
+						//解散
+						group.setBuyers(groupUserService.list(group.getID(), GroupUser.STATUS_PAID));
+						groupPurchaseContextService.dismiss(group);
 				} catch (Exception e) {
 					logger.error("closeConveneFailGroup Fail: groupID="+group.getID()+"  reason"+e.getMessage());
 				} 
@@ -106,7 +97,7 @@ public class GroupRobotService implements IGroupRobotService{
 		for (GroupUser groupUser : groupUserList) {
 			try {
 				//判断如果支付超时
-				Date timeOut =new Date( groupUser.getJointime().getTime()+PropsConfig.getLong(PropsConfig.GROUP_PAY_TIME_OUT));
+				Date timeOut =new Date( groupUser.getJointime().getTime()+PropsConfig.getLong(PropsConfig.GROUP_PAY_TIME_OUT)*1000);
 				if(timeOut.before(new Date())){
 					//关闭该团购订单
 					groupPurchaseContextService.payTimeout(groupUser);
@@ -121,7 +112,7 @@ public class GroupRobotService implements IGroupRobotService{
 	@Transactional
 	public void expire()  {
 		//3分钟内已到期的团购用户
-		List<Group> guList = groupService.listOnDeadline(3);
+		List<Group> guList = groupService.listOnDeadline();
 		for (Group group : guList) {
 			try {
 				if(group.getBuyers().size()>=group.getGoods().getMinpeople()){
