@@ -181,6 +181,9 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 	@Override
 	public void dismiss(Group group) throws DataRefreshingException, DataSavingException {
 		groupService.refreshStatus(group.getID(), Group.STATUS_CLOSED);
+		group.getBuyers().stream().forEach( user->{
+			groupUserService.notice(user, "组团失败 解散");
+		});
 		this.refound(group.getBuyers());
 	}
 

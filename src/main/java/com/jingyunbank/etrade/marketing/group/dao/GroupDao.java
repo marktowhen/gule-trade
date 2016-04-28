@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
 import com.jingyunbank.etrade.marketing.group.entity.GroupEntity;
 
 public interface GroupDao {
@@ -17,13 +16,13 @@ public interface GroupDao {
 
 	public List<GroupEntity> selectList(String status);
 
-	public List<GroupEntity> selectListOnDeadline(int minute);
+	public List<GroupEntity> selectListOnDeadline();
 
-	public List<GroupUser> selectListOnSuccess();
+	public List<GroupEntity> selectListOnSuccess();
 
-	public List<GroupUser> selectListStartFail();
+	public List<GroupEntity> selectListStartFail();
 
-	public List<GroupUser> selectListConvening();
+	public List<GroupEntity> selectListConveneTimeOut();
 
-	public List<GroupUser> selectListStartSuccess();
+	public List<GroupEntity> selectListStartSuccess();
 }
