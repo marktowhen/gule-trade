@@ -9,7 +9,7 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.weixinMessage.bo.MpAccount;
 import com.jingyunbank.etrade.api.weixinMessage.bo.TemplateMessage;
 import com.jingyunbank.etrade.api.weixinMessage.service.MyService;
-import com.jingyunbank.etrade.user.service.UserService;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.weixinMessage.process.WxApiClient;
 import com.jingyunbank.etrade.weixinMessage.process.WxMemoryCacheClient;
 
@@ -23,7 +23,7 @@ import net.sf.json.JSONObject;
 public class MyServiceImpl implements MyService{
 	
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
    
 	@Override
 	public boolean sendMessageToUser(String templateId,String userId, Map<String, String> dataMap) {
