@@ -71,7 +71,7 @@ public class WxMessageController {
 	@RequestMapping(value = "/getUrl")
 	public ModelAndView getUrl(HttpServletRequest request){
 		String path = SpringFreemarkerContextPathUtil.getBasePath(request);
-		String url = request.getScheme() + "://" + request.getServerName() + path + "/wxapi/wxa31686a39324990e/message.html";
+		String url = request.getScheme() + "://" + request.getServerName() + path + "/wxMessageController/wxa31686a39324990e/message.html";
 //		String url = request.getScheme() + "://" + request.getServerName() + path + "/wxapi/" + account.getAccount()+"/message.html";
 		Account account=new Account();
 		if(account.getId() == null){//新增
