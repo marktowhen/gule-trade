@@ -76,7 +76,8 @@ public class PostageController {
 				}
 				return bo;
 			}).collect(Collectors.toList());
-			
+			//查出对应的邮费模板
+			postageCalculateService.fitPostageRule(postagebo);
 			oneMerchat.setPostage(postageCalculateService.calculateOneMerchat(postagebo));
 			postages.getTotal().add(oneMerchat.getPostage());
 		});

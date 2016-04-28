@@ -50,9 +50,7 @@ public class PostageCalculateService implements IPostageCalculateService {
 	public BigDecimal calculateMuti(List<PostageCalculate> postageCalculateList) {
 		
 		//查出所需运费模板
-		List<Postage> postageList = getPostageByCalculateList(postageCalculateList);
-		//根据postageID匹配对应的运费模板
-		postageCalculateList = packagPostage(postageCalculateList, postageList);
+		fitPostageRule(postageCalculateList);
 		//将运费模板按店铺分组
 		Map<String, List<PostageCalculate>> mergeByMID = mergeByMID(postageCalculateList);
 		
@@ -180,6 +178,13 @@ public class PostageCalculateService implements IPostageCalculateService {
 			postageIDList.add(postage.getPostageID());
 		}
 		return postageService.list(postageIDList);
+	}
+	
+	public List<PostageCalculate> fitPostageRule(List<PostageCalculate> postageCalculateList){
+		//查出所需运费模板
+		List<Postage> postageList = getPostageByCalculateList(postageCalculateList);
+		//根据postageID匹配对应的运费模板
+		return  packagPostage(postageCalculateList, postageList);
 	}
 
 }
