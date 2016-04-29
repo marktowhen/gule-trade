@@ -106,7 +106,7 @@ public class TrackController {
 		if (flag) {
 			return Result.fail("您已经收藏过该商家！");
 		}
-		flag = trackService.saveFavorites(uid, mid, "1");
+		//flag = trackService.saveFavorites(uid, mid, "1");
 		if (flag) {
 			return Result.ok("收藏成功！");
 		} else {
@@ -129,7 +129,7 @@ public class TrackController {
 		if (flag) {
 			return Result.fail("您已经收藏过该商品！");
 		}
-		flag = trackService.saveFavorites(uid, gid, "2");
+		//flag = trackService.saveFavorites(uid, gid, "2");
 		if (flag) {
 			return Result.ok("收藏成功！");
 		} else {

@@ -52,12 +52,13 @@ import com.jingyunbank.etrade.track.entity.RecommendGoodsEntity;
 public class TrackService extends ServiceTemplate implements ITrackService {
 	@Resource
 	private TrackDao trackDao;
+
 	@Override
 
-	public List<FootprintGoods> listFootprintGoods(int from,int to,String uid) throws Exception {
+	public List<FootprintGoods> listFootprintGoods(int from, int to, String uid) throws Exception {
 		this.from = from;
 		this.to = to;
-		Map<String, Object> params = new HashMap<String,Object>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("uid", uid);
 		params.put("from", this.from);
 		params.put("to", this.to);
@@ -98,13 +99,13 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 
 	@Override
-	@CacheEvict(value="favoritesCache",allEntries=true)
-	public boolean saveFavorites(String uid,String fid,String type) throws DataSavingException {
+	@CacheEvict(value = "favoritesCache", allEntries = true)
+	public String saveFavorites(String uid, String fid, String type) throws DataSavingException {
 		FavoritesEntity ce = new FavoritesEntity();
 		ce.setID(KeyGen.uuid());
 		ce.setUID(uid);
 		ce.setFid(fid);
-		ce.setType(type);//1商家2商品
+		ce.setType(type);// 1商家2商品
 		ce.setCollectTime(new Date());
 		int result = 0;
 		try {
@@ -112,27 +113,27 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
-		if(result > 0){
-			return true;
+		if (result > 0) {
+			return ce.getID();
 		}
-		return false;
+		return "";
 	}
-	
+
 	@Override
-	public boolean isFavoritesExists(String uid,String fid,String type)throws Exception{
+	public boolean isFavoritesExists(String uid, String fid, String type) throws Exception {
 		int rlt = 0;
-		Map<String,String> map = new HashMap<String,String>();
+		Map<String, String> map = new HashMap<String, String>();
 		map.put("uid", uid);
 		map.put("fid", fid);
 		map.put("type", type);
 		rlt = this.trackDao.isFavoritesExists(map);
 		return rlt > 0 ? true : false;
 	}
-	
+
 	@Override
 	@Cacheable(cacheNames = "favoritesCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
-	public List<FavoritesGoods> listMerchantFavorites(String uid,String type,int from,int to) throws Exception {
-		Map<String,Object> map = new HashMap<String,Object>();
+	public List<FavoritesGoods> listMerchantFavorites(String uid, String type, int from, int to) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("uid", uid);
 		map.put("type", type);
 		this.from = from;
@@ -154,10 +155,10 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return rltlist;
 	}
-	
+
 	@Override
-	public int countMerchantFavorites(String uid,String type) throws Exception {
-		Map<String,Object> map = new HashMap<String,Object>();
+	public int countMerchantFavorites(String uid, String type) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("uid", uid);
 		map.put("type", type);
 		int count = trackDao.selectMerchantFavoritesCount(map);
@@ -165,9 +166,9 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 	}
 
 	@Override
-	@CacheEvict(value="favoritesCache",allEntries=true)
+	@CacheEvict(value = "favoritesCache", allEntries = true)
 	public boolean removeFavoritesById(List<String> id) throws DataRemovingException {
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			flag = trackDao.deleteFavoritesById(id);
 		} catch (Exception e) {
@@ -175,113 +176,113 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return flag;
 	}
-	
+
 	@Override
 	@Cacheable(cacheNames = "adDetailCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<AdDetail> listAdDetails(String code) throws IllegalAccessException, InvocationTargetException {
-		Map<String, String> params = new HashMap<String,String>();
+		Map<String, String> params = new HashMap<String, String>();
 		params.put("code", code);
 		List<AdDetail> rlist = new ArrayList<AdDetail>();
 		List<AdDetailEntity> list = trackDao.selectAdDetails(params);
 		AdDetail bo = null;
-		for(AdDetailEntity e : list){
+		for (AdDetailEntity e : list) {
 			bo = new AdDetail();
-			BeanUtils.copyProperties(e,bo);
+			BeanUtils.copyProperties(e, bo);
 			rlist.add(bo);
 		}
 		return rlist;
 	}
-	
+
 	@Override
 	public Optional<AdModule> getAdmoduleInfo(String id) {
 		AdModuleEntity adModuleEntity = trackDao.selectAdmoduleById(id);
-		AdModule adModule=new AdModule();
+		AdModule adModule = new AdModule();
 		BeanUtils.copyProperties(adModuleEntity, adModule);
 		return Optional.of(adModule);
 	}
-	
+
 	@Override
 	public Optional<AdDetail> getAddetailInfo(String id) {
 		AdDetailEntity adDetailEntity = trackDao.selectAddetailById(id);
-		AdDetail adDetail=new AdDetail();
+		AdDetail adDetail = new AdDetail();
 		BeanUtils.copyProperties(adDetailEntity, adDetail);
 		return Optional.of(adDetail);
 	}
-	
+
 	@Override
-	@CacheEvict(value="modulesCache",allEntries=true)
+	@CacheEvict(value = "modulesCache", allEntries = true)
 	public boolean saveAdmodule(AdModule adModule) throws DataSavingException {
-		boolean flag=false;
+		boolean flag = false;
 		AdModuleEntity me = new AdModuleEntity();
 		BeanUtils.copyProperties(adModule, me);
 		try {
-			if(trackDao.insertAdModule(me)){
-				flag=true;
-			}else{
-				flag=false;
+			if (trackDao.insertAdModule(me)) {
+				flag = true;
+			} else {
+				flag = false;
 			}
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
 		return flag;
-		
+
 	}
-	
+
 	@Override
-	@CacheEvict(value="adDetailCache",allEntries=true)
+	@CacheEvict(value = "adDetailCache", allEntries = true)
 	public boolean saveAddetail(AdDetail adDetail) throws DataSavingException {
-		boolean flag=false;
+		boolean flag = false;
 		AdDetailEntity me = new AdDetailEntity();
 		BeanUtils.copyProperties(adDetail, me);
 		try {
-			if(trackDao.insertAdDetail(me)){
-				flag=true;
-			}else{
-				flag=false;
+			if (trackDao.insertAdDetail(me)) {
+				flag = true;
+			} else {
+				flag = false;
 			}
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
 		return flag;
 	}
-	
+
 	@Override
-	@CacheEvict(value="modulesCache",allEntries=true)
+	@CacheEvict(value = "modulesCache", allEntries = true)
 	public boolean updateAdmodule(AdModule adModule) throws DataRefreshingException {
-		boolean flag=false;
+		boolean flag = false;
 		AdModuleEntity me = new AdModuleEntity();
 		BeanUtils.copyProperties(adModule, me);
 		try {
-			if(trackDao.updateAdmodule(me)){
-				flag=true;
-			}else{
-				flag=false;
+			if (trackDao.updateAdmodule(me)) {
+				flag = true;
+			} else {
+				flag = false;
 			}
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
 		return flag;
 	}
-	
+
 	@Override
-	@CacheEvict(value="adDetailCache",allEntries=true)
+	@CacheEvict(value = "adDetailCache", allEntries = true)
 	public boolean updateAddetail(AdDetail adDetail) throws DataRefreshingException {
-		boolean flag=false;
+		boolean flag = false;
 		AdDetailEntity me = new AdDetailEntity();
 		BeanUtils.copyProperties(adDetail, me);
 		try {
-			if(trackDao.updateAddetail(me)){
-				flag=true;
-			}else{
-				flag=false;
+			if (trackDao.updateAddetail(me)) {
+				flag = true;
+			} else {
+				flag = false;
 			}
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}
 		return flag;
-		
+
 	}
-	
+
 	@Override
 	@Cacheable(cacheNames = "modulesCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<AdModule> listModulesByCondition(AdModule adModule, Range range) throws Exception {
@@ -296,7 +297,7 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}).collect(Collectors.toList());
 		return showAdModuleList;
 	}
-	
+
 	@Override
 	@Cacheable(cacheNames = "adDetailCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
 	public List<AdDetail> listAddetailsByCondition(AdDetail adDetail, Range range) throws Exception {
@@ -312,11 +313,11 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}).collect(Collectors.toList());
 		return showAdDetailList;
 	}
-	
+
 	@Override
-	@CacheEvict(value="adDetailCache",allEntries=true)
+	@CacheEvict(value = "adDetailCache", allEntries = true)
 	public boolean removeAddetail(List<String> id) throws DataRemovingException {
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			flag = trackDao.deleteAddetail(id);
 		} catch (Exception e) {
@@ -324,11 +325,12 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return flag;
 	}
+
 	@Override
-	
-	@CacheEvict(value="modulesCache",allEntries=true)
+
+	@CacheEvict(value = "modulesCache", allEntries = true)
 	public boolean removeAdmodule(List<String> id) throws DataRemovingException {
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			flag = trackDao.deleteAdmodule(id);
 		} catch (Exception e) {
@@ -336,35 +338,37 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return flag;
 	}
+
 	@Override
 	public int queryAddetailsCount(List<String> id) throws Exception {
-		int rlt=0;
-			rlt = trackDao.selectAddetailsCount(id);
+		int rlt = 0;
+		rlt = trackDao.selectAddetailsCount(id);
 		return rlt;
 	}
+
 	@Cacheable(cacheNames = "recommendGoodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
-	public List<RecommendGoods> listRecommendGoods(String uid,int from,int to) throws Exception {
+	public List<RecommendGoods> listRecommendGoods(String uid, int from, int to) throws Exception {
 		this.from = from;
 		this.to = to;
-		Map<String, Object> params = new HashMap<String,Object>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("uid", uid);
 		params.put("from", this.from);
 		params.put("to", this.to);
 		List<RecommendGoods> rltlist = new ArrayList<RecommendGoods>();
 		String bidstr = "";
 		String tidstr = "";
-		if(uid == null || "".equals(uid)){
-			
-		}else{
+		if (uid == null || "".equals(uid)) {
+
+		} else {
 			Map<String, String> bidmap = trackDao.selectRecommendBidstr(params);
-			if(bidmap!=null){
-				//查询品牌字符串
-			    bidstr = bidmap.get("bidstr");
+			if (bidmap != null) {
+				// 查询品牌字符串
+				bidstr = bidmap.get("bidstr");
 			}
-		    Map<String, String> tidmap = trackDao.selectRecommendTidstr(params);
-			if(tidmap!=null){
-				//查询类别字符串
-			    tidstr = tidmap.get("tidstr");
+			Map<String, String> tidmap = trackDao.selectRecommendTidstr(params);
+			if (tidmap != null) {
+				// 查询类别字符串
+				tidstr = tidmap.get("tidstr");
 			}
 		}
 		List<String> bids = new ArrayList<String>();
@@ -373,8 +377,8 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		List<String> tids = new ArrayList<String>();
 		String tmptidstr[] = tidstr.split(",");
 		tids = Arrays.asList(tmptidstr);
-		//查询相关产品
-		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bidstr,tidstr,bids,tids,from,to,uid);
+		// 查询相关产品
+		List<RecommendGoodsEntity> goodslist = trackDao.selectRecommendGoods(bidstr, tidstr, bids, tids, from, to, uid);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
 				RecommendGoods bo = new RecommendGoods();
@@ -388,17 +392,18 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return rltlist;
 	}
+
 	@Cacheable(cacheNames = "otherGoodsCache", keyGenerator = CacheConfig.CUSTOM_CACHE_KEY_GENERATOR)
-	public List<OtherGoods> listOtherGoods(String gid,String uid,int from,int to) throws Exception {
+	public List<OtherGoods> listOtherGoods(String gid, String uid, int from, int to) throws Exception {
 		this.from = from;
 		this.to = to;
-		Map<String, Object> params = new HashMap<String,Object>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("uid", uid);
 		params.put("gid", gid);
 		params.put("from", this.from);
 		params.put("to", this.to);
 		List<OtherGoods> rltlist = new ArrayList<OtherGoods>();
-		//查询相关产品
+		// 查询相关产品
 		List<OtherGoodsEntity> goodslist = trackDao.selectOtherGoods(params);
 		if (goodslist != null) {
 			rltlist = goodslist.stream().map(eo -> {
@@ -413,7 +418,14 @@ public class TrackService extends ServiceTemplate implements ITrackService {
 		}
 		return rltlist;
 	}
-	
-	
-}
 
+	@Override
+	public String isFav(String uid, String gid, String string) throws Exception {
+		FavoritesEntity entity = trackDao.isFav(uid, gid, string);
+		if (entity != null) {
+			return entity.getID();
+		}
+		return "";
+	}
+
+}

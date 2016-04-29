@@ -68,7 +68,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
-		<result column="is_sale_ " property="sale" />
+		<result column="is_sale_" property="sale" />
 
 	</resultMap>
 

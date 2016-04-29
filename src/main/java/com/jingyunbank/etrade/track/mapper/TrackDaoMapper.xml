@@ -347,4 +347,21 @@
 			 LIMIT #{from} , #{to}
 	]]>
 	</select>
+	
+	
+	
+
+	<resultMap  id="favMap" type="com.jingyunbank.etrade.track.entity.FavoritesEntity">
+	     <id column="id_" property="ID"/>
+    	 <result column="uid_" property="UID"/>
+    	 <result column="fid_" property="fid"/>
+    	 <result column="type_" property="type"/>
+	</resultMap>
+	
+	
+	<select id="isFav" parameterType="string" resultMap="favMap">
+		SELECT id id_,uid uid_,fid fid_, TYPE type_ FROM favorites 
+	 	WHERE `uid` = #{uid}  AND `fid`= #{gid}
+		AND `type` = #{type} 
+	</select>
 </mapper>
