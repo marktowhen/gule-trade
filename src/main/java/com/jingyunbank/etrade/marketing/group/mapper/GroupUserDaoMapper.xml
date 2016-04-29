@@ -17,7 +17,7 @@
 	</sql>
 	
 	<insert id="insert">
-		insert into groups (<include refid="base_column"/>) values(#{ID},#{groupID},#{jointime},#{UID},#{paid},#{status})
+		insert into group_user (<include refid="base_column"/>) values(#{ID},#{groupID},#{jointime},#{UID},#{paid},#{status})
 	</insert>
 	
 	<select id="selectOne" resultMap="GroupUserEntityResultMap">

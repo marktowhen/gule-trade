@@ -64,7 +64,7 @@
 		o.paytype_code, o.paytype_name, o.deliverytype_code, o.deliverytype_name, 
 		o.coupon_id, o.coupon_type, o.invoice_type, o.invoice_title,
 		o.status_code, o.status_name, o.price, o.payout, o.postage, o.note, o.employee, o.type, o.extradata,
-		img.thumb_path_1 as imgpath, og.gid as gid, 
+		img.path as imgpath, og.gid as gid, 
 		og.gname as gname, og.count as count, og.pprice as gpprice, og.payout as gpayout,
 		og.price as gprice, og.id as ogid, og.status_code as gstatuscode, og.status_name as gstatusname
 	</sql>
@@ -105,7 +105,7 @@
 	<select id="selectOne" parameterType="String" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
 		from order_goods og
-		left join goods_img img on og.gid = img.gid 
+		left join goods_img img on og.skuid = img.skuid 
 		left join orders o on og.oid = o.id 
 		where o.id = #{oid}
 	</select>

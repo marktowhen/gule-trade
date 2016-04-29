@@ -18,10 +18,10 @@ public class GroupSchedule {
 	}
 	
 	//团长支付成功 开团成功
-	@Scheduled(fixedDelay=(60*1000))//
-	public void startSuccess() {
-		groupRobotService.startSuccess();
-	}
+//	@Scheduled(fixedDelay=(60*1000))//
+//	public void startSuccess() {
+//		groupRobotService.startSuccess();
+//	}
 	
 	//指定时间段内未组团成功的 退还押金
 	@Scheduled(fixedDelay=(60*1000))//

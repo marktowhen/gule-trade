@@ -35,11 +35,18 @@ public class OrdersInCartVO implements Serializable{
 	private String note;
 	@NotBlank
 	private String type;
+	private String extradata;//附加数据，可以是团购id，竞拍id等附加信息
 	@Valid
 	@NotNull
 	@Size(min=1)
 	private List<GoodsInCartVO> goods = new ArrayList<>();
 	
+	public String getExtradata() {
+		return extradata;
+	}
+	public void setExtradata(String extradata) {
+		this.extradata = extradata;
+	}
 	public String getID() {
 		return ID;
 	}

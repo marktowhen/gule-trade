@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,8 +104,10 @@ public class OrderController {
 		List<Orders> orders = new ArrayList<Orders>();
 		
 		for (PurchaseOrderVO ordervo : ordervos) {
-			ordervo.setID(KeyGen.uuid());
-			ordervo.setOrderno(UniqueSequence.next18());
+			if(StringUtils.isEmpty(ordervo.getID())){
+				ordervo.setID(KeyGen.uuid());
+				ordervo.setOrderno(UniqueSequence.next18());
+			}
 			ordervo.setAddtime(new Date());
 			
 			Orders order = new Orders();

@@ -28,8 +28,7 @@ public class GroupEventService implements IGroupEventService {
 	 */
 	@JmsListener(destination="PAYSUCCESS_CALLBACK", containerFactory="queueJmsListnerContainer")
 	public void paysuccess(String content){
-		Optional<Orders> orderOptional = orderService.single(content);
-		orderOptional.ifPresent(order->{
+		orderService.listByExtransno(content).forEach( order->{
 			//如果是团购
 			if(Orders.GROUP_ORDER_TYPE.equals(order.getType())){
 				try {
@@ -48,8 +47,7 @@ public class GroupEventService implements IGroupEventService {
 	 */
 	@JmsListener(destination="PAYFAILURE_CALLBACK", containerFactory="queueJmsListnerContainer")
 	public void payfail(String content){
-		Optional<Orders> orderOptional = orderService.single(content);
-		orderOptional.ifPresent(order->{
+	orderService.listByExtransno(content).forEach( order->{
 			//如果是团购
 			if(Orders.GROUP_ORDER_TYPE.equals(order.getType())){
 				try {

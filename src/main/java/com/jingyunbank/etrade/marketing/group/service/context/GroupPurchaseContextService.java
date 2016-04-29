@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.marketing.group.service.context;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +23,7 @@ import com.jingyunbank.etrade.api.marketing.group.service.IGroupOrderService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
 import com.jingyunbank.etrade.api.marketing.group.service.context.IGroupPurchaseContextService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
@@ -65,11 +65,6 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		//save group user
 		groupUserService.save(user);
 		
-		//保存订单
-		List<Orders> orderList = new ArrayList<Orders>();
-		orderList.add(orders);
-		orderContextService.save(orderList);
-		
 		GroupOrder go = new GroupOrder();
 		go.setGroupID(group.getID());
 		go.setGroupUserID(user.getID());
@@ -94,10 +89,6 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		guser.setStatus(GroupUser.STATUS_NEW);
 		//save group user
 		groupUserService.save(guser);
-		//保存订单
-		List<Orders> orderList = new ArrayList<Orders>();
-		orderList.add(orders);
-		orderContextService.save(orderList);
 		
 		GroupOrder go = new GroupOrder();
 		go.setGroupID(group.getID());
@@ -143,6 +134,13 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 			Optional<GroupUser> gu = groupUserService.single(go.get().getGroupUserID());
 			if(gu.isPresent()){
 				groupUserService.refreshStatus(gu.get().getID(), gu.get().getStatus(), order.getStatusCode());
+				//团长支付成功  开团
+				if(OrderStatusDesc.PAID.equals(order.getStatusCode())){
+					Optional<Group> group = groupService.single(gu.get().getGroupID());
+					if(group.isPresent()&&group.get().getLeaderUID().equals(gu.get().getUID()) && Group.STATUS_NEW.equals(group.get().getStatus())){
+						startSuccess(group.get());
+					}
+				}
 			}
 		}
 	}
