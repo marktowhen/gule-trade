@@ -5,7 +5,9 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +44,8 @@ import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyService;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
+import com.jingyunbank.etrade.api.weixinMessage.service.WxMessageService;
+import com.jingyunbank.etrade.weixinMessage.util.wx.WxConstants;
 
 @Service("orderContextService")
 public class OrderContextService implements IOrderContextService {
@@ -64,6 +68,8 @@ public class OrderContextService implements IOrderContextService {
 	private IPostageCalculateService postageCalculateService;
 	@Autowired
 	private IWapGoodsService wapGoodsService;
+	@Autowired
+	private WxMessageService wxMessageService;
 	
 	//校验用户提交的订单价格，邮费以及商品的价格数量等是否相互匹配
 	private boolean verifyOrderData(List<Orders> orders) {
@@ -230,6 +236,14 @@ public class OrderContextService implements IOrderContextService {
 			order.setStatusCode(OrderStatusDesc.PAID_CODE);
 			order.setStatusName(OrderStatusDesc.PAID.getName());
 			traces.add(createOrderTrace(order, "用户支付成功"));
+			//用户支付成功信息推送到用户
+			Map<String,String> dataMap=new HashMap<String,String>();
+			dataMap.put("first", "尊敬的顾客您好，我们已收到您的付款。");
+			dataMap.put("orderMoneySum",order.getPayout()+"");
+			dataMap.put("orderProductName",order.getOrderno()+"");
+			dataMap.put("Remark", "如有问题请致电400-800-8895或直接在微信留言，我们将第一时间为您服务！");
+			wxMessageService.sendMessageToUser(WxConstants.getString(WxConstants.PAYMENT_SUCCESS), order.getUID(), dataMap);
+			
 			goods.addAll(order.getGoods());
 		}
 		//刷新订单商品的状态
@@ -257,6 +271,7 @@ public class OrderContextService implements IOrderContextService {
 			order.setStatusCode(OrderStatusDesc.PAYFAIL_CODE);
 			order.setStatusName(OrderStatusDesc.PAYFAIL.getName());
 			traces.add(createOrderTrace(order, note));
+			
 		}
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.PAYFAIL);
