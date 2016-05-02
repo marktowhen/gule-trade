@@ -54,13 +54,33 @@ public class GroupGoodsController {
 		return Result.ok();
 	}
 	
+	@AuthBeforeOperation
+	@RequestMapping(value="/goods", method=RequestMethod.PUT)
+	public Result<String> refresh(@RequestBody @Valid GroupGoodsVO goods, BindingResult valid) throws Exception{
+		if(valid.hasErrors()){
+			return Result.fail("您提交的数据不合法，请检查后重新输入。");
+		}
+		
+		GroupGoods goodsbo = new GroupGoods();
+		BeanUtils.copyProperties(goods, goodsbo, "priceSettings");
+		goods.getPriceSettings().forEach(vo -> {
+			GroupGoodsPriceSetting bo = new GroupGoodsPriceSetting();
+			BeanUtils.copyProperties(vo, bo);
+			goodsbo.getPriceSettings().add(bo);
+		});
+		groupGoodsService.refresh(goodsbo);
+		
+		return Result.ok();
+	}
+	
 	//列出指定商家的团购商品，参数指定列出的条数
 	@RequestMapping(value="/goods/list", method=RequestMethod.GET)
-	public Result<List<GroupGoodsShowVO>> list(@RequestParam int offset, @RequestParam int size) throws Exception{
+	public Result<List<GroupGoodsShowVO>> list(@RequestParam(required=false) String mid ,
+			@RequestParam int offset, @RequestParam int size) throws Exception{
 		
 		size = size == 0? 10 : size;
 		Range range = new Range(offset, size + offset);
-		List<GroupGoodsShow> bos = groupGoodsService.list(range);
+		List<GroupGoodsShow> bos = groupGoodsService.list(mid, range);
 		List<GroupGoodsShowVO> vos = new ArrayList<GroupGoodsShowVO>();
 		bos.forEach(bo -> {
 			vos.add(getShowVOFromBo(bo));

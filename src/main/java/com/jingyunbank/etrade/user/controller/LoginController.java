@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -61,6 +62,28 @@ public class LoginController {
 	@Autowired
 	private ISellerService sellerService;
 	
+	@RequestMapping(value="/login/{uid}",method=RequestMethod.GET)
+	public Result<UserVO> loginTest(@PathVariable String uid, HttpSession session,
+			HttpServletResponse response) throws Exception{
+		Optional<Users> usersOptional = userService.single(uid);
+		if(!usersOptional.isPresent()){
+			return Result.fail("用户不存在");
+		}
+		Users users = usersOptional.get();
+		Optional<Cart> candidatecart = cartService.singleCart(users.getID());
+		String cartID = null;
+		if(candidatecart.isPresent()){
+			cartID = candidatecart.get().getID();
+		}
+		boolean isemployee = employeeService.isEmployee(users.getMobile());
+
+		//用户信息
+		loginSuccess(users.getID(), users.getUsername(),cartID, isemployee, session, response);
+
+		UserVO vo = new UserVO();
+		BeanUtils.copyProperties(users, vo);
+		return Result.ok(vo);
+	}
 	
 	/**
 	 * 登录   

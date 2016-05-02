@@ -13,4 +13,6 @@ public interface GroupGoodsPriceSettingDao {
 	
 	public List<GroupGoodsPriceSettingEntity> selectMany(String ggid) ;
 
+	public void delete(String ggid) throws Exception;
+
 }

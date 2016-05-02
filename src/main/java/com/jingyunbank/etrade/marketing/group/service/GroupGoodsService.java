@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.druid.util.StringUtils;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoodsPriceSetting;
@@ -56,6 +58,32 @@ public class GroupGoodsService implements IGroupGoodsService {
 			throw new DataSavingException(e);
 		}
 	}
+	
+	@Override
+	public void refresh(GroupGoods goods) throws DataRefreshingException {
+		List<GroupGoodsPriceSetting> priceSettings = goods.getPriceSettings();
+		List<GroupGoodsPriceSettingEntity> sentities = new ArrayList<GroupGoodsPriceSettingEntity>();
+		priceSettings.forEach(bo -> {
+			GroupGoodsPriceSettingEntity en = new GroupGoodsPriceSettingEntity();
+			BeanUtils.copyProperties(bo, en);
+			if(StringUtils.isEmpty(en.getID())){
+				en.setID(KeyGen.uuid());
+			}
+			en.setGGID(goods.getID());
+			sentities.add(en);
+		});
+		GroupGoodsEntity entity = new GroupGoodsEntity();
+		BeanUtils.copyProperties(goods, entity, "priceSettings", "groups");
+		
+		try {
+			groupGoodsDao.update(entity);
+			groupGoodsPriceSettingDao.delete(entity.getID());
+			groupGoodsPriceSettingDao.insertMany(sentities);
+		} catch (Exception e) {
+			throw new DataRefreshingException(e);
+		}
+		
+	}
 
 	@Override
 	public Optional<GroupGoods> single(String ggid) {
@@ -69,8 +97,8 @@ public class GroupGoodsService implements IGroupGoodsService {
 	}
 
 	@Override
-	public List<GroupGoodsShow> list(Range range) {
-		List<GroupGoodsShowEntity> entities = groupGoodsDao.selectMany(range.getFrom(),(int) (range.getTo() - range.getFrom()));
+	public List<GroupGoodsShow> list(String MID,Range range) {
+		List<GroupGoodsShowEntity> entities = groupGoodsDao.selectMany(MID, range.getFrom(),(int) (range.getTo() - range.getFrom()));
 		List<GroupGoodsShow> bos = new ArrayList<GroupGoodsShow>();
 		entities.forEach(entity -> {
 			bos.add(getShowBoFromEntity(entity));
@@ -105,5 +133,7 @@ public class GroupGoodsService implements IGroupGoodsService {
 		
 		return bo;
 	}
+
+	
 
 }

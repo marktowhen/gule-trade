@@ -28,4 +28,9 @@
 		from group_goods_price_setting 
 		where ggid = #{ggid}
 	</select>
+	
+	<delete id="delete">
+		delete from group_goods_price_setting 
+		where ggid = #{ggid}
+	</delete>
 </mapper>

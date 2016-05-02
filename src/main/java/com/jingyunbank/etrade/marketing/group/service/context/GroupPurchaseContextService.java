@@ -107,6 +107,10 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 			return Result.fail("该团购已结束,请及时参加其他活动");
 		}
 		
+		if(!groupGoods.isShow()){
+			return Result.fail("团购商品未上架");
+		}
+		
 		return Result.ok();
 	}
 
@@ -119,6 +123,9 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		Optional<GroupGoods> gg = groupGoodsService.single(group.getGroupGoodsID());
 		if(!gg.isPresent()){
 			return Result.fail("团购商品不存在,请选择其他团购");
+		}
+		if(!gg.get().isShow()){
+			return Result.fail("团购商品未上架");
 		}
 		
 		if(gg.get().getDeadline().before(new Date())){
