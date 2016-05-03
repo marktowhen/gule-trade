@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.jingyunbank.core.KeyGen;
@@ -33,6 +34,7 @@ import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyService;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
 
+@Service
 public class NewOrderHandler implements IOrderStatusHandler {
 
 	@Autowired
