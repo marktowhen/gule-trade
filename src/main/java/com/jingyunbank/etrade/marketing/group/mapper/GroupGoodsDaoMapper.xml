@@ -98,7 +98,24 @@
 		<if test="MID!=null and MID!=''">
 			and g.mid=#{MID}
 		</if>
+		<if test="goodsName!=null and goodsName!=''">
+			and g.name like concat('%',#{goodsName},'%')
+		</if>
+		and gg.deadline &gt;=now()
+		and gg.show = true
 		order by gg.addtime desc
 		limit #{from}, #{size}
+	</select>
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(1)
+		from group_goods gg 
+		LEFT JOIN goods g on gg.gid=g.id
+		where 1=1
+		<if test="MID!=null and MID!=''">
+			and g.mid=#{MID}
+		</if>
+		<if test="goodsName!=null and goodsName!=''">
+			and g.name like concat('%',#{goodsName},'%')
+		</if>
 	</select>
 </mapper>

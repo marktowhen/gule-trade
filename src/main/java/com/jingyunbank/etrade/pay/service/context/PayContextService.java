@@ -103,7 +103,7 @@ public class PayContextService implements IPayContextService{
 		
 		
 		
-		jmsTemplate.setPubSubDomain(false);
+		jmsTemplate.setPubSubDomain(true);
 		jmsTemplate.send("PAYSUCCESS_CALLBACK", new MessageCreator() {
 			@Override
 			public javax.jms.Message createMessage(Session session) throws JMSException {
@@ -118,7 +118,7 @@ public class PayContextService implements IPayContextService{
 	public void payfail(String extrano, String reason) throws Exception {
 		
 
-		jmsTemplate.setPubSubDomain(false);
+		jmsTemplate.setPubSubDomain(true);
 		jmsTemplate.send("PAYFAILURE_CALLBACK", new MessageCreator() {
 			@Override
 			public javax.jms.Message createMessage(Session session) throws JMSException {

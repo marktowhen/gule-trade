@@ -41,7 +41,7 @@ public interface WapGoodsDao {
 
 	public String selectPidByGid(@Param("gid") String gid) throws Exception;
 
-	public List<GoodsShowEntity> selectFavGoods(@Param("uid") String uid, @Param("type") int type) throws Exception;
+	public List<GoodsShowEntity> selectFavGoods(@Param("uid") String uid, @Param("type") String type) throws Exception;
 
 	public List<GoodsSkuEntity> selectSkusByGid(@Param("gid") String gid) throws Exception; 
 

@@ -195,7 +195,7 @@ public class OrderEventService implements IOrderEventService {
 	}
 	
 	//删除购物车
-	@JmsListener(destination="PAYSUCCESS_CALLBACK", containerFactory="queueJmsListnerContainer")
+	@JmsListener(destination="PAYSUCCESS_CALLBACK", containerFactory="topicJmsListnerContainer")
 	public void paysuccess(String content){
 		try {
 			orderContextService.paysuccess(content);
@@ -204,7 +204,7 @@ public class OrderEventService implements IOrderEventService {
 		}
 	}
 	
-	@JmsListener(destination="PAYFAILURE_CALLBACK", containerFactory="queueJmsListnerContainer")
+	@JmsListener(destination="PAYFAILURE_CALLBACK", containerFactory="topicJmsListnerContainer")
 	public void payfail(String content){
 		try {
 			orderContextService.payfail(content, "");

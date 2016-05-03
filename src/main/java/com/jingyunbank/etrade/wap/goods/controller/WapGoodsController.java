@@ -306,8 +306,9 @@ public class WapGoodsController {
 	@RequestMapping(value = "/favorite/list", method = RequestMethod.GET)
 	// @AuthBeforeOperation
 	public Result<List<GoodsShowVO>> favList(HttpServletRequest request) throws Exception {
-		String uid = Login.UID(request);
-		int type = 2; // 2代表收藏的是商品
+		//String uid = Login.UID(request);
+		String uid = "001";
+		String type = "2"; // 2代表收藏的是商品
 		List<GoodsShowVO> list = wapGoodsService.listFavGoods(uid, type).stream().map(bo -> {
 			GoodsShowVO vo = new GoodsShowVO();
 			BeanUtils.copyProperties(bo, vo);
