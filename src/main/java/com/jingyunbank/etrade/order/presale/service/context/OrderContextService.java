@@ -242,7 +242,7 @@ public class OrderContextService implements IOrderContextService {
 			dataMap.put("orderMoneySum",order.getPayout()+"");
 			dataMap.put("orderProductName",order.getOrderno()+"");
 			dataMap.put("Remark", "如有问题请致电400-800-8895或直接在微信留言，我们将第一时间为您服务！");
-			wxMessageService.sendMessageToUser(WxConstants.getString(WxConstants.PAYMENT_SUCCESS), order.getUID(), dataMap);
+			//wxMessageService.sendMessageToUser(WxConstants.getString(WxConstants.PAYMENT_SUCCESS), order.getUID(), dataMap);
 			
 			goods.addAll(order.getGoods());
 		}
