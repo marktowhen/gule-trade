@@ -139,7 +139,7 @@ public class WapGoodsService implements IWapGoodsService {
 	}
 
 	@Override
-	public List<ShowGoods> listFavGoods(String uid, int type) throws Exception {
+	public List<ShowGoods> listFavGoods(String uid, String type) throws Exception {
 		List<ShowGoods> list = wapGoodsDao
 				.selectFavGoods(uid,type).stream().map(bo -> {
 					ShowGoods vo = new ShowGoods();
