@@ -92,7 +92,7 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		
 		GroupOrder go = new GroupOrder();
 		go.setGroupID(group.getID());
-		go.setGroupUserID(user.getID());
+		go.setGroupUserID(guser.getID());
 		go.setID(KeyGen.uuid());
 		go.setOID(orders.getID());
 		go.setOrderno(orders.getOrderno());
@@ -134,24 +134,6 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		return Result.ok();
 	}
 
-	@Override
-	public void payFinish(Orders order) throws DataRefreshingException {
-		Optional<GroupOrder> go = groupOrderService.single( order.getID());
-		if(go.isPresent()){
-			Optional<GroupUser> gu = groupUserService.single(go.get().getGroupUserID());
-			if(gu.isPresent()){
-				groupUserService.refreshStatus(gu.get().getID(), gu.get().getStatus(), order.getStatusCode());
-				//团长支付成功  开团
-				if(OrderStatusDesc.PAID.equals(order.getStatusCode())){
-					Optional<Group> group = groupService.single(gu.get().getGroupID());
-					if(group.isPresent()&&group.get().getLeaderUID().equals(gu.get().getUID()) && Group.STATUS_NEW.equals(group.get().getStatus())){
-						startSuccess(group.get());
-					}
-				}
-			}
-		}
-	}
-	
 	@Override
 	public void refound(List<GroupUser> groupUserList) throws DataRefreshingException, DataSavingException {
 		//关闭团购订单
@@ -212,6 +194,35 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		user.setUID(group.getLeaderUID());
 		user.setGroupID(group.getID());
 		groupUserService.notice(user, "创建成功");
+	}
+
+
+	@Override
+	public void payFail(Orders order) throws DataRefreshingException {
+		Optional<GroupOrder> go = groupOrderService.singleByOID( order.getID());
+		if(go.isPresent()){
+			Optional<GroupUser> gu = groupUserService.single(go.get().getGroupUserID());
+			if(gu.isPresent()){
+				groupUserService.refreshStatus(gu.get().getID(), gu.get().getStatus(), OrderStatusDesc.PAYFAIL_CODE);
+			}
+		}
+	}
+
+
+	@Override
+	public void paySuccess(Orders order) throws DataRefreshingException {
+		Optional<GroupOrder> go = groupOrderService.singleByOID( order.getID());
+		if(go.isPresent()){
+			Optional<GroupUser> gu = groupUserService.single(go.get().getGroupUserID());
+			if(gu.isPresent()){
+				groupUserService.refreshStatus(gu.get().getID(), gu.get().getStatus(), OrderStatusDesc.PAID_CODE);
+				//团长支付成功  开团
+				Optional<Group> group = groupService.single(gu.get().getGroupID());
+				if(group.isPresent()&&group.get().getLeaderUID().equals(gu.get().getUID()) && Group.STATUS_NEW.equals(group.get().getStatus())){
+					startSuccess(group.get());
+				}
+			}
+		}
 	}
 
 

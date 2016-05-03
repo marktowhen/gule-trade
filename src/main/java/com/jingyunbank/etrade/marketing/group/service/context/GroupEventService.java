@@ -1,7 +1,5 @@
 package com.jingyunbank.etrade.marketing.group.service.context;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,13 @@ public class GroupEventService implements IGroupEventService {
 	 * @param content 订单号
 	 * 2016年4月21日 qxs
 	 */
-	@JmsListener(destination="PAYSUCCESS_CALLBACK", containerFactory="queueJmsListnerContainer")
+	@JmsListener(destination="PAYSUCCESS_CALLBACK", containerFactory="topicJmsListnerContainer")
 	public void paysuccess(String content){
 		orderService.listByExtransno(content).forEach( order->{
 			//如果是团购
 			if(Orders.GROUP_ORDER_TYPE.equals(order.getType())){
 				try {
-					groupPurchaseContextService.payFinish(order);
+					groupPurchaseContextService.paySuccess(order);
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error("PAYSUCCESS_CALLBACK:团购处理失败:"+e.getMessage());
@@ -45,13 +43,13 @@ public class GroupEventService implements IGroupEventService {
 	 * @param content 订单号
 	 * 2016年4月21日 qxs
 	 */
-	@JmsListener(destination="PAYFAILURE_CALLBACK", containerFactory="queueJmsListnerContainer")
+	@JmsListener(destination="PAYFAILURE_CALLBACK", containerFactory="topicJmsListnerContainer")
 	public void payfail(String content){
 	orderService.listByExtransno(content).forEach( order->{
 			//如果是团购
 			if(Orders.GROUP_ORDER_TYPE.equals(order.getType())){
 				try {
-					groupPurchaseContextService.payFinish(order);
+					groupPurchaseContextService.payFail(order);
 				} catch (Exception e) {
 					logger.error("PAYFAILURE_CALLBACK:团购处理失败:"+e.getMessage());
 				}

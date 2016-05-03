@@ -47,7 +47,6 @@ public class GroupSchedule {
 		groupRobotService.finish();
 	}
 	
-	//人数不足的快到期时提醒
 	
 	//到货之后计算团长佣金
 	
