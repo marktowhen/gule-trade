@@ -101,6 +101,8 @@
 		<if test="goodsName!=null and goodsName!=''">
 			and g.name like concat('%',#{goodsName},'%')
 		</if>
+		and gg.deadline &gt;=now()
+		and gg.show = true
 		order by gg.addtime desc
 		limit #{from}, #{size}
 	</select>
