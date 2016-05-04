@@ -97,8 +97,8 @@ public class GroupGoodsService implements IGroupGoodsService {
 	}
 
 	@Override
-	public List<GroupGoodsShow> list(String MID,Range range) {
-		List<GroupGoodsShowEntity> entities = groupGoodsDao.selectMany(MID, range.getFrom(),(int) (range.getTo() - range.getFrom()));
+	public List<GroupGoodsShow> list(String MID, String goodsName,Range range) {
+		List<GroupGoodsShowEntity> entities = groupGoodsDao.selectMany(MID,goodsName, range.getFrom(),(int) (range.getTo() - range.getFrom()));
 		List<GroupGoodsShow> bos = new ArrayList<GroupGoodsShow>();
 		entities.forEach(entity -> {
 			bos.add(getShowBoFromEntity(entity));
@@ -132,6 +132,12 @@ public class GroupGoodsService implements IGroupGoodsService {
 		}
 		
 		return bo;
+	}
+
+	@Override
+	public int count(String mid, String goodsName) {
+		
+		return groupGoodsDao.count(mid,goodsName);
 	}
 
 	

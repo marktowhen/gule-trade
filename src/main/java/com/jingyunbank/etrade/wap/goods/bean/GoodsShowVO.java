@@ -32,6 +32,18 @@ public class GoodsShowVO implements Serializable {
 	private int comment; // 总评论
     private boolean isSale;
     
+    private String favId; //收藏id
+    
+    
+    
+
+	public String getFavId() {
+		return favId;
+	}
+
+	public void setFavId(String favId) {
+		this.favId = favId;
+	}
 
 	public boolean isSale() {
 		return isSale;

@@ -76,16 +76,22 @@ public class GroupGoodsController {
 	//列出指定商家的团购商品，参数指定列出的条数
 	@RequestMapping(value="/goods/list", method=RequestMethod.GET)
 	public Result<List<GroupGoodsShowVO>> list(@RequestParam(required=false) String mid ,
-			@RequestParam int offset, @RequestParam int size) throws Exception{
+			@RequestParam int offset, @RequestParam int size,@RequestParam(required=false) String name) throws Exception{
 		
 		size = size == 0? 10 : size;
 		Range range = new Range(offset, size + offset);
-		List<GroupGoodsShow> bos = groupGoodsService.list(mid, range);
+		List<GroupGoodsShow> bos = groupGoodsService.list(mid,name, range);
 		List<GroupGoodsShowVO> vos = new ArrayList<GroupGoodsShowVO>();
 		bos.forEach(bo -> {
 			vos.add(getShowVOFromBo(bo));
 		});
 		return Result.ok(vos);
+	}
+	
+	@RequestMapping(value="/goods/count", method=RequestMethod.GET)
+	public Result<Integer> count(@RequestParam(required=false) String mid ,@RequestParam(required=false) String name) throws Exception{
+		
+		return Result.ok(groupGoodsService.count(mid,name));
 	}
 	
 	//查询指定团购商品的详情

@@ -54,6 +54,7 @@
 		<result column="price_" property="price" />
 		<result column="sale_price_" property="salePrice" />
 		<result column="isSale_" property="sale" />
+		<result column="id_" property="favId" />
 	</resultMap>
 
 	<!-- sku map -->
@@ -62,7 +63,7 @@
 		<result column="id_" property="ID" />
 		<result column="gid_" property="GID" />
 		<result column="properties_" property="properties" />
-		<result column="path_" property="propertiesValue" />
+		<result column="properties_value_" property="propertiesValue" />
 		<result column="stock_" property="stock" />
 		<result column="volume_" property="volume" />
 		<result column="price_" property="price" />
@@ -208,6 +209,7 @@
 	<!--根据条件获取sku -->
 	<sql id="skuSql">
 		s.`id` id_, s.`gid` gid_, s.`properties` properties_,
+		s.`properties_value` properties_value_,
 		s.`stock` stock_,
 		s.`volume`
 		volume_, s.`price` price_,
