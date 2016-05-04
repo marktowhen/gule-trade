@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.weixin.controller;
 
-import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +39,7 @@ public class OAuthController {
 		     //用户同意授权
 		     if(!"authdeny".equals(code)){
 		    	 //获取授权的access_token
-		    	 WeixinOauth2Token weixinOauth2Token = GetAccessToken.getOauth2AccessToken("wx104070783e1981df", "8010ab6f0896f4a5f8ee39f289d52609", code);
+		    	 WeixinOauth2Token weixinOauth2Token = GetAccessToken.getOauth2AccessToken("wx7881dc8f8b9645e1", "d2458d5cbe19d23490db8f0b1b8ca26b", code);
 		    	 //网页授权接口访问凭证
 		    	 String accessToken=weixinOauth2Token.getAccessToken();
 		    	 //用户标识
@@ -50,11 +49,17 @@ public class OAuthController {
 		    	 SNSUserInfoBo snsUserInfoBo = new SNSUserInfoBo();
 		    	 snsUserInfoVo.setId(KeyGen.uuid());
 		    	 BeanUtils.copyProperties(snsUserInfoVo, snsUserInfoBo);
-		    	 weixinUserService.addUser(snsUserInfoBo);
-		    	 
-		    	 System.out.println("得到用户的信息:"+snsUserInfoVo);
-		    	 //设置传递参数
-		    	 request.setAttribute("snsUserInfo", snsUserInfoVo);
+		    	 if(weixinUserService.getUsers(openId)==null){
+		    		 weixinUserService.addUser(snsUserInfoBo);
+		    		 request.setAttribute("snsUserInfo", snsUserInfoVo);
+		    		 response.sendRedirect("http://aaaaa.tunnel.qydev.com/#/");
+		    	 }else{
+		    		 System.out.println("得到用户的信息:"+snsUserInfoVo.getNickname());
+			    	 //设置传递参数
+			    	 request.setAttribute("snsUserInfo", snsUserInfoVo);
+			    	 response.sendRedirect("http://aaaaa.tunnel.qydev.com/#/");
+		    	 }
+		    	
 		     }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

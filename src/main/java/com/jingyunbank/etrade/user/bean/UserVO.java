@@ -17,7 +17,6 @@ import com.jingyunbank.core.lang.Patterns;
 public class UserVO {
 	private String ID;
 	@Pattern(regexp="^([a-zA-Z]+[a-zA-Z0-9]{3,19})$",message="用户名必须以字母开头，并且只能是字母或数字")
-	@NotNull(message="用户名不能为空")
 	private String username;//global unique, ([a-zA-Z]+[a-zA-Z0-9]){4, 20}必须英文字母开头
 	@Pattern(regexp=Patterns.INTERNAL_MOBILE_PATTERN,message="手机格式不正确")
 	private String mobile;//11位数字的有效手机号

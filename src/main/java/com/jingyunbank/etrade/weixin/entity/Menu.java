@@ -2,21 +2,22 @@ package com.jingyunbank.etrade.weixin.entity;
 
 public class Menu {
 
-	private String name;
+	private Button[] button;
 
 	/**
-	 * @return the name
+	 * @return the button
 	 */
-	public String getName() {
-		return name;
+	public Button[] getButton() {
+		return button;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param button the button to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setButton(Button[] button) {
+		this.button = button;
 	}
+
 	
 	
 

@@ -11,7 +11,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import com.jingyunbank.etrade.weixin.entity.Token;
+import com.jingyunbank.etrade.weixin.util.JsonUtil;
+import com.jingyunbank.etrade.weixin.entity.AccessToken;
 
 
 public class WechatKit {
@@ -34,9 +35,9 @@ public class WechatKit {
 				HttpEntity entity = response.getEntity();
 				if(null != entity){
 					String content = EntityUtils.toString(entity);
-					Token accessToken = (Token)JsonUtil.getInstance().json2obj(content, Token.class);
+					AccessToken accessToken = (AccessToken)JsonUtil.getInstance().json2obj(content, AccessToken.class);
 					if(accessToken != null){
-						access_token = accessToken.getAccessToken();
+						access_token = accessToken.getAccess_token();
 					}
 				}
 				
