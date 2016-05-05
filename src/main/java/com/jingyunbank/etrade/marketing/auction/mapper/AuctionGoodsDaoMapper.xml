@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.auction.dao.AuctionGoodsDao">
+	<resultMap type="com.jingyunbank.etrade.marketing.auction.entity.AuctionGoodsEntity" id="AuctionGoodsResultMap">
+		<id column="id" property="ID" />
+		<result column="gid" property="GID"/>
+		<result column="skuid" property="SKUID"/>
+		<result column="start_time" property="startTime"/>
+		<result column="end_time" property="endTime"/>
+		<result column="delay_second" property="delaySecond"/>
+		<result column="delay_amount" property="delayAmount"/>
+		<result column="type" property="type"/>
+		<result column="status" property="status"/>
+		<result column="deposit" property="deposit"/>
+		<result column="start_price" property="startPrice"/>
+		<result column="add_price" property="addPrice"/>
+		<result column="sold_price" property="soldPrice"/>
+		<result column="sold_uid" property="soldUID"/>
+		<result column="user_amount" property="userAmount"/>
+		<association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
+			<result column="g_name" property="name" javaType="String"/>
+			<result column="g_path" property="path" javaType="String"/>
+			<result column="g_id" property="ID" javaType="String"/>
+		</association>
+		<association property="sku" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+			<result column="k_volume" property="volume" />
+			<result column="k_properties_value" property="propertiesValue"/>
+			<result column="k_skuid" property="ID" javaType="String"/>
+			<result column="k_sale_price" property="salePrice" />
+			<result column="k_price" property="price" />
+			
+		</association>
+	</resultMap>
+	
+	<sql id="base_column">
+		id,gid,skuid,start_time,end_time,delay_second,delay_amount,type,status,deposit,start_price,add_price,sold_price,sold_uid
+	</sql>
+	
+	<sql id="column_with_goods_info">
+		a.id,a.gid,a.skuid,a.start_time,a.end_time,a.delay_second,a.delay_amount,a.type,a.status,a.deposit,a.start_price,a.add_price,a.sold_price,a.sold_uid,
+		g.`name` g_name ,g.path g_path, g.id g_id,
+		k.volume k_volume,k.properties_value k_properties_value,k.id k_skuid,k.price k_price, k.sale_price k_sale_price,
+		(select count(1) from auction_user u where a.id=u.auction_goods_id) user_amount
+	</sql>
+	
+	<insert id="insert">
+		insert into auction_goods(<include refid="base_column"/>)
+		values(#{ID},#{GID},#{SKUID},#{startTime},#{endTime},#{delaySecond},#{delayAmount},
+				#{type},#{status},#{deposit},#{startPrice},#{addPrice},#{soldPrice},#{soldUID})
+	</insert>
+	
+	<update id="updateStatus">
+		update auction_goods set status=#{status} where id=#{ID}
+	</update>
+	
+	<select id="selectOne" resultMap="AuctionGoodsResultMap">
+		select <include refid="column_with_goods_info"/> from auction_goods where id=#{ID}
+	</select>
+	
+	<select id="selectList" resultMap="AuctionGoodsResultMap">
+		select <include refid="column_with_goods_info"/> 
+			from auction_goods a
+			LEFT JOIN goods g on a.gid=g.id
+			LEFT JOIN goods_sku k on a.skuid = k.id 
+		order by start_time 
+		limit #{offset, javaType=LONG},#{size, javaType=LONG}
+	</select>
+	
+	<update id="updateSoldPrice">
+		update auction_goods set sold_price=#{soldPrice},sold_uid=#{soldUID} where id=#{ID}
+	</update>
+	
+	<update id="updateDelayAmount">
+		update auction_goods set delay_amount=delay_amount+1, end_time=#{endTime} where id=#{ID}
+	</update>
+	
+	<select id="count" resultType="java.lang.Integer">
+		select count(1) from auction_goods
+	</select>
+</mapper>
