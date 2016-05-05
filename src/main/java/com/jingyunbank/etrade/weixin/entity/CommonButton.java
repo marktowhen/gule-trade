@@ -1,6 +1,6 @@
 package com.jingyunbank.etrade.weixin.entity;
 
-public class SingleMenu extends Menu{
+public class CommonButton extends Button{
 
 	
 	private String type;

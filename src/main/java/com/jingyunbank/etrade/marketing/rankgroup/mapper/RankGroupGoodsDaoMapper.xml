@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.rankgroup.dao.RankGroupGoodsDao">
+	
+	<resultMap type="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity" id="RankGroupGoodsEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="skuid" property="SKUID" javaType="String"/>
+		<result column="gid" property="GID" javaType="String"/>
+		<result column="duration" property="duration" jdbcType="INTEGER"/>
+		<result column="deadline" property="deadline" javaType="java.util.Date"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
+		<result column="show" property="show" javaType="Boolean"/>
+		<collection property="priceSettings" javaType="ArrayList" ofType="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsPriceSettingEntity">
+			<id column="gpsid" property="ID" javaType="String"/>
+			<result column="ggid" property="GGID" javaType="String"/>
+			<result column="floor" property="floor" jdbcType="INTEGER"/>
+			<result column="ceiling" property="ceiling" jdbcType="INTEGER"/>
+			<result column="price" property="price" jdbcType="DECIMAL"/>
+		</collection>
+	</resultMap>
+	<sql id="group_goods_columns">
+		`id`, `skuid`, `duration`, `deadline`, `deposit`, `show`, `addtime`,gid
+	</sql>
+	<sql id="group_goods_join_price_setting_columns">
+		g.`id`, g.`skuid`, g.`duration`, g.`deadline`,g.`deposit`, g.`show`, g.`addtime`,g.gid,
+	    ps.`id` as gpsid, ps.`ggid`, ps.`floor`, ps.`ceiling`, ps.`price`
+	</sql>
+	<insert id="insert" parameterType="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity">
+		insert into rankgroup_goods
+			(<include refid="group_goods_columns"/>)
+		values
+			(#{ID}, #{SKUID}, #{duration}, #{deadline},#{deposit}, #{show}, #{addtime},#{GID})
+	</insert>
+	
+	<update id="update">
+		update group_goods set `skuid`=#{SKUID}, `duration`=#{duration},
+		 `deadline`=#{deadline}, `minpeople`= #{minpeople}, `commission`=#{commission},
+	    `upperlimit`=#{upperlimit}, `deposit`= #{deposit}, `show`= #{show},gid=#{GID}
+	    where `id`=#{ID}
+	</update>
+	
+	<select id="selectOne" resultMap="RankGroupGoodsEntityResultMap" parameterType="String" >
+		select <include refid="group_goods_join_price_setting_columns"/>
+		from rankgroup_goods g
+		left join rankgroup_goods_price_setting ps on g.id = ps.ggid
+		where g.id = #{ggid}
+	</select>
+	
+	<select id="selectOneByGroupID" resultMap="RankGroupGoodsEntityResultMap" parameterType="String" >
+		select <include refid="group_goods_columns"/>
+		from rankgroup_goods g
+		left join rankgroup gp on g.id=gp.group_goods_id
+		where gp.id = #{groupID}
+	</select>
+	
+	<resultMap type="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsShowEntity" id="RankGroupGoodsShowEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="skuid" property="SKUID" javaType="String"/>
+		<result column="gid" property="GID" javaType="String"/>
+		<result column="duration" property="duration" jdbcType="INTEGER"/>
+		<result column="deadline" property="deadline" javaType="java.util.Date"/>
+		<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+		<result column="addtime" property="addtime" javaType="java.util.Date"/>
+		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
+		<result column="show" property="show" javaType="Boolean"/>
+		<result column="commission" property="commission" jdbcType="DECIMAL"/>
+		<result column="show_price" property="showPrice" jdbcType="DECIMAL"/>
+		<association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
+			<result column="g_name" property="name" javaType="String"/>
+			<result column="g_path" property="path" javaType="String"/>
+		</association>
+		<association property="sku" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+			<result column="k_volume" property="volume" />
+			<result column="k_properties_value" property="propertiesValue" javaType="String"/>
+		</association>
+	</resultMap>
+	<sql id="show_goods">
+			gg.`id`, gg.`skuid`, gg.`duration`, gg.`deadline`,  
+			     gg.`deposit`, gg.`show`, gg.`addtime`,gg.gid,
+			g.`name` g_name ,g.path g_path, 
+			k.volume k_volume,k.properties_value k_properties_value,
+			(select MIN(price) from rankgroup_goods_price_setting price where price.ggid=gg.id) show_price
+	</sql>
+	<select id="selectMany" resultMap="RankGroupGoodsShowEntityResultMap">
+		SELECT 
+			<include refid="show_goods"/>
+		from rankgroup_goods gg 
+		LEFT JOIN goods g on gg.gid=g.id
+		LEFT JOIN goods_sku k on gg.skuid = k.id 
+		where 1=1
+		<if test="MID!=null and MID!=''">
+			and g.mid=#{MID}
+		</if>
+		<if test="goodsName!=null and goodsName!=''">
+			and g.name like concat('%',#{goodsName},'%')
+		</if>
+		and gg.deadline &gt;=now()
+		and gg.show = true
+		order by gg.addtime desc
+		limit #{from}, #{size}
+	</select>
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(1)
+		from rankgroup_goods gg 
+		LEFT JOIN goods g on gg.gid=g.id
+		where 1=1
+		<if test="MID!=null and MID!=''">
+			and g.mid=#{MID}
+		</if>
+		<if test="goodsName!=null and goodsName!=''">
+			and g.name like concat('%',#{goodsName},'%')
+		</if>
+	</select>
+	
+</mapper>

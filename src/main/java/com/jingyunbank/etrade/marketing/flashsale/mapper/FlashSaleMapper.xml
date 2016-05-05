@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.flashsale.dao.FlashSaleDao">
+	<resultMap id="BaseResultMap" type="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleShowEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="gid" property="gid" jdbcType="VARCHAR" />
+    <result column="sku_id" property="skuId" jdbcType="VARCHAR" />
+    <result column="stock" property="stock" jdbcType="INTEGER" />
+    <result column="current_price" property="currentPrice" jdbcType="DOUBLE" />
+    <result column="shows" property="shows"/>
+    <result column="show_time" property="showTime" jdbcType="TIMESTAMP" />
+    <result column="activity_time" property="activityTime" jdbcType="TIMESTAMP" />
+    <result column="flash_status" property="flashStatus" jdbcType="INTEGER" />
+    <association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
+			<result column="g_name" property="name" javaType="String"/>
+			<result column="g_path" property="path" javaType="String"/>
+	</association>
+	<association property="sku" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
+			<result column="k_properties_value" property="propertiesValue" javaType="String"/>
+	</association>
+  </resultMap>
+	<sql id="Base_Column_List" >
+   fs.id, fs.gid, fs.sku_id, fs.stock, fs.current_price, fs.shows, fs.show_time, fs.activity_time, fs.flash_status
+  </sql>
+	<insert id="addFlashSale" parameterType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleEntity">
+		insert into flash_sale(id,gid,sku_id,stock,current_price, activity_time, flash_status,shows,show_time) 
+		values(
+		#{id},#{gid},#{skuId}, #{stock}, #{currentPrice}, #{activityTime}, #{flashStatus},#{shows},#{showTime}
+		) 
+	</insert>
+	<!-- 通过id查出对应的 详情信息-->
+	<select id="selectFlashSaleById" resultType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleEntity" parameterType="String">
+		select  fs.id, fs.gid, fs.sku_id skuId, fs.stock, fs.current_price currentPrice, fs.shows, fs.show_time showTime, fs.activity_time activityTime, fs.flash_status flashStatus  from flash_sale fs where fs.id=#{id}
+	</select>
+	<update id="update" parameterType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleEntity">
+	update flash_sale
+      set gid = #{gid},sku_id = #{skuId},stock = #{stock},
+      current_price = #{currentPrice},shows = #{shows},
+      show_time = #{showTime},activity_time = #{activityTime},
+      flash_status = #{flashStatus}
+    where id = #{id}
+	</update>
+	
+	
+	<select id="selectFlashSaleMany" resultMap="BaseResultMap">
+		SELECT 
+			<include refid="Base_Column_List"/>,g.name g_name,g.path g_path,k.properties_value k_properties_value
+		from flash_sale fs 
+		LEFT JOIN goods g on fs.gid=g.id
+		LEFT JOIN goods_sku k on fs.sku_id = k.id 
+		where 1=1
+		<if test="MID!=null and MID!=''">
+			and g.mid=#{MID}
+		</if>
+		order by fs.activity_time desc
+		limit #{from}, #{size}
+	</select>
+</mapper>
