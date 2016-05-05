@@ -64,7 +64,7 @@
 			from auction_goods a
 			LEFT JOIN goods g on a.gid=g.id
 			LEFT JOIN goods_sku k on a.skuid = k.id 
-		order by start_time 
+		order by a.status,a.start_time 
 		limit #{offset, javaType=LONG},#{size, javaType=LONG}
 	</select>
 	

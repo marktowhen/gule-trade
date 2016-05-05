@@ -23,7 +23,7 @@ public class GroupGoodsVO {
 	@Min(1)
 	private long duration;//开团后团的时间长度，second
 	@NotNull
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date deadline;//团购截止日期
 	private boolean upperlimit;//是否设置人数上限 
 	private int minpeople;//最少成团人数

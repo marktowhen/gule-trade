@@ -19,10 +19,8 @@ public class AuctionGoodsVO {
 	@NotEmpty
 	private String SKUID;
 	@NotNull
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss" )
 	private Date startTime; //开始时间
 	@NotNull
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss" )
 	private Date endTime;//结束时间
 	private int delaySecond;//当到达截止时间前有人出价 延迟结束秒数
 	private int delayAmount; //延迟次数
@@ -88,12 +86,14 @@ public class AuctionGoodsVO {
 	public Date getStartTime() {
 		return startTime;
 	}
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 	public Date getEndTime() {
 		return endTime;
 	}
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
