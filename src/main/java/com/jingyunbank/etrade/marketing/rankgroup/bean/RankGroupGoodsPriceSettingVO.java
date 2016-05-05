@@ -9,7 +9,7 @@ public class RankGroupGoodsPriceSettingVO {
 	private RankGroupGoodsVO goods;
 	private String GGID;
 	private int floor;//人数下边界
-	private int ceil;  //人数上边界 
+	private int ceiling;  //人数上边界 
 	@NotNull
 	@DecimalMin(value="0.0", inclusive=false)
 	private BigDecimal price; //相应的价格 
@@ -32,17 +32,18 @@ public class RankGroupGoodsPriceSettingVO {
 	public void setFloor(int floor) {
 		this.floor = floor;
 	}
-	public int getCeil() {
-		return ceil;
-	}
-	public void setCeil(int ceil) {
-		this.ceil = ceil;
-	}
+
 	public BigDecimal getPrice() {
 		return price;
 	}
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+	public int getCeiling() {
+		return ceiling;
+	}
+	public void setCeiling(int ceiling) {
+		this.ceiling = ceiling;
 	}
 
 }

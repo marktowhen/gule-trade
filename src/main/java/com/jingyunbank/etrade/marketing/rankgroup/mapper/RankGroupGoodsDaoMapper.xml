@@ -29,7 +29,7 @@
 	    ps.`id` as gpsid, ps.`ggid`, ps.`floor`, ps.`ceiling`, ps.`price`
 	</sql>
 	<insert id="insert" parameterType="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity">
-		insert into group_goods
+		insert into rankgroup_goods
 			(<include refid="group_goods_columns"/>)
 		values
 			(#{ID}, #{SKUID}, #{duration}, #{deadline},#{deposit}, #{show}, #{addtime},#{GID})

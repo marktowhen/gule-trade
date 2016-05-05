@@ -10,7 +10,7 @@ import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsPriceSett
 public class RankGroupGoodsVO {
 	private String ID;
 	private String SKUID;
-	private String groupID;
+	private String GID;
 	private long duration;
 	private Date deadline;
 	private BigDecimal deposit;
@@ -36,11 +36,12 @@ public class RankGroupGoodsVO {
 	public void setSKUID(String sKUID) {
 		SKUID = sKUID;
 	}
-	public String getGroupID() {
-		return groupID;
+	
+	public String getGID() {
+		return GID;
 	}
-	public void setGroupID(String groupID) {
-		this.groupID = groupID;
+	public void setGID(String gID) {
+		GID = gID;
 	}
 	public long getDuration() {
 		return duration;
