@@ -36,9 +36,8 @@
 	</insert>
 	
 	<update id="update">
-		update group_goods set `skuid`=#{SKUID}, `duration`=#{duration},
-		 `deadline`=#{deadline}, `minpeople`= #{minpeople}, `commission`=#{commission},
-	    `upperlimit`=#{upperlimit}, `deposit`= #{deposit}, `show`= #{show},gid=#{GID}
+		update rankgroup_goods set `skuid`=#{SKUID}, `duration`=#{duration},
+		 `deadline`=#{deadline},`deposit`= #{deposit}, `show`= #{show},gid=#{GID}
 	    where `id`=#{ID}
 	</update>
 	
@@ -62,11 +61,9 @@
 		<result column="gid" property="GID" javaType="String"/>
 		<result column="duration" property="duration" jdbcType="INTEGER"/>
 		<result column="deadline" property="deadline" javaType="java.util.Date"/>
-		<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
 		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
 		<result column="show" property="show" javaType="Boolean"/>
-		<result column="commission" property="commission" jdbcType="DECIMAL"/>
 		<result column="show_price" property="showPrice" jdbcType="DECIMAL"/>
 		<association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
 			<result column="g_name" property="name" javaType="String"/>

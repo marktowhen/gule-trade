@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsEntity;
 import com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity;
 
-public class RankGroupGoodsShowEntity {
+public class RankGroupGoodsShowEntity extends RankGroupGoodsEntity {
 	private GoodsSkuEntity sku;
 	private GoodsEntity goods;
 	private BigDecimal showPrice;

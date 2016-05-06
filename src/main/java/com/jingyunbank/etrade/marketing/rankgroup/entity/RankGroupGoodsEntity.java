@@ -16,6 +16,7 @@ public class RankGroupGoodsEntity {
 	private boolean show;//是否上架
 	private Date addtime;
 	private String GID;
+	private BigDecimal showPrice;
 	public String getGID() {
 		return GID;
 	}
@@ -27,6 +28,12 @@ public class RankGroupGoodsEntity {
 	}
 	public void setID(String iD) {
 		ID = iD;
+	}
+	public BigDecimal getShowPrice() {
+		return showPrice;
+	}
+	public void setShowPrice(BigDecimal showPrice) {
+		this.showPrice = showPrice;
 	}
 	public String getSKUID() {
 		return SKUID;
