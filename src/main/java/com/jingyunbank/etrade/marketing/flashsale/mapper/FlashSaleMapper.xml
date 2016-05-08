@@ -57,4 +57,19 @@
 		order by fs.activity_time desc
 		limit #{from}, #{size}
 	</select>
+	
+	<select id="selectFlashSaleByCondition" resultMap="BaseResultMap">
+		SELECT 
+			<include refid="Base_Column_List"/>,g.name g_name,g.path g_path,k.properties_value k_properties_value
+		from flash_sale fs 
+		LEFT JOIN goods g on fs.gid=g.id
+		LEFT JOIN goods_sku k on fs.sku_id = k.id 
+		where fs.shows=1
+		order by fs.show_time desc
+		limit #{from}, #{size}
+	</select>
+	<update id="updateStock">
+		update flash_sale fs set fs.stock = #{stock} where fs.id = #{id}
+	</update>
+	
 </mapper>

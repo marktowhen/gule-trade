@@ -22,6 +22,8 @@ public class FlashSaleVo implements Serializable{
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
 	private Date activityTime;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
+	private Date showTime;
 	private double currentPrice;
 	
 	private int flashStatus;

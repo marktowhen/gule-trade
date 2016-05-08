@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jingyunbank.etrade.marketing.flashsale.dao.FlashSaleUserDao">
+		<resultMap id="BaseResultMap" type="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleUserEntity" >
+		    <id column="id" property="id" jdbcType="VARCHAR" />
+		    <result column="flash_id" property="flashId" jdbcType="VARCHAR" />
+		    <result column="uid" property="uid" jdbcType="VARCHAR" />
+		    <result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
+		    <result column="paid" property="paid" jdbcType="VARCHAR" />
+	  		<association property="flashsale" javaType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleEntity">
+	 			<id column="id" property="id" jdbcType="VARCHAR" />
+			    <result column="gid" property="gid" jdbcType="VARCHAR" />
+			    <result column="sku_id" property="skuId" jdbcType="VARCHAR" />
+			    <result column="stock" property="stock" jdbcType="INTEGER" />
+			    <result column="current_price" property="currentPrice" jdbcType="DOUBLE" />
+			    <result column="activity_time" property="activityTime" jdbcType="TIMESTAMP" />
+	  		</association>
+  		</resultMap>
+  		<resultMap type="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleUserEntity" id="FlashSaleUserMap">
+	  		<id column="id" property="id" jdbcType="VARCHAR" />
+		    <result column="flash_id" property="flashId" jdbcType="VARCHAR" />
+		    <result column="uid" property="uid" jdbcType="VARCHAR" />
+		    <result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
+		    <result column="paid" property="paid" jdbcType="VARCHAR" />
+  		</resultMap>
+  		<sql id="Base_List" >
+   			 id, flash_id, uid, order_status, paid
+  		</sql>
+  	<!-- 保存系统的信息 -->
+	<insert id="add" parameterType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleUserEntity" >
+    	insert into flash_sale_user (id, flash_id, uid,order_status, paid)
+    	values (#{id}, #{flashId}, #{uid}, #{orderStatus}, #{paid})
+  	</insert>
+  	<!-- 通过id查某对象的信息 -->
+  	<select id="selectFlashSaleUserByid" parameterType="String" resultMap="FlashSaleUserMap">
+  		select <include refid="Base_List" /> from flash_sale_user where id=#{id}
+  	</select>
+  	<!-- 修改该用户的订单状态 -->
+  	 <update id="updateStatus">
+	    update flash_sale_user
+	    set order_status = #{orderStatus},
+	    where id = #{id}
+    </update>
+  	
+	</mapper>

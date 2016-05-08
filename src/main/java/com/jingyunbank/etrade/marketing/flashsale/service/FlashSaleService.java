@@ -117,6 +117,31 @@ public class FlashSaleService implements IFlashSaleService{
 		}
 		return false;
 	}
+	@Override
+	public List<FlashSaleShow> getFlashSaleByCondition(Range range) {
+		List<FlashSaleShowEntity> entityList=flashDao.selectFlashSaleByCondition(range.getFrom(), (int)(range.getTo()-range.getFrom()));
+		List<FlashSaleShow> boList = new ArrayList<FlashSaleShow>();
+		entityList.forEach(entity ->{
+			boList.add(getShowBoFromEntity(entity));
+		});
+		return boList;
+	}
+	@Override
+	public boolean refreshStock(FlashSale flashSale) throws DataRefreshingException {
+		
+		try {
+			FlashSaleEntity entity = new FlashSaleEntity();
+			BeanUtils.copyProperties(flashSale, entity);
+			int num=flashDao.updateStock(entity);
+			if(num>0){
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new DataRefreshingException(e);
+		}
+		return false;
+	}
 
 
 }

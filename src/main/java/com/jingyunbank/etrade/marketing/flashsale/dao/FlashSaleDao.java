@@ -14,7 +14,11 @@ public interface FlashSaleDao {
 	public List<FlashSaleShowEntity> selectFlashSaleMany(@Param("MID")String MID, @Param("from") long from, 
 			@Param("size") int size);
 	
+	public List<FlashSaleShowEntity> selectFlashSaleByCondition(@Param("from") long from,@Param("size") int size);
+	
 	public FlashSaleEntity selectFlashSaleById(String id);
 	
 	public int update(FlashSaleEntity flashSaleEntity) throws Exception;
+	//修改库存的代码
+	public int updateStock(FlashSaleEntity flashSaleEntity) throws Exception;
 }
