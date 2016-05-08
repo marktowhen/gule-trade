@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.auction.dao.AuctionUserDao">
+	<resultMap type="com.jingyunbank.etrade.marketing.auction.entity.AuctionUserEntity" id="AuctionUserResultMap">
+		<id column="id" property="ID" />
+		<result column="auction_goods_id" property="auctionGoodsID"/>
+		<result column="uid" property="UID"/>
+		<result column="status" property="status"/>
+		<result column="join_time" property="joinTime"/>
+	</resultMap>
+	
+	<sql id="base_column">
+		id,auction_goods_id,uid,status,join_time
+	</sql>
+	
+	<insert id="insert">
+		insert into auction_user(<include refid="base_column"/>)
+		values(#{ID},#{auctionGoodsID},#{UID},#{status},#{joinTime})
+	</insert>
+	
+	<select id="selectOne" resultMap="AuctionUserResultMap">
+		select <include refid="base_column"/> from auction_user where id=#{ID}
+	</select>
+	
+	<update id="updateStatus">
+		update auction_user set status=#{status} where id=#{ID}
+	</update>
+	
+	<select id="selectList" resultMap="AuctionUserResultMap">
+		select <include refid="base_column"/> from auction_user 
+			where auction_goods_id=#{auctionGoodsID} 
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer">
+		select count(1) from auction_user 
+			where auction_goods_id=#{auctionGoodsID} 
+	</select>
+	
+</mapper>

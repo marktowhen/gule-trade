@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jingyunbank.etrade.marketing.rankgroup.dao.RankGroupGoodsPriceSettingDao">
+    <resultMap type="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsPriceSettingEntity" id="RankGroupGoodsPriceSettingEntityResultMap">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="ggid" property="GGID" javaType="String"/>
+		<result column="floor" property="floor" jdbcType="INTEGER"/>
+		<result column="ceiling" property="ceiling" jdbcType="INTEGER"/>
+		<result column="price" property="price" jdbcType="DECIMAL"/>
+	</resultMap>
+	<sql id="group_goods_price_setting_columns">
+		`id`, `ggid`, `floor`, `ceiling`, `price`
+	</sql>
+
+	<insert id="insertMany">
+		insert into rankgroup_goods_price_setting
+			(<include refid="group_goods_price_setting_columns"/>)
+		values
+		<foreach collection="settings" item="setting" separator="," open="" close="">
+			(
+			 #{setting.ID}, #{setting.GGID}, #{setting.floor}, #{setting.ceiling}, #{setting.price}
+			)
+		</foreach>
+	</insert>
+	<select id="selectMany" parameterType="String"  resultMap="RankGroupGoodsPriceSettingEntityResultMap">
+		select <include refid="group_goods_price_setting_columns"/>
+		from rankgroup_goods_price_setting 
+		where ggid = #{ggid}
+	</select>
+	
+	<delete id="delete">
+		delete from rankgroup_goods_price_setting 
+		where ggid = #{ggid}
+	</delete>
+</mapper>
