@@ -13,13 +13,14 @@ public class FlashSaleOrderVo implements Serializable{
 	
 	private String flashId;
 	
-	private String uid;
+	private String flashUserId;
 	
 	private String oid;
 	
 	private long orderno;
 	
 	private String type;
+	
 	
 	
 
@@ -72,19 +73,6 @@ public class FlashSaleOrderVo implements Serializable{
 		this.flashId = flashId;
 	}
 
-	/**
-	 * @return the uid
-	 */
-	public String getUid() {
-		return uid;
-	}
-
-	/**
-	 * @param uid the uid to set
-	 */
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
 
 	/**
 	 * @return the oid
@@ -100,5 +88,26 @@ public class FlashSaleOrderVo implements Serializable{
 		this.oid = oid;
 	}
 
+	/**
+	 * @return the flashUserId
+	 */
+	public String getFlashUserId() {
+		return flashUserId;
+	}
+
+	/**
+	 * @param flashUserId the flashUserId to set
+	 */
+	public void setFlashUserId(String flashUserId) {
+		this.flashUserId = flashUserId;
+	}
+
+	/**
+	 * @return the orderno
+	 */
+	public long getOrderno() {
+		return orderno;
+	}
+	
 
 }

@@ -7,21 +7,26 @@
 		<resultMap id="FlashSaleOrderMap" type="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleOrderEntity" >
 		    <id column="id" property="id" jdbcType="VARCHAR" />
 		    <result column="flash_id" property="flashId" jdbcType="VARCHAR" />
-		    <result column="uid" property="uid" jdbcType="VARCHAR" />
+		    <result column="flash_user_id" property="flashUserId" jdbcType="VARCHAR" />
 		    <result column="oid" property="oid" jdbcType="VARCHAR" />
 		    <result column="orderno" property="orderno" />
 		    <result column="type" property="type" />
  		</resultMap>
  		 <sql id="order_base_List" >
-    		id, flash_id, uid, oid, orderno,type
+    		id, flash_id, flash_user_id, oid, orderno,type
   		</sql>
  		<insert id="add" parameterType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleOrderEntity" >
-   		 	insert into flash_sale_order (id, flash_id, uid,oid, orderno,type)
-    		values (#{id}, #{flashId}, #{uid}, #{oid}, #{orderno},#{type})
+   		 	insert into flash_sale_order (id, flash_id, flash_user_id,oid, orderno,type)
+    		values (#{id}, #{flashId}, #{flashUserId}, #{oid}, #{orderno},#{type})
   		</insert>
   		<select id="selectFlashOrderByoid" parameterType="String">
   		 	select <include refid="order_base_List" />from flash_sale_order
     		where oid = #{oid}
+  		</select>
+  		<!-- 通过id查出当个对象的信息 -->
+  		<select id="selectFlashOrderByuid" parameterType="String">
+  		 	select <include refid="order_base_List" />from flash_sale_order
+    		where flash_user_id = #{flashUserId}
   		</select>
   		
 	</mapper>

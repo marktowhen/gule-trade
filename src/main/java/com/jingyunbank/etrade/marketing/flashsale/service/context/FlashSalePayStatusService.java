@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Service;
 
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.marketing.flashsale.service.context.IFlashSalePurchaseContextService;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
-
-public class FlashSalePayStatus {
+@Service
+public class FlashSalePayStatusService{
 	@Autowired
 	private IOrderService orderService;
 	@Autowired
@@ -50,5 +52,6 @@ public class FlashSalePayStatus {
 		});
 	}
 	
-	private Logger logger = LoggerFactory.getLogger(FlashSalePayStatus.class);
+	private Logger logger = LoggerFactory.getLogger(FlashSalePayStatusService.class);
+	
 }

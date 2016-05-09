@@ -65,7 +65,7 @@
 		LEFT JOIN goods g on fs.gid=g.id
 		LEFT JOIN goods_sku k on fs.sku_id = k.id 
 		where fs.shows=1
-		order by fs.show_time desc
+		order by fs.activity_time desc
 		limit #{from}, #{size}
 	</select>
 	<update id="updateStock">

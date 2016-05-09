@@ -3,6 +3,7 @@ package com.jingyunbank.etrade.marketing.flashsale.service.context;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 import com.jingyunbank.core.KeyGen;
@@ -17,6 +18,7 @@ import com.jingyunbank.etrade.api.marketing.flashsale.service.IFlashSaleUserServ
 import com.jingyunbank.etrade.api.marketing.flashsale.service.context.IFlashSalePurchaseContextService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.user.bo.Users;
 @Service
 public class FlashSalePurchaseContextSevice implements IFlashSalePurchaseContextService{
@@ -24,7 +26,6 @@ public class FlashSalePurchaseContextSevice implements IFlashSalePurchaseContext
 	private IFlashSaleUserService flashSaleUserService;
 	@Autowired
 	private IFlashSaleOrderService flashSaleOrderService;
-
 	@Override
 	public Result<String> checkStart(FlashSale flashsale) {
 		if(flashsale.getStock()<=0){
@@ -42,7 +43,7 @@ public class FlashSalePurchaseContextSevice implements IFlashSalePurchaseContext
 		FlashSaleOrder flashSaleOrder = new FlashSaleOrder();
 		flashSaleOrder.setId(KeyGen.uuid());
 		flashSaleOrder.setFlashId(flashSaleUser.getFlashId());
-		flashSaleOrder.setUid(flashSaleUser.getId());
+		flashSaleOrder.setFlashUserId(flashSaleUser.getId());
 		flashSaleOrder.setOid(orders.getID());
 		flashSaleOrder.setOrderno(orders.getOrderno());
 		flashSaleOrder.setType("");
@@ -53,9 +54,9 @@ public class FlashSalePurchaseContextSevice implements IFlashSalePurchaseContext
 	public void paySuccess(Orders order) throws DataRefreshingException{
 		Optional<FlashSaleOrder> flashSaleOrder = flashSaleOrderService.single(order.getID());
 		if(flashSaleOrder.isPresent()){
-			Optional<FlashSaleUser> flashSaleUser=flashSaleUserService.single(flashSaleOrder.get().getUid());
+			Optional<FlashSaleUser> flashSaleUser=flashSaleUserService.single(flashSaleOrder.get().getFlashUserId());
 			if(flashSaleUser.isPresent()){
-				flashSaleUserService.refreshStatus(flashSaleUser.get().getId(), flashSaleUser.get().getOrderStatus(),OrderStatusDesc.PAID_CODE);
+				flashSaleUserService.refreshStatus(flashSaleUser.get().getId(), OrderStatusDesc.PAID_CODE);
 			}
 		}
 	}
@@ -64,14 +65,14 @@ public class FlashSalePurchaseContextSevice implements IFlashSalePurchaseContext
 	public void payFail(Orders order) throws DataRefreshingException {
 		Optional<FlashSaleOrder> flashSaleOrder = flashSaleOrderService.single(order.getID());
 		if(flashSaleOrder.isPresent()){
-			Optional<FlashSaleUser> flashSaleUser=flashSaleUserService.single(flashSaleOrder.get().getUid());
+			Optional<FlashSaleUser> flashSaleUser=flashSaleUserService.single(flashSaleOrder.get().getFlashUserId());
 			if(flashSaleUser.isPresent()){
-				flashSaleUserService.refreshStatus(flashSaleUser.get().getId(), flashSaleUser.get().getOrderStatus(),OrderStatusDesc.PAYFAIL_CODE);
+				/*flashSaleUserService.refreshStatus(flashSaleUser.get().getId(), flashSaleUser.get().getOrderStatus(),OrderStatusDesc.PAYFAIL_CODE);*/
+				flashSaleUserService.refreshStatus(flashSaleUser.get().getId(), OrderStatusDesc.PAYFAIL_CODE);
 			}
 		}
 		
 	}
-	
 	
 	
 

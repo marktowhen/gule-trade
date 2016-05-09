@@ -9,6 +9,7 @@
 		    <result column="uid" property="uid" jdbcType="VARCHAR" />
 		    <result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
 		    <result column="paid" property="paid" jdbcType="VARCHAR" />
+		    <result column="order_time" property="orderTime" />
 	  		<association property="flashsale" javaType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleEntity">
 	 			<id column="id" property="id" jdbcType="VARCHAR" />
 			    <result column="gid" property="gid" jdbcType="VARCHAR" />
@@ -24,14 +25,15 @@
 		    <result column="uid" property="uid" jdbcType="VARCHAR" />
 		    <result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
 		    <result column="paid" property="paid" jdbcType="VARCHAR" />
+		    <result column="order_time" property="orderTime" />
   		</resultMap>
   		<sql id="Base_List" >
-   			 id, flash_id, uid, order_status, paid
+   			 id, flash_id, uid, order_status, paid,order_time
   		</sql>
   	<!-- 保存系统的信息 -->
 	<insert id="add" parameterType="com.jingyunbank.etrade.marketing.flashsale.entity.FlashSaleUserEntity" >
-    	insert into flash_sale_user (id, flash_id, uid,order_status, paid)
-    	values (#{id}, #{flashId}, #{uid}, #{orderStatus}, #{paid})
+    	insert into flash_sale_user (id, flash_id, uid,order_status, paid,order_time)
+    	values (#{id}, #{flashId}, #{uid}, #{orderStatus}, #{paid},#{orderTime})
   	</insert>
   	<!-- 通过id查某对象的信息 -->
   	<select id="selectFlashSaleUserByid" parameterType="String" resultMap="FlashSaleUserMap">
@@ -43,5 +45,9 @@
 	    set order_status = #{orderStatus},
 	    where id = #{id}
     </update>
+    <!-- 根据状态查用户 -->
+    <select id="selectFlashByStatus" resultMap="FlashSaleUserMap">
+    	select <include refid="Base_List" /> from flash_sale_user where order_status in ('NEW','PAYFAIL')
+    </select>
   	
 	</mapper>

@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.marketing.flashsale.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -65,6 +67,17 @@ public class FlashSaleUserService implements IFlashSaleUserService{
 			}
 		}
 		return false;
+	}
+	@Override
+	public List<FlashSaleUser> listByStatus() {
+		List<FlashSaleUserEntity> entityList=flashSaleUserDao.selectFlashByStatus();
+		List<FlashSaleUser> boList = new ArrayList<FlashSaleUser>();
+		entityList.forEach(entity ->{
+			FlashSaleUser bo = new FlashSaleUser();
+			BeanUtils.copyProperties(entity, bo);
+			boList.add(bo);
+		});
+		return boList;
 	}
 
 

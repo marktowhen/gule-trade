@@ -7,4 +7,6 @@ public interface FlashSaleOrderDao {
 	public int add(FlashSaleOrderEntity flashSaleOrderentity) throws Exception;
 	
 	public FlashSaleOrderEntity selectFlashOrderByoid(String oid);
+	
+	public FlashSaleOrderEntity selectFlashOrderByuid(String flashUserId);
 }

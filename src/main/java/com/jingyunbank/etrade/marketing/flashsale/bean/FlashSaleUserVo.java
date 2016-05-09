@@ -25,7 +25,6 @@ public class FlashSaleUserVo implements Serializable{
 	
 	private FlashSaleVo flashSaleVo;
 	
-	
 
 	/**
 	 * @return the user

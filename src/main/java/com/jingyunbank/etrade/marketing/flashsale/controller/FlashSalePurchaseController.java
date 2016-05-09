@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.marketing.flashsale.controller;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import com.jingyunbank.etrade.api.marketing.flashsale.bo.FlashSale;
 import com.jingyunbank.etrade.api.marketing.flashsale.bo.FlashSaleUser;
 import com.jingyunbank.etrade.api.marketing.flashsale.service.IFlashSaleService;
 import com.jingyunbank.etrade.api.marketing.flashsale.service.context.IFlashSalePurchaseContextService;
+import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.bo.Users;
@@ -66,13 +68,16 @@ public class FlashSalePurchaseController {
 		if(checkstart.isBad()){
 			return Result.fail(checkstart.getMessage());
 		}
-		//flashSaleUser
+		//买秒杀产品的用户的信息
 			FlashSaleUser flashSaleUser = new FlashSaleUser();
 			flashSaleUser.setId(KeyGen.uuid());
 			flashSaleUser.setFlashId(flashsale.get().getId());
 			flashSaleUser.setUid(uid);
 			flashSaleUser.setFlashSale(flashsale.get());
 			flashSaleUser.setUser(user.get());
+			flashSaleUser.setOrderStatus(OrderStatusDesc.NEW_CODE);//新形成的订单，未支付状态
+			flashSaleUser.setOrderTime(new Date());//形成新订单的时间
+		
 			
 		//	
 		CartVO cartVO = convertCartVO(flashid, uid,cart);

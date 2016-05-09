@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.marketing.flashsale.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class FlashSaleUserEntity implements Serializable{
 
@@ -21,6 +22,22 @@ public class FlashSaleUserEntity implements Serializable{
 	
 	private FlashSaleEntity flashSaleEntity;
 	
+	private Date orderTime;
+	
+	
+	/**
+	 * @return the orderTime
+	 */
+	public Date getOrderTime() {
+		return orderTime;
+	}
+
+	/**
+	 * @param orderTime the orderTime to set
+	 */
+	public void setOrderTime(Date orderTime) {
+		this.orderTime = orderTime;
+	}
 
 	/**
 	 * @return the flashSaleEntity

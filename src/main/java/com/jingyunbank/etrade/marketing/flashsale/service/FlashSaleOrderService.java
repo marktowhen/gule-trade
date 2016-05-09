@@ -39,5 +39,12 @@ public class FlashSaleOrderService implements IFlashSaleOrderService{
 		BeanUtils.copyProperties(entity, bo);
 		return Optional.of(bo);
 	}
+	@Override
+	public Optional<FlashSaleOrder> singleByUid(String flashUserId) {
+		FlashSaleOrderEntity entity=flashSaleOrderDao.selectFlashOrderByuid(flashUserId);
+		FlashSaleOrder bo = new FlashSaleOrder();
+		BeanUtils.copyProperties(entity, bo);
+		return Optional.of(bo);
+	}
 
 }
