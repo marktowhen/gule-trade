@@ -22,7 +22,6 @@ import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoods;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsPriceSetting;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsShow;
-import com.jingyunbank.etrade.marketing.group.bean.GroupGoodsVO;
 import com.jingyunbank.etrade.marketing.rankgroup.bean.RankGroupGoodsShowVO;
 import com.jingyunbank.etrade.marketing.rankgroup.bean.RankGroupGoodsVO;
 import com.jingyunbank.etrade.marketing.rankgroup.service.RankGroupGoodsService;
@@ -30,7 +29,7 @@ import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
 @RestController
-@RequestMapping("/api/marketing/rankgroup")
+@RequestMapping("/api/marketing/rankgroupGoods")
 public class RankGroupGoodsController {
 	
 	@Autowired 
@@ -95,11 +94,10 @@ public class RankGroupGoodsController {
 	
 	//查询指定团购商品的详情
 	@RequestMapping(value="/goods/detail", method=RequestMethod.GET)
-	public Result<GroupGoodsVO> single(@RequestParam(required=true) String ggid) throws Exception{
-		
+	public Result<RankGroupGoodsVO> single(@RequestParam(required=true) String ggid) throws Exception{
 		Optional<RankGroupGoods> boc = rankGroupGoodsService.single(ggid);
 		if(boc.isPresent()){
-			GroupGoodsVO vo = new GroupGoodsVO();
+			RankGroupGoodsVO vo = new RankGroupGoodsVO();
 			BeanUtils.copyProperties(boc.get(), vo);
 			return Result.ok(vo);
 		}
@@ -122,6 +120,5 @@ public class RankGroupGoodsController {
 		
 		return vo;
 	}
-
 
 }

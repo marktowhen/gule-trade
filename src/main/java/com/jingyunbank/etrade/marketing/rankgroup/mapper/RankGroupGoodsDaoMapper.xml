@@ -45,7 +45,7 @@
 		select <include refid="group_goods_join_price_setting_columns"/>
 		from rankgroup_goods g
 		left join rankgroup_goods_price_setting ps on g.id = ps.ggid
-		where g.id = #{ggid}
+		where g.id = #{ggid} ORDER BY ps.floor
 	</select>
 	
 	<select id="selectOneByGroupID" resultMap="RankGroupGoodsEntityResultMap" parameterType="String" >
@@ -94,7 +94,7 @@
 		<if test="goodsName!=null and goodsName!=''">
 			and g.name like concat('%',#{goodsName},'%')
 		</if>
-		and gg.deadline &gt;=now()
+		and gg.deadline>now()
 		and gg.show = true
 		order by gg.addtime desc
 		limit #{from}, #{size}
