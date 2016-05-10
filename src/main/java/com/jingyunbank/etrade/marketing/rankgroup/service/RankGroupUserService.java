@@ -66,6 +66,31 @@ public class RankGroupUserService implements IRankGroupUserService{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean refreshStatus(String ID, String currentStatus, String flowStatusFlag)
+			throws DataRefreshingException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void notice(RankGroupUser user, String message) {
+		
+		
+	}
+
+	@Override
+	public List<RankGroupUser> listUnPay() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<RankGroupUser> listUnPay(String gid, String status) {
+		
+		return null;
+	}
 	
 	
 	
