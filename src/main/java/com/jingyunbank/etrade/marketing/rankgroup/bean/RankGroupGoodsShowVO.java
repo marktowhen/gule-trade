@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
-public class RankGroupGoodsShowVO {
+public class RankGroupGoodsShowVO extends RankGroupGoodsVO{
 	private GoodsVO goods;
 	private GoodsSkuVO sku;
 	private BigDecimal showPrice;

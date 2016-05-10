@@ -11,7 +11,6 @@
 		<result column="status" property="status" javaType="String"/>
 		<association property="goods" javaType="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity">
 			<id column="gid" property="ID"/>
-			<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
 			<result column="duration" property="duration" jdbcType="INTEGER"/>
 			<result column="deadline" property="deadline" javaType="java.util.Date"/>
 			<result column="skuid" property="SKUID" javaType="String"/>
@@ -35,21 +34,17 @@
 		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid
 	</sql>
 	
-	
-	
-
-
 	<insert id="insert">
-		insert into groups (<include refid="base_column"/>) values(#{ID},#{leaderUID},#{start},#{groupGoodsID},#{status})
+		insert into rankgroups (<include refid="base_column"/>) values(#{ID},#{leaderUID},#{start},#{groupGoodsID},#{status})
 	</insert>
 	
 	<select id="selectOne" resultMap="RankGroupEntityResultMap">
 		select <include refid="group_with_buyers"/>  
-				from groups g LEFT JOIN group_user gu on g.id=gu.group_id where g.id=#{ID}
+				from rankgroups g LEFT JOIN rankgroup_user gu on g.id=gu.group_id where g.id=#{ID}
 	</select>
 	
 	<update id="updateStatus">
-		update groups set status=#{status} where id=#{ID}
+		update rankgroups set status=#{status} where id=#{ID}
 	</update>
 	
 </mapper>

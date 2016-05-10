@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsPriceSetting;
-
 public class RankGroupGoodsVO {
 	private String ID;
 	private String SKUID;
@@ -16,6 +14,14 @@ public class RankGroupGoodsVO {
 	private BigDecimal deposit;
 	private Date addtime;
 	private boolean show;
+	private int userCount;
+	
+	public int getUserCount() {
+		return userCount;
+	}
+	public void setUserCount(int userCount) {
+		this.userCount = userCount;
+	}
 	private List<RankGroupGoodsPriceSettingVO> priceSettings=new ArrayList<RankGroupGoodsPriceSettingVO>();
 
 	public String getID() {
