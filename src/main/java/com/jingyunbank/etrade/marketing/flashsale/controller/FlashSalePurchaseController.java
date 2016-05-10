@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -51,7 +52,7 @@ public class FlashSalePurchaseController {
 	//点击立即秒杀按钮时的动作
 	//必须在登陆以后才可以进行一下操作
 	@RequestMapping(value="/api/start/buy/falsh/{flashid}",method=RequestMethod.POST)
-	public Result<FlashSaleUserVo> start(@PathVariable String flashid,@Valid @RequestBody CartVO cart,BindingResult valid, HttpSession session)throws Exception{
+	public Result<FlashSaleUserVo> start(@PathVariable String flashid,@Valid @RequestBody CartVO cart,BindingResult valid, HttpSession session,HttpServletRequest request)throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
@@ -61,6 +62,7 @@ public class FlashSalePurchaseController {
 		}
 		String uid = Login.UID(session);
 		uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
+		System.out.println(Login.UID(request));
 		Optional<Users> user = userService.single(uid);
 		
 		//库存决定是否是活动产品

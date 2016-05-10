@@ -40,9 +40,9 @@
   		select <include refid="Base_List" /> from flash_sale_user where id=#{id}
   	</select>
   	<!-- 修改该用户的订单状态 -->
-  	 <update id="updateStatus">
+  	 <update id="updateStatus" parameterType="String">
 	    update flash_sale_user
-	    set order_status = #{orderStatus},
+	    set order_status = #{orderStatus}
 	    where id = #{id}
     </update>
     <!-- 根据状态查用户 -->
