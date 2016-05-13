@@ -82,10 +82,9 @@ public class RankGroupController {
 			group.setGroupGoodsID(goods.get().getID());
 			group.setLeaderUID(leader.get().getID());
 			group.setStart(new Date());
-			group.setStatus(Group.STATUS_NEW);
+			group.setStatus(RankGroup.STATUS_NEW);
 			group.setLeader(leader.get());
 			group.setRankGoods(goods.get());
-			
 			//提交
 			CartVO cartVO = convertCartVO(group.getID(), leader.get().getID(),cart);
 			Orders orders = new Orders();

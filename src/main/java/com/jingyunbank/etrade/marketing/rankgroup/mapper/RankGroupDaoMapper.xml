@@ -33,7 +33,11 @@
 		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
 		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid
 	</sql>
-	
+	<sql id="group_with_buyers_goods">
+		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
+		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid,gu.status buyers_status,
+		gg.id gid ,gg.duration,gg.deadline ,gg.skuid
+	</sql>
 	<insert id="insert">
 		insert into rankgroups (<include refid="base_column"/>) values(#{ID},#{leaderUID},#{start},#{groupGoodsID},#{status})
 	</insert>
@@ -46,5 +50,11 @@
 	<update id="updateStatus">
 		update rankgroups set status=#{status} where id=#{ID}
 	</update>
-	
+	<select id="selectListOnDeadline" resultMap="RankGroupEntityResultMap">
+		select <include refid="group_with_buyers_goods"/> from groups g
+			LEFT JOIN  group_user gu  ON gu.group_id=g.id
+			left JOIN group_goods gg on g.group_goods_id = gg.id 
+		where
+		 g.`status`='CONVENING' and gu.`status`='PAID' and gg.deadline &lt;= now() 
+	</select>
 </mapper>

@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.marketing.rankgroup.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,26 @@ public class RankGroupOrderService implements IRankGroupOrderService{
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
+	}
+	@Override
+	public Optional<RankGroupOrder> singleByOID(String OID) {
+		RankGroupOrderEntity entity = rankGroupOrderDao.selectByOID(OID);
+		if(entity!=null){
+			RankGroupOrder bo = new RankGroupOrder();
+			BeanUtils.copyProperties(entity, bo);
+			return Optional.of(bo);
+		}
+		return Optional.empty();
+	}
+	@Override
+	public Optional<RankGroupOrder> single(String groupUserID, String orderType) {
+		RankGroupOrderEntity entity = rankGroupOrderDao.selectListByType(groupUserID, orderType);
+		if(entity!=null){
+			RankGroupOrder bo = new RankGroupOrder();
+			BeanUtils.copyProperties(entity, bo);
+			return Optional.of(bo);
+		}
+		return Optional.empty();
 	}
 
 }
