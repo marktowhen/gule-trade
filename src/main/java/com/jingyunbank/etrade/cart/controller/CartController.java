@@ -50,7 +50,7 @@ public class CartController {
 	/**
 	 *	uri : get /api/cart/goods/list/:uid
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/api/cart/goods/list/{uid}",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
@@ -94,10 +94,12 @@ public class CartController {
 	}
 	
 	/**
+	 * 必须授权之后才可以进行添加购物车的操作作
+	 * 
 	 * 将商品放入购物车中<br>
 	 * uri: put /api/cart {goods info}
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/api/cart",
 				method=RequestMethod.POST, 
 				consumes="application/json;charset=UTF-8",
@@ -108,18 +110,20 @@ public class CartController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		String cid = Login.cartID(session);
+		/*String cid = Login.cartID(session);
 		String uid = Login.UID(session);
-		String uname = Login.uname(session);
-		goods.setUID(uid);
-		goods.setUname(uname);
-		goods.setCartID(cid);
+		String uname = Login.uname(session);*/
+		goods.setUID("Ma9ogkIXSW-y0uSrvfqVIQ");
+		goods.setUname("perseverance^0^xue");
+		goods.setCartID("sx_umHOQTY-RSq-ivv9kNw");
 		goods.setID(KeyGen.uuid());
 		goods.setAddtime(new Date());
 		GoodsInCart gcart = new GoodsInCart();
 		BeanUtils.copyProperties(goods, gcart);
-		if(cartService.save(gcart))
+		if(cartService.save(gcart)){
 			return Result.ok(goods);
+		}
+			
 		return Result.fail("该商品已添加至购物车。");
 	}
 	
