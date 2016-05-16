@@ -109,13 +109,12 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public List<Orders> list(String uid, String mid, String statuscode, String keywords, 
-			String fromdate, String enddate,
+	public List<Orders> list(String uid, String mid, String statuscode,
 			Range range) {
-		return orderDao.selectKeywords(uid, mid, statuscode, keywords, fromdate, enddate, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+		return orderDao.selectKeyStatus(uid, mid, statuscode, range.getFrom(), (int)(range.getTo()-range.getFrom()))
 				.stream().map(entity -> {
 					Orders bo = new Orders();
-					BeanUtils.copyProperties(entity, bo, "goods");
+					BeanUtils.copyProperties(entity, bo,"goods");
 					entity.getGoods().forEach(ge -> {
 						OrderGoods og = new OrderGoods();
 						BeanUtils.copyProperties(ge, og);

@@ -30,13 +30,10 @@ public interface OrderDao{
 	public List<OrderEntity> selectBetween(@Param("from") Date from, @Param("to") Date to, 
 			@Param("statuscode") String statuscode);
 
-	public List<OrderEntity> selectKeywords(
+	public List<OrderEntity> selectKeyStatus(
 			@Param("uid") String uid, 
 			@Param("mid") String mid,
 			@Param("statuscode") String statuscode,
-			@Param("keywords") String keywords,
-			@Param("fromdate") String fromdate,
-			@Param("enddate") String enddate,
 			@Param("from") long from, 
 			@Param("size") int size);
 	

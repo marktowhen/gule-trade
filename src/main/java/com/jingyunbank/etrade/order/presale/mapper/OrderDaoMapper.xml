@@ -7,7 +7,6 @@
 		<id column="id" property="ID" javaType="String"/>
 		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
 		<result column="receiver" property="receiver" javaType="String"/>
-		<result column="mid" property="MID" javaType="String"/>
 		<result column="mname" property="mname" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="uname" property="uname" javaType="String"/>
@@ -149,7 +148,7 @@
 	</select>
 	
 	
-	<select id="selectKeywords" resultMap="OrderEntityResultMap">
+	<select id="selectKeyStatus" resultMap="OrderEntityResultMap">
 		select <include refid="goods_join_orders_columns"/> 
 		from 
 		( 
@@ -187,6 +186,7 @@
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
+		left join goods_sku s on og.skuid = s.id
 		order by o.addtime desc
 	</select>
 	
@@ -245,13 +245,13 @@
 				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code = #{statuscode})
 				)
 		</if>
-		<if test="fromdate != null and !''.equals(fromdate)">
+		<!--<if test="fromdate != null and !''.equals(fromdate)">
 			and addtime &gt;= #{fromdate}
 		</if>
 		<if test="enddate != null and !''.equals(enddate)">
 			and addtime &lt;= #{enddate}
 		</if>
-		<if test="keywords != null and !''.equals(keywords)">
+		 <if test="keywords != null and !''.equals(keywords)">
 			and (
 					orderno like CONCAT('%','${keywords}','%')
 					or
@@ -261,6 +261,6 @@
 					or
 					exists (select 1 from order_goods og where og.oid = o.id and og.gname like CONCAT('%','${keywords}','%'))
 				)
-		</if>
+		</if> -->
 	</sql>
 </mapper>

@@ -359,10 +359,10 @@ public class OrderContextService implements IOrderContextService {
 		
 		return true;
 	}
-
+	/*, String reason*/
 	@Override
 	@Transactional
-	public boolean cancel(List<String> oids, String reason) throws DataRefreshingException, DataSavingException{
+	public boolean cancel(List<String> oids,String reason) throws DataRefreshingException, DataSavingException{
 		List<Orders> orders = orderService.list(oids);
 		if(orders.size() == 0){
 			return false;
@@ -397,7 +397,44 @@ public class OrderContextService implements IOrderContextService {
 		}
 		return true;
 	}
-
+	
+	@Override
+	@Transactional
+	public boolean cancels(List<String> oids) throws DataRefreshingException, DataSavingException{
+		List<Orders> orders = orderService.list(oids);
+		if(orders.size() == 0){
+			return false;
+		}
+		/*if(orders.stream().anyMatch(order -> !OrderStatusDesc.NEW_CODE.equals(order.getStatusCode()))){
+			return false;
+		}*/
+		
+		orderService.refreshStatus(oids, OrderStatusDesc.CLOSED);
+		/*List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		for (Orders order : orders) {
+			order.setStatusCode(OrderStatusDesc.CLOSED_CODE);
+			order.setStatusName(OrderStatusDesc.CLOSED.getName());
+			traces.add(createOrderTrace(order, reason));
+		}
+		//set note reason
+		traces.forEach(trace->trace.setNote(reason));
+		orderTraceService.save(traces);*/
+		//刷新订单商品的状态
+		orderGoodsService.refreshStatus(oids, OrderStatusDesc.CLOSED);
+		//更新优惠卡券状态
+		List<String> temp = new ArrayList<String>(); 
+		for (Orders order : orders) {
+			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
+				if(temp.contains(order.getCouponID())) continue;
+				temp.add(order.getCouponID());
+				if(!orderService.shareCoupon(order.getCouponID())){
+					couponStrategyResolver.resolve(order.getCouponType())
+								.unlock(order.getUID(), order.getCouponID());
+				}
+			}
+		}
+		return true;
+	}
 	@Override
 	public boolean remove(String oid) throws DataRefreshingException, DataSavingException {
 		Optional<Orders> candidateorder = orderService.single(oid);
@@ -410,12 +447,12 @@ public class OrderContextService implements IOrderContextService {
 		}
 		
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
-		List<OrderTrace> traces = new ArrayList<OrderTrace>();
+		/*List<OrderTrace> traces = new ArrayList<OrderTrace>();
 		order.setStatusCode(OrderStatusDesc.REMOVED_CODE);
 		order.setStatusName(OrderStatusDesc.REMOVED.getName());
 		traces.add(createOrderTrace(order, "买家移除订单。"));
 		//set note reason
-		orderTraceService.save(traces);
+		orderTraceService.save(traces);*/
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.REMOVED);
 		return true;

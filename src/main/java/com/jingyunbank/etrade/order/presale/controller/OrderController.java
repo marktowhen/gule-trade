@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.KeyGen;
@@ -148,19 +149,12 @@ public class OrderController {
 		return orders;
 	}
 	
-	@AuthBeforeOperation
-	@RequestMapping(
-			value="/api/orders/cancellation",
-			method=RequestMethod.PUT,
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Result<String> cancel(@Valid @RequestBody OIDWithNoteVO cancellation,
-			BindingResult valid, HttpSession session) throws Exception{
-		if(valid.hasErrors()){
-			return Result.fail("您提交的订单信息有误！");
-		}
-		if(!orderContextService.cancel(Arrays.asList(cancellation.getOid()), cancellation.getNote())){
-			return Result.fail("您提交的订单信息有误，请检查后重新尝试！");
+	/*@AuthBeforeOperation*/
+	@RequestMapping(value="/api/orders/cancellation/{oid}",method=RequestMethod.PUT)
+	public Result<String> cancel(@PathVariable String oid, HttpSession session) throws Exception{
+		
+		if(!orderContextService.cancels(Arrays.asList(oid))){
+			return Result.fail("取消失败");
 		}
 		return Result.ok();
 	}

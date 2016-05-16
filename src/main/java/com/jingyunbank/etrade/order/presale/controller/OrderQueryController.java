@@ -36,22 +36,20 @@ public class OrderQueryController {
 	 * @param uid
 	 * @param session
 	 * @return
+	 * @AuthBeforeOperation
 	 */
 	@RequestMapping(value="/api/orders/user/list", method=RequestMethod.GET)
-	@AuthBeforeOperation
 	public Result<List<Order2ShowVO>> listUID(
 			@RequestParam(value="from", required=false, defaultValue="") int from, 
 			@RequestParam(value="size", required=false, defaultValue="") int size,
-			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		
-		return Result.ok(orderService.list(loginuid, null, statuscode, keywords, fromdate, null, new Range(from, size+from))
+		return Result.ok(orderService.list("Ma9ogkIXSW-y0uSrvfqVIQ", null, statuscode, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
-					BeanUtils.copyProperties(bo, vo, "goods");
+					BeanUtils.copyProperties(bo, vo,"goods");
 					vo.setOrderno(String.valueOf(bo.getOrderno()));
 					bo.getGoods().forEach(bg -> {
 						OrderGoodsVO gvo = new OrderGoodsVO();
