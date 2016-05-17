@@ -14,14 +14,13 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroup;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoods;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsPriceSetting;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsShow;
 import com.jingyunbank.etrade.api.marketing.rankgroup.service.IRankGroupGoodsService;
 import com.jingyunbank.etrade.api.wap.goods.bo.Goods;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
-import com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity;
 import com.jingyunbank.etrade.marketing.rankgroup.dao.RankGroupGoodsDao;
 import com.jingyunbank.etrade.marketing.rankgroup.dao.RankGroupGoodsPriceSettingDao;
 import com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity;
@@ -34,6 +33,8 @@ public class RankGroupGoodsService implements IRankGroupGoodsService{
 	
 	@Autowired 
     RankGroupGoodsDao rankGroupGoodsDao;
+	@Autowired 
+	RankGroupService rankGroupService;
 	@Autowired 
 	RankGroupGoodsPriceSettingDao rankGroupGoodsPriceSettingDao;
 	@Override
@@ -79,8 +80,10 @@ public class RankGroupGoodsService implements IRankGroupGoodsService{
 		
 		RankGroupGoodsEntity enity = rankGroupGoodsDao.selectOne(id);
 		if(Objects.nonNull(enity)){
+			
 			RankGroupGoods bo = new RankGroupGoods();
 			BeanUtils.copyProperties(enity, bo,  "groups");
+			
 			return Optional.of(bo);
 		}
 		return Optional.empty();

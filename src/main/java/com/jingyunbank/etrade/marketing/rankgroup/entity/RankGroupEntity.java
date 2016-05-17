@@ -11,11 +11,15 @@ public class RankGroupEntity {
 	private String ID;
 	private String leaderUID;//团长id
 	private Date start;
+	
+	
 	private String groupGoodsID;  //团购商品id
 	private String status;//该团的状态
 	private RankGroupGoodsEntity rankGoods;
-	private Users leader;
+	
 	private List<RankGroupUserEntity> buyers = new ArrayList<RankGroupUserEntity>();
+	
+
 	public String getID() {
 		return ID;
 	}
@@ -47,12 +51,6 @@ public class RankGroupEntity {
 		this.status = status;
 	}
 
-	public Users getLeader() {
-		return leader;
-	}
-	public void setLeader(Users leader) {
-		this.leader = leader;
-	}
 	public RankGroupGoodsEntity getRankGoods() {
 		return rankGoods;
 	}

@@ -52,10 +52,7 @@ public class RankGroupController {
 	@Autowired
 	private IAddressService addressService;
 	
-	//开团
-	
-	// 开团 
-//		@AuthBeforeOperation
+	    // 开团 
 		@RequestMapping(value = "/start/{groupgoodsid}", method = RequestMethod.POST)
 		public Result<RankGroupVO> start(@PathVariable String groupgoodsid,
 				@Valid @RequestBody CartVO cart,
@@ -143,13 +140,14 @@ public class RankGroupController {
 		
 		// 参团 
 //		@AuthBeforeOperation
-		@RequestMapping(value = "/join/{groupid}", method = RequestMethod.POST)
-		public Result<String> join(@PathVariable String groupid,
+		@RequestMapping(value = "/join/{groupID}", method = RequestMethod.POST)
+		public Result<String> join(@PathVariable String groupID,
 				@Valid @RequestBody CartVO cart,
 				BindingResult valid,  HttpSession session)
 				throws Exception {
-
-			Optional<RankGroup> group = rankGroupService.single(groupid);
+            System.out.println(groupID+"groupID  ..wwwww...");
+			Optional<RankGroup> group = rankGroupService.single(groupID);
+			System.out.println(groupID+"groupID  ..wwsss...");
 			if (!group.isPresent()) {
 				return Result.fail("您申请加入的团不存在。");
 			}
@@ -157,22 +155,81 @@ public class RankGroupController {
 			if (!goods.isPresent()) {
 				return Result.fail("团购商品不存在。");
 			}
+			System.out.println("dao");
 			group.get().setRankGoods(goods.get());
+			System.out.println("daos");
 			String  uid = Login.UID(session);
 			uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
 			Optional<Users> user = userService.single(uid);
+			System.out.println("hhhhh"+user);
 			//业务校验 比如库存 团购截止时间等
 			Result<String> joinMatch = rankGroupService.joinMatch(group.get());
+			System.out.println(joinMatch.isBad()+"结果");
+			
 			if(joinMatch.isBad()){
 				return Result.fail(joinMatch.getMessage());
 			}
 			
-			CartVO cartVO = convertCartVO(groupid, user.get().getID(),cart);
+			CartVO cartVO = convertCartVO(groupID, user.get().getID(),cart);
 			Orders orders = new Orders();
 			BeanUtils.copyProperties(cartVO.getOrders().get(0), orders);
+			System.out.println("参团");
 			rankGroupService.join(user.get(), group.get(), orders);
+			System.out.println("参团玩");
 			
 			session.setAttribute(CartController.GOODS_IN_CART_TO_CLEARING, new ObjectMapper().writeValueAsString(cartVO));
 			return Result.ok();
+		}
+		// 参团 成功
+//		@AuthBeforeOperation
+		@RequestMapping(value = "/joinDetail/{groupID}", method = RequestMethod.GET)
+		public Result<RankGroupVO> joinDetail(@PathVariable String groupID)
+						throws Exception {
+			System.out.println(groupID+"groupID  ..wwwww...");
+			Optional<RankGroup> group = rankGroupService.joinDetail(groupID);
+			System.out.println(groupID+"groupID  ..wwsss...");
+			if (!group.isPresent()) {
+				return Result.fail("您查询的团购不存在。");
+			}else{
+				System.out.println("查到数据 。。。。");
+				RankGroupVO vo = new RankGroupVO();
+				BeanUtils.copyProperties(group.get(), vo);
+				
+				System.out.println(group.get().getStart()+"时间   ");
+				System.out.println(vo.getStart()+"时间   ");
+				System.out.println(vo.getStart()+"时间   ");
+				System.out.println(vo.getID()+"时间   ");
+				//System.out.println(vo.getBuyers()+"时间   ");
+				//System.out.println(vo.get()+"时间   ");
+				return Result.ok(vo);
+			}
+		/*	Optional<RankGroupGoods> goods = rankGroupGoodsService(group.get().getGroupGoodsID());
+			if (!goods.isPresent()) {
+				return Result.fail("团购商品不存在。");
+			}*/
+		/*	System.out.println("dao");
+			group.get().setRankGoods(goods.get());
+			System.out.println("daos");*/
+			//String  uid = Login.UID(session);
+			//uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
+		/*	Optional<Users> user = userService.single(uid);
+			System.out.println("hhhhh"+user);
+			//业务校验 比如库存 团购截止时间等
+			Result<String> joinMatch = rankGroupService.joinMatch(group.get());
+			System.out.println(joinMatch.isBad()+"结果");*/
+			
+			/*if(joinMatch.isBad()){
+				return Result.fail(joinMatch.getMessage());
+			}
+			*/
+			/*CartVO cartVO = convertCartVO(groupID, user.get().getID(),cart);
+			Orders orders = new Orders();
+			BeanUtils.copyProperties(cartVO.getOrders().get(0), orders);
+			System.out.println("参团");
+			rankGroupService.join(user.get(), group.get(), orders);
+			System.out.println("参团玩");
+			
+			session.setAttribute(CartController.GOODS_IN_CART_TO_CLEARING, new ObjectMapper().writeValueAsString(cartVO));*/
+			//return Result.ok();
 		}
 }

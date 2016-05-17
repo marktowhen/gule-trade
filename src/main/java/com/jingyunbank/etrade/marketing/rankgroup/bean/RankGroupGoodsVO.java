@@ -9,20 +9,27 @@ public class RankGroupGoodsVO {
 	private String ID;
 	private String SKUID;
 	private String GID;
+	private String groupID;
 	private long duration;
 	private Date deadline;
 	private BigDecimal deposit;
 	private Date addtime;
 	private boolean show;
 	private int userCount;
+	private List<RankGroupGoodsPriceSettingVO> priceSettings=new ArrayList<RankGroupGoodsPriceSettingVO>();
 	
+	public String getGroupID() {
+		return groupID;
+	}
+	public void setGroupID(String groupID) {
+		this.groupID = groupID;
+	}
 	public int getUserCount() {
 		return userCount;
 	}
 	public void setUserCount(int userCount) {
 		this.userCount = userCount;
 	}
-	private List<RankGroupGoodsPriceSettingVO> priceSettings=new ArrayList<RankGroupGoodsPriceSettingVO>();
 
 	public String getID() {
 		return ID;

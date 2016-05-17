@@ -9,7 +9,7 @@
 		<result column="start" property="start" javaType="java.util.Date"/>
 		<result column="group_goods_id" property="groupGoodsID" javaType="String"/>
 		<result column="status" property="status" javaType="String"/>
-		<association property="goods" javaType="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity">
+		<association property="rankGoods" javaType="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupGoodsEntity">
 			<id column="gid" property="ID"/>
 			<result column="duration" property="duration" jdbcType="INTEGER"/>
 			<result column="deadline" property="deadline" javaType="java.util.Date"/>
@@ -25,6 +25,14 @@
 			
 		</collection>
 	</resultMap>
+    <resultMap type="com.jingyunbank.etrade.marketing.rankgroup.entity.RankGroupEntity" id="RankGroupEntityResultMapSingle">
+		<id column="id" property="ID" javaType="String"/>
+		<result column="leader_uid" property="leaderUID" javaType="String"/>
+		<result column="start" property="start" javaType="java.util.Date"/>
+		<result column="group_goods_id" property="groupGoodsID" javaType="String"/>
+		<result column="status" property="status" javaType="String"/>
+		
+	</resultMap>
 	
 	<sql id="base_column">
 		id,leader_uid,start,group_goods_id,status
@@ -32,6 +40,15 @@
 	<sql id="group_with_buyers">
 		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
 		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid
+	</sql>
+	<sql id="group_with_buyersDetail">
+		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
+		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid,
+		rg.gid,rg.duration,rg.deadline,rg.skuid 
+	</sql>
+	<sql id="group_with_goods">
+		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status` 
+		
 	</sql>
 	<sql id="group_with_buyers_goods">
 		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
@@ -45,6 +62,16 @@
 	<select id="selectOne" resultMap="RankGroupEntityResultMap">
 		select <include refid="group_with_buyers"/>  
 				from rankgroups g LEFT JOIN rankgroup_user gu on g.id=gu.group_id where g.id=#{ID}
+	</select>
+	<select id="selectOneDetail" resultMap="RankGroupEntityResultMap">
+		select <include refid="group_with_buyersDetail"/>  
+				from rankgroup_goods rg 
+				LEFT JOIN rankgroups g on rg.id=g.group_goods_id 
+				LEFT JOIN rankgroup_user gu on g.id=gu.group_id where 1=1 AND g.id=#{ID}
+	</select>
+	<select id="singleByGroupGoodID" resultMap="RankGroupEntityResultMapSingle">
+		select <include refid="group_with_goods"/>  
+				from rankgroups g  where g.group_goods_id=#{ID}
 	</select>
 	
 	<update id="updateStatus">
