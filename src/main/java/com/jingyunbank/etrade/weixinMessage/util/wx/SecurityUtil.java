@@ -67,7 +67,7 @@ public class SecurityUtil {
        return sb.toString();
    }
    
-   public static void main(String[] args) {
+/*   public static void main(String[] args) {
 	System.out.println(filterHtml("<a href=\"www.baidu.com\">百度</a>"));
-}
+}*/
 }

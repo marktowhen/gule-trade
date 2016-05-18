@@ -410,19 +410,19 @@ public class CalendarUtil {
 		return getTimeInMillis()/1000L;
 	}
 	
-	public static void main(String[] args){
-		/*String startTime = "2009-12-14";
+	/*public static void main(String[] args){
+		String startTime = "2009-12-14";
 		String endTime = "2010-1-14";
 		List<String> list = getBetweenDateStr(startTime,endTime);
 		for(String s : list){
 			System.out.println(s);
-		}*/
-		/*String nextday = getNextDay("yyyy-MM-dd");
+		}
+		String nextday = getNextDay("yyyy-MM-dd");
         String xday = getPreXDay(6,"yyyy-MM-dd");
 		System.out.println(nextday);
 		System.out.println(xday);
 		System.out.println(getFirstDay("yyyy-MM-dd"));
-		System.out.println(getLastDay("yyyy-MM-dd"));*/
+		System.out.println(getLastDay("yyyy-MM-dd"));
 		
 		try {
 			Date startTime = DateUtil.COMMON.getTextDate("2015-06-03 00:00:00");
@@ -446,6 +446,6 @@ public class CalendarUtil {
 			e.printStackTrace();
 		}
 	}
-	
+	*/
 }
 

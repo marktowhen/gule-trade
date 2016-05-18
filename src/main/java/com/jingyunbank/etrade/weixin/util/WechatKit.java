@@ -50,12 +50,12 @@ public class WechatKit {
 		return access_token;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		String access_token = getAccess_token();
 		//OXNulWitJRms4_J7qXkhPj_xMfpwqkHeK8t2sRi0bV4_pRujICcOFt8CapjY-UD3bx_722cGYNtTgJOJs1H3OcO9kQ2H9w-i7vaAdVz2pF4
 		//OXNulWitJRms4_J7qXkhPj_xMfpwqkHeK8t2sRi0bV4hV_iA4jnEuS0qYyYLfv0QK0QKK2DVm5Mw5Dl27C8Bm8cYio9Xe-ctWvjKOWFLYlQ
 		System.out.println(access_token);
-	}
+	}*/
 	
 	/**
 	 * 将微信消息中的CreateTime转换成标准格式的时间（yyyy-MM-dd HH:mm:ss）

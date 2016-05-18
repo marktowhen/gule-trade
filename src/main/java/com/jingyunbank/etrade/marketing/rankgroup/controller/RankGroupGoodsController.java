@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroup;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoods;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsPriceSetting;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupGoodsShow;
 import com.jingyunbank.etrade.marketing.rankgroup.bean.RankGroupGoodsShowVO;
 import com.jingyunbank.etrade.marketing.rankgroup.bean.RankGroupGoodsVO;
 import com.jingyunbank.etrade.marketing.rankgroup.service.RankGroupGoodsService;
+import com.jingyunbank.etrade.marketing.rankgroup.service.RankGroupService;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
@@ -34,6 +36,8 @@ public class RankGroupGoodsController {
 	
 	@Autowired 
 	RankGroupGoodsService rankGroupGoodsService;
+	@Autowired 
+	RankGroupService rankGroupService;
 	
 	@AuthBeforeOperation
 	@RequestMapping(value="/addGoods", method=RequestMethod.POST)
@@ -95,10 +99,19 @@ public class RankGroupGoodsController {
 	//查询指定团购商品的详情
 	@RequestMapping(value="/goods/detail", method=RequestMethod.GET)
 	public Result<RankGroupGoodsVO> single(@RequestParam(required=true) String ggid) throws Exception{
+		System.out.println("sssssssss");
 		Optional<RankGroupGoods> boc = rankGroupGoodsService.single(ggid);
+		Optional<RankGroup> rankGroup=rankGroupService.singleByGroupGoodID(ggid);
+		String groupID="jjjjjjjjjjjjj";
+		if(rankGroup.isPresent()){
+			System.out.println("DDDDD");
+			groupID=rankGroup.get().getID();
+			System.out.println(groupID+"HHHHH");
+		}
 		if(boc.isPresent()){
 			RankGroupGoodsVO vo = new RankGroupGoodsVO();
 			BeanUtils.copyProperties(boc.get(), vo);
+		    vo.setGroupID(groupID);
 			return Result.ok(vo);
 		}
 		return Result.fail("未找到指定的团购商品！");

@@ -127,7 +127,35 @@ public class RankGroupService implements IRankGroupService{
 		}
 		return Optional.empty();
 	}
-
+    
+	@Override
+	public Optional<RankGroup> singleByGroupGoodID(String groupGoodID) {
+		RankGroupEntity entity = rankGroupDao.singleByGroupGoodID(groupGoodID);
+		System.out.println(entity+"yyyyyyyyyyyy");
+		if(Objects.nonNull(entity)){
+			RankGroup bo = new RankGroup();
+			BeanUtils.copyProperties(entity, bo);
+			return Optional.of(bo);
+		}
+		System.out.println("jkkkkk");
+		return Optional.empty();
+	}
+	@Override
+	public Optional<RankGroup> joinDetail(String groupGoodID) {
+		System.out.println("servicehhhhh.....");
+		RankGroupEntity rankGroup=rankGroupDao.selectOne(groupGoodID);
+		if(Objects.nonNull(rankGroup)){
+			RankGroup bo = new RankGroup();
+			BeanUtils.copyProperties(rankGroup, bo);
+			System.out.println(bo.getStart()+bo.getStatus()+"kkkkkk");
+			System.out.println(bo.getRankGoods());
+			System.out.println(bo.getBuyers());
+			//System.out.println(bo.getRankGoods().getDuration());
+			return Optional.of(bo);
+		}
+		System.out.println("jkkkkk");
+		return Optional.empty();
+	}
 	@Override
 	public Result<String> joinMatch(RankGroup group) {
 		if(!Group.STATUS_CONVENING.equals(group.getStatus())){
@@ -300,4 +328,8 @@ public class RankGroupService implements IRankGroupService{
 		}
 		return bo;
 	}
+
+	
+	
+	
 }

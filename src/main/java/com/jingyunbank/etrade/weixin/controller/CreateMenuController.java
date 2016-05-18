@@ -132,11 +132,11 @@ public class CreateMenuController {
 		return menuJson;
 		
 	}
-	public static void main(String[] args) throws UnsupportedEncodingException {
+	/*public static void main(String[] args) throws UnsupportedEncodingException {
 		String deleteMenu = deleteMenu();
 		System.out.println(deleteMenu);
 		String createMenu = createMenu(getMenu());
 		System.out.println(createMenu);
 		System.out.println(getMenu());
-	}
+	}*/
 }
