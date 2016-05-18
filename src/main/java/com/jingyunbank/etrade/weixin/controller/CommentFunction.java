@@ -113,12 +113,12 @@ public class CommentFunction {
 		return 0;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		try {
 			CommentFunction.createMenu();
 			System.out.println(CommentFunction.createMenu());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

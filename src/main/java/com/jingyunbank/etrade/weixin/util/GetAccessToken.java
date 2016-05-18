@@ -172,9 +172,9 @@ public class GetAccessToken{
 		
 	}
 	
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		String source="https://guoxiaoxue.tunnel.qydev.com";
 		System.out.println(GetAccessToken.urlEncodeUTF8(source));
-	}
+	}*/
 
 }
