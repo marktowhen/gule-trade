@@ -21,14 +21,17 @@ public class WeiXinUserService implements IWeiXinUserService{
 	private WeiXinUserDao weixinUserDao;
 	
 	@Override
-	public void addUser(SNSUserInfoBo userInfo) throws DataSavingException, DataRefreshingException {
+	public boolean addUser(SNSUserInfoBo userInfo) throws DataSavingException, DataRefreshingException {
 		
 		try {
-			weixinUserDao.addUser(getEntityFromBo(userInfo));
+			int num=weixinUserDao.addUser(getEntityFromBo(userInfo));
+			if(num>0){return true;}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new DataSavingException(e);
 		}
+		return false;
 		
 	}
 	

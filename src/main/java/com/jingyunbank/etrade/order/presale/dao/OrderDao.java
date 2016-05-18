@@ -34,6 +34,7 @@ public interface OrderDao{
 			@Param("uid") String uid, 
 			@Param("mid") String mid,
 			@Param("statuscode") String statuscode,
+			@Param("anystatus") int  anystatus,
 			@Param("from") long from, 
 			@Param("size") int size);
 	

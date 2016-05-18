@@ -162,6 +162,7 @@
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
+		left join goods_sku s on og.skuid = s.id
 		order by o.addtime desc
 	</select>
 	
@@ -186,7 +187,6 @@
 		) o
 		left join order_goods og on og.oid = o.id 
 		left join goods_img img on og.gid = img.gid
-		left join goods_sku s on og.skuid = s.id
 		order by o.addtime desc
 	</select>
 	
@@ -243,6 +243,12 @@
 			and (
 				status_code = #{statuscode} 
 				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code = #{statuscode})
+				)
+		</if>
+		<if test="anystatus==0">
+			and (
+				status_code in("DELIVERED","RECEIVED")
+				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code in("NEW","ACCEPT","DELIVERED","RECEIVED"))
 				)
 		</if>
 		<!--<if test="fromdate != null and !''.equals(fromdate)">

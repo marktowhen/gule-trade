@@ -48,7 +48,7 @@ public class UserCashCouponController {
 	 * @throws Exception
 	 * 2015年11月19日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/unused/{uid}",method=RequestMethod.GET)
 	public Result<List<UserCashCouponVO>> listtUnusedCoupon(@PathVariable String uid , Page page)
 		throws Exception{
@@ -197,7 +197,7 @@ public class UserCashCouponController {
 	 * @throws Exception
 	 * 2015年11月17日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/{code}", method=RequestMethod.PUT)
 	public Result<String> active(@PathVariable String code, HttpServletRequest request) throws Exception {
 		String uid = Login.UID(request);

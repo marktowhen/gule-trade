@@ -42,11 +42,12 @@ public class OrderQueryController {
 	public Result<List<Order2ShowVO>> listUID(
 			@RequestParam(value="from", required=false, defaultValue="") int from, 
 			@RequestParam(value="size", required=false, defaultValue="") int size,
+			@RequestParam(value="anystatus", required=false, defaultValue="") int anystatus,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		
-		return Result.ok(orderService.list("Ma9ogkIXSW-y0uSrvfqVIQ", null, statuscode, new Range(from, size+from))
+		return Result.ok(orderService.list("Ma9ogkIXSW-y0uSrvfqVIQ", null, statuscode,anystatus, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo,"goods");

@@ -49,7 +49,7 @@ public class UserDiscountCouponController {
 	 * @throws Exception
 	 * 2015年11月17日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/unused/{uid}",method=RequestMethod.GET)
 	public Result<List<UserDiscountCouponVO>> listUnusedCoupon(@PathVariable String uid, Page page)
 		throws Exception{
@@ -200,10 +200,11 @@ public class UserDiscountCouponController {
 	 * @throws Exception
 	 * 2015年11月17日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/{code}", method=RequestMethod.PUT)
 	public Result<DiscountCoupon> active(@PathVariable String code, HttpServletRequest request) throws Exception {
-		String uid = Login.UID(request);
+		/*String uid = Login.UID(request);*/
+		String uid = "2";
 		Result<DiscountCoupon> valid = discountCouponService.canActive(code);
 		if(valid.isBad()){
 			return valid;

@@ -109,9 +109,9 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public List<Orders> list(String uid, String mid, String statuscode,
+	public List<Orders> list(String uid, String mid, String statuscode,int anystatus,
 			Range range) {
-		return orderDao.selectKeyStatus(uid, mid, statuscode, range.getFrom(), (int)(range.getTo()-range.getFrom()))
+		return orderDao.selectKeyStatus(uid, mid, statuscode,anystatus, range.getFrom(), (int)(range.getTo()-range.getFrom()))
 				.stream().map(entity -> {
 					Orders bo = new Orders();
 					BeanUtils.copyProperties(entity, bo,"goods");
