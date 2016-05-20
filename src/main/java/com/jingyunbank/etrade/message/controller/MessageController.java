@@ -164,7 +164,7 @@ public class MessageController {
 	 * @throws Exception
 	 * 2015年11月20日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/unread/amount/{uid}",method=RequestMethod.GET)
 	public Result<Integer> countUnread(@PathVariable String uid , HttpServletRequest request) throws Exception{
 		return Result.ok( inboxService.countUnread(uid));
