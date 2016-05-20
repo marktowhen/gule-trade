@@ -107,7 +107,7 @@ public class MessageController {
 	 * @throws Exception
 	 * 2015年11月20日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/list/{uid}/{from}/{size}",method=RequestMethod.GET)
 	public Result<List<MessageVO>> getList(@PathVariable String uid ,@PathVariable int from, @PathVariable int size) throws Exception{
 		Range range = new Range();
