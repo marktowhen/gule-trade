@@ -54,14 +54,7 @@ public class AuctionGoodsController {
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public Result<List<AuctionGoodsVO>> list(@RequestParam long offset,
 			@RequestParam long size) throws Exception{
-		System.out.println("origin");
 		Range range = new Range(offset, offset+size);
-		List<AuctionGoods> actionGoods=auctionGoodsService.list(range);
-		for (int i = 0; i < actionGoods.size(); i++) {
-			System.out.println(actionGoods.get(i).getGID());
-			System.out.println(actionGoods.get(i).getDeposit());
-		}
-		
 		return Result.ok(auctionGoodsService.list(range).stream().map(bo->{
 			return getShowVOFromBo(bo);
 		}).collect(Collectors.toList()));
@@ -103,8 +96,6 @@ public class AuctionGoodsController {
 				vo.setSku(sku);
 			}
 		}
-		System.out.println(vo.getGID()+"ww");
-		System.out.println(vo.getDeposit()+"rr");
 		return vo;
 	}
 	
