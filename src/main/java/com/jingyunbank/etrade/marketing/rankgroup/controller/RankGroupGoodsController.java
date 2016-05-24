@@ -99,14 +99,11 @@ public class RankGroupGoodsController {
 	//查询指定团购商品的详情
 	@RequestMapping(value="/goods/detail", method=RequestMethod.GET)
 	public Result<RankGroupGoodsVO> single(@RequestParam(required=true) String ggid) throws Exception{
-		System.out.println("sssssssss");
 		Optional<RankGroupGoods> boc = rankGroupGoodsService.single(ggid);
 		Optional<RankGroup> rankGroup=rankGroupService.singleByGroupGoodID(ggid);
-		String groupID="jjjjjjjjjjjjj";
+		String groupID=null;
 		if(rankGroup.isPresent()){
-			System.out.println("DDDDD");
 			groupID=rankGroup.get().getID();
-			System.out.println(groupID+"HHHHH");
 		}
 		if(boc.isPresent()){
 			RankGroupGoodsVO vo = new RankGroupGoodsVO();

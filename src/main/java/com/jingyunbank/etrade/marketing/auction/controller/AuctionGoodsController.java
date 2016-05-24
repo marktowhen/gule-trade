@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,15 +66,20 @@ public class AuctionGoodsController {
 	}
 	
 	//single
-	@RequestMapping(value="/{ID}", method=RequestMethod.GET)
-	public Result<AuctionGoodsVO> single(@PathVariable String ID) throws Exception{
+	@RequestMapping(value="/detail", method=RequestMethod.GET)
+	public Result<AuctionGoodsVO> single(@RequestParam(required=true) String ID) throws Exception{
+		System.out.println("kkk"+ID);
 		Optional<AuctionGoods> goods = auctionGoodsService.single(ID);
 		if(goods.isPresent()){
+			System.out.println(goods.get().getStartTime());
+			System.out.println(goods.get().getID());
+			System.out.println(goods.get().getGID());
 			return Result.ok(getShowVOFromBo(goods.get()));
 		}
 		return Result.fail("未找到");
 	}
 	
+
 	
 	private AuctionGoodsVO getShowVOFromBo(AuctionGoods showBo){
 		AuctionGoodsVO vo = new AuctionGoodsVO();
@@ -92,7 +96,6 @@ public class AuctionGoodsController {
 				vo.setSku(sku);
 			}
 		}
-		
 		return vo;
 	}
 	
