@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class RankGroupGoodsVO {
 	private String ID;
 	private String SKUID;
 	private String GID;
 	private String groupID;
 	private long duration;
+	@NotNull
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "zh" , timezone="GMT+8")
 	private Date deadline;
 	private BigDecimal deposit;
 	private Date addtime;

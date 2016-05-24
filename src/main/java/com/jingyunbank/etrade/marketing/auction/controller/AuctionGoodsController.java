@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,7 +54,14 @@ public class AuctionGoodsController {
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public Result<List<AuctionGoodsVO>> list(@RequestParam long offset,
 			@RequestParam long size) throws Exception{
+		System.out.println("origin");
 		Range range = new Range(offset, offset+size);
+		List<AuctionGoods> actionGoods=auctionGoodsService.list(range);
+		for (int i = 0; i < actionGoods.size(); i++) {
+			System.out.println(actionGoods.get(i).getGID());
+			System.out.println(actionGoods.get(i).getDeposit());
+		}
+		
 		return Result.ok(auctionGoodsService.list(range).stream().map(bo->{
 			return getShowVOFromBo(bo);
 		}).collect(Collectors.toList()));
@@ -67,15 +73,20 @@ public class AuctionGoodsController {
 	}
 	
 	//single
-	@RequestMapping(value="/{ID}", method=RequestMethod.GET)
-	public Result<AuctionGoodsVO> single(@PathVariable String ID) throws Exception{
+	@RequestMapping(value="/detail", method=RequestMethod.GET)
+	public Result<AuctionGoodsVO> single(@RequestParam(required=true) String ID) throws Exception{
+		System.out.println("kkk"+ID);
 		Optional<AuctionGoods> goods = auctionGoodsService.single(ID);
 		if(goods.isPresent()){
+			System.out.println(goods.get().getStartTime());
+			System.out.println(goods.get().getID());
+			System.out.println(goods.get().getGID());
 			return Result.ok(getShowVOFromBo(goods.get()));
 		}
 		return Result.fail("未找到");
 	}
 	
+
 	
 	private AuctionGoodsVO getShowVOFromBo(AuctionGoods showBo){
 		AuctionGoodsVO vo = new AuctionGoodsVO();
@@ -92,7 +103,8 @@ public class AuctionGoodsController {
 				vo.setSku(sku);
 			}
 		}
-		
+		System.out.println(vo.getGID()+"ww");
+		System.out.println(vo.getDeposit()+"rr");
 		return vo;
 	}
 	

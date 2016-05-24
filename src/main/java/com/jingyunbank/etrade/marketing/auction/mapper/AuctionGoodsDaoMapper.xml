@@ -44,6 +44,10 @@
 		k.volume k_volume,k.properties_value k_properties_value,k.id k_skuid,k.price k_price, k.sale_price k_sale_price,
 		(select count(1) from auction_user u where a.id=u.auction_goods_id) user_amount
 	</sql>
+	<sql id="selectOneDetail">
+	
+		
+	</sql>
 	
 	<insert id="insert">
 		insert into auction_goods(<include refid="base_column"/>)
@@ -56,7 +60,7 @@
 	</update>
 	
 	<select id="selectOne" resultMap="AuctionGoodsResultMap">
-		select <include refid="column_with_goods_info"/> from auction_goods where id=#{ID}
+		select * from auction_goods a where id=#{ID}
 	</select>
 	
 	<select id="selectList" resultMap="AuctionGoodsResultMap">

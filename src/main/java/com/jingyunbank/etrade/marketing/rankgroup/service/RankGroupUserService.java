@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.flow.bo.FlowStatus;
-import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
 import com.jingyunbank.etrade.api.marketing.rankgroup.bo.RankGroupUser;
 import com.jingyunbank.etrade.api.marketing.rankgroup.service.IRankGroupUserService;
 import com.jingyunbank.etrade.api.user.bo.Users;
