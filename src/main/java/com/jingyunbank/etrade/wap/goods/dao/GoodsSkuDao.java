@@ -26,5 +26,7 @@ public interface GoodsSkuDao {
 	public void down(@Param("skuId") String skuId) throws Exception;
 
 	public List<GoodsSkuEntity> selectGoodsSKuByGid(@Param("gid") String gid) throws Exception;
+	
+	public GoodsSkuEntity selectGoodsSKuByid(String id);
 
 }

@@ -32,7 +32,9 @@ import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperation;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsOperationShow;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsOperationService;
+import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsSkuService;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsOperationVO;
+import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
 /**
@@ -47,6 +49,8 @@ import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 public class WapGoodsOperationController {
 	@Autowired
 	private IWapGoodsOperationService wapGoodsOperationService;
+	@Autowired
+	private IWapGoodsSkuService wapGoodsSkuService;
 
 	/**
 	 * String 转Date
@@ -144,6 +148,14 @@ public class WapGoodsOperationController {
 			return Result.ok("success");
 		}
 		return Result.fail("fail");
+	}
+	@RequestMapping("/sku/byId/{id}")
+	public Result<GoodsSkuVO> selectGoodsSkuById(@PathVariable String id ){
+		Optional<GoodsSku> bo=wapGoodsSkuService.single(id);
+		GoodsSkuVO vo = new GoodsSkuVO();
+		BeanUtils.copyProperties(bo.get(), vo);
+		return Result.ok(vo);
+		
 	}
 
 	/**

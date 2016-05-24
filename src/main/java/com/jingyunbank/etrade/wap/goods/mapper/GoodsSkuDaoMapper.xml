@@ -88,4 +88,19 @@
 		WHERE 1=1
 		AND s.`gid`= #{gid}
 	</select>
+	<select id="selectGoodsSKuByid" parameterType="string"
+		resultMap="skuMap">
+		SELECT s.`id` id_, s.`gid` gid_, s.`properties` properties_,
+		s.`properties_value` properties_value_,
+		s.`stock` stock_,
+		s.`volume`
+		volume_,
+		s.`price` price_,
+		s.`sale_price` sale_price_,
+		s.`status` status_,
+		s.grade
+		FROM `goods_sku` s
+		WHERE 1=1
+		AND s.`id`= #{id}
+	</select>
 </mapper>
