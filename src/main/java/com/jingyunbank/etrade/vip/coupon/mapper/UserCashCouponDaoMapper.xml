@@ -58,7 +58,7 @@
 				and c.del=false
 				and u.consumed=false
 				and u.locked=false
-				<!-- and now() &lt;= c.`end` -->
+				and now() &lt;= c.`end`
 	</sql>
 	
 	<!-- 用户已消费的券 -->

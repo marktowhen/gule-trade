@@ -78,7 +78,7 @@
 			LEFT JOIN  group_user gu  ON gu.group_id=g.id
 			LEFT JOIN group_goods gg on g.group_goods_id = gg.id 
 		where g.`status`='CONVENING' 
-		 	and( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )==gg.grouppeople
+		 	and( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )&gt;=gg.grouppeople
 
 	</select>
 	
