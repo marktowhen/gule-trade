@@ -87,7 +87,7 @@ public class GroupService implements IGroupService{
 		if(group.isPresent()){
 			Optional<GroupGoods> goods = groupGoodsService.single(group.get().getGroupGoodsID());
 			List<GroupUser> gUser = groupUserService.list(groupID, GroupUser.STATUS_PAID);
-			if(goods.isPresent() && gUser.size()>=goods.get().getMinpeople()){
+			if(goods.isPresent() && gUser.size()==goods.get().getGroupPeople()){
 				return true;
 			}
 		}

@@ -60,7 +60,7 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		user.setGroupID(group.getID());
 		user.setJointime(new Date());
 		user.setUID(leader.getID());
-		user.setPaid(group.getGoods().getDeposit());
+		user.setPaid(group.getGoods().getGroupPrice());
 		user.setStatus(GroupUser.STATUS_NEW);
 		//save group user
 		groupUserService.save(user);
@@ -85,7 +85,7 @@ public class GroupPurchaseContextService implements IGroupPurchaseContextService
 		guser.setGroupID(group.getID());
 		guser.setJointime(new Date());
 		guser.setUID(user.getID());
-		guser.setPaid(group.getGoods().getDeposit());
+		guser.setPaid(group.getGoods().getGroupPrice());
 		guser.setStatus(GroupUser.STATUS_NEW);
 		//save group user
 		groupUserService.save(guser);

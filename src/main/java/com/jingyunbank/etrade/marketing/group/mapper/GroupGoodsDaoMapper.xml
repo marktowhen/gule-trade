@@ -9,47 +9,35 @@
 		<result column="gid" property="GID" javaType="String"/>
 		<result column="duration" property="duration" jdbcType="INTEGER"/>
 		<result column="deadline" property="deadline" javaType="java.util.Date"/>
-		<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+		<result column="grouppeople" property="groupPeople" jdbcType="INTEGER"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
-		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
+		<result column="groupprice" property="groupPrice" jdbcType="DECIMAL"/>
 		<result column="show" property="show" javaType="Boolean"/>
-		<result column="commission" property="commission" jdbcType="DECIMAL"/>
-		<collection property="priceSettings" javaType="ArrayList" ofType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsPriceSettingEntity">
-			<id column="gpsid" property="ID" javaType="String"/>
-			<result column="ggid" property="GGID" javaType="String"/>
-			<result column="floor" property="floor" jdbcType="INTEGER"/>
-			<result column="ceiling" property="ceiling" jdbcType="INTEGER"/>
-			<result column="price" property="price" jdbcType="DECIMAL"/>
-		</collection>
+		
 	</resultMap>
 	<sql id="group_goods_columns">
-		`id`, `skuid`, `duration`, `deadline`, `minpeople`, `commission`,
-	    `upperlimit`, `deposit`, `show`, `addtime`,gid
+		`id`, `skuid`, `duration`, `deadline`, `grouppeople`,`groupprice`,`show`, `addtime`,gid
 	</sql>
 	<sql id="group_goods_join_price_setting_columns">
-		g.`id`, g.`skuid`, g.`duration`, g.`deadline`, g.`minpeople`, g.`commission`,
-	    g.`upperlimit`, g.`deposit`, g.`show`, g.`addtime`,g.gid,
-	    ps.`id` as gpsid, ps.`ggid`, ps.`floor`, ps.`ceiling`, ps.`price`
+		g.`id`, g.`skuid`, g.`duration`, g.`deadline`, g.`grouppeople`, g.`groupprice`,g.`show`, g.`addtime`,g.gid
 	</sql>
 	<insert id="insert" parameterType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity">
 		insert into group_goods
 			(<include refid="group_goods_columns"/>)
 		values
-			(#{ID}, #{SKUID}, #{duration}, #{deadline}, #{minpeople}, #{commission}, 
-			#{upperlimit}, #{deposit}, #{show}, #{addtime},#{GID})
+			(#{ID}, #{SKUID}, #{duration}, #{deadline}, #{groupPeople},#{groupPrice},#{show}, #{addtime},#{GID})
 	</insert>
 	
 	<update id="update">
 		update group_goods set `skuid`=#{SKUID}, `duration`=#{duration},
-		 `deadline`=#{deadline}, `minpeople`= #{minpeople}, `commission`=#{commission},
-	    `upperlimit`=#{upperlimit}, `deposit`= #{deposit}, `show`= #{show},gid=#{GID}
+		 `deadline`=#{deadline}, `grouppeople`= #{groupPeople},`groupprice`= #{groupPrice},`show`= #{show},gid=#{GID}
 	    where `id`=#{ID}
 	</update>
 	
 	<select id="selectOne" resultMap="GroupGoodsEntityResultMap" parameterType="String" >
 		select <include refid="group_goods_join_price_setting_columns"/>
 		from group_goods g
-		left join group_goods_price_setting ps on g.id = ps.ggid
+		left join goods_sku gs on gs.id=g.skuid
 		where g.id = #{ggid}
 	</select>
 	
@@ -66,12 +54,10 @@
 		<result column="gid" property="GID" javaType="String"/>
 		<result column="duration" property="duration" jdbcType="INTEGER"/>
 		<result column="deadline" property="deadline" javaType="java.util.Date"/>
-		<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+		<result column="grouppeople" property="groupPeople" jdbcType="INTEGER"/>
 		<result column="addtime" property="addtime" javaType="java.util.Date"/>
-		<result column="deposit" property="deposit" jdbcType="DECIMAL"/>
 		<result column="show" property="show" javaType="Boolean"/>
-		<result column="commission" property="commission" jdbcType="DECIMAL"/>
-		<result column="show_price" property="showPrice" jdbcType="DECIMAL"/>
+		<result column="groupprice" property="groupPrice" jdbcType="DECIMAL"/>
 		<association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
 			<result column="g_name" property="name" javaType="String"/>
 			<result column="g_path" property="path" javaType="String"/>
@@ -82,8 +68,7 @@
 		</association>
 	</resultMap>
 	<sql id="show_goods">
-			gg.`id`, gg.`skuid`, gg.`duration`, gg.`deadline`, gg.`minpeople`, gg.`commission`,
-			    gg.`upperlimit`, gg.`deposit`, gg.`show`, gg.`addtime`,gg.gid,
+			gg.`id`, gg.`skuid`, gg.`duration`, gg.`deadline`, gg.`grouppeople`,gg.`groupprice`, gg.`show`, gg.`addtime`,gg.gid,
 			g.`name` g_name ,g.path g_path, 
 			k.volume k_volume,k.properties_value k_properties_value,
 			(select MIN(price) from group_goods_price_setting price where price.ggid=gg.id) show_price

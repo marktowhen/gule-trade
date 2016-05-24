@@ -115,7 +115,7 @@ public class GroupRobotService implements IGroupRobotService{
 		List<Group> guList = groupService.listOnDeadline();
 		for (Group group : guList) {
 			try {
-				if(group.getBuyers().size()>=group.getGoods().getMinpeople()){
+				if(group.getBuyers().size()==group.getGoods().getGroupPeople()){
 					//如果满团 组团成功
 					groupPurchaseContextService.fullMission(group);
 				}else{

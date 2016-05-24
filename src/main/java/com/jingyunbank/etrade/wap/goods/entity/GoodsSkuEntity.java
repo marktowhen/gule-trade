@@ -27,11 +27,25 @@ public class GoodsSkuEntity implements Serializable {
 	private BigDecimal salePrice;
 	private boolean status;
 	private boolean sale;
+	private int grade;//1:推荐2:新品3:热销
+
+
 	
 
 
+	/**
+	 * @return the grade
+	 */
+	public int getGrade() {
+		return grade;
+	}
 
-
+	/**
+	 * @param grade the grade to set
+	 */
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
 
 	public boolean isSale() {
 		return sale;

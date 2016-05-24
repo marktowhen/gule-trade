@@ -12,12 +12,13 @@ public class GroupGoodsEntity {
 	private long duration;//开团后团的时间长度，minutes
 	private Date deadline;//团购截止日期
 	private boolean upperlimit;//是否设置人数上限 
-	private int minpeople;//最少成团人数
-	//团购阶梯价
+	private int groupPeople;//成团人数
+	private BigDecimal groupPrice;//
+	/*//团购阶梯价
 	private List<GroupGoodsPriceSettingEntity> priceSettings = new ArrayList<GroupGoodsPriceSettingEntity>();
 	private BigDecimal deposit;//订金，（多退少补）
 	//团长佣金
-	private BigDecimal commission;
+	private BigDecimal commission;*/
 	private boolean show;//是否上架
 	private Date addtime;
 	
@@ -60,23 +61,30 @@ public class GroupGoodsEntity {
 	public void setUpperlimit(boolean upperlimit) {
 		this.upperlimit = upperlimit;
 	}
-	public List<GroupGoodsPriceSettingEntity> getPriceSettings() {
-		return priceSettings;
+	
+	/**
+	 * @return the groupPeople
+	 */
+	public int getGroupPeople() {
+		return groupPeople;
 	}
-	public void setPriceSettings(List<GroupGoodsPriceSettingEntity> priceSettings) {
-		this.priceSettings = priceSettings;
+	/**
+	 * @param groupPeople the groupPeople to set
+	 */
+	public void setGroupPeople(int groupPeople) {
+		this.groupPeople = groupPeople;
 	}
-	public BigDecimal getDeposit() {
-		return deposit;
+	/**
+	 * @return the groupPrice
+	 */
+	public BigDecimal getGroupPrice() {
+		return groupPrice;
 	}
-	public void setDeposit(BigDecimal deposit) {
-		this.deposit = deposit;
-	}
-	public BigDecimal getCommission() {
-		return commission;
-	}
-	public void setCommission(BigDecimal commission) {
-		this.commission = commission;
+	/**
+	 * @param groupPrice the groupPrice to set
+	 */
+	public void setGroupPrice(BigDecimal groupPrice) {
+		this.groupPrice = groupPrice;
 	}
 	public boolean isShow() {
 		return show;
@@ -89,12 +97,6 @@ public class GroupGoodsEntity {
 	}
 	public void setGroups(List<GroupEntity> groups) {
 		this.groups = groups;
-	}
-	public int getMinpeople() {
-		return minpeople;
-	}
-	public void setMinpeople(int minpeople) {
-		this.minpeople = minpeople;
 	}
 	public Date getAddtime() {
 		return addtime;

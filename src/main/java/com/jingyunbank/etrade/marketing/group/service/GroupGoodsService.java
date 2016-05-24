@@ -39,7 +39,7 @@ public class GroupGoodsService implements IGroupGoodsService {
 	@Transactional
 	public void save(GroupGoods goods) throws DataSavingException {
 		goods.setID(KeyGen.uuid());
-		List<GroupGoodsPriceSetting> priceSettings = goods.getPriceSettings();
+		/*List<GroupGoodsPriceSetting> priceSettings = goods.getPriceSettings();
 		List<GroupGoodsPriceSettingEntity> sentities = new ArrayList<GroupGoodsPriceSettingEntity>();
 		priceSettings.forEach(bo -> {
 			GroupGoodsPriceSettingEntity en = new GroupGoodsPriceSettingEntity();
@@ -47,13 +47,13 @@ public class GroupGoodsService implements IGroupGoodsService {
 			en.setID(KeyGen.uuid());
 			en.setGGID(goods.getID());
 			sentities.add(en);
-		});
+		});*/
 		GroupGoodsEntity entity = new GroupGoodsEntity();
-		BeanUtils.copyProperties(goods, entity, "priceSettings", "groups");
+		BeanUtils.copyProperties(goods, entity);
 		
 		try {
 			groupGoodsDao.insert(entity);
-			groupGoodsPriceSettingDao.insertMany(sentities);
+			/*groupGoodsPriceSettingDao.insertMany(sentities);*/
 		} catch (Exception e) {
 			throw new DataSavingException(e);
 		}
@@ -61,7 +61,7 @@ public class GroupGoodsService implements IGroupGoodsService {
 	
 	@Override
 	public void refresh(GroupGoods goods) throws DataRefreshingException {
-		List<GroupGoodsPriceSetting> priceSettings = goods.getPriceSettings();
+		/*List<GroupGoodsPriceSetting> priceSettings = goods.getPriceSettings();
 		List<GroupGoodsPriceSettingEntity> sentities = new ArrayList<GroupGoodsPriceSettingEntity>();
 		priceSettings.forEach(bo -> {
 			GroupGoodsPriceSettingEntity en = new GroupGoodsPriceSettingEntity();
@@ -71,14 +71,14 @@ public class GroupGoodsService implements IGroupGoodsService {
 			}
 			en.setGGID(goods.getID());
 			sentities.add(en);
-		});
+		});*/
 		GroupGoodsEntity entity = new GroupGoodsEntity();
 		BeanUtils.copyProperties(goods, entity, "priceSettings", "groups");
 		
 		try {
 			groupGoodsDao.update(entity);
-			groupGoodsPriceSettingDao.delete(entity.getID());
-			groupGoodsPriceSettingDao.insertMany(sentities);
+			/*groupGoodsPriceSettingDao.delete(entity.getID());
+			groupGoodsPriceSettingDao.insertMany(sentities);*/
 		} catch (Exception e) {
 			throw new DataRefreshingException(e);
 		}

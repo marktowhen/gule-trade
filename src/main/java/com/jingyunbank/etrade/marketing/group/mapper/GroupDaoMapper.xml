@@ -11,7 +11,7 @@
 		<result column="status" property="status" javaType="String"/>
 		<association property="goods" javaType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity">
 			<id column="gid" property="ID"/>
-			<result column="minpeople" property="minpeople" jdbcType="INTEGER"/>
+			<result column="grouppeople" property="groupPeople" jdbcType="INTEGER"/>
 			<result column="duration" property="duration" jdbcType="INTEGER"/>
 			<result column="deadline" property="deadline" javaType="java.util.Date"/>
 			<result column="skuid" property="SKUID" javaType="String"/>
@@ -38,12 +38,12 @@
 	<sql id="group_with_buyers_goods">
 		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
 		gu.id buyers_id,gu.group_id buyers_group_id, gu.jointime buyers_jointime ,gu.uid buyers_uid,gu.paid buyers_paid,gu.status buyers_status,
-		gg.id gid ,gg.minpeople minpeople,gg.duration,gg.deadline ,gg.skuid
+		gg.id gid ,gg.grouppeople groupPeople,gg.duration,gg.deadline ,gg.skuid
 	</sql>
 	
 	<sql id="group_with_goods">
 		g.id,g.group_goods_id,g.leader_uid,g.`start`,g.`status`,
-		gg.id gid ,gg.minpeople minpeople,gg.duration,gg.deadline ,gg.skuid
+		gg.id gid ,gg.grouppeople groupPeople,gg.duration,gg.deadline ,gg.skuid
 	</sql>
 	
 	
@@ -78,7 +78,7 @@
 			LEFT JOIN  group_user gu  ON gu.group_id=g.id
 			LEFT JOIN group_goods gg on g.group_goods_id = gg.id 
 		where g.`status`='CONVENING' 
-		 	and( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )&gt;=gg.minpeople
+		 	and( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )==gg.grouppeople
 
 	</select>
 	
@@ -95,7 +95,7 @@
 			LEFT JOIN  group_user gu  ON gu.group_id=g.id 
 		where g.`status`='CONVENING' 
 			and TIME_TO_SEC(g.start)+gg.duration &lt; TIME_TO_SEC(now())
-			and ( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )&lt;gg.minpeople
+			and ( select count(1) from group_user gu  where gu.group_id=g.id and gu.`status`='PAID' )&lt;gg.grouppeople
 	</select>
 	
 	<select id="selectListStartSuccess" resultMap="GroupEntityResultMap">

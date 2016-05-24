@@ -19,11 +19,26 @@ public class GoodsSkuConditionEntity implements Serializable {
 	private String path; // 展示图片
 	private BigDecimal price; // 价格
 	private BigDecimal salePrice; // 折扣价
+	private int grade;//1:推荐2:新品3:热销
     private boolean isSale;
 	private List<GoodsAttrEntity> attrList = new ArrayList<GoodsAttrEntity>();
 
 	
 	
+	/**
+	 * @return the grade
+	 */
+	public int getGrade() {
+		return grade;
+	}
+
+	/**
+	 * @param grade the grade to set
+	 */
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+
 	public boolean isSale() {
 		return isSale;
 	}

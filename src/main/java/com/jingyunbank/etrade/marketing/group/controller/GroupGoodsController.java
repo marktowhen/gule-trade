@@ -43,12 +43,12 @@ public class GroupGoodsController {
 		}
 		
 		GroupGoods goodsbo = new GroupGoods();
-		BeanUtils.copyProperties(goods, goodsbo, "priceSettings");
-		goods.getPriceSettings().forEach(vo -> {
+		BeanUtils.copyProperties(goods, goodsbo);
+		/*goods.getPriceSettings().forEach(vo -> {
 			GroupGoodsPriceSetting bo = new GroupGoodsPriceSetting();
 			BeanUtils.copyProperties(vo, bo);
 			goodsbo.getPriceSettings().add(bo);
-		});
+		});*/
 		groupGoodsService.save(goodsbo);
 		
 		return Result.ok();
@@ -63,11 +63,11 @@ public class GroupGoodsController {
 		
 		GroupGoods goodsbo = new GroupGoods();
 		BeanUtils.copyProperties(goods, goodsbo, "priceSettings");
-		goods.getPriceSettings().forEach(vo -> {
+		/*goods.getPriceSettings().forEach(vo -> {
 			GroupGoodsPriceSetting bo = new GroupGoodsPriceSetting();
 			BeanUtils.copyProperties(vo, bo);
 			goodsbo.getPriceSettings().add(bo);
-		});
+		});*/
 		groupGoodsService.refresh(goodsbo);
 		
 		return Result.ok();
