@@ -73,7 +73,7 @@ public class FlashSalePurchaseController {
 		//买秒杀产品的用户的信息
 			FlashSaleUser flashSaleUser = new FlashSaleUser();
 			flashSaleUser.setId(KeyGen.uuid());
-			flashSaleUser.setFlashId(flashsale.get().getId());
+			flashSaleUser.setFlashId(flashid);
 			flashSaleUser.setUid(uid);
 			flashSaleUser.setFlashSale(flashsale.get());
 			flashSaleUser.setUser(user.get());

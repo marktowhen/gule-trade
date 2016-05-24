@@ -25,7 +25,7 @@
   		</select>
   		<!-- 通过id查出当个对象的信息 -->
   		<select id="selectFlashOrderByuid" parameterType="String">
-  		 	select <include refid="order_base_List" />from flash_sale_order
+  		 	select <include refid="order_base_List" /> from flash_sale_order
     		where flash_user_id = #{flashUserId}
   		</select>
   		

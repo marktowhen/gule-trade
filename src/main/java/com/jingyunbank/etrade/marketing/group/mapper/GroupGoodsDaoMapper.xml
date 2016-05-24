@@ -61,17 +61,21 @@
 		<association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
 			<result column="g_name" property="name" javaType="String"/>
 			<result column="g_path" property="path" javaType="String"/>
+			<result column="about" property="about" javaType="String"/>
 		</association>
 		<association property="sku" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
 			<result column="k_volume" property="volume" />
 			<result column="k_properties_value" property="propertiesValue" javaType="String"/>
+			<result column="price" property="price"/>
+			<result column="grade" property="grade"/>
 		</association>
 	</resultMap>
 	<sql id="show_goods">
 			gg.`id`, gg.`skuid`, gg.`duration`, gg.`deadline`, gg.`grouppeople`,gg.`groupprice`, gg.`show`, gg.`addtime`,gg.gid,
 			g.`name` g_name ,g.path g_path, 
 			k.volume k_volume,k.properties_value k_properties_value,
-			(select MIN(price) from group_goods_price_setting price where price.ggid=gg.id) show_price
+			g.about about,k.price,k.grade
+			<!-- (select MIN(price) from group_goods_price_setting price where price.ggid=gg.id) show_price -->
 	</sql>
 	<select id="selectMany" resultMap="GroupGoodsShowEntityResultMap">
 		SELECT 
