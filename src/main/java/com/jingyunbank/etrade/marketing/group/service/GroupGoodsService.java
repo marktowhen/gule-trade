@@ -90,7 +90,7 @@ public class GroupGoodsService implements IGroupGoodsService {
 		GroupGoodsEntity enity = groupGoodsDao.selectOne(ggid);
 		if(Objects.nonNull(enity)){
 			GroupGoods bo = new GroupGoods();
-			BeanUtils.copyProperties(enity, bo,  "groups");
+			BeanUtils.copyProperties(enity, bo);
 			return Optional.of(bo);
 		}
 		return Optional.empty();
