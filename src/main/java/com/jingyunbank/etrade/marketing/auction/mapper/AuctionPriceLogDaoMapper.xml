@@ -27,7 +27,7 @@
 	
 	<select id="selectListByAGID" resultMap="AuctionPriceLogResultMap">
 		select <include refid="base_column"/> from auction_price_log 
-			where auction_goods_id=#{auctionGoodsID} 
+			where auction_goods_id=#{auctionGoodsID} order by price desc
 	</select>
 	
 	<select id="countByAGID" resultType="java.lang.Integer">

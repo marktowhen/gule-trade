@@ -44,14 +44,13 @@ public class AuctionPurchaseController {
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value="/list", method=RequestMethod.GET)
+		@RequestMapping(value="/listPriceLog", method=RequestMethod.GET)
 		public Result<List<AuctionPriceLogVO>> list(@RequestParam String auctionGoodsID) throws Exception{
 			List<AuctionPriceLog> list=auctionPriceLogService.list(auctionGoodsID);
 			List<AuctionPriceLogVO> listvo=new ArrayList<AuctionPriceLogVO>();
 			if(list!=null&&list.size()>0){
 				for (int i = 0; i < list.size(); i++) {
 					listvo.add(getShowVOFromBo(list.get(i)));
-					
 				}
 			}
 			return Result.ok(listvo);
