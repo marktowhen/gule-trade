@@ -13,7 +13,7 @@
 	</resultMap>
 	
 	<sql id="base_column">
-		id,auction_goods_id,aution_user_id,uid,price,addtime
+		id,auction_goods_id,auction_user_id,uid,price,addtime
 	</sql>
 	
 	<insert id="insert">
