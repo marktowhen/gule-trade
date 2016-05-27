@@ -68,12 +68,8 @@ public class AuctionGoodsController {
 	//single
 	@RequestMapping(value="/detail", method=RequestMethod.GET)
 	public Result<AuctionGoodsVO> single(@RequestParam(required=true) String ID) throws Exception{
-		System.out.println("kkk"+ID);
 		Optional<AuctionGoods> goods = auctionGoodsService.single(ID);
 		if(goods.isPresent()){
-			System.out.println(goods.get().getStartTime());
-			System.out.println(goods.get().getID());
-			System.out.println(goods.get().getGID());
 			return Result.ok(getShowVOFromBo(goods.get()));
 		}
 		return Result.fail("未找到");
