@@ -44,13 +44,14 @@ public class GroupService implements IGroupService{
 	public Optional<Group> single(String groupid) {
 		GroupEntity entity = groupDao.selectOne(groupid);
 		if(Objects.nonNull(entity)){
+			
 			Group bo = new Group();
 			BeanUtils.copyProperties(entity, bo);
 			return Optional.of(bo);
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public boolean save(Group group) throws DataSavingException {
 		GroupEntity entity = new GroupEntity();
@@ -94,6 +95,8 @@ public class GroupService implements IGroupService{
 		return false;
 	}
 
+	
+	
 	@Override
 	public List<Group> list(String status) {
 		return convertEntityToBo( groupDao.selectList(status));

@@ -53,7 +53,7 @@
 	
 	<select id="selectOne" resultMap="GroupEntityResultMap">
 		select <include refid="group_with_buyers"/>  
-				from groups g LEFT JOIN group_user gu on g.id=gu.group_id where g.id=#{ID}
+				from groups g LEFT JOIN group_user gu on g.id=gu.group_id where g.id=#{ID} and gu.status='PAID' order by gu.jointime asc
 	</select>
 	
 	<update id="updateStatus">

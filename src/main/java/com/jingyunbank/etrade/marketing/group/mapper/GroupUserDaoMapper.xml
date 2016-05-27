@@ -10,37 +10,43 @@
 		<result column="uid" property="UID" />
 		<result column="paid" property="paid" />
 		<result column="status" property="status" />
+		
+			
+		<result column="headurl" property="headImgUrl"/>
+		<result column="nickname" property="nickname"/>
 	</resultMap>
 	
 	<sql id="base_column">
-		`id` ,`group_id`, `jointime` , `uid` , `paid` ,`status`
+		g.`id` ,g.`group_id`, g.`jointime` , g.`uid` , g.`paid` ,g.`status`
 	</sql>
 	
 	<insert id="insert">
-		insert into group_user (<include refid="base_column"/>) values(#{ID},#{groupID},#{jointime},#{UID},#{paid},#{status})
+		insert into group_user g (<include refid="base_column"/>) values(#{ID},#{groupID},#{jointime},#{UID},#{paid},#{status})
 	</insert>
 	
 	<select id="selectOne" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column"/>  
-				from group_user  where id=#{ID}
+				from group_user g  where g.id=#{ID}
 	</select>
 	
 	<select id="selectList" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column"/>  
-				from group_user  where group_id=#{groupID}
+				from group_user g  where g.group_id=#{groupID}
 	</select>
 	<update id="updateStatus">
 		update group_user set status=#{status} where id=#{ID}
 	</update>
 	
 	<select id="selectOneByGroup" resultMap="GroupUserEntityResultMap">
-		select <include refid="base_column"/>  
-				from group_user  where group_id=#{groupID} and uid=#{UID}
+		select <include refid="base_column"/>,s.headurl headImgUrl,s.nickname nickname
+				from group_user g
+		left join users s on g.uid = s.id	
+		where g.group_id=#{groupID} and g.uid=#{UID}
 	</select>
 	
 	<select id="selectListWithStatus" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column"/>  
-				from group_user  where group_id=#{groupID} and status=#{status}
+				from group_user g  where g.group_id=#{groupID} and g.status=#{status}
 	</select>
 	
 	<select id="selectListUnPay" resultMap="GroupUserEntityResultMap">
