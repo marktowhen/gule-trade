@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.marketing.group.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -123,6 +124,17 @@ public class GroupUserService implements IGroupUserService {
 	public Integer count(String groupID, String status) {
 		// TODO Auto-generated method stub
 		return groupUserDao.count(groupID, status);
+	}
+
+	@Override
+	public List<GroupUser> getGroup(String uid) {
+		List<GroupUser> bolist = new ArrayList<GroupUser>();
+		groupUserDao.selectGroup(uid).forEach(entity ->{
+			GroupUser bo  =new GroupUser();
+			BeanUtils.copyProperties(entity, bo);
+			bolist.add(bo);
+		});
+		return bolist;
 	}
 
 

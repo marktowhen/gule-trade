@@ -13,7 +13,7 @@ public class GroupEntity {
 	private String groupGoodsID;
 	private String status;//该团的状态
 	private List<GroupUserEntity> buyers = new ArrayList<GroupUserEntity>();
-	private GroupGoodsEntity goods ;
+	private GroupGoodsEntity goods;
 	
 	public GroupGoodsEntity getGoods() {
 		return goods;

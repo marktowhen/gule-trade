@@ -24,5 +24,5 @@ public interface GroupUserDao {
 
 	public Integer count(@Param("groupID")String groupID, @Param("status")String status);
 
-
+	public List<GroupUserEntity> selectGroup(@Param("uid")String uid);
 }

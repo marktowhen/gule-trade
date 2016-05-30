@@ -12,6 +12,9 @@
 	<select id="selectUserByOpenid" resultType="com.jingyunbank.etrade.weixin.entity.SNSUserInfo">
 		select id,nickname,openid,headurl from users where openid=#{openId}
 	</select> 
+	<select id="selectUserById" resultType="com.jingyunbank.etrade.weixin.entity.SNSUserInfo">
+		select id,nickname,openid openId,headurl headImgUrl from users where id=#{id}
+	</select>
 </mapper> 
 
 

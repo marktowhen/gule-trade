@@ -46,6 +46,16 @@
 		gg.id gid ,gg.grouppeople groupPeople,gg.duration,gg.deadline ,gg.skuid
 	</sql>
 	
+	<select id="getGroupGoods" resultMap="GroupEntityResultMap">
+		select <include refid="group_with_goods" /> from groups g 
+		left join group_goods gg on gg.id=g.group_goods_id
+		where g.id=#{id}
+		<if test="status!=null and status!=''" >
+			and g.status = #{status}
+		</if> 
+	
+	
+	</select>
 	
 	<insert id="insert">
 		insert into groups (<include refid="base_column"/>) values(#{ID},#{leaderUID},#{start},#{groupGoodsID},#{status})

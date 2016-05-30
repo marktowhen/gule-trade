@@ -46,6 +46,16 @@ public class WeiXinUserService implements IWeiXinUserService{
 		
 	}
 
+	@Override
+	public Optional<SNSUserInfoBo> singles(String id) {
+		SNSUserInfo snsUserInfo = weixinUserDao.selectUserById(id);
+		if(snsUserInfo!=null){
+			return Optional.of(getBoFromEntity(snsUserInfo));
+		}else{
+			return null;
+		}
+		
+	}
 
 	
 	/*@Override
@@ -93,6 +103,7 @@ public class WeiXinUserService implements IWeiXinUserService{
 		return bo;
 	}
 
+	
 
 
 

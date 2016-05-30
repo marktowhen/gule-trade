@@ -51,7 +51,7 @@
 	
 	<select id="selectListUnPay" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column"/>  
-				from group_user  where  status in ('NEW','PAYFAIL')
+				from group_user g  where  g.status in ('NEW','PAYFAIL')
 	</select>
 	
 	<select id="count" resultType="java.lang.Integer">
@@ -59,6 +59,13 @@
 		<if test="status!=null and ''!=status">
 			and status=#{status}
 		</if>
+	</select>
+	
+	<select id="selectGroup" resultMap="GroupUserEntityResultMap">
+		select <include refid="base_column" />
+		from group_user g where g.uid=#{uid}
+		 and g.status='PAID'
+		
 	</select>
 	
 	

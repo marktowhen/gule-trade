@@ -1,4 +1,4 @@
-package com.jingyunbank.etrade.weixin.vo;
+package com.jingyunbank.etrade.weixin.bean;
 
 import java.util.List;
 

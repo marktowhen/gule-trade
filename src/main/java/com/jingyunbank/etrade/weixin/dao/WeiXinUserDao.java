@@ -9,4 +9,6 @@ public interface WeiXinUserDao {
 	public int addUser(SNSUserInfo userInfo) throws Exception;
 	//查出用户的信息
 	public SNSUserInfo selectUserByOpenid(String openId);
+	
+	public SNSUserInfo selectUserById(String id);
 }

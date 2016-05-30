@@ -86,7 +86,7 @@ public class CreateMenuController {
 		mainBtn10.setName("跳转首页");
 		mainBtn10.setType("view");
 		mainBtn10.setKey("1110");
-		mainBtn10.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7881dc8f8b9645e1&redirect_uri=https%3a%2f%2fguoyuxue.tunnel.qydev.com%2fapi%2fget%2fuser&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
+		mainBtn10.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3f0da4d18b8e3ff8&redirect_uri=https%3a%2f%2fguoyuxue.tunnel.qydev.com%2fapi%2fget%2fuser&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
 		//二级菜单
 		CommonButton btn1111 = new CommonButton();
 		btn1111.setName("我的二维码");
@@ -132,11 +132,11 @@ public class CreateMenuController {
 		return menuJson;
 		
 	}
-	/*public static void main(String[] args) throws UnsupportedEncodingException {
+	public static void main(String[] args) throws UnsupportedEncodingException {
 		String deleteMenu = deleteMenu();
 		System.out.println(deleteMenu);
 		String createMenu = createMenu(getMenu());
 		System.out.println(createMenu);
 		System.out.println(getMenu());
-	}*/
+	}
 }

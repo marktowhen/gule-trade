@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.marketing.group.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class GroupUserEntity {
 
@@ -14,6 +15,7 @@ public class GroupUserEntity {
 	private String headImgUrl;
 	
 	private String nickname;
+	
 	
 	
 	

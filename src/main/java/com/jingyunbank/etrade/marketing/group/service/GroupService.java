@@ -141,6 +141,15 @@ public class GroupService implements IGroupService{
 		return convertEntityToBo(groupDao.selectListStartSuccess());
 	}
 	
+	@Override
+	public Optional<Group> getGroupGoods(String id, String status) {
+		GroupEntity entity=groupDao.getGroupGoods(id, status);
+		Group bo = new Group();
+		BeanUtils.copyProperties(entity, bo);
+		return Optional.of(bo);
+	}
+
+	
 	private List<Group> convertEntityToBo(List<GroupEntity> entityList){
 		if(entityList!=null){
 			return entityList.stream().map( entity->{
@@ -174,5 +183,6 @@ public class GroupService implements IGroupService{
 		return bo;
 	}
 
+	
 
 }
