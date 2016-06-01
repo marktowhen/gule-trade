@@ -7,6 +7,7 @@
 		<id column="id" property="ID" javaType="String"/>
 		<result column="orderno" property="orderno" jdbcType="BIGINT"/>
 		<result column="receiver" property="receiver" javaType="String"/>
+		<result column="mid" property="MID" javaType="String"/>
 		<result column="mname" property="mname" javaType="String"/>
 		<result column="uid" property="UID" javaType="String"/>
 		<result column="uname" property="uname" javaType="String"/>
@@ -41,6 +42,7 @@
 			<result column="gprice" property="price" jdbcType="DECIMAL"/>
 			<result column="gpprice" property="pprice" jdbcType="DECIMAL"/>
 			<result column="gpayout" property="payout" jdbcType="DECIMAL"/>
+			<result column="skuid" property="SKUID" />
 			<result column="gstatuscode" property="statusCode" javaType="String"/>
 			<result column="gstatusname" property="statusName" javaType="String"/>
 			<result column="oid" property="OID" javaType="String"/>
@@ -149,7 +151,7 @@
 	
 	
 	<select id="selectKeyStatus" resultMap="OrderEntityResultMap">
-		select <include refid="goods_join_orders_columns"/> 
+		select <include refid="goods_join_orders_columns"/>,og.skuid 
 		from 
 		( 
 			select <include refid="orders_columns"/> 
@@ -161,7 +163,7 @@
 			</if>
 		) o
 		left join order_goods og on og.oid = o.id 
-		left join goods_img img on og.gid = img.gid
+		left join goods_img img on og.skuid = img.skuid 
 		left join goods_sku s on og.skuid = s.id
 		order by o.addtime desc
 	</select>
@@ -247,8 +249,8 @@
 		</if>
 		<if test="anystatus==0">
 			and (
-				status_code in("DELIVERED","RECEIVED")
-				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code in("NEW","ACCEPT","DELIVERED","RECEIVED"))
+				status_code in("NEW","ACCEPT","DELIVERED")
+				or exists (select 1 from order_goods og where og.oid = o.id and og.status_code in("NEW","ACCEPT","DELIVERED"))
 				)
 		</if>
 		<!--<if test="fromdate != null and !''.equals(fromdate)">

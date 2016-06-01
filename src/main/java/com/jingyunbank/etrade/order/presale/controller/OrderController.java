@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -33,9 +34,13 @@ import com.jingyunbank.etrade.api.goods.service.IGoodsService;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
+import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextService;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
 import com.jingyunbank.etrade.cart.controller.CartController;
+import com.jingyunbank.etrade.order.presale.bean.Order2ShowVO;
+import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseRequestVO;
@@ -49,6 +54,11 @@ public class OrderController {
 	private ICouponStrategyResolver couponStrategyResolver;
 	@Autowired
 	private IGoodsService goodsService;
+	
+	@Autowired 
+	private IOrderService orderService;
+	@Autowired
+	private IOrderGoodsService orderGoodService;
 	
 	/**
 	 * 订单确认并提交<br>
@@ -157,6 +167,29 @@ public class OrderController {
 			return Result.fail("取消失败");
 		}
 		return Result.ok();
+	}
+	@RequestMapping(value="/api/order/single/{oid}")
+	public Result<Order2ShowVO> getSingle(@PathVariable String oid){
+		Order2ShowVO vo = new Order2ShowVO();
+		Optional<Orders> orders=orderService.single(oid);
+		vo.setOrderno(String.valueOf(orders.get().getOrderno()));
+		BeanUtils.copyProperties(orders.get(), vo, "goods");
+		orders.get().getGoods().forEach(og ->{
+			OrderGoodsVO  dvo = new OrderGoodsVO();
+			BeanUtils.copyProperties(og, dvo);
+			vo.getGoods().add(dvo);
+			
+		});
+		return Result.ok(vo);
+		
+	}
+	
+	@RequestMapping(value="/api/orders/update/status/{oid}",method=RequestMethod.PUT)
+	public Result<String> refreshStatus(@PathVariable String oid)throws Exception{
+		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
+		orderGoodService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
+		return Result.ok("修改状态成功");
+		
 	}
 	
 	@AuthBeforeOperation

@@ -97,7 +97,7 @@
 		select 
 			<include refid="column_detail"/>
 		from message m 
-		where id = #{ID}
+		where m.id = #{ID}
 	</select>
 	
 	

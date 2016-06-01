@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Order2ShowVO {
 
 	private String ID;
@@ -17,6 +19,7 @@ public class Order2ShowVO {
 	private String zipcode;
 	private String UID;//下单人
 	private String uname;//
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm" ,locale="zh", timezone="GMT+8")
 	private Date addtime;//下单时间
 	private String paytypeCode;//支付方式 id
 	private String paytypeName;

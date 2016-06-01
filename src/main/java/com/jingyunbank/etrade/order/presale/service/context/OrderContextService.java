@@ -422,7 +422,7 @@ public class OrderContextService implements IOrderContextService {
 		//刷新订单商品的状态
 		orderGoodsService.refreshStatus(oids, OrderStatusDesc.CLOSED);
 		//更新优惠卡券状态
-		List<String> temp = new ArrayList<String>(); 
+		/*List<String> temp = new ArrayList<String>(); 
 		for (Orders order : orders) {
 			if(StringUtils.hasText(order.getCouponID()) && StringUtils.hasText(order.getCouponType())){
 				if(temp.contains(order.getCouponID())) continue;
@@ -432,7 +432,7 @@ public class OrderContextService implements IOrderContextService {
 								.unlock(order.getUID(), order.getCouponID());
 				}
 			}
-		}
+		}*/
 		return true;
 	}
 	@Override

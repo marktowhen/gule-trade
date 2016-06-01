@@ -97,6 +97,19 @@ public class MessageController {
 		}
 		return Result.fail("该消息不存在,请确认链接是否正确");
 	}
+	/**
+	 * 通过id查出对应的消息信息
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/single/{id}",method=RequestMethod.GET)
+	public Result<MessageVO> getSingleMessage(@PathVariable String id){
+		Optional<Message> bo = inboxService.single(id);
+		MessageVO vo = new MessageVO();
+		BeanUtils.copyProperties(bo.get(), vo);
+		return Result.ok(vo);
+		
+	}
 	
 	
 	/**
