@@ -6,7 +6,7 @@
 	<resultMap type="com.jingyunbank.etrade.marketing.auction.entity.AuctionPriceLogEntity" id="AuctionPriceLogResultMap">
 		<id column="id" property="ID" />
 		<result column="auction_goods_id" property="auctionGoodsID"/>
-		<result column="aution_user_id" property="autionUserID"/>
+		<result column="aution_user_id" property="auctionUserID"/>
 		<result column="uid" property="UID"/>
 		<result column="price" property="price"/>
 		<result column="addtime" property="addtime"/>
@@ -18,7 +18,7 @@
 	
 	<insert id="insert">
 		insert into auction_price_log(<include refid="base_column"/>)
-		values(#{ID},#{auctionGoodsID},#{autionUserID},#{UID},#{price},#{addtime})
+		values(#{ID},#{auctionGoodsID},#{auctionUserID},#{UID},#{price},#{addtime})
 	</insert>
 	
 	<select id="selectOne" resultMap="AuctionPriceLogResultMap">

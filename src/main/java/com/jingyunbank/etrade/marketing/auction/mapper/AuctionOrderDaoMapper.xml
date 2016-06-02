@@ -6,7 +6,7 @@
 	<resultMap type="com.jingyunbank.etrade.marketing.auction.entity.AuctionOrderEntity" id="AuctionOrderResultMap">
 		<id column="id" property="ID" />
 		<result column="auction_goods_id" property="auctionGoodsID"/>
-		<result column="aution_user_id" property="autionUserID"/>
+		<result column="auction_user_id" property="auctionUserID"/>
 		<result column="orderno" property="orderno"/>
 		<result column="oid" property="OID"/>
 		<result column="type" property="type"/>
@@ -18,7 +18,7 @@
 	
 	<insert id="insert">
 		insert into auction_order(<include refid="base_column"/>)
-		values(#{ID},#{auctionGoodsID},#{autionUserID},#{orderno},#{OID},#{type})
+		values(#{ID},#{auctionGoodsID},#{auctionUserID},#{orderno},#{OID},#{type})
 	</insert>
 	
 	<select id="selectOne" resultMap="AuctionOrderResultMap">
