@@ -1,5 +1,7 @@
 package com.jingyunbank.etrade.marketing.group.entity;
 
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class GroupOrderEntity  {
 
@@ -10,6 +12,35 @@ public class GroupOrderEntity  {
 	private String OID;
 	private long orderno;
 	private String type;//指明是押金、尾款等
+	
+	private Date addtime;
+	private BigDecimal postage;
+	
+	
+	/**
+	 * @return the postage
+	 */
+	public BigDecimal getPostage() {
+		return postage;
+	}
+	/**
+	 * @param postage the postage to set
+	 */
+	public void setPostage(BigDecimal postage) {
+		this.postage = postage;
+	}
+	/**
+	 * @return the addtime
+	 */
+	public Date getAddtime() {
+		return addtime;
+	}
+	/**
+	 * @param addtime the addtime to set
+	 */
+	public void setAddtime(Date addtime) {
+		this.addtime = addtime;
+	}
 	public String getID() {
 		return ID;
 	}

@@ -9,9 +9,14 @@
 		<result column="start" property="start" javaType="java.util.Date"/>
 		<result column="group_goods_id" property="groupGoodsID" javaType="String"/>
 		<result column="status" property="status" javaType="String"/>
+		<result column="path" property="path"/>
+		<result column="gname" property="gname"/>
+		<result column="propertyvalue" property="propertyValue"/>
 		<association property="goods" javaType="com.jingyunbank.etrade.marketing.group.entity.GroupGoodsEntity">
 			<id column="gid" property="ID"/>
+			<result column="giid" property="GID"/>
 			<result column="grouppeople" property="groupPeople" jdbcType="INTEGER"/>
+			<result column="groupprice" property="groupPrice"/>
 			<result column="duration" property="duration" jdbcType="INTEGER"/>
 			<result column="deadline" property="deadline" javaType="java.util.Date"/>
 			<result column="skuid" property="SKUID" javaType="String"/>
@@ -47,14 +52,12 @@
 	</sql>
 	
 	<select id="getGroupGoods" resultMap="GroupEntityResultMap">
-		select <include refid="group_with_goods" /> from groups g 
+		select <include refid="group_with_goods" />,gg.gid giid,gg.groupprice groupprice,gi.path path,gs.properties_value propertyvalue,gi.name gname   from groups g 
 		left join group_goods gg on gg.id=g.group_goods_id
-		where g.id=#{id}
-		<if test="status!=null and status!=''" >
-			and g.status = #{status}
-		</if> 
-	
-	
+		left join goods gi on gi.id=gg.gid
+		left join goods_sku gs on gs.id = gg.skuid
+		where g.id=#{id}	
+
 	</select>
 	
 	<insert id="insert">

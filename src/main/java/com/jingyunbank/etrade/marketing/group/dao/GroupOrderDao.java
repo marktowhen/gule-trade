@@ -12,9 +12,11 @@ public interface GroupOrderDao {
 	
 	public GroupOrderEntity selectOne(String ID) ;
 	
-	public List<GroupOrderEntity> selectList(String groupUserID);
+	/*public List<GroupOrderEntity> selectList(String groupUserID);*/
 
 	public GroupOrderEntity selectByOID(String OID);
 
 	public GroupOrderEntity selectListByType(@Param("groupUserID")String groupUserID,@Param("type")String orderType);
+	
+	public GroupOrderEntity selectByGroupUserID(String groupUserID);
 }

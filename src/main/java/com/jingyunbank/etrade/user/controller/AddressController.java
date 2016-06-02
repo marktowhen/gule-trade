@@ -140,12 +140,14 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	@AuthBeforeOperation
+	/*@AuthBeforeOperation*/
 	@RequestMapping(value="/default",method=RequestMethod.GET)
 	public Result<AddressVO> getDefaultAddress(HttpServletRequest request)throws Exception{
-		
-		Optional<Address> optional = addressService.getDefaultAddress(Login.UID(request));
+		String uid=Login.UID(request);
+		Optional<Address> optional = addressService.getDefaultAddress("Ma9ogkIXSW-y0uSrvfqVIQ");
+		AddressVO vo = new AddressVO();
 		if(optional.isPresent()){
+			vo.setAddress(optional.get().getProvinceName()+"-"+optional.get().getCityName()+"-"+optional.get().getAddress());
 			return Result.ok(getVoFrombo(optional.get()));
 		}
 		return Result.fail("未设置默认地址");

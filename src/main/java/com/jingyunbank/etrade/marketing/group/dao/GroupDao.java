@@ -26,5 +26,5 @@ public interface GroupDao {
 
 	public List<GroupEntity> selectListStartSuccess();
 	
-	public GroupEntity getGroupGoods(@Param("id")String id,@Param("status")String status);
+	public GroupEntity getGroupGoods(@Param("id")String id);
 }

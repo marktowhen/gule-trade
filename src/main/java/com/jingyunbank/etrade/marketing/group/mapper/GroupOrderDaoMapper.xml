@@ -10,31 +10,39 @@
 		<result column="oid" property="OID" />
 		<result column="orderno" property="orderno" />
 		<result column="type" property="type" />
+		
+		
+		<result column="addtime" property="addtime" />
+		<result column="postage" property="postage" />
 	</resultMap>
 	
 	<sql id="base_column">
-		id,group_id,group_user_id,oid,orderno,type
+		go.id,go.group_id,go.group_user_id,go.oid,go.orderno,go.type
 	</sql>
 	
 	<insert id="insert">
-		insert into group_order (<include refid="base_column"/>) values(#{ID},#{groupID},#{groupUserID},#{OID},#{orderno},#{type})
+		insert into group_order go (<include refid="base_column"/>) values(#{ID},#{groupID},#{groupUserID},#{OID},#{orderno},#{type})
 	</insert>
 	
 	<select id="selectOne" resultMap="GroupOrderEntityResultMap">
-		select <include refid="base_column"/> from group_order where id=#{ID}
+		select <include refid="base_column"/> from group_order go where go.id=#{ID}
 	</select>
 	
 	<select id="selectByOID" resultMap="GroupOrderEntityResultMap">
-		select <include refid="base_column"/> from group_order where oid=#{OID}
+		select <include refid="base_column"/> from group_order go where go.oid=#{OID}
 	</select>
 	
-	<select id="selectList" resultMap="GroupOrderEntityResultMap">
+	<!-- <select id="selectList" resultMap="GroupOrderEntityResultMap">
 		select <include refid="base_column"/> from group_order where group_user_id=#{groupUserID}
-	</select>
+	</select> -->
 	
 	<select id="selectListByType" resultMap="GroupOrderEntityResultMap">
-		select <include refid="base_column"/> from group_order where group_user_id=#{groupUserID} and type=#{type}
+		select <include refid="base_column"/> from group_order go where go.group_user_id=#{groupUserID} and go.type=#{type}
 	</select>
-	
+	<select id="selectByGroupUserID" resultMap="GroupOrderEntityResultMap">
+		select <include refid="base_column"/>,o.addtime addtime,o.postage postage from group_order go
+		left join orders o on o.id=go.oid
+		 where group_user_id=#{groupUserID}
+	</select>
 	
 </mapper>

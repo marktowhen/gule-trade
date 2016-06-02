@@ -42,14 +42,14 @@ public class GroupOrderService implements IGroupOrderService {
 		return Optional.empty();
 	}
 
-	@Override
+	/*@Override
 	public List<GroupOrder> list(String groupUserID) {
 		return groupOrderDao.selectList(groupUserID).stream().map(entity->{
 			GroupOrder bo = new GroupOrder();
 			BeanUtils.copyProperties(entity, bo);
 			return bo;
 		}).collect(Collectors.toList());
-	}
+	}*/
 
 	@Override
 	public Optional<GroupOrder> singleByOID(String OID) {
@@ -71,6 +71,17 @@ public class GroupOrderService implements IGroupOrderService {
 			return Optional.of(bo);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public Optional<GroupOrder> singleByGroupUserId(String GroupUserId) {
+		GroupOrderEntity entity=groupOrderDao.selectByGroupUserID(GroupUserId);
+		if(null!=entity){
+			GroupOrder bo = new GroupOrder();
+			BeanUtils.copyProperties(entity, bo);
+			return Optional.of(bo);
+		}
+		return null;
 	}
 
 }

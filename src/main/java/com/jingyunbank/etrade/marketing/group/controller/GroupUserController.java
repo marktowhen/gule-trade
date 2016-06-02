@@ -1,5 +1,6 @@
 package com.jingyunbank.etrade.marketing.group.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
 import com.jingyunbank.etrade.api.marketing.group.bo.Group;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupOrder;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupUser;
+import com.jingyunbank.etrade.api.marketing.group.service.IGroupGoodsService;
+import com.jingyunbank.etrade.api.marketing.group.service.IGroupOrderService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupService;
 import com.jingyunbank.etrade.api.marketing.group.service.IGroupUserService;
+import com.jingyunbank.etrade.marketing.group.bean.GroupGoodsVO;
 import com.jingyunbank.etrade.marketing.group.bean.GroupUserVO;
 import com.jingyunbank.etrade.marketing.group.bean.GroupVO;
 
@@ -31,6 +37,8 @@ public class GroupUserController {
 	private IGroupUserService groupUserService;
 	@Autowired 
 	private IGroupService groupService;
+	@Autowired
+	private IGroupOrderService groupOrderService;
 	
 	@RequestMapping("/list/{groupID}")
 	public Result<List<GroupUserVO>> list(@PathVariable String groupID,@RequestParam(required=false) String status){
@@ -84,9 +92,23 @@ public class GroupUserController {
 	 * @return
 	 */
 	@RequestMapping(value="/group/single/{id}",method=RequestMethod.GET)
-	public Result<GroupVO> getSingleGroupGoods(@PathVariable String id,@RequestParam(required=false)String status){
-		Optional<Group> bo=groupService.getGroupGoods(id, status);
+	public Result<GroupVO> getroupGoods(@PathVariable String id){
+		//登陆用户的id     uid=“Ma9ogkIXSW-y0uSrvfqVIQ”
+		Optional<Group> bo=groupService.getGroupGoods(id);
+		GroupGoodsVO voGoods = new GroupGoodsVO();
+		BeanUtils.copyProperties(bo.get().getGoods(), voGoods);
 		GroupVO vo = new GroupVO();
+		Optional<GroupUser> bouser=groupUserService.single(id, "Ma9ogkIXSW-y0uSrvfqVIQ");
+		if(bouser.isPresent()){
+			Optional<GroupOrder> boOrder=groupOrderService.singleByGroupUserId(bouser.get().getID());
+			vo.setOrderno(String.valueOf(boOrder.get().getOrderno()));
+			vo.setOrdertime(boOrder.get().getAddtime());
+			double totalPrice=bo.get().getGoods().getGroupPrice().doubleValue()+boOrder.get().getPostage().doubleValue();
+			vo.setTotalPrice(totalPrice);
+			vo.setPostage(boOrder.get().getPostage());
+		}
+		
+		vo.setGoods(voGoods);
 		BeanUtils.copyProperties(bo.get(), vo);
 		return Result.ok(vo);
 		

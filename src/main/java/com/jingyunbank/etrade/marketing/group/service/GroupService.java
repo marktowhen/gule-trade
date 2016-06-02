@@ -142,9 +142,12 @@ public class GroupService implements IGroupService{
 	}
 	
 	@Override
-	public Optional<Group> getGroupGoods(String id, String status) {
-		GroupEntity entity=groupDao.getGroupGoods(id, status);
+	public Optional<Group> getGroupGoods(String id) {
+		GroupEntity entity=groupDao.getGroupGoods(id);
+		GroupGoods goodsbo=new GroupGoods();
+		BeanUtils.copyProperties(entity.getGoods(), goodsbo);
 		Group bo = new Group();
+		bo.setGoods(goodsbo);
 		BeanUtils.copyProperties(entity, bo);
 		return Optional.of(bo);
 	}

@@ -64,7 +64,7 @@
 	<select id="selectGroup" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column" />
 		from group_user g where g.uid=#{uid}
-		 and g.status='PAID'
+		 and g.status='PAID' order by g.`jointime` desc;
 		
 	</select>
 	
