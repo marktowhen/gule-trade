@@ -82,5 +82,14 @@ public class AuctionUserService implements IAuctionUserService {
 		System.out.println("userrrr"+userid);
 		return  Optional.ofNullable(convert(auctionUserDao.selByUserId(auctionid,userid)));
 	}
+
+
+	@Override
+	public List<AuctionUser> selMyAuction(String userid, String status) {
+		//convert(auctionUserDao.selMyAuction(userid, ""));
+		return auctionUserDao.selMyAuction(userid, "").stream().map(entity->{
+			return convert(entity);
+		}).collect(Collectors.toList());
+	}
     
 }
