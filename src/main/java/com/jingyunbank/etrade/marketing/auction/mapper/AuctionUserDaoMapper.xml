@@ -23,6 +23,9 @@
 	<select id="selectOne" resultMap="AuctionUserResultMap">
 		select <include refid="base_column"/> from auction_user where id=#{ID}
 	</select>
+	<select id="selByUserId" resultMap="AuctionUserResultMap">
+		select <include refid="base_column"/> from auction_user where uid=#{userid} and auction_goods_id=#{auctionid} 
+	</select>
 	
 	<update id="updateStatus">
 		update auction_user set status=#{status} where id=#{ID}

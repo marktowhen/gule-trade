@@ -12,11 +12,16 @@ public interface AuctionUserDao {
 
 	AuctionUserEntity selectOne(String ID);
 	
+	AuctionUserEntity selByUserId(@Param("auctionid")String auctionid,@Param("userid")String userid);
+	
 	boolean updateStatus(@Param("ID")String ID, @Param("status")String status) throws Exception;
 
 	List<AuctionUserEntity> selectList(String auctionGoodsID);
 
 	int count(String auctionID);
+	
+	
+	
 
 
 }

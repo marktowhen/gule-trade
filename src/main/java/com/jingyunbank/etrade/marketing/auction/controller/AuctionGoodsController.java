@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -67,7 +68,19 @@ public class AuctionGoodsController {
 	
 	//single
 	@RequestMapping(value="/detail", method=RequestMethod.GET)
-	public Result<AuctionGoodsVO> single(@RequestParam(required=true) String ID) throws Exception{
+	public Result<AuctionGoodsVO> single(@RequestParam(required=true) String ID,HttpSession session) throws Exception{
+		Optional<AuctionGoods> goods = auctionGoodsService.single(ID);
+		if(goods.isPresent()){
+			return Result.ok(getShowVOFromBo(goods.get()));
+		}
+		return Result.fail("未找到");
+	}
+	@RequestMapping(value="/single", method=RequestMethod.GET)
+	public Result<AuctionGoodsVO> single(HttpSession session) throws Exception{
+		System.out.println("ddd");
+			String ID=session.getAttribute("AUCTION_ID").toString();
+			System.out.println(ID+"KKKKKKKKKK");
+		
 		Optional<AuctionGoods> goods = auctionGoodsService.single(ID);
 		if(goods.isPresent()){
 			return Result.ok(getShowVOFromBo(goods.get()));
@@ -75,6 +88,14 @@ public class AuctionGoodsController {
 		return Result.fail("未找到");
 	}
 	
+	@RequestMapping(value="/goDetail", method=RequestMethod.GET)
+	public String selDetail(@RequestParam(required=true) String ID){
+		
+		String id="VkkfDqkPR6upgaY_NA4WYA";
+		String gid="6J5oe2uzTVuUCP-P3-sJbA";
+		return "/auction-details.html?id="+id+"&gid="+gid+"";
+		
+	}
 
 	
 	private AuctionGoodsVO getShowVOFromBo(AuctionGoods showBo){

@@ -29,7 +29,8 @@ public class AuctionUserService implements IAuctionUserService {
 			throw new DataSavingException(e);
 		}
 	}
-
+   
+	
 	@Override
 	public boolean refreshStatus(String auctionUserID, String status)
 			throws DataRefreshingException {
@@ -75,4 +76,11 @@ public class AuctionUserService implements IAuctionUserService {
 		return entity;
 	}
 
+
+	@Override
+	public Optional<AuctionUser> selByUserId(String auctionid, String userid) {
+		System.out.println("userrrr"+userid);
+		return  Optional.ofNullable(convert(auctionUserDao.selByUserId(auctionid,userid)));
+	}
+    
 }
