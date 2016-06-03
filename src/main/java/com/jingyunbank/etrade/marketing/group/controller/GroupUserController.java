@@ -103,9 +103,11 @@ public class GroupUserController {
 			Optional<GroupOrder> boOrder=groupOrderService.singleByGroupUserId(bouser.get().getID());
 			vo.setOrderno(String.valueOf(boOrder.get().getOrderno()));
 			vo.setOrdertime(boOrder.get().getAddtime());
-			double totalPrice=bo.get().getGoods().getGroupPrice().doubleValue()+boOrder.get().getPostage().doubleValue();
-			vo.setTotalPrice(totalPrice);
-			vo.setPostage(boOrder.get().getPostage());
+			if(boOrder.get().getPostage()!=null){
+				double totalPrice=bo.get().getGoods().getGroupPrice().doubleValue()+boOrder.get().getPostage().doubleValue();
+				vo.setTotalPrice(totalPrice);
+				vo.setPostage(boOrder.get().getPostage());
+			}
 		}
 		
 		vo.setGoods(voGoods);
