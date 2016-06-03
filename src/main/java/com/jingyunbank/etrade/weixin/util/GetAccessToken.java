@@ -14,10 +14,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-import com.jingyunbank.etrade.weixin.entity.SNSUserInfo;
+import com.jingyunbank.etrade.weixin.bean.SNSUserInfoVo;
 import com.jingyunbank.etrade.weixin.entity.WeixinOauth2Token;
 import com.jingyunbank.etrade.weixin.util.MyX509TrustManager;
-import com.jingyunbank.etrade.weixin.vo.SNSUserInfoVo;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
