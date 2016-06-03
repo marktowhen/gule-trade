@@ -87,7 +87,9 @@ public class AuctionUserService implements IAuctionUserService {
 	@Override
 	public List<AuctionUser> selMyAuction(String userid, String status) {
 		//convert(auctionUserDao.selMyAuction(userid, ""));
-		return auctionUserDao.selMyAuction(userid, "").stream().map(entity->{
+		System.out.println(userid+"hhh");
+		System.out.println(status+"hhhh");
+		return auctionUserDao.selMyAuction(userid,status).stream().map(entity->{
 			return convert(entity);
 		}).collect(Collectors.toList());
 	}
