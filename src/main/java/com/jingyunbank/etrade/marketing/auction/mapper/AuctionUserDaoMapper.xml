@@ -35,6 +35,16 @@
 		select <include refid="base_column"/> from auction_user 
 			where auction_goods_id=#{auctionGoodsID} 
 	</select>
+	<select id="selMyAuction" resultMap="AuctionUserResultMap">
+		select <include refid="base_column"/> from auction_user 
+			where uid=#{userid} 
+		<if test="status== null or status==''">
+	        and status!='NEW'
+	    </if>
+	    <if test="status!= null and status!=''">
+	        and status=#{status}
+	    </if>
+	</select>
 	
 	<select id="count" resultType="java.lang.Integer">
 		select count(1) from auction_user 

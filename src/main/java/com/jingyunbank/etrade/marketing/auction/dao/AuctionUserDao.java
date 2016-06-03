@@ -17,6 +17,8 @@ public interface AuctionUserDao {
 	boolean updateStatus(@Param("ID")String ID, @Param("status")String status) throws Exception;
 
 	List<AuctionUserEntity> selectList(String auctionGoodsID);
+	
+	List<AuctionUserEntity> selMyAuction(@Param("userid")String userid,@Param("status")String status);
 
 	int count(String auctionID);
 	
