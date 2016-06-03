@@ -44,6 +44,7 @@
 	    <if test="status!= null and status!=''">
 	        and status=#{status}
 	    </if>
+	     order by join_time desc 
 	</select>
 	
 	<select id="count" resultType="java.lang.Integer">
