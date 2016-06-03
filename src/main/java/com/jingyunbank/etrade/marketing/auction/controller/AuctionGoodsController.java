@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,9 +22,12 @@ import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionGoods;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionGoodsService;
+import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.marketing.auction.bean.AuctionGoodsVO;
+import com.jingyunbank.etrade.marketing.group.bean.GroupGoodsVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsVO;
 
@@ -61,6 +65,12 @@ public class AuctionGoodsController {
 		}).collect(Collectors.toList()));
 	}
 	
+	@RequestMapping(value="/update", method=RequestMethod.GET)
+	public Result<String> refresh(@RequestParam String auctionGoodsID,String status) throws Exception{
+		auctionGoodsService.refreshStatus(auctionGoodsID, status);
+		return Result.ok();
+	}
+	
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	public Result<Integer> count() throws Exception{
 		return Result.ok(auctionGoodsService.count());
@@ -77,10 +87,7 @@ public class AuctionGoodsController {
 	}
 	@RequestMapping(value="/single", method=RequestMethod.GET)
 	public Result<AuctionGoodsVO> single(HttpSession session) throws Exception{
-		System.out.println("ddd");
 			String ID=session.getAttribute("AUCTION_ID").toString();
-			System.out.println(ID+"KKKKKKKKKK");
-		
 		Optional<AuctionGoods> goods = auctionGoodsService.single(ID);
 		if(goods.isPresent()){
 			return Result.ok(getShowVOFromBo(goods.get()));
