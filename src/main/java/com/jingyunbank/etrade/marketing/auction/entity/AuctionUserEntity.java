@@ -9,6 +9,29 @@ public class AuctionUserEntity  {
 	private String UID;
 	private String status;
 	private Date joinTime;
+	private Date lockTime;
+	private Date releaseTime;
+	private String depositStatus;
+	
+	
+	public Date getLockTime() {
+		return lockTime;
+	}
+	public void setLockTime(Date lockTime) {
+		this.lockTime = lockTime;
+	}
+	public Date getReleaseTime() {
+		return releaseTime;
+	}
+	public void setReleaseTime(Date releaseTime) {
+		this.releaseTime = releaseTime;
+	}
+	public String getDepositStatus() {
+		return depositStatus;
+	}
+	public void setDepositStatus(String depositStatus) {
+		this.depositStatus = depositStatus;
+	}
 	public String getID() {
 		return ID;
 	}

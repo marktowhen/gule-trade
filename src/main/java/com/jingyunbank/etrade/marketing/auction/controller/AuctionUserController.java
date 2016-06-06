@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.marketing.auction.controller;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,6 +72,19 @@ public class AuctionUserController {
 			 uid=userid;
 			//auctionUserService.ifSign(auctionid, uid);
 			return Result.ok(auctionUserService.ifSign(auctionid, uid));
+		}
+		@RequestMapping(value="/depositStatus", method=RequestMethod.GET)
+		public Result<AuctionUserVO> depositStatus(@RequestParam(required=true) String auctionid,@RequestParam(required=true) String uid,HttpSession session,HttpServletRequest request) throws Exception{
+			String userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			if(null==uid||""==uid){
+				uid=Login.UID(session);
+			}
+			uid=userid;
+			Optional<AuctionUser> auctionUser=auctionUserService.selByUserId(auctionid, userid);
+			if(auctionUser.isPresent()){
+				return Result.ok(getShowVOFromBo(auctionUser.get()));
+			}
+			return Result.ok(new AuctionUserVO());
 		}
 		
 		
