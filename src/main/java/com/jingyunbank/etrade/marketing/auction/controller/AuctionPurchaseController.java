@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
@@ -38,6 +39,7 @@ import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.cart.bean.CartVO;
 import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
+import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.marketing.auction.bean.AuctionGoodsVO;
 import com.jingyunbank.etrade.marketing.auction.bean.AuctionPriceLogVO;
 
@@ -88,6 +90,7 @@ public class AuctionPurchaseController {
 			CartVO cartVO = convertCartVO(auctionid, userid,cart);
 			Orders orders = new Orders();
 			session.setAttribute("AUCTION_ID", auctionid);
+			session.setAttribute(CartController.GOODS_IN_CART_TO_CLEARING, new ObjectMapper().writeValueAsString(cartVO));
 			BeanUtils.copyProperties(cartVO.getOrders().get(0), orders);
 			auctionContextService.signUp(auctionUser, orders);
 			
@@ -132,6 +135,46 @@ public class AuctionPurchaseController {
 			
 		}
 		
+		/**
+		 * 支付
+		 * @param auctionid
+		 * @param cart
+		 * @param valid
+		 * @param session
+		 * @return
+		 * @throws Exception 
+		 */
+		@RequestMapping(value="/payFinal/{auctionid}", method=RequestMethod.POST)
+		public Result<AuctionGoodsVO> PayFinal(@PathVariable String auctionid,
+				@Valid @RequestBody CartVO cart,
+				BindingResult valid, 
+				HttpSession session,HttpServletRequest request) throws Exception{
+			
+			String userid = Login.UID(session);
+			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			
+			AuctionUser auctionUser=new AuctionUser();
+			Optional<AuctionUser> auctionUsers=auctionUserService.selByUserId(auctionid, userid);
+			if(auctionUsers.isPresent()){
+				AuctionUser auctionU=auctionUsers.get();
+				auctionUser.setID(auctionU.getID());
+				
+			}
+			auctionUser.setAuctionGoodsID(auctionid);
+			
+			Login.UID(session, userid);//存放登录的userid
+			//System.out.println(Login.UID(request));
+			//userid=session.getAttribute("user_id").toString();
+			//组装参拍人
+			CartVO cartVO = convertCartVO(auctionid, userid,cart);
+			Orders orders = new Orders();
+			session.setAttribute("AUCTION_ID", auctionid);
+			session.setAttribute(CartController.GOODS_IN_CART_TO_CLEARING, new ObjectMapper().writeValueAsString(cartVO));
+			BeanUtils.copyProperties(cartVO.getOrders().get(0), orders);
+			auctionContextService.payFinal(auctionUser, orders);
+			
+			return Result.ok(new AuctionGoodsVO());
+		}
 		
 	    /**
 	     * 查询竞拍出价次数

@@ -47,10 +47,25 @@ public class AuctionContextService implements IAuctionContextService {
 		
 		return false;
 	}
-
+    
 	@Override
 	public boolean bidding(AuctionPriceLog priceLog) {
 		
+		return false;
+	}
+    
+	
+	@Override
+	public boolean payFinal(AuctionUser auctionUser,Orders orders) throws DataSavingException, DataRefreshingException {
+		AuctionOrder auctionOrder=new AuctionOrder();
+		auctionOrder.setID(KeyGen.uuid()); 
+		auctionOrder.setAuctionUserID(auctionUser.getID());//auction_user 表 ID
+		auctionOrder.setAuctionGoodsID(auctionUser.getAuctionGoodsID());//auction_goods表ID
+		auctionOrder.setOID(orders.getID());//订单ID
+		auctionOrder.setOrderno(orders.getOrderno());//订单单号
+		auctionOrder.setType(AuctionOrder.TYPE_DEPOSIT);//订单类型 ---定金
+		
+		boolean saveOrder=auctionOrderService.save(auctionOrder);
 		return false;
 	}
 
