@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionPriceLog;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionUser;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionGoodsService;
@@ -46,9 +47,7 @@ public class AuctionUserController {
 			String userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			//userid=Login.UID(session);
 			//status="all";
-			System.out.println(status+"查询状态");
 			if(status.equals("NEW")){
-				System.out.println("查全部"+status);
 				return Result.ok(auctionUserService.selMyAuction(userid,"").stream().map(bo->{
 					return getShowVOFromBo(bo);
 				}).collect(Collectors.toList()));
@@ -56,13 +55,22 @@ public class AuctionUserController {
 				
 				
 			}else{
-				System.out.println("查状态");
 				return Result.ok(auctionUserService.selMyAuction(userid, status).stream().map(bo->{
 					return getShowVOFromBo(bo);
 				}).collect(Collectors.toList()));
 			}
 			//auctionUserService.selMyAuction(userid, status);
 			//auctionUserService.selMyAuction(userid, status)
+		}
+		@RequestMapping(value="/ifSign", method=RequestMethod.GET)
+		public Result<Integer> ifSign(@RequestParam(required=true) String auctionid,@RequestParam(required=true) String uid,HttpSession session,HttpServletRequest request) throws Exception{
+			String userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			if(null==uid||""==uid){
+				uid=Login.UID(session);
+			}
+			 uid=userid;
+			//auctionUserService.ifSign(auctionid, uid);
+			return Result.ok(auctionUserService.ifSign(auctionid, uid));
 		}
 		
 		

@@ -22,6 +22,7 @@ public interface AuctionUserDao {
 
 	int count(String auctionID);
 	
+	int ifSign(@Param("auctionid")String auctionid,@Param("uid")String uid);
 	
 	
 

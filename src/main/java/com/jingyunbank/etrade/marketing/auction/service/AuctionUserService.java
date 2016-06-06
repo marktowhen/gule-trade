@@ -93,5 +93,15 @@ public class AuctionUserService implements IAuctionUserService {
 			return convert(entity);
 		}).collect(Collectors.toList());
 	}
+
+
+	@Override
+	public int ifSign(String auctionid, String uid) {
+		auctionUserDao.ifSign(auctionid, uid);
+		return auctionUserDao.ifSign(auctionid, uid);
+	}
+
+
+	
     
 }

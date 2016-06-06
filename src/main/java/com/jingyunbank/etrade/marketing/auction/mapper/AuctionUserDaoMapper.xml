@@ -51,5 +51,9 @@
 		select count(1) from auction_user 
 			where auction_goods_id=#{auctionGoodsID} 
 	</select>
+	<select id="ifSign" resultType="java.lang.Integer">
+		select count(*) from auction_user 
+			where auction_goods_id=#{auctionid} and  uid=#{uid} and status!='NEW'
+	</select>
 	
 </mapper>
