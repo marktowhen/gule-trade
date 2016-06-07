@@ -55,7 +55,7 @@
 		<if test="MID!=null and MID!=''">
 			and g.mid=#{MID}
 		</if>
-		order by fs.activity_time desc
+		order by fs.show_time desc
 		limit #{from}, #{size}
 	</select>
 	

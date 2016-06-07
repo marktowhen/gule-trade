@@ -116,6 +116,7 @@
 		<result column="comment_" property="comment" />
 		<result column="about_" property="about" />
 		<result column="isSale_" property="isSale" />
+		<result column="path" property="path" />
 	</resultMap>
 
 
@@ -253,6 +254,7 @@
 		g.`content` content_,
 		g.`about` about_,
 		g.is_sale isSale_,
+		g.path path,
 		SUM(DISTINCT
 		s.`volume`) volume_,
 		COUNT(DISTINCT
