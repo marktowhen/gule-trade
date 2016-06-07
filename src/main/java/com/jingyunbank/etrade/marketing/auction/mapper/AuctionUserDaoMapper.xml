@@ -9,10 +9,13 @@
 		<result column="uid" property="UID"/>
 		<result column="status" property="status"/>
 		<result column="join_time" property="joinTime"/>
+		<result column="lock_time" property="lockTime"/>
+		<result column="release_time" property="releaseTime"/>
+		<result column="deposit_status" property="depositStatus"/>
 	</resultMap>
 	
 	<sql id="base_column">
-		id,auction_goods_id,uid,status,join_time
+		id,auction_goods_id,uid,status,join_time,lock_time,release_time,deposit_status 
 	</sql>
 	
 	<insert id="insert">
