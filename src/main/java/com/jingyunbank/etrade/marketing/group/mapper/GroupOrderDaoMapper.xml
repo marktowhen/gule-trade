@@ -21,7 +21,7 @@
 	</sql>
 	
 	<insert id="insert">
-		insert into group_order go (<include refid="base_column"/>) values(#{ID},#{groupID},#{groupUserID},#{OID},#{orderno},#{type})
+		insert into group_order (id,group_id,group_user_id,oid,orderno,type) values(#{ID},#{groupID},#{groupUserID},#{OID},#{orderno},#{type})
 	</insert>
 	
 	<select id="selectOne" resultMap="GroupOrderEntityResultMap">

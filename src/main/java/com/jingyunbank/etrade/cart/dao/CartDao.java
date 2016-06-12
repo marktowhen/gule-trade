@@ -27,9 +27,9 @@ public interface CartDao{
 	
 	public void update(GoodsInCartEntity goods) throws Exception ;
 
-	public GoodsInCartEntity selectOneGoods(@Param(value="uid") String uid, @Param(value="gid") String gid);
+	public GoodsInCartEntity selectOneGoods(@Param(value="uid") String uid, @Param(value="gid") String gid,@Param(value="skuid") String skuid);
 	
-	public List<GoodsInCartEntity> selectRangeByUID(@Param(value="uid") String uid, @Param(value="offset") long offset, @Param(value="size") long size) ;
+	public List<GoodsInCartEntity> selectRangeByUID(@Param(value="uid") String uid, @Param(value="offset") long offset, @Param(value="size") int size) ;
 
 	public List<GoodsInCartEntity> selectAllByUID(String uid);
 	

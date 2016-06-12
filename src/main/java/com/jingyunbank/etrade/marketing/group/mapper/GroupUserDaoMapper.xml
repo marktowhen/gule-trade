@@ -21,7 +21,7 @@
 	</sql>
 	
 	<insert id="insert">
-		insert into group_user g (<include refid="base_column"/>) values(#{ID},#{groupID},#{jointime},#{UID},#{paid},#{status})
+		insert into group_user (`id` ,`group_id`, `jointime` , `uid` , `paid` ,`status`) values(#{ID},#{groupID},#{jointime},#{UID},#{paid},#{status})
 	</insert>
 	
 	<select id="selectOne" resultMap="GroupUserEntityResultMap">
@@ -64,7 +64,7 @@
 	<select id="selectGroup" resultMap="GroupUserEntityResultMap">
 		select <include refid="base_column" />
 		from group_user g where g.uid=#{uid}
-		 and g.status='PAID' order by g.`jointime` desc;
+		 and g.status='PAID' order by g.`jointime` asc;
 		
 	</select>
 	

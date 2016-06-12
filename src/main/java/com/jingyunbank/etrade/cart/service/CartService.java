@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.cart.bo.Cart;
 import com.jingyunbank.etrade.api.cart.bo.GoodsInCart;
 import com.jingyunbank.etrade.api.cart.service.ICartService;
@@ -61,7 +62,7 @@ public class CartService implements ICartService {
 
 	@Override
 	public boolean save(GoodsInCart goods) throws DataSavingException {
-		GoodsInCartEntity gicentity = cartDao.selectOneGoods(goods.getUID(), goods.getGID());
+		GoodsInCartEntity gicentity = cartDao.selectOneGoods(goods.getUID(), goods.getGID(),goods.getSKUID());
 		if(Objects.nonNull(gicentity)) return false;
 		
 		GoodsInCartEntity entity = new GoodsInCartEntity();
