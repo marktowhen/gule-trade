@@ -70,7 +70,7 @@ public class AuctionContextService implements IAuctionContextService {
 			Date endTime=auctionGood.getEndTime();
 			int delayTime=auctionGood.getDelaySecond();
 			if((endTime.getTime()-new Date().getTime())/1000<delayTime){
-				auctionGood.setEndTime(new Date((new Date().getTime()+delayTime)));
+				auctionGood.setEndTime(new Date((new Date().getTime()+delayTime*1000)));
 				auctionGoodsService.delay(auctionGood);
 			}else{
 				System.out.println("time is  enough");
