@@ -22,6 +22,7 @@ public class AuctionGoodsVO {
 	private Date startTime; //开始时间
 	@NotNull
 	private Date endTime;//结束时间
+	private Date sellerEndTime;//卖家设定的结束时间
 	private int delaySecond;//当到达截止时间前有人出价 延迟结束秒数
 	private int delayAmount; //延迟次数
 	@NotEmpty
@@ -40,6 +41,14 @@ public class AuctionGoodsVO {
 	private GoodsSkuVO sku;
 	private int userAmount;
 	
+	
+	
+	public Date getSellerEndTime() {
+		return sellerEndTime;
+	}
+	public void setSellerEndTime(Date sellerEndTime) {
+		this.sellerEndTime = sellerEndTime;
+	}
 	public int getUserAmount() {
 		return userAmount;
 	}

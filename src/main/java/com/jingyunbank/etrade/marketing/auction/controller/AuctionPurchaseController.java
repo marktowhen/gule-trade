@@ -72,14 +72,9 @@ public class AuctionPurchaseController {
 				@Valid @RequestBody CartVO cart,
 				BindingResult valid, 
 				HttpSession session,HttpServletRequest request) throws Exception{
-			System.out.println("*************报名开始***********************");
-			System.out.println(auctionid);
-			System.out.println("*************报名开始***********************");
 			String userid = Login.UID(session);
 			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			Login.UID(session, userid);//存放登录的userid
-			//System.out.println(Login.UID(request));
-			//userid=session.getAttribute("user_id").toString();
 			//组装参拍人
 			AuctionUser auctionUser=new AuctionUser();
 			auctionUser.setID(KeyGen.uuid());
@@ -123,9 +118,9 @@ public class AuctionPurchaseController {
 				priceLog.setAuctionUserID(auctionUserid);
 				priceLog.setAddtime(new Date());
 			}else{
-				System.out.println("*****************该用户还没有报名*********************");
 				return Result.fail("您还未报名,请报名后参与竞拍");
 			}
+			auctionContextService.delayed(auctionid);
 			boolean flag=auctionPriceLogService.save(priceLog);
 			if(flag){
 				return Result.ok("出价成功");
@@ -163,8 +158,6 @@ public class AuctionPurchaseController {
 			auctionUser.setAuctionGoodsID(auctionid);
 			
 			Login.UID(session, userid);//存放登录的userid
-			//System.out.println(Login.UID(request));
-			//userid=session.getAttribute("user_id").toString();
 			//组装参拍人
 			CartVO cartVO = convertCartVO(auctionid, userid,cart);
 			Orders orders = new Orders();

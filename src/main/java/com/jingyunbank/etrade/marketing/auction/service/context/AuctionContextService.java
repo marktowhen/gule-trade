@@ -1,6 +1,8 @@
 package com.jingyunbank.etrade.marketing.auction.service.context;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionGoods;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionOrder;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionPriceLog;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionUser;
+import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionGoodsService;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionOrderService;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionUserService;
 import com.jingyunbank.etrade.api.marketing.auction.service.context.IAuctionContextService;
@@ -24,6 +27,8 @@ public class AuctionContextService implements IAuctionContextService {
 	private IAuctionUserService auctionUserService;
     @Autowired
     private IAuctionOrderService auctionOrderService;
+    @Autowired
+    private IAuctionGoodsService auctionGoodsService;
 	
 	@Override
 	public boolean signUp(AuctionUser auctionUser, Orders orders) throws DataSavingException,DataRefreshingException{
@@ -55,6 +60,31 @@ public class AuctionContextService implements IAuctionContextService {
 	}
     
 	
+	@Override
+	public void delayed(String auctionid) throws DataRefreshingException {
+		Optional<AuctionGoods> auctionGoods=auctionGoodsService.single(auctionid);
+		AuctionGoods auctionGood;
+		if(auctionGoods.isPresent()){
+			auctionGood=auctionGoods.get();
+			//Date startTime=auctionGood.getStartTime();
+			Date endTime=auctionGood.getEndTime();
+			int delayTime=auctionGood.getDelaySecond();
+			if((endTime.getTime()-new Date().getTime())/1000<delayTime){
+				auctionGood.setEndTime(new Date((new Date().getTime()+delayTime)));
+				auctionGoodsService.delay(auctionGood);
+			}else{
+				System.out.println("time is  enough");
+				/*System.out.println("不用推迟 。。。。。。。。");
+				auctionGood.setEndTime(new Date((new Date().getTime()+delayTime*9000)));
+				System.out.println(auctionGood.getEndTime()+"time is");*/
+				//auctionGoodsService.delay(auctionGood);
+				
+			}
+			
+		}
+		
+	}
+
 	@Override
 	public boolean payFinal(AuctionUser auctionUser,Orders orders) throws DataSavingException, DataRefreshingException {
 		AuctionOrder auctionOrder=new AuctionOrder();

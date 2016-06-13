@@ -9,6 +9,7 @@
 		<result column="skuid" property="SKUID"/>
 		<result column="start_time" property="startTime"/>
 		<result column="end_time" property="endTime"/>
+		<result column="seller_end_time" property="sellerEndTime"/>
 		<result column="delay_second" property="delaySecond"/>
 		<result column="delay_amount" property="delayAmount"/>
 		<result column="type" property="type"/>
@@ -35,7 +36,7 @@
 	</resultMap>
 	
 	<sql id="base_column">
-		id,gid,skuid,start_time,end_time,delay_second,delay_amount,type,status,deposit,start_price,add_price,sold_price,sold_uid
+		id,gid,skuid,start_time,end_time,seller_end_time,delay_second,delay_amount,type,status,deposit,start_price,add_price,sold_price,sold_uid
 	</sql>
 	
 	<sql id="column_with_goods_info">
@@ -51,7 +52,7 @@
 	
 	<insert id="insert">
 		insert into auction_goods(<include refid="base_column"/>)
-		values(#{ID},#{GID},#{SKUID},#{startTime},#{endTime},#{delaySecond},#{delayAmount},
+		values(#{ID},#{GID},#{SKUID},#{startTime},#{endTime},#{sellerEndTime},#{delaySecond},#{delayAmount},
 				#{type},#{status},#{deposit},#{startPrice},#{addPrice},#{soldPrice},#{soldUID})
 	</insert>
 	
