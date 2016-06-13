@@ -23,6 +23,8 @@ public interface AuctionGoodsDao {
 	boolean updateDelayAmount(@Param("ID")String ID,@Param("endTime") Date endTime);
 
 	int count();
+	
+	List<AuctionGoodsEntity> listOnDead();
 
 
 }

@@ -70,7 +70,10 @@
 			LEFT JOIN goods g on a.gid=g.id
 			LEFT JOIN goods_sku k on a.skuid = k.id 
 		order by a.status,a.start_time 
-		limit #{offset, javaType=LONG},#{size, javaType=LONG}
+		<!-- #limit #{offset, javaType=LONG},#{size, javaType=LONG} -->
+	</select>
+	<select id="listOnDead" resultMap="AuctionGoodsResultMap">
+		SELECT * from auction_goods g where TIME_TO_SEC(NOW())-TIME_TO_SEC(g.end_time)&lt;=120 and g.`status`='OVER' 
 	</select>
 	
 	<update id="updateSoldPrice">

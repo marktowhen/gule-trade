@@ -2,6 +2,7 @@ package com.jingyunbank.etrade.marketing.auction.service.context;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionPriceLog;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionUser;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionGoodsService;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionOrderService;
+import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionPriceLog;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionUserService;
 import com.jingyunbank.etrade.api.marketing.auction.service.context.IAuctionContextService;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.user.bo.Users;
+import com.jingyunbank.etrade.api.user.service.IUserService;
 
 @Service("auctionContextService")
 public class AuctionContextService implements IAuctionContextService {
@@ -29,6 +32,10 @@ public class AuctionContextService implements IAuctionContextService {
     private IAuctionOrderService auctionOrderService;
     @Autowired
     private IAuctionGoodsService auctionGoodsService;
+    @Autowired
+    private IAuctionPriceLog auctionPriceLogService;
+    @Autowired
+    private IUserService userService;
 	
 	@Override
 	public boolean signUp(AuctionUser auctionUser, Orders orders) throws DataSavingException,DataRefreshingException{
@@ -97,6 +104,32 @@ public class AuctionContextService implements IAuctionContextService {
 		
 		boolean saveOrder=auctionOrderService.save(auctionOrder);
 		return false;
+	}
+     
+	
+	
+	@Override
+	public void expire() {
+		List<AuctionGoods> list=auctionGoodsService.listOnDead();
+		List<AuctionPriceLog> listPriceLog;
+		if(list!=null){
+			for (int i = 0; i < list.size(); i++) {
+				list.get(i).getID();
+				listPriceLog=auctionPriceLogService.list(list.get(i).getID());
+				if(listPriceLog!=null&&listPriceLog.size()>0){
+					//listPriceLog.get(i).getAuctionUserID();
+					Users user=userService.selUserByUserId(listPriceLog.get(i).getAuctionUserID());
+					if(i==0){
+						System.out.println("胜出者发送通知"+user.getOpenId());
+					}else{
+						System.out.println("出局者发送通知  "+user.getOpenId());
+					}
+				}
+				
+			}
+		}
+		
+		
 	}
 
 	@Override
