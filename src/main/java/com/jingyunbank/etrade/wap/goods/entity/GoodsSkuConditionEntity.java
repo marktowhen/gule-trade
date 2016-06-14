@@ -20,11 +20,26 @@ public class GoodsSkuConditionEntity implements Serializable {
 	private BigDecimal price; // 价格
 	private BigDecimal salePrice; // 折扣价
 	private int grade;//1:推荐2:新品3:热销
+	private String skuPath;//每一个属性对应的主图片
     private boolean isSale;
 	private List<GoodsAttrEntity> attrList = new ArrayList<GoodsAttrEntity>();
 
 	
 	
+	/**
+	 * @return the skuPath
+	 */
+	public String getSkuPath() {
+		return skuPath;
+	}
+
+	/**
+	 * @param skuPath the skuPath to set
+	 */
+	public void setSkuPath(String skuPath) {
+		this.skuPath = skuPath;
+	}
+
 	/**
 	 * @return the grade
 	 */

@@ -52,7 +52,7 @@ public class OAuthController {
 		    	 if(weixinUserService.getUsers(openId)==null){
 		    		 weixinUserService.addUser(snsUserInfoBo);
 		    		 request.setAttribute("snsUserInfo", snsUserInfoVo);
-		    		 response.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
+		    		response.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 		    	 }else{
 		    		 System.out.println("得到用户的信息:"+snsUserInfoVo.getNickname());
 			    	 //设置传递参数

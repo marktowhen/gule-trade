@@ -18,7 +18,7 @@ public class CommentFunction {
 	 * 通过appid和appSecret活的access_token
 	 **/
 	public static String getAccess_token() { // 获得ACCESS_TOKEN15.15
-		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx0e77cf963bfc785b&secret=d637c27b448c14baeb3a282a77d94356";
+		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx3f0da4d18b8e3ff8&secret=eca90c942400a6a3c6a70099bb7958d7";
 		String accessToken = null;
 		try {
 			URL urlGet = new URL(url);
@@ -45,7 +45,7 @@ public class CommentFunction {
 		return accessToken;
 	}
 
-	/*public static JSONObject getWeiXinUserInfo(String openid){
+	public static JSONObject getWeiXinUserInfo(String openid){
 		String accessToken = getAccess_token();
 		String url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + openid;
 		JSONObject demoJson = null;
@@ -70,7 +70,7 @@ public class CommentFunction {
 		}
 		return demoJson;
 		
-	}*/
+	}
 	
 	
 	/**
@@ -78,12 +78,13 @@ public class CommentFunction {
 	 **/
 	public static int createMenu() throws IOException {
 		//微信底部标题的Title的内容
-		String user_define_menu = "{\"button\":[{\"name\":\"跳转首页\",\"type\":\"view\",\"key\":\"1110\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"},{\"name\":\"会员\",\"sub_button\":[{\"name\":\"我的二维码\",\"type\":\"click\",\"key\":\"1111\",\"url\":null},{\"name\":\"商城\",\"type\":\"view\",\"key\":\"1112\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"}]},{\"name\":\"关于我们\",\"sub_button\":[{\"name\":\"人工客服\",\"type\":\"view\",\"key\":\"1211\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"},{\"name\":\"联系我们\",\"type\":\"view\",\"key\":\"1212\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"},{\"name\":\"公司简介\",\"type\":\"view\",\"key\":\"1213\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"}]}]}";
+/*		String user_define_menu = "{\"button\":[{\"name\":\"跳转首页\",\"type\":\"view\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0e77cf963bfc785b&redirect_uri=https%3a%2f%2fguoyuxue.tunnel.qydev.com%2fapi%2fget%2fuser\"},{\"name\":\"会员\",\"sub_button\":[{\"name\":\"我的二维码\",\"type\":\"click\",\"key\":\"1111\"},{\"name\":\"商城\",\"type\":\"view\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"}]},{\"name\":\"关于我们\",\"sub_button\":[{\"name\":\"人工客服\",\"type\":\"view\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"},{\"name\":\"联系我们\",\"type\":\"view\",\"url\":\"http://m.jingyunbank.com/contact/aboutme\"},{\"name\":\"公司简介\",\"type\":\"view\"\"url\":\"http://m.jingyunbank.com/contact/aboutme\"}]}]}";
+*/		
 		
-		
+		String user_define_menu = "{\"button\":[{\"type\":\"view\",\"name\":\"跳转首页\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3f0da4d18b8e3ff8&redirect_uri=https%3a%2f%2fguoyuxue.tunnel.qydev.com%2fapi%2fget%2fuser&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect\"},{\"name\":\"用户/理财\",\"sub_button\":[{\"type\":\"view\",\"name\":\"快速注册\",\"url\":\"https://www.jingyunbank.com/user/regInvite.html?u=MjExODE=\"},{\"type\":\"view\",\"name\":\"用户登录\",\"url\":\"https://www.jingyunbank.com/user/login.html\"},{\"type\":\"click\",\"name\":\"我的账户\",\"key\":\"1\"}]}]}";
+
 		//此处改为自己想要的结构体，替换即可
 		String access_token = getAccess_token();
-		System.out.println("token="+access_token);
 		String action = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="+ access_token;
 		try {
 			URL url = new URL(action);
@@ -113,12 +114,12 @@ public class CommentFunction {
 		return 0;
 	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args){
 		try {
 			CommentFunction.createMenu();
 			System.out.println(CommentFunction.createMenu());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 }

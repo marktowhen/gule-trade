@@ -27,7 +27,7 @@ public class WechatKit {
 		HttpGet get = null;
 		String access_token = "";
 		try {
-			get = new HttpGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx0e77cf963bfc785b&secret=d637c27b448c14baeb3a282a77d94356");
+			get = new HttpGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx3f0da4d18b8e3ff8&secret=eca90c942400a6a3c6a70099bb7958d7");
 			httpclient = HttpClients.createDefault();
 			response = httpclient.execute(get);
 			int statusCode = response.getStatusLine().getStatusCode();

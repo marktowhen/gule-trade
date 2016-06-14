@@ -16,15 +16,16 @@
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
 		<result column="grade" property="grade" />
+		<result column="sku_path" property="skuPath" />
 	</resultMap>
 
 
 	<insert id="insertGoodsSku"
 		parameterType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
 		INSERT INTO `goods_sku`
-		(`id`,`gid`,`properties`,`properties_value`,`stock`,`volume`,`price`,`sale_price`,`status`,`is_sale`,`grade`)
+		(`id`,`gid`,`properties`,`properties_value`,`stock`,`volume`,`price`,`sale_price`,`status`,`is_sale`,`grade`,`sku_path`)
 		VALUES ( #{ID}, #{GID}, #{properties}, #{propertiesValue}, #{stock},
-		#{volume}, #{price}, #{salePrice}, #{status},#{sale},#{grade})
+		#{volume}, #{price}, #{salePrice}, #{status},#{sale},#{grade},#{skuPath})
 	</insert>
 
 	<update id="updateGoodsSku"
@@ -50,6 +51,9 @@
 		</if>
 		<if test="grade !=null and grade != ''">
 			`grade` = #{grade},
+		</if>
+		<if test="skuPath !=null and skuPath != ''">
+			`sku_path` = #{skuPath},
 		</if>
 		`status` = #{status} , `id` = #{ID}
 		WHERE `id` = #{ID}
@@ -98,7 +102,8 @@
 		s.`price` price_,
 		s.`sale_price` sale_price_,
 		s.`status` status_,
-		s.grade
+		s.grade,
+		s.sku_path sku_path
 		FROM `goods_sku` s
 		WHERE 1=1
 		AND s.`id`= #{id}
