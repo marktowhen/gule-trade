@@ -45,10 +45,10 @@ public class AuctionGoodsController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不合法，请检查后重新输入。");
 		}
-		
 		AuctionGoods goodsbo = new AuctionGoods();
 		goods.setID(KeyGen.uuid());
 		goods.setStatus(AuctionGoods.STATUS_NEW);
+		goods.setSellerEndTime(goods.getEndTime());//卖家设定的结束时间
 		BeanUtils.copyProperties(goods, goodsbo);
 		auctionGoodsService.save(goodsbo);
 		

@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.marketing.auction.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionGoods;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionGoodsService;
+import com.jingyunbank.etrade.api.marketing.group.bo.Group;
 import com.jingyunbank.etrade.api.wap.goods.bo.Goods;
 import com.jingyunbank.etrade.api.wap.goods.bo.GoodsSku;
 import com.jingyunbank.etrade.marketing.auction.dao.AuctionGoodsDao;
@@ -133,8 +135,23 @@ public class AuctionGoodsService implements IAuctionGoodsService {
 	public int count() {
 		return auctionGoodsDao.count();
 	}
-	
-	
 
+	@Override
+	public List<AuctionGoods> listOnDead() {
+		return convertEntityToBo(auctionGoodsDao.listOnDead());
+	}
+	
+	
+	private List<AuctionGoods> convertEntityToBo(List<AuctionGoodsEntity> entityList){
+		if(entityList!=null){
+			return entityList.stream().map( entity->{
+				AuctionGoods bo = new AuctionGoods();
+				BeanUtils.copyProperties(entity, bo);
+				return bo;
+			}).collect(Collectors.toList());
+		}
+		return new ArrayList<AuctionGoods>();
+		
+	}
 
 }
