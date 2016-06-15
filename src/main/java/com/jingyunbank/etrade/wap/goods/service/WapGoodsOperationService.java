@@ -86,7 +86,7 @@ public class WapGoodsOperationService implements IWapGoodsOperationService {
 					arrs.add(aid);
 				}
 				Object[] v_values = arrs.toArray();
-				Arrays.sort(v_values);
+				/*Arrays.sort(v_values);*/
 				//排序后赋值给属性
 				for (Object s : v_values) {
 					if (goodsSkuEntity.getProperties() == null || goodsSkuEntity.getProperties() == "") {
