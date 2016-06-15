@@ -22,14 +22,16 @@ public class AuctionSchedule {
 	@Autowired
 	IAuctionContextService auctionContextService;
 
-	
-	    @Scheduled(fixedRate = 120*1000)
+	    /**
+	    * 一分钟内到期的竞拍
+	    */
+	    @Scheduled(fixedRate = 60*1000)
 	     public void expire() {
 	    	auctionContextService.expire();
 	     }
 	    
 	    
-	    @Scheduled(fixedRate = 500)
+	    @Scheduled(fixedRate = 60*1000)
 	    public void refreshStatus() throws DataRefreshingException {
 	    	List<AuctionGoods> auctionGoodsList=auctionGoodsService.list(new Range(0,2));
 	    	if(null!=auctionGoodsList&&auctionGoodsList.size()>0){
