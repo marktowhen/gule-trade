@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.marketing.group.bo.Group;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
@@ -55,7 +56,7 @@ public class GroupPurchaseController {
 	private IAddressService addressService;
 
 	// 开团 
-//	@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value = "/purchase/start/{groupgoodsid}", method = RequestMethod.POST)
 	public Result<GroupVO> start(@PathVariable String groupgoodsid,
 			@Valid @RequestBody CartVO cart,
@@ -69,7 +70,7 @@ public class GroupPurchaseController {
 			return Result.fail("团购商品不存在。");
 		}
 		String uid = Login.UID(session);
-		uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
+		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		Optional<Users> leader = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等
 		Result<String> startMatch = groupPurchaseContextService.startMatch(goods.get());
@@ -98,11 +99,11 @@ public class GroupPurchaseController {
 	}
 
 	// 参团 
-//	@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value = "/purchase/join/{groupid}", method = RequestMethod.POST)
 	public Result<String> join(@PathVariable String groupid,
 			@Valid @RequestBody CartVO cart,
-			BindingResult valid,  HttpSession session)
+			BindingResult valid,HttpSession session)
 			throws Exception {
 
 		Optional<Group> group = groupService.single(groupid);
@@ -115,7 +116,7 @@ public class GroupPurchaseController {
 		}
 		group.get().setGoods(goods.get());
 		String  uid = Login.UID(session);
-		uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
+		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		Optional<Users> user = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等
 		Result<String> joinMatch = groupPurchaseContextService.joinMatch(group.get());

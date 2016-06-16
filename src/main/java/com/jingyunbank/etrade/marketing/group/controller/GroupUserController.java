@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jingyunbank.core.Result;
+import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.marketing.group.bo.Group;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupGoods;
 import com.jingyunbank.etrade.api.marketing.group.bo.GroupOrder;
@@ -54,6 +56,7 @@ public class GroupUserController {
 		return Result.ok(groupUserService.count(groupID, status));
 	}
 	/**
+	 * 
 	 * 查出用户对应的信息
 	 * @param groupid
 	 * @param uid
@@ -73,8 +76,9 @@ public class GroupUserController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="/group/list/{uid}",method=RequestMethod.GET)
-	public Result<List<GroupUserVO>> getListGroup(@PathVariable String uid,HttpServletRequest request){
+	@RequestMapping(value="/group/list",method=RequestMethod.GET)
+	public Result<List<GroupUserVO>> getListGroup(HttpServletRequest request){
+		String uid = Login.UID(request);
 		List<GroupUserVO> volist = new ArrayList<GroupUserVO>();
 		groupUserService.getGroup(uid).forEach(bo ->{
 			GroupUserVO vo = new GroupUserVO();
@@ -91,14 +95,15 @@ public class GroupUserController {
 	 * @param status
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/group/single/{id}",method=RequestMethod.GET)
-	public Result<GroupVO> getroupGoods(@PathVariable String id){
-		//登陆用户的id     uid=“Ma9ogkIXSW-y0uSrvfqVIQ”
+	public Result<GroupVO> getroupGoods(@PathVariable String id,HttpServletRequest request){
+		String uid = Login.UID(request);
 		Optional<Group> bo=groupService.getGroupGoods(id);
 		GroupGoodsVO voGoods = new GroupGoodsVO();
 		BeanUtils.copyProperties(bo.get().getGoods(), voGoods);
 		GroupVO vo = new GroupVO();
-		Optional<GroupUser> bouser=groupUserService.single(id, "Ma9ogkIXSW-y0uSrvfqVIQ");
+		Optional<GroupUser> bouser=groupUserService.single(id, uid);
 		if(bouser.isPresent()){
 			Optional<GroupOrder> boOrder=groupOrderService.singleByGroupUserId(bouser.get().getID());
 			vo.setOrderno(String.valueOf(boOrder.get().getOrderno()));

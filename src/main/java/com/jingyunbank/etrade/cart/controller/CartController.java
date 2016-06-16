@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -51,11 +52,12 @@ public class CartController {
 	/**
 	 *	uri : get /api/cart/goods/list/:uid
 	 */
-	/*@AuthBeforeOperation*/
-	@RequestMapping(value="/api/cart/goods/list/{uid}",
+	@AuthBeforeOperation
+	@RequestMapping(value="/api/cart/goods/list",
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
-	public Result<CartVO> list(@PathVariable String uid) throws Exception{
+	public Result<CartVO> list(HttpServletRequest request) throws Exception{
+		String uid = Login.UID(request);
 		List<GoodsInCart> goodsincart = cartService.listGoods(uid);
 		CartVO cart = convert(goodsincart);
 		return Result.ok(cart);
@@ -100,7 +102,7 @@ public class CartController {
 	 * 将商品放入购物车中<br>
 	 * uri: put /api/cart {goods info}
 	 */
-	/*@AuthBeforeOperation*/
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart",
 				method=RequestMethod.POST, 
 				consumes="application/json;charset=UTF-8",
@@ -111,12 +113,12 @@ public class CartController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
-		/*String cid = Login.cartID(session);
+		String cid = Login.cartID(session);
 		String uid = Login.UID(session);
-		String uname = Login.uname(session);*/
-		goods.setUID("Ma9ogkIXSW-y0uSrvfqVIQ");
-		goods.setUname("perseverance^0^xue");
-		goods.setCartID("sx_umHOQTY-RSq-ivv9kNw");
+		String uname = Login.uname(session);
+		goods.setUID(uid);
+		goods.setUname(uname);
+		goods.setCartID(cid);
 		goods.setID(KeyGen.uuid());
 		goods.setAddtime(new Date());
 		GoodsInCart gcart = new GoodsInCart();
@@ -183,10 +185,10 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing", method=RequestMethod.POST)
 	public Result<CartVO> clearing(@Valid @RequestBody CartVO cart,
-			BindingResult valid, HttpSession session) throws Exception{
+			BindingResult valid, HttpSession session,HttpServletRequest request) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单信息有误，请核实后重新提交。");
 		}
@@ -221,7 +223,7 @@ public class CartController {
 //		iorders.add(ovo);
 //		cart1.setOrders(iorders);
 		
-		String uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
+		String uid = Login.UID(request);
 		Optional<Address> addressc = addressService.getDefaultAddress(uid);
 		if(addressc.isPresent()){
 			Address addr = addressc.get();
@@ -271,7 +273,7 @@ public class CartController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/cart/clearing/list", method=RequestMethod.GET)
 	public Result<CartVO> listClearing(HttpSession session) throws Exception{
 		Object obj = session.getAttribute(GOODS_IN_CART_TO_CLEARING);

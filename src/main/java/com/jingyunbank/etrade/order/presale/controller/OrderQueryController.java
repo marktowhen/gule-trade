@@ -36,8 +36,9 @@ public class OrderQueryController {
 	 * @param uid
 	 * @param session
 	 * @return
-	 * @AuthBeforeOperation
+	 *
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/user/list", method=RequestMethod.GET)
 	public Result<List<Order2ShowVO>> listUID(
 			@RequestParam(value="from", required=false, defaultValue="") int from, 
@@ -47,7 +48,7 @@ public class OrderQueryController {
 			HttpSession session){
 		String loginuid = Login.UID(session);
 		
-		return Result.ok(orderService.list("Ma9ogkIXSW-y0uSrvfqVIQ", null, statuscode,anystatus, new Range(from, size+from))
+		return Result.ok(orderService.list(loginuid, null, statuscode,anystatus, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo,"goods");
@@ -82,7 +83,7 @@ public class OrderQueryController {
 	}
 	
 	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	public Result<Order2ShowVO> singleOrder(@PathVariable("oid") String oid){
 		Order2ShowVO vo = new Order2ShowVO();
 		Optional<Orders> order = orderService.single(oid);

@@ -90,7 +90,7 @@ public class PayController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/api/payments/prepay", method=RequestMethod.PUT)
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	public Result<Map<String, String>> build(
 				@Valid @RequestBody OrderPaymentRequestVO payvo, 
 				BindingResult valid,  

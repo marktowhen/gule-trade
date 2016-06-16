@@ -251,10 +251,10 @@ public class WapGoodsController {
 	////////////////////////// 收藏///////////////////////////////////////
 
 	@RequestMapping(value = "/favorite/isfav/{gid}", method = RequestMethod.GET)
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	public Result<String> isfav(HttpServletRequest request, @PathVariable String gid) throws Exception {
-		// String uid = Login.UID(request);
-		String uid = "001";
+		 String uid = Login.UID(request);
+		/*String uid = "001";*/
 		String id = trackService.isFav(uid, gid, "2");
 		if (id != "") {
 			return Result.ok(id);
@@ -271,10 +271,10 @@ public class WapGoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/favorite/save/{gid}", method = RequestMethod.POST)
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	public Result<String> saveFav(HttpServletRequest request, @PathVariable String gid) throws Exception {
-		// String uid = Login.UID(request);
-		String uid = "001";
+		String uid = Login.UID(request);
+		/*String uid = "001";*/
 		String id = trackService.saveFavorites(uid, gid, "2");
 		if (id != "") {
 			return Result.ok(id);

@@ -29,7 +29,7 @@ public class AuctionSchedule {
 	     }
 	    
 	    
-	    @Scheduled(fixedRate = 500)
+	    /*@Scheduled(fixedRate = 500)*/
 	    public void refreshStatus() throws DataRefreshingException {
 	    	List<AuctionGoods> auctionGoodsList=auctionGoodsService.list(new Range(0,2));
 	    	if(null!=auctionGoodsList&&auctionGoodsList.size()>0){

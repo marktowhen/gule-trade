@@ -140,11 +140,11 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	/*@AuthBeforeOperation*/
+	@AuthBeforeOperation
 	@RequestMapping(value="/default",method=RequestMethod.GET)
 	public Result<AddressVO> getDefaultAddress(HttpServletRequest request)throws Exception{
 		String uid=Login.UID(request);
-		Optional<Address> optional = addressService.getDefaultAddress("Ma9ogkIXSW-y0uSrvfqVIQ");
+		Optional<Address> optional = addressService.getDefaultAddress(uid);
 		AddressVO vo = new AddressVO();
 		if(optional.isPresent()){
 			vo.setAddress(optional.get().getProvinceName()+"-"+optional.get().getCityName()+"-"+optional.get().getAddress());

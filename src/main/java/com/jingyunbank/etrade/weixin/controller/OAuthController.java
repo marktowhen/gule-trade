@@ -22,8 +22,11 @@ import com.jingyunbank.etrade.api.cart.service.ICartService;
 import com.jingyunbank.etrade.api.weixin.bo.SNSUserInfoBo;
 import com.jingyunbank.etrade.api.weixin.service.IWeiXinUserService;
 import com.jingyunbank.etrade.weixin.bean.SNSUserInfoVo;
+import com.jingyunbank.etrade.weixin.entity.Constants;
+import com.jingyunbank.etrade.weixin.entity.TEA;
 import com.jingyunbank.etrade.weixin.entity.WeixinOauth2Token;
 import com.jingyunbank.etrade.weixin.util.GetAccessToken;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OAuthController {
@@ -40,10 +43,10 @@ public class OAuthController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/api/get/user")
-	public void getUserInfo(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+	public void getUserInfo(HttpServletRequest request,HttpServletResponse resp,HttpSession session){
 		try {
 			request.setCharacterEncoding("utf-8");
-			response.setCharacterEncoding("utf-8");
+			resp.setCharacterEncoding("utf-8");
 			//用户同意授权后，能获取到code
 			 String code = request.getParameter("code");
 		     /*String state = request.getParameter("state");*/
@@ -56,23 +59,51 @@ public class OAuthController {
 		    	 //用户标识
 		    	 String openId = weixinOauth2Token.getOpenId();
 		    	 //获取用户信息
-		    	 SNSUserInfoVo snsUserInfoVo=GetAccessToken.getUserInfo(accessToken, openId);
-		    	 SNSUserInfoBo snsUserInfoBo = new SNSUserInfoBo();
-		    	 snsUserInfoVo.setId(KeyGen.uuid());
-		    	 BeanUtils.copyProperties(snsUserInfoVo, snsUserInfoBo);
-		    	 Optional<Cart> candidatecart = cartService.singleCart(snsUserInfoVo.getId());
-	    			String cartID = null;
-	    			if(candidatecart.isPresent()){
-	    				cartID = candidatecart.get().getID();
-	    			}
-	    			loginSuccess(snsUserInfoVo.getId(), snsUserInfoVo.getNickname(),cartID,session,response);
-		    	 if(weixinUserService.getUsers(openId)==null){
+		    	
+		    	 Optional<SNSUserInfoBo> bo=weixinUserService.getUsers(openId);
+		    	 if(!bo.isPresent()){
+		    		 SNSUserInfoVo snsUserInfoVo=GetAccessToken.getUserInfo(accessToken, openId);
+			    	 SNSUserInfoBo snsUserInfoBo = new SNSUserInfoBo();
+			    	 snsUserInfoVo.setId(KeyGen.uuid());
+			    	 BeanUtils.copyProperties(snsUserInfoVo, snsUserInfoBo);
 		    		 weixinUserService.addUser(snsUserInfoBo);
-		    		response.sendRedirect("http://115.28.244.41:9000/");
+		    		 Optional<Cart> candidatecart = cartService.singleCart(snsUserInfoVo.getId());
+		    			String cartID = null;
+		    			if(candidatecart.isPresent()){
+		    				cartID = candidatecart.get().getID();
+		    			}else{
+		    				cartService.save(new Cart(KeyGen.uuid(), snsUserInfoVo.getId()));
+		    			}
+		    			/*loginSuccessed(snsUserInfoVo.getId(), snsUserInfoVo.getNickname(),cartID,session,response);*/
+						session.setAttribute(Constants.IDBYSESSION,
+								TEA.Encrypt(snsUserInfoVo.getId()));
+						session.setAttribute(Constants.USERNAMEBYSESSION,
+								TEA.Encrypt(snsUserInfoVo.getNickname()));
+						session.setAttribute(Constants.CARTIDBYSESSION,
+								TEA.Encrypt(cartID));
+		    		 System.out.println("uid:"+Login.UID(request));
+		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 		    	 }else{
-		    		 System.out.println("得到用户的信息:"+snsUserInfoVo.getNickname());
+		    		 Optional<Cart> candidatecart = cartService.singleCart(Login.UID(request));
+		    			String cartID = null;
+		    			if(candidatecart.isPresent()){
+		    				cartID = candidatecart.get().getID();
+		    			}
+		    			/*loginSuccessed(bo.get().getId(), bo.get().getNickname(),cartID,session,response);*/
+		    			session.setAttribute(Constants.IDBYSESSION,
+								TEA.Encrypt(bo.get().getId()));
+						session.setAttribute(Constants.USERNAMEBYSESSION,
+								TEA.Encrypt(bo.get().getNickname()));
+						/*session.setAttribute(Constants.CARTIDBYSESSION,
+								TEA.Encrypt(cartID));*/
+		    		 /*System.out.println("得到用户的信息:"+snsUserInfoVo.getNickname());*/
 			    	 //设置传递参数
-			    	 response.sendRedirect("http://115.28.244.41:9000/");
+						System.out.println(request.getSession().getAttribute(Constants.IDBYSESSION));
+						String iii=String.valueOf(request.getSession().getAttribute(Constants.IDBYSESSION));
+					String uid = StringUtilss.getSessionId(request,resp);
+		    		 System.out.println("uid:"+uid);
+		    		 
+		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 		    	 }
 		    	
 		    	
@@ -82,7 +113,7 @@ public class OAuthController {
 			e.printStackTrace();
 		}
 	}
-	public static void loginSuccess(String uid, String username, String cartID, HttpSession session,
+	public static void loginSuccessed(String uid, String username, String cartID, HttpSession session,
 			HttpServletResponse response){
 		Security.authenticate(session);
 		Login.UID(session, uid);

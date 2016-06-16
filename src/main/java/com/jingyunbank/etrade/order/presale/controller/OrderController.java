@@ -69,7 +69,7 @@ public class OrderController {
 	 * @return
 	 * @throws Exception
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(
 			value="/api/order",
 			method=RequestMethod.POST,
@@ -80,7 +80,7 @@ public class OrderController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
-		String UID = "Ma9ogkIXSW-y0uSrvfqVIQ";//Login.UID(session);
+		String UID = Login.UID(session);
 		String uname = Login.uname(session);
 		boolean isemployee = Login.employee(session);
 		purchase.setUID(UID);
@@ -159,7 +159,7 @@ public class OrderController {
 		return orders;
 	}
 	
-	/*@AuthBeforeOperation*/
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/cancellation/{oid}",method=RequestMethod.PUT)
 	public Result<String> cancel(@PathVariable String oid, HttpSession session) throws Exception{
 		
@@ -168,6 +168,7 @@ public class OrderController {
 		}
 		return Result.ok();
 	}
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/single/{oid}")
 	public Result<Order2ShowVO> getSingle(@PathVariable String oid){
 		Order2ShowVO vo = new Order2ShowVO();
@@ -183,7 +184,7 @@ public class OrderController {
 		return Result.ok(vo);
 		
 	}
-	
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/update/status/{oid}",method=RequestMethod.PUT)
 	public Result<String> refreshStatus(@PathVariable String oid)throws Exception{
 		orderService.refreshStatus(Arrays.asList(oid), OrderStatusDesc.RECEIVED);
