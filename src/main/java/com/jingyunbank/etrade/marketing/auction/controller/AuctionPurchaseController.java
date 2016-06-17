@@ -1,6 +1,7 @@
 package com.jingyunbank.etrade.marketing.auction.controller;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -161,7 +162,7 @@ public class AuctionPurchaseController {
 			//组装参拍人
 			CartVO cartVO = convertCartVO(auctionid, userid,cart);
 			Orders orders = new Orders();
-			session.setAttribute("AUCTION_ID", auctionid);
+			//session.setAttribute("AUCTION_ID", auctionid);
 			session.setAttribute(CartController.GOODS_IN_CART_TO_CLEARING, new ObjectMapper().writeValueAsString(cartVO));
 			BeanUtils.copyProperties(cartVO.getOrders().get(0), orders);
 			auctionContextService.payFinal(auctionUser, orders);
@@ -240,30 +241,55 @@ public class AuctionPurchaseController {
 				//纯订单价格
 				BigDecimal orderprice = BigDecimal.ZERO;
 				order.setExtradata(auctionid);
+				
 				//纯邮费
 				BigDecimal orderpostage = BigDecimal.valueOf(10);
 				List<GoodsInCartVO> goods = order.getGoods();
-				for (GoodsInCartVO gs : goods) {
-					BigDecimal gspprice = gs.getPprice();
-					BigDecimal gsprice = gs.getPrice();
-					int gscount = gs.getCount();
-					orderprice = orderprice.add(
+				Optional<AuctionGoods> auctionGoods = auctionGoodsService.single(auctionid);
+				AuctionGoods auctionGood=new AuctionGoods();
+				if(auctionGoods.isPresent()){
+					auctionGood=auctionGoods.get();
+				if(order.getType().equals("AUCTION")){
+					//报名
+					orderprice=auctionGood.getDeposit();
+					//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
+					orderpostage = BigDecimal.ZERO;//报名时没有邮费
+					//orderpostage = (orderprice.compareTo(BigDecimal.valueOf(68)) >= 0 ? BigDecimal.ZERO : orderpostage);
+					order.setPostage(orderpostage);
+					order.setPrice(orderprice.add(orderpostage));
+					cartprice = cartprice.add(order.getPrice());
+					cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
+					
+				/*	for (GoodsInCartVO gs : goods) {
+						BigDecimal gspprice = gs.getPprice();
+						BigDecimal gsprice = gs.getPrice();
+						int gscount = gs.getCount();
+						orderprice = orderprice.add(
 								(Objects.nonNull(gspprice)?gspprice:gsprice)
-										.multiply(BigDecimal.valueOf(gscount)).setScale(2)
-							);
-				}
-				//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
-				orderpostage = (orderprice.compareTo(BigDecimal.valueOf(68)) >= 0 ? BigDecimal.ZERO : orderpostage);
-	            order.setPostage(orderpostage);
-	            order.setPrice(orderprice.add(orderpostage));
-	            cartprice = cartprice.add(order.getPrice());
-	            cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
+								.multiply(BigDecimal.valueOf(gscount)).setScale(2)
+								);
+					}*/
+					
+				}else if(order.getType().equals("AUCTIONFINAL")){
+					//支付尾款
+					//当前默认售价高于订金
+					orderprice=auctionGood.getSoldPrice().subtract(auctionGood.getDeposit());
+					//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
+					orderpostage = (orderprice.compareTo(BigDecimal.valueOf(68)) >= 0 ? BigDecimal.ZERO : orderpostage);
+					order.setPostage(orderpostage);
+					order.setPrice(orderprice.add(orderpostage));
+					cartprice = cartprice.add(order.getPrice());
+					cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
+					
+				 }
+				
+			   }
 			}
-			Optional<AuctionGoods> goods = auctionGoodsService.single(auctionid);
+			/*Optional<AuctionGoods> goods = auctionGoodsService.single(auctionid);
 			if(goods.isPresent()){
 				//goods.get().getDeposit();
 				cart1.setTotalPriceWithoutPostage(goods.get().getDeposit());//定金
-			}
+			}*/
 			cart1.setTotalPrice(cartprice);
 			return cart1;
 		}

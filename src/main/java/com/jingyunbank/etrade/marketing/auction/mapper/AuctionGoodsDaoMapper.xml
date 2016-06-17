@@ -73,7 +73,7 @@
 		<!-- #limit #{offset, javaType=LONG},#{size, javaType=LONG} -->
 	</select>
 	<select id="listOnDead" resultMap="AuctionGoodsResultMap">
-		SELECT * from auction_goods g where TIME_TO_SEC(NOW())-TIME_TO_SEC(g.end_time)&lt;=120 and g.`status`='OVER' 
+		SELECT * from auction_goods g where TIME_TO_SEC(NOW())-TIME_TO_SEC(g.end_time)&lt;=60 and g.`status`='OVER' 
 	</select>
 	
 	<update id="updateSoldPrice">
