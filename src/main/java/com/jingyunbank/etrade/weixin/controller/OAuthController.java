@@ -87,7 +87,7 @@ public class OAuthController {
 						session.setAttribute(Constants.CARTIDBYSESSION,
 								TEA.Encrypt(cartID));
 		    		 System.out.println("uid:"+Login.UID(request));
-		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
+		    		 resp.sendRedirect("http://115.28.244.41:9000/#/");
 		    	 }else{
 		    		 
 		    		 request.getSession().setAttribute(Constants.IDBYSESSION, "abcdasfafd");
@@ -110,7 +110,7 @@ public class OAuthController {
 					String uid = StringUtilss.getSessionId(request,resp);
 		    		 System.out.println("uid:"+uid);
 		    		 
-		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
+		    		 resp.sendRedirect("http://115.28.244.41:9000/#/");
 		    		 return;
 		    	 }
 		    	
