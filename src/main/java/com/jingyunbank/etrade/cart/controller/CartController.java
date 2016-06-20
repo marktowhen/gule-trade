@@ -34,6 +34,7 @@ import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.cart.bean.CartVO;
 import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 
 @RestController
@@ -57,7 +58,7 @@ public class CartController {
 					method=RequestMethod.GET,
 					produces="application/json;charset=UTF-8")
 	public Result<CartVO> list(HttpServletRequest request) throws Exception{
-		String uid = Login.UID(request);
+		String uid = StringUtilss.getSessionId(request);
 		List<GoodsInCart> goodsincart = cartService.listGoods(uid);
 		CartVO cart = convert(goodsincart);
 		return Result.ok(cart);
@@ -109,12 +110,12 @@ public class CartController {
 				produces="application/json;charset=UTF-8")
 	public Result<GoodsInCartVO> put(@Valid @RequestBody GoodsInCartVO goods,
 						BindingResult valid,
-						HttpSession session) throws Exception{
+						HttpSession session,HttpServletRequest request) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的数据不完整，请核实后重新提交！");
 		}
 		String cid = Login.cartID(session);
-		String uid = Login.UID(session);
+		String uid = StringUtilss.getSessionId(request);
 		String uname = Login.uname(session);
 		goods.setUID(uid);
 		goods.setUname(uname);
@@ -223,7 +224,7 @@ public class CartController {
 //		iorders.add(ovo);
 //		cart1.setOrders(iorders);
 		
-		String uid = Login.UID(request);
+		String uid = StringUtilss.getSessionId(request);
 		Optional<Address> addressc = addressService.getDefaultAddress(uid);
 		if(addressc.isPresent()){
 			Address addr = addressc.get();

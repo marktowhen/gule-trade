@@ -31,6 +31,7 @@ import com.jingyunbank.etrade.api.exception.DataSavingException;
 import com.jingyunbank.etrade.api.message.bo.Message;
 import com.jingyunbank.etrade.api.message.service.IInboxService;
 import com.jingyunbank.etrade.message.bean.MessageVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 @RequestMapping("/api/message")
@@ -61,7 +62,7 @@ public class MessageController {
 		}
 		String[] receiveUids = messageVO.getReceiveUID().split(",");
 		messageVO.setAddip(ServletBox.ip(request));
-		messageVO.setSentUID(Login.UID(request));
+		messageVO.setSentUID(StringUtilss.getSessionId(request));
 		messageVO.setStatus(Message.STATUS_SUC);
 		messageVO.setType(Message.TYPE_LETTER);
 		List<Message> listMsg = new ArrayList<Message>();
@@ -120,13 +121,14 @@ public class MessageController {
 	 * @throws Exception
 	 * 2015年11月20日 qxs
 	 */
-	/*@AuthBeforeOperation*/
-	@RequestMapping(value="/list/{uid}/{from}/{size}",method=RequestMethod.GET)
-	public Result<List<MessageVO>> getList(@PathVariable String uid ,@PathVariable int from, @PathVariable int size) throws Exception{
+	@AuthBeforeOperation
+	@RequestMapping(value="/list/{from}/{size}",method=RequestMethod.GET)
+	public Result<List<MessageVO>> getList(@PathVariable int from, @PathVariable int size,HttpServletRequest request) throws Exception{
+		String loginuid = StringUtilss.getSessionId(request);
 		Range range = new Range();
 		range.setFrom(from);
 		range.setTo(from+size);
-		return Result.ok( inboxService.list(uid, range)
+		return Result.ok( inboxService.list(loginuid, range)
 				.stream().map(bo ->{
 					return copyBoToVo(bo, new MessageVO());
 				}).collect(Collectors.toList()));
@@ -180,8 +182,8 @@ public class MessageController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/unread/amount",method=RequestMethod.GET)
 	public Result<Integer> countUnread(HttpServletRequest request) throws Exception{
-		String uid = Login.UID(request);
-		return Result.ok( inboxService.countUnread(uid));
+		String loginuid = StringUtilss.getSessionId(request);
+		return Result.ok( inboxService.countUnread(loginuid));
 	}
 	
 	/**

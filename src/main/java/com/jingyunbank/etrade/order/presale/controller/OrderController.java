@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,7 @@ import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseRequestVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderController {
@@ -76,14 +78,14 @@ public class OrderController {
 			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
 			produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Result<PurchaseRequestVO> submit(@Valid @RequestBody PurchaseRequestVO purchase,
-			BindingResult valid, HttpSession session) throws Exception{
+			BindingResult valid, HttpSession session,HttpServletRequest request) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
-		String UID = Login.UID(session);
-		String uname = Login.uname(session);
+		String uid = StringUtilss.getSessionId(request);
+		String uname = StringUtilss.getSessionUname(request);
 		boolean isemployee = Login.employee(session);
-		purchase.setUID(UID);
+		purchase.setUID(uid);
 		purchase.setUname(uname);
 		purchase.setEmployee(isemployee);
 

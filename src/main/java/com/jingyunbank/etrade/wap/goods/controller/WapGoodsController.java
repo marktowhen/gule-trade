@@ -32,6 +32,7 @@ import com.jingyunbank.etrade.wap.goods.bean.GoodsPostageVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsShowVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuConditionVO;
 import com.jingyunbank.etrade.wap.goods.bean.GoodsSkuVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 @RequestMapping("/api/wap/goods/")
@@ -253,9 +254,8 @@ public class WapGoodsController {
 	@RequestMapping(value = "/favorite/isfav/{gid}", method = RequestMethod.GET)
 	@AuthBeforeOperation
 	public Result<String> isfav(HttpServletRequest request, @PathVariable String gid) throws Exception {
-		 String uid = Login.UID(request);
-		/*String uid = "001";*/
-		String id = trackService.isFav(uid, gid, "2");
+		String loginuid = StringUtilss.getSessionId(request);
+		String id = trackService.isFav(loginuid, gid, "2");
 		if (id != "") {
 			return Result.ok(id);
 		}
@@ -273,9 +273,8 @@ public class WapGoodsController {
 	@RequestMapping(value = "/favorite/save/{gid}", method = RequestMethod.POST)
 	@AuthBeforeOperation
 	public Result<String> saveFav(HttpServletRequest request, @PathVariable String gid) throws Exception {
-		String uid = Login.UID(request);
-		/*String uid = "001";*/
-		String id = trackService.saveFavorites(uid, gid, "2");
+		String loginuid = StringUtilss.getSessionId(request);
+		String id = trackService.saveFavorites(loginuid, gid, "2");
 		if (id != "") {
 			return Result.ok(id);
 		} else {
@@ -304,12 +303,12 @@ public class WapGoodsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/favorite/list", method = RequestMethod.GET)
-	// @AuthBeforeOperation
+	@AuthBeforeOperation
 	public Result<List<GoodsShowVO>> favList(HttpServletRequest request) throws Exception {
 		//String uid = Login.UID(request);
-		String uid = "001";
+		String loginuid = StringUtilss.getSessionId(request);
 		String type = "2"; // 2代表收藏的是商品
-		List<GoodsShowVO> list = wapGoodsService.listFavGoods(uid, type).stream().map(bo -> {
+		List<GoodsShowVO> list = wapGoodsService.listFavGoods(loginuid, type).stream().map(bo -> {
 			GoodsShowVO vo = new GoodsShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;

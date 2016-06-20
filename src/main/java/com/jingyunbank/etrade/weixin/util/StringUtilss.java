@@ -73,6 +73,39 @@ public class StringUtilss extends org.apache.commons.lang3.StringUtils{
 		}
 		return userid;
 	} 
+	/**
+	 * 或得session中的username
+	 * @param request
+	 * @return
+	 */
+	public static String getSessionUname(HttpServletRequest request){
+	    String username="";
+	    try {
+	    	 username = String.valueOf(request.getSession().getAttribute(Constants.USERNAMEBYSESSION));
+	    	 if(isNotBlank(username)){
+	    		 username = java.net.URLDecoder.decode(TEA.Decrypt(username), "utf-8");
+	    	 }
+		} catch (Exception e) {
+			e.printStackTrace();
+			/*SystemLogger.log("获得session中的用户名", "用户名为空");*/
+		}
+	    return username;
+	}
+	public static String getSessionCartId(HttpServletRequest request){
+		String cartid="";
+		try{
+		    cartid = String.valueOf(request.getSession().getAttribute(Constants.CARTIDBYSESSION));
+		    // 查询一下userid是否为锁住的
+		   if(isNotBlank(cartid) ){
+			   cartid = TEA.Decrypt(cartid);
+		    }
+
+		}catch(Exception e){
+			/*SystemLogger.log("获得session中的用户id", "id为空");*/
+			e.printStackTrace();
+		}
+		return cartid;
+	} 
 	public static boolean isNotBlank(CharSequence charSequence){
 		return !isBlank(charSequence);
 	}

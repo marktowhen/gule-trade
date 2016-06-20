@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextSer
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.order.presale.bean.OrderLogisticVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderLogisticController {
@@ -89,14 +91,15 @@ public class OrderLogisticController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/orders/receipt", method=RequestMethod.PUT)
 	public Result<String> receive(@Valid @RequestBody OIDsWithTradePWDVO oidswithpwd, 
-			BindingResult valid, HttpSession session) throws Exception{
+			BindingResult valid, HttpSession session,HttpServletRequest request) throws Exception{
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单信息有误！");
 		}
 		
 		String tradepwd = oidswithpwd.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
-		Optional<Users> ou = userService.single(Login.UID(session));
+		String uid=StringUtilss.getSessionId(request);
+		Optional<Users> ou = userService.single(uid);
 		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 			return Result.fail("支付密码错误！");
 		}

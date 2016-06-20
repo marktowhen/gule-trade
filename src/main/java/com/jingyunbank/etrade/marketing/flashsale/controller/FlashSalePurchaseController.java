@@ -39,6 +39,7 @@ import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
 import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.marketing.flashsale.bean.FlashSaleUserVo;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 @RestController
 public class FlashSalePurchaseController {
 	@Autowired 
@@ -60,9 +61,9 @@ public class FlashSalePurchaseController {
 		if(!flashsale.isPresent()){
 			return Result.fail("该商品不存在。");
 		}
-		String uid = Login.UID(session);
-		uid = "Ma9ogkIXSW-y0uSrvfqVIQ";
-		System.out.println(Login.UID(request));
+		String uid = StringUtilss.getSessionId(request);
+		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
+		/*System.out.println(Login.UID(request));*/
 		Optional<Users> user = userService.single(uid);
 		
 		//库存决定是否是活动产品

@@ -21,6 +21,7 @@ import com.jingyunbank.etrade.api.order.presale.bo.OrderGoods;
 import com.jingyunbank.etrade.api.order.presale.bo.OrderStatusDesc;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
 import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderGoodsController {
@@ -37,7 +38,7 @@ public class OrderGoodsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/goods",method=RequestMethod.GET)
 	public Result<List<OrderGoodsVO>> listOrderGoods(HttpSession session,HttpServletRequest request){
-		String uid = Login.UID(request);
+		String uid=StringUtilss.getSessionId(request);
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED)/*OrderStatusDesc.RECEIVED*/
 			.stream().map(bo ->{
 			
@@ -55,7 +56,7 @@ public class OrderGoodsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/goods/comment",method=RequestMethod.GET)
 	public Result<List<OrderGoodsVO>> listyiOrderGoods(HttpSession session,HttpServletRequest request){
-		String uid = Login.UID(request);
+		String uid=StringUtilss.getSessionId(request);
 		return Result.ok(orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED)/*OrderStatusDesc.RECEIVED*/
 			.stream().map(bo ->{
 			
@@ -75,7 +76,7 @@ public class OrderGoodsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/goods/nocomment/count",method=RequestMethod.GET)
 	public Result<Integer> getNoCommentCount(HttpSession session,HttpServletRequest request){
-		String uid = Login.UID(request);
+		String uid=StringUtilss.getSessionId(request);
 		int noCommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.RECEIVED).size();
 		return Result.ok(noCommentCount);
 		
@@ -89,7 +90,7 @@ public class OrderGoodsController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/api/order/goods/comment/count",method=RequestMethod.GET)
 	public Result<Integer> getCommentCount(HttpSession session,HttpServletRequest request){
-		String uid = Login.UID(request);
+		String uid=StringUtilss.getSessionId(request);
 		int CommentCount=orderGoodsService.listOrderGoods(uid,OrderStatusDesc.COMMENTED).size();
 		return Result.ok(CommentCount);
 		

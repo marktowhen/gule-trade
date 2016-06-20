@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -39,6 +40,7 @@ import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
 import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.marketing.group.bean.GroupVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 @RequestMapping("/api/marketing/group")
@@ -61,7 +63,7 @@ public class GroupPurchaseController {
 	public Result<GroupVO> start(@PathVariable String groupgoodsid,
 			@Valid @RequestBody CartVO cart,
 			BindingResult valid, 
-			HttpSession session) throws Exception {
+			HttpSession session,HttpServletRequest request) throws Exception {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
@@ -69,7 +71,7 @@ public class GroupPurchaseController {
 		if (!goods.isPresent()) {
 			return Result.fail("团购商品不存在。");
 		}
-		String uid = Login.UID(session);
+		String uid = StringUtilss.getSessionId(request);
 		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		Optional<Users> leader = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等
@@ -103,7 +105,7 @@ public class GroupPurchaseController {
 	@RequestMapping(value = "/purchase/join/{groupid}", method = RequestMethod.POST)
 	public Result<String> join(@PathVariable String groupid,
 			@Valid @RequestBody CartVO cart,
-			BindingResult valid,HttpSession session)
+			BindingResult valid,HttpSession session,HttpServletRequest request)
 			throws Exception {
 
 		Optional<Group> group = groupService.single(groupid);
@@ -115,7 +117,7 @@ public class GroupPurchaseController {
 			return Result.fail("团购商品不存在。");
 		}
 		group.get().setGoods(goods.get());
-		String  uid = Login.UID(session);
+		String uid = StringUtilss.getSessionId(request);
 		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		Optional<Users> user = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等

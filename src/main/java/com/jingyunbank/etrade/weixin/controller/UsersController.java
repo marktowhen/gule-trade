@@ -26,7 +26,7 @@ public class UsersController {
 
 	@Autowired
 	private IWeiXinUserService weixinUserService;
-	/*@AuthBeforeOperation*/
+	@AuthBeforeOperation
 	@RequestMapping(value="api/get/user/name",method=RequestMethod.GET)
 	public Result<SNSUserInfoVo> getSingle(HttpServletRequest request,
 			HttpServletResponse resp){

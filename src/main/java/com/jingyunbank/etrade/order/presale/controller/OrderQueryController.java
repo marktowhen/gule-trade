@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
@@ -17,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
-import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.presale.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
+import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderQueryController {
@@ -45,8 +46,9 @@ public class OrderQueryController {
 			@RequestParam(value="size", required=false, defaultValue="") int size,
 			@RequestParam(value="anystatus", required=false, defaultValue="") int anystatus,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
-			HttpSession session){
-		String loginuid = Login.UID(session);
+			HttpSession session,HttpServletRequest request){
+		String loginuid = StringUtilss.getSessionId(request);
+
 		
 		return Result.ok(orderService.list(loginuid, null, statuscode,anystatus, new Range(from, size+from))
 				.stream().map(bo-> {
@@ -76,8 +78,8 @@ public class OrderQueryController {
 			@RequestParam(value="keywords", required=false, defaultValue="") String keywords,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
-			HttpSession session){
-		String loginuid = Login.UID(session);
+			HttpSession session,HttpServletRequest request){
+		String loginuid = StringUtilss.getSessionId(request);
 		
 		return Result.ok(orderService.count(loginuid, null, statuscode, keywords, fromdate, null));
 	}
