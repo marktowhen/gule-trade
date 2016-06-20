@@ -86,7 +86,7 @@ public class OAuthController {
 								TEA.Encrypt(snsUserInfoVo.getNickname()));
 						session.setAttribute(Constants.CARTIDBYSESSION,
 								TEA.Encrypt(cartID));
-		    		 System.out.println("uid:"+Login.UID(request));
+		    		 /*System.out.println("uid:"+Login.UID(request));*/
 		    		 resp.sendRedirect("http://zhongpai.legu.co/#/");
 		    	 }else{
 		    		 
@@ -101,8 +101,8 @@ public class OAuthController {
 								TEA.Encrypt(bo.get().getId()));
 						session.setAttribute(Constants.USERNAMEBYSESSION,
 								TEA.Encrypt(bo.get().getNickname()));
-						/*session.setAttribute(Constants.CARTIDBYSESSION,
-								TEA.Encrypt(cartID));*/
+						session.setAttribute(Constants.CARTIDBYSESSION,
+								TEA.Encrypt(cartID));
 		    		 /*System.out.println("得到用户的信息:"+snsUserInfoVo.getNickname());*/
 			    	 //设置传递参数
 						System.out.println(request.getSession().getAttribute(Constants.IDBYSESSION));
