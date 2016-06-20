@@ -1,6 +1,5 @@
 package com.jingyunbank.etrade.marketing.auction.schedule;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +10,9 @@ import org.springframework.stereotype.Component;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionGoods;
+import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionPriceLog;
 import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionGoodsService;
+import com.jingyunbank.etrade.api.marketing.auction.service.IAuctionPriceLog;
 import com.jingyunbank.etrade.api.marketing.auction.service.context.IAuctionContextService;
 
 @Component
@@ -21,6 +22,8 @@ public class AuctionSchedule {
 	IAuctionGoodsService auctionGoodsService;
 	@Autowired
 	IAuctionContextService auctionContextService;
+	@Autowired
+	IAuctionPriceLog auctionPriceLogService;
 
 	    /**
 	    * 一分钟内到期的竞拍
@@ -38,11 +41,18 @@ public class AuctionSchedule {
 	    		for (int i = 0; i < auctionGoodsList.size(); i++) {
 	    			if(auctionGoodsList.get(i).getStartTime().getTime()>new Date().getTime()){
 	    				auctionGoodsService.refreshStatus(auctionGoodsList.get(i).getID(), "NEW");
-	    				
 	    			}else if(auctionGoodsList.get(i).getStartTime().getTime()<=new Date().getTime()&&auctionGoodsList.get(i).getEndTime().getTime()>new Date().getTime()){
 	    				auctionGoodsService.refreshStatus(auctionGoodsList.get(i).getID(), "AUCTIONING");
 	    			}else if(auctionGoodsList.get(i).getEndTime().getTime()<=new Date().getTime()){
-	    				auctionGoodsService.refreshStatus(auctionGoodsList.get(i).getID(), "OVER");
+	    				List<AuctionPriceLog> priceLog=auctionPriceLogService.list(auctionGoodsList.get(i).getID());
+	    				if(null!=priceLog&&priceLog.size()>0){
+	                      if(!auctionGoodsList.get(i).getStatus().equals("OVER")){
+	                    	  auctionGoodsService.refreshSoldPrice(auctionGoodsList.get(i).getID(),priceLog.get(0).getPrice(), priceLog.get(0).getUID());
+	                    	  auctionGoodsService.refreshStatus(auctionGoodsList.get(i).getID(), "TOPAY");
+	                      }
+	    				}else{
+	    					auctionGoodsService.refreshStatus(auctionGoodsList.get(i).getID(), "OVER");
+	    				}
 	    				
 	    			}
 	    			
