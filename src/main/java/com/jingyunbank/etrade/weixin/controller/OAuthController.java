@@ -45,6 +45,10 @@ public class OAuthController {
 	@RequestMapping("/api/get/user")
 	public void getUserInfo(HttpServletRequest request,HttpServletResponse resp,HttpSession session){
 		try {
+			HttpSession rsession = request.getSession();
+			System.out.println(session);
+			
+			System.out.println(rsession);
 			request.setCharacterEncoding("utf-8");
 			resp.setCharacterEncoding("utf-8");
 			//用户同意授权后，能获取到code
@@ -74,6 +78,7 @@ public class OAuthController {
 		    			}else{
 		    				cartService.save(new Cart(KeyGen.uuid(), snsUserInfoVo.getId()));
 		    			}
+		    			request.getSession().setAttribute(Constants.IDBYSESSION, "abcdasfafd");
 		    			/*loginSuccessed(snsUserInfoVo.getId(), snsUserInfoVo.getNickname(),cartID,session,response);*/
 						session.setAttribute(Constants.IDBYSESSION,
 								TEA.Encrypt(snsUserInfoVo.getId()));
@@ -84,6 +89,8 @@ public class OAuthController {
 		    		 System.out.println("uid:"+Login.UID(request));
 		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 		    	 }else{
+		    		 
+		    		 request.getSession().setAttribute(Constants.IDBYSESSION, "abcdasfafd");
 		    		 Optional<Cart> candidatecart = cartService.singleCart(Login.UID(request));
 		    			String cartID = null;
 		    			if(candidatecart.isPresent()){
@@ -104,6 +111,7 @@ public class OAuthController {
 		    		 System.out.println("uid:"+uid);
 		    		 
 		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
+		    		 return;
 		    	 }
 		    	
 		    	
