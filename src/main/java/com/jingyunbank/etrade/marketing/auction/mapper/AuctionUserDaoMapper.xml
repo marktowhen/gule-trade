@@ -20,7 +20,7 @@
 	
 	<insert id="insert">
 		insert into auction_user(<include refid="base_column"/>)
-		values(#{ID},#{auctionGoodsID},#{UID},#{status},#{joinTime})
+		values(#{ID},#{auctionGoodsID},#{UID},#{status},#{joinTime},#{lockTime},#{releaseTime},#{depositStatus})
 	</insert>
 	
 	<select id="selectOne" resultMap="AuctionUserResultMap">

@@ -78,7 +78,7 @@ public class OrderContextService implements IOrderContextService {
 			BigDecimal originorderpostage = order.getPostage();//data from user.
 			BigDecimal calculatedorderprice = BigDecimal.ZERO;//data calculated based on goods info.
 			BigDecimal calculatedorderpostage = BigDecimal.ZERO;//as above.
-			
+		
 			List<OrderGoods> goods = order.getGoods();
 			//邮费 postageID必填 num/weight/volume3选1
 			List<PostageCalculate> postList = new ArrayList<PostageCalculate>();
@@ -103,8 +103,9 @@ public class OrderContextService implements IOrderContextService {
 				}
 			}
 			//计算邮费 
-			calculatedorderpostage = postageCalculateService.calculateMuti(postList);
-			
+			if(!order.getType().equals("AUCTION")){
+				calculatedorderpostage = postageCalculateService.calculateMuti(postList);
+			}
 			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
 			if(calculatedorderprice.compareTo(originorderprice) != 0
 					|| calculatedorderpostage.compareTo(originorderpostage) != 0){
@@ -148,7 +149,6 @@ public class OrderContextService implements IOrderContextService {
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={DataSavingException.class, DataRefreshingException.class})
 	public Result<List<Orders>> save(List<Orders> orders) throws DataSavingException, DataRefreshingException {
-
 		//订单价格简单校验
 		//订单价应担匹配商品总价及邮费计算规则
 		boolean goodData = verifyOrderData(orders);
