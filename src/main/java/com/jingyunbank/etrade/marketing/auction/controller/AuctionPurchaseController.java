@@ -104,8 +104,8 @@ public class AuctionPurchaseController {
 		@RequestMapping(value="/bidding", method=RequestMethod.GET)
 		public Result<Object> bidding(
 				@RequestParam String auctionid,int price,HttpSession session,HttpServletRequest request) throws Exception{
-			//String userid = Login.UID(session);
-			String userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			String userid = Login.UID(session);
+			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			String auctionUserid="";
 			Optional<AuctionUser> auctionUser=auctionUserService.selByUserId(auctionid, userid);
 			AuctionPriceLog priceLog=new AuctionPriceLog();
@@ -285,11 +285,7 @@ public class AuctionPurchaseController {
 				
 			   }
 			}
-			/*Optional<AuctionGoods> goods = auctionGoodsService.single(auctionid);
-			if(goods.isPresent()){
-				//goods.get().getDeposit();
-				cart1.setTotalPriceWithoutPostage(goods.get().getDeposit());//定金
-			}*/
+			
 			cart1.setTotalPrice(cartprice);
 			return cart1;
 		}
