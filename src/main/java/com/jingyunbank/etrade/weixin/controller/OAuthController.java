@@ -87,7 +87,7 @@ public class OAuthController {
 						session.setAttribute(Constants.CARTIDBYSESSION,
 								TEA.Encrypt(cartID));
 		    		 /*System.out.println("uid:"+Login.UID(request));*/
-		    		 resp.sendRedirect("http://zhongpai.legu.co/#/");
+		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 		    	 }else{
 		    		 
 		    		 request.getSession().setAttribute(Constants.IDBYSESSION, "abcdasfafd");
@@ -103,14 +103,12 @@ public class OAuthController {
 								TEA.Encrypt(bo.get().getNickname()));
 						session.setAttribute(Constants.CARTIDBYSESSION,
 								TEA.Encrypt(cartID));
-		    		 /*System.out.println("得到用户的信息:"+snsUserInfoVo.getNickname());*/
-			    	 //设置传递参数
 						System.out.println(request.getSession().getAttribute(Constants.IDBYSESSION));
 						String iii=String.valueOf(request.getSession().getAttribute(Constants.IDBYSESSION));
 					String uid = StringUtilss.getSessionId(request,resp);
 		    		 System.out.println("uid:"+uid);
 		    		 
-		    		 resp.sendRedirect("http://zhongpai.legu.co/#/");
+		    		 resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 		    		 return;
 		    	 }
 		    	
