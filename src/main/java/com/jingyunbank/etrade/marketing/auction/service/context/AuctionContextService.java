@@ -2,7 +2,9 @@ package com.jingyunbank.etrade.marketing.auction.service.context;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ import com.jingyunbank.etrade.api.marketing.auction.service.context.IAuctionCont
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
+import com.jingyunbank.etrade.api.weixinMessage.service.IWxMessageService;
+import com.jingyunbank.etrade.weixinMessage.util.DateUtil;
+import com.jingyunbank.etrade.weixinMessage.util.wx.WxConstants;
 
 @Service("auctionContextService")
 public class AuctionContextService implements IAuctionContextService {
@@ -36,6 +41,9 @@ public class AuctionContextService implements IAuctionContextService {
     private IAuctionPriceLog auctionPriceLogService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IWxMessageService wxMessageService;
+    
 	
 	@Override
 	public boolean signUp(AuctionUser auctionUser, Orders orders) throws DataSavingException,DataRefreshingException{
@@ -114,14 +122,29 @@ public class AuctionContextService implements IAuctionContextService {
 		List<AuctionPriceLog> listPriceLog;
 		if(list!=null){
 			for (int i = 0; i < list.size(); i++) {
-				list.get(i).getID();
 				listPriceLog=auctionPriceLogService.list(list.get(i).getID());
 				if(listPriceLog!=null&&listPriceLog.size()>0){
 					//listPriceLog.get(i).getAuctionUserID();
 					Users user=userService.selUserByUserId(listPriceLog.get(i).getAuctionUserID());
 					if(i==0){
+						System.out.println(WxConstants.AUCTION_SUCCESS+"模板！！！！！！！！！！！！");
+						Map<String, String> dataMap = new HashMap<String,String>();
+						dataMap.put("first", "恭喜！您已竞拍成功 ");
+						dataMap.put("keyword1",auctionGoodsService.single(listPriceLog.get(i).getAuctionGoodsID()).get().getGID());
+						dataMap.put("keyword2", listPriceLog.get(i).getPrice()+"");
+						dataMap.put("remark", "请在24小时内支付商品尾款，过期将扣除定金。");
+						//wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,listPriceLog.get(i).getUID(), dataMap);
+						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,"Ma9ogkIXSW-y0uSrvfqVIQ", dataMap);
 						System.out.println("胜出者发送通知"+user.getOpenId());
 					}else{
+						System.out.println(WxConstants.AUCTION_SUCCESS+"模板！！！！！！！！！！！！");
+						Map<String, String> dataMap = new HashMap<String,String>();
+						dataMap.put("first", "MR 程序员 ");
+						dataMap.put("keyword1", "时间：" + DateUtil.COMMON.getDateText(new Date()));
+						dataMap.put("keyword2", "100");
+						dataMap.put("remark", "感谢您的使用，祝您生活愉快！");
+						//wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,listPriceLog.get(i).getUID(), dataMap);
+						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,"Ma9ogkIXSW-y0uSrvfqVIQ", dataMap);
 						System.out.println("出局者发送通知  "+user.getOpenId());
 					}
 				}

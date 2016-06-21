@@ -9,7 +9,7 @@ import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.api.weixinMessage.bo.MpAccount;
 import com.jingyunbank.etrade.api.weixinMessage.bo.TemplateMessage;
-import com.jingyunbank.etrade.api.weixinMessage.service.WxMessageService;
+import com.jingyunbank.etrade.api.weixinMessage.service.IWxMessageService;
 import com.jingyunbank.etrade.weixinMessage.process.WxApiClient;
 import com.jingyunbank.etrade.weixinMessage.process.WxMemoryCacheClient;
 
@@ -20,7 +20,7 @@ import net.sf.json.JSONObject;
  */
 
 @Service("wxMessageService")
-public class WxMessageServiceImpl implements WxMessageService{
+public class WxMessageServiceImpl implements IWxMessageService{
 	
 	@Autowired
 	private IUserService userService;

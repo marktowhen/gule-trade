@@ -16,9 +16,8 @@ public class WxConstants {
 	public static final String FAILCODE = "500";
 	public final static ClassLoader RESOURCE_LOADER = WxConstants.class.getClassLoader();
 	private static final String CONFIG_FILE_LOCATION = "system.properties";
-
-	// 用户三级好友
-	
+    //竞拍成功
+	public static final String AUCTION_SUCCESS = "weixinMessage.auction.success";
 	public static final String PAYMENT_SUCCESS = "weixinMesage.payment.success";
 	public static final String REFUND_REMINDER = "weixinMesage.payment.refund";
 	public static final String  ORDER_SUCCESS= "weixinMesage.payment.commit";
