@@ -82,7 +82,7 @@ public class OAuthController {
 					
 					loginSuccessed(snsUserInfoVo.getId(), snsUserInfoVo.getNickname(), cartID, session, resp);
 
-					resp.sendRedirect("http://zhongpai.legu.co/#/");
+					resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 					return;
 				} else {
 					Optional<Cart> candidatecart = cartService.singleCart(Login
@@ -93,11 +93,11 @@ public class OAuthController {
 					}
 					loginSuccessed(bo.get().getId(), bo.get().getNickname(), cartID, session, resp);
 
-					resp.sendRedirect("http://zhongpai.legu.co/#/");
+					resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
 					return;
 				}
 			}else{
-				resp.sendRedirect("http://zhongpai.legu.co/#/?code="+code);
+				resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/?code="+code);
 				return;
 			}
 		} catch (Exception e) {
