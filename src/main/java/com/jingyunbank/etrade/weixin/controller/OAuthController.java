@@ -61,8 +61,9 @@ public class OAuthController {
 				String openId = weixinOauth2Token.getOpenId();
 				// 获取用户信息
 
-				Optional<SNSUserInfoBo> bo = weixinUserService.getUsers(openId);
-				if (!bo.isPresent()) {
+				
+				if (weixinUserService.getUsers(openId)==null) {
+					
 					SNSUserInfoVo snsUserInfoVo = GetAccessToken.getUserInfo(
 							accessToken, openId);
 					SNSUserInfoBo snsUserInfoBo = new SNSUserInfoBo();
@@ -82,9 +83,10 @@ public class OAuthController {
 					
 					loginSuccessed(snsUserInfoVo.getId(), snsUserInfoVo.getNickname(), cartID, session, resp);
 
-					resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
+					resp.sendRedirect("http://zhongpai.legu.co/#/");
 					return;
 				} else {
+					Optional<SNSUserInfoBo> bo = weixinUserService.getUsers(openId);
 					Optional<Cart> candidatecart = cartService.singleCart(Login
 							.UID(request));
 					String cartID = null;
@@ -93,12 +95,12 @@ public class OAuthController {
 					}
 					loginSuccessed(bo.get().getId(), bo.get().getNickname(), cartID, session, resp);
 
-					resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/");
+					resp.sendRedirect("http://zhongpai.legu.co/#/");
 					return;
 				}
-			}else{
+			/*}else{
 				resp.sendRedirect("http://xiaoxue.tunnel.qydev.com/#/?code="+code);
-				return;
+				return;*/
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
