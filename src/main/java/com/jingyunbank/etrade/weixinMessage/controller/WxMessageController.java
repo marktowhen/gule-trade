@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jingyunbank.etrade.api.weixinMessage.bo.Account;
 import com.jingyunbank.etrade.api.weixinMessage.bo.MpAccount;
 import com.jingyunbank.etrade.api.weixinMessage.bo.TemplateMessage;
-import com.jingyunbank.etrade.api.weixinMessage.service.WxMessageService;
+import com.jingyunbank.etrade.api.weixinMessage.service.IWxMessageService;
 import com.jingyunbank.etrade.weixinMessage.dao.AccountDao;
 import com.jingyunbank.etrade.weixinMessage.process.WxApiClient;
 import com.jingyunbank.etrade.weixinMessage.process.WxMemoryCacheClient;
@@ -38,7 +38,7 @@ import net.sf.json.JSONObject;
 public class WxMessageController {
 	
 	@Autowired
-	private WxMessageService wxMessageService;
+	private IWxMessageService wxMessageService;
 	
 	
 	@Autowired

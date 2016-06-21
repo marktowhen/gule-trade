@@ -17,7 +17,7 @@ import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderTraceService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderStatusHandler;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
-import com.jingyunbank.etrade.api.weixinMessage.service.WxMessageService;
+import com.jingyunbank.etrade.api.weixinMessage.service.IWxMessageService;
 
 public class AcceptOrderHandler implements IOrderStatusHandler {
 
@@ -28,7 +28,7 @@ public class AcceptOrderHandler implements IOrderStatusHandler {
 	@Autowired
 	private IOrderTraceService orderTraceService;
 	@Autowired
-	private WxMessageService wxMessageService;
+	private IWxMessageService wxMessageService;
 	@Autowired
 	private ICouponStrategyResolver couponStrategyResolver;
 

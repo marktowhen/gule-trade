@@ -44,7 +44,7 @@ import com.jingyunbank.etrade.api.vip.coupon.bo.BaseCoupon;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyResolver;
 import com.jingyunbank.etrade.api.vip.coupon.handler.ICouponStrategyService;
 import com.jingyunbank.etrade.api.wap.goods.service.IWapGoodsService;
-import com.jingyunbank.etrade.api.weixinMessage.service.WxMessageService;
+import com.jingyunbank.etrade.api.weixinMessage.service.IWxMessageService;
 import com.jingyunbank.etrade.weixinMessage.util.wx.WxConstants;
 
 @Service("orderContextService")
@@ -69,7 +69,7 @@ public class OrderContextService implements IOrderContextService {
 	@Autowired
 	private IWapGoodsService wapGoodsService;
 	@Autowired
-	private WxMessageService wxMessageService;
+	private IWxMessageService wxMessageService;
 	
 	//校验用户提交的订单价格，邮费以及商品的价格数量等是否相互匹配
 	private boolean verifyOrderData(List<Orders> orders) {

@@ -19,7 +19,7 @@ import com.jingyunbank.etrade.api.order.presale.service.IOrderGoodsService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderTraceService;
 import com.jingyunbank.etrade.api.order.presale.service.context.IOrderStatusHandler;
-import com.jingyunbank.etrade.api.weixinMessage.service.WxMessageService;
+import com.jingyunbank.etrade.api.weixinMessage.service.IWxMessageService;
 import com.jingyunbank.etrade.weixinMessage.util.wx.WxConstants;
 
 public class PaidOrderHandler implements IOrderStatusHandler {
@@ -31,7 +31,7 @@ public class PaidOrderHandler implements IOrderStatusHandler {
 	@Autowired
 	private IOrderTraceService orderTraceService;
 	@Autowired
-	private WxMessageService wxMessageService;
+	private IWxMessageService wxMessageService;
 	
 	@Override
 	public Result<String> handle(List<Orders> orders) throws Exception {
