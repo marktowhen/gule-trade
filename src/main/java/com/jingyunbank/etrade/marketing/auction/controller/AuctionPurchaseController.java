@@ -74,7 +74,7 @@ public class AuctionPurchaseController {
 				BindingResult valid, 
 				HttpSession session,HttpServletRequest request) throws Exception{
 			String userid = Login.UID(session);
-			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			//userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			Login.UID(session, userid);//存放登录的userid
 			//组装参拍人
 			AuctionUser auctionUser=new AuctionUser();
@@ -105,7 +105,7 @@ public class AuctionPurchaseController {
 		public Result<Object> bidding(
 				@RequestParam String auctionid,int price,HttpSession session,HttpServletRequest request) throws Exception{
 			String userid = Login.UID(session);
-			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			//userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			String auctionUserid="";
 			Optional<AuctionUser> auctionUser=auctionUserService.selByUserId(auctionid, userid);
 			AuctionPriceLog priceLog=new AuctionPriceLog();
@@ -147,7 +147,7 @@ public class AuctionPurchaseController {
 				HttpSession session,HttpServletRequest request) throws Exception{
 			
 			String userid = Login.UID(session);
-			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			//userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			
 			AuctionUser auctionUser=new AuctionUser();
 			Optional<AuctionUser> auctionUsers=auctionUserService.selByUserId(auctionid, userid);
