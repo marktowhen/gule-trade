@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jingyunbank.core.Range;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.web.AuthBeforeOperation;
+import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.order.presale.bo.Orders;
 import com.jingyunbank.etrade.api.order.presale.service.IOrderService;
 import com.jingyunbank.etrade.order.presale.bean.Order2ShowVO;
 import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
-import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderQueryController {
@@ -47,10 +47,10 @@ public class OrderQueryController {
 			@RequestParam(value="anystatus", required=false, defaultValue="") int anystatus,
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			HttpSession session,HttpServletRequest request){
-		String loginuid = StringUtilss.getSessionId(request);
+		String uid=Login.UID(request);
 
 		
-		return Result.ok(orderService.list(loginuid, null, statuscode,anystatus, new Range(from, size+from))
+		return Result.ok(orderService.list(uid, null, statuscode,anystatus, new Range(from, size+from))
 				.stream().map(bo-> {
 					Order2ShowVO vo = new Order2ShowVO();
 					BeanUtils.copyProperties(bo, vo,"goods");
@@ -79,9 +79,9 @@ public class OrderQueryController {
 			@RequestParam(value="status", required=false, defaultValue="") String statuscode,
 			@RequestParam(value="fromdate", required=false, defaultValue="") String fromdate,
 			HttpSession session,HttpServletRequest request){
-		String loginuid = StringUtilss.getSessionId(request);
+		String uid=Login.UID(request);
 		
-		return Result.ok(orderService.count(loginuid, null, statuscode, keywords, fromdate, null));
+		return Result.ok(orderService.count(uid, null, statuscode, keywords, fromdate, null));
 	}
 	
 	@RequestMapping(value="/api/orders/{oid}", method=RequestMethod.GET)

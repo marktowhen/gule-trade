@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.marketing.flashsale.bo.FlashSale;
 import com.jingyunbank.etrade.api.marketing.flashsale.bo.FlashSaleUser;
@@ -39,7 +40,6 @@ import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
 import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.marketing.flashsale.bean.FlashSaleUserVo;
-import com.jingyunbank.etrade.weixin.util.StringUtilss;
 @RestController
 public class FlashSalePurchaseController {
 	@Autowired 
@@ -52,6 +52,7 @@ public class FlashSalePurchaseController {
 	private IFlashSalePurchaseContextService flashSalePurchaseContextSevice;
 	//点击立即秒杀按钮时的动作
 	//必须在登陆以后才可以进行一下操作
+	@AuthBeforeOperation
 	@RequestMapping(value="/api/start/buy/falsh/{flashid}",method=RequestMethod.POST)
 	public Result<FlashSaleUserVo> start(@PathVariable String flashid,@Valid @RequestBody CartVO cart,BindingResult valid, HttpSession session,HttpServletRequest request)throws Exception{
 		if(valid.hasErrors()){
@@ -61,7 +62,7 @@ public class FlashSalePurchaseController {
 		if(!flashsale.isPresent()){
 			return Result.fail("该商品不存在。");
 		}
-		String uid = StringUtilss.getSessionId(request);
+		String uid = Login.UID(request);
 		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		/*System.out.println(Login.UID(request));*/
 		Optional<Users> user = userService.single(uid);

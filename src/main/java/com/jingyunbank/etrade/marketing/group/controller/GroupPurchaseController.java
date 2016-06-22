@@ -40,7 +40,6 @@ import com.jingyunbank.etrade.cart.bean.GoodsInCartVO;
 import com.jingyunbank.etrade.cart.bean.OrdersInCartVO;
 import com.jingyunbank.etrade.cart.controller.CartController;
 import com.jingyunbank.etrade.marketing.group.bean.GroupVO;
-import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 @RequestMapping("/api/marketing/group")
@@ -71,7 +70,7 @@ public class GroupPurchaseController {
 		if (!goods.isPresent()) {
 			return Result.fail("团购商品不存在。");
 		}
-		String uid = StringUtilss.getSessionId(request);
+		String uid = Login.UID(request);
 		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		Optional<Users> leader = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等
@@ -117,7 +116,7 @@ public class GroupPurchaseController {
 			return Result.fail("团购商品不存在。");
 		}
 		group.get().setGoods(goods.get());
-		String uid = StringUtilss.getSessionId(request);
+		String uid = Login.UID(request);
 		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		Optional<Users> user = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等

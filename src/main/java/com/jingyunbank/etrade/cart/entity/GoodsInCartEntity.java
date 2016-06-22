@@ -18,10 +18,25 @@ public class GoodsInCartEntity {
 	private BigDecimal pprice;
 	private String SKUID;
 	
+	private String propertiesValue;
 	private int stock;
 	private String imgpath;
 	private BigDecimal postage;
 	
+	
+	
+	/**
+	 * @return the propertiesValue
+	 */
+	public String getPropertiesValue() {
+		return propertiesValue;
+	}
+	/**
+	 * @param propertiesValue the propertiesValue to set
+	 */
+	public void setPropertiesValue(String propertiesValue) {
+		this.propertiesValue = propertiesValue;
+	}
 	public String getID() {
 		return ID;
 	}

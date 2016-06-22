@@ -27,7 +27,6 @@ import com.jingyunbank.etrade.api.exception.DataRefreshingException;
 import com.jingyunbank.etrade.api.user.bo.Address;
 import com.jingyunbank.etrade.api.user.service.IAddressService;
 import com.jingyunbank.etrade.user.bean.AddressVO;
-import com.jingyunbank.etrade.weixin.util.StringUtilss;
 @RestController
 @RequestMapping("/api/address")
 public class AddressController {
@@ -51,8 +50,8 @@ public class AddressController {
 						.map(oe -> Arrays.asList(oe.getDefaultMessage()).toString())
 						.collect(Collectors.joining(" ; ")));
 		}
-		String loginuid = StringUtilss.getSessionId(request);
-		address.setUID(loginuid);
+		String uid = Login.UID(request);
+		address.setUID(uid);
 		address.setID(KeyGen.uuid());
 		Address addressBo = new Address();
 		BeanUtils.copyProperties(address, addressBo);
@@ -95,8 +94,9 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/default/{id}",method=RequestMethod.PUT)
 	public Result<String> setDefualt(@PathVariable String id, HttpServletRequest request ,@RequestBody boolean defaulted) throws Exception{
-		String loginuid = StringUtilss.getSessionId(request);
-		addressService.refreshDefault(id, loginuid, defaulted);
+		/*String loginuid = StringUtilss.getSessionId(request);*/
+		String uid = Login.UID(request);
+		addressService.refreshDefault(id, uid, defaulted);
 		return Result.ok("成功");
 	}
 
@@ -109,11 +109,12 @@ public class AddressController {
 	 * 2015年11月5日 qxs
 	 * @throws DataRefreshingException 
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public Result<String> remove(HttpServletRequest request,@PathVariable String id) throws Exception{
-		String loginuid = StringUtilss.getSessionId(request);
-		if(addressService.remove(id.split(","), loginuid)){
+		/*String loginuid = StringUtilss.getSessionId(request);*/
+		String uid = Login.UID(request);
+		if(addressService.remove(id.split(","), uid)){
 			return Result.ok("成功");
 		}
 		return Result.fail("服务器繁忙,请稍后再试");
@@ -147,8 +148,8 @@ public class AddressController {
 	@AuthBeforeOperation
 	@RequestMapping(value="/default",method=RequestMethod.GET)
 	public Result<AddressVO> getDefaultAddress(HttpServletRequest request)throws Exception{
-		String loginuid = StringUtilss.getSessionId(request);
-		Optional<Address> optional = addressService.getDefaultAddress(loginuid);
+		String uid = Login.UID(request);
+		Optional<Address> optional = addressService.getDefaultAddress(uid);
 		AddressVO vo = new AddressVO();
 		if(optional.isPresent()){
 			vo.setAddress(optional.get().getProvinceName()+"-"+optional.get().getCityName()+"-"+optional.get().getAddress());
@@ -165,12 +166,12 @@ public class AddressController {
 	 * @return
 	 * 2015年11月5日 qxs
 	 */
-	//@AuthBeforeOperation
+	@AuthBeforeOperation
 	@RequestMapping(value="/all",method=RequestMethod.GET)
 	public Result<List<AddressVO>> queryAll(HttpServletRequest request) throws Exception{
 		List<AddressVO> result = new ArrayList<AddressVO>();
 		String uid = Login.UID(request);
-		List<Address> list = addressService.list("Ma9ogkIXSW-y0uSrvfqVIQ");
+		List<Address> list = addressService.list(uid);
 		//格式转换
 		if(list!=null && !list.isEmpty()){
 			for (Address address : list) {
@@ -189,11 +190,12 @@ public class AddressController {
 	 * 2015年11月20日 qxs
 	 */
 	@AuthBeforeOperation
-	@RequestMapping(value="/list/{uid}/{offset}/{size}",method=RequestMethod.GET)
-	public Result<List<AddressVO>> queryPage(@PathVariable String uid,@PathVariable int offset, @PathVariable int size )throws Exception{
+	@RequestMapping(value="/list/{offset}/{size}",method=RequestMethod.GET)
+	public Result<List<AddressVO>> queryPage(@PathVariable int offset, @PathVariable int size,HttpServletRequest request)throws Exception{
 		Range range = new Range();
 		range.setFrom(offset);
 		range.setTo(offset + size);
+		String uid=Login.UID(request);
 		return Result.ok(addressService.list(uid, range).stream().map( bo->{
 			return getVoFrombo(bo);
 		}).collect(Collectors.toList()));

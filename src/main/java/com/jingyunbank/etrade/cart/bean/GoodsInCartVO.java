@@ -42,7 +42,21 @@ public class GoodsInCartVO implements Serializable {
 	
 	private int stock;//库存
 	private String imgpath;//图片路径
+	private String propertiesValue;//属性值
 	
+	
+	/**
+	 * @return the propertiesValue
+	 */
+	public String getPropertiesValue() {
+		return propertiesValue;
+	}
+	/**
+	 * @param propertiesValue the propertiesValue to set
+	 */
+	public void setPropertiesValue(String propertiesValue) {
+		this.propertiesValue = propertiesValue;
+	}
 	public String getGID() {
 		return GID;
 	}

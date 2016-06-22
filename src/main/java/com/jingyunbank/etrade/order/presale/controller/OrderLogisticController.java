@@ -31,7 +31,6 @@ import com.jingyunbank.etrade.api.order.presale.service.context.IOrderContextSer
 import com.jingyunbank.etrade.api.user.bo.Users;
 import com.jingyunbank.etrade.api.user.service.IUserService;
 import com.jingyunbank.etrade.order.presale.bean.OrderLogisticVO;
-import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderLogisticController {
@@ -98,7 +97,7 @@ public class OrderLogisticController {
 		
 		String tradepwd = oidswithpwd.getTradepwd();
 		String tradepwdmd5 = MD5.digest(tradepwd);
-		String uid=StringUtilss.getSessionId(request);
+		String uid=Login.UID(request);
 		Optional<Users> ou = userService.single(uid);
 		if(!ou.isPresent() || !tradepwdmd5.equals(ou.get().getTradepwd())){
 			return Result.fail("支付密码错误！");

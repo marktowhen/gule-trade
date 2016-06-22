@@ -45,7 +45,6 @@ import com.jingyunbank.etrade.order.presale.bean.OrderGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseGoodsVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseOrderVO;
 import com.jingyunbank.etrade.order.presale.bean.PurchaseRequestVO;
-import com.jingyunbank.etrade.weixin.util.StringUtilss;
 
 @RestController
 public class OrderController {
@@ -82,8 +81,8 @@ public class OrderController {
 		if(valid.hasErrors()){
 			return Result.fail("您提交的订单数据不完整，请核实后重新提交！");
 		}
-		String uid = StringUtilss.getSessionId(request);
-		String uname = StringUtilss.getSessionUname(request);
+		String uid = Login.UID(request);
+		String uname = Login.uname(request);
 		boolean isemployee = Login.employee(session);
 		purchase.setUID(uid);
 		purchase.setUname(uname);
