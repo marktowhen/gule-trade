@@ -45,8 +45,8 @@ public class AuctionUserController {
 	//list
 		@RequestMapping(value="/list", method=RequestMethod.GET)
 		public Result<List<AuctionUserVO>> list(@RequestParam(required=true) String status,HttpSession session,HttpServletRequest request) throws Exception{
-			String userid=Login.UID(session);
-			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			String userid=Login.UID(request);
+			//userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			if(status.equals("NEW")){
 				return Result.ok(auctionUserService.selMyAuction(userid,"").stream().map(bo->{
 					return getShowVOFromBo(bo);
@@ -64,8 +64,8 @@ public class AuctionUserController {
 		}
 		@RequestMapping(value="/ifSign", method=RequestMethod.GET)
 		public Result<Integer> ifSign(@RequestParam(required=true) String auctionid,@RequestParam(required=true) String uid,HttpSession session,HttpServletRequest request) throws Exception{
-			String userid=Login.UID(session);
-			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			String userid=Login.UID(request);
+			//userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			if(null==uid||""==uid){
 				uid=Login.UID(session);
 			}
@@ -75,8 +75,8 @@ public class AuctionUserController {
 		}
 		@RequestMapping(value="/depositStatus", method=RequestMethod.GET)
 		public Result<AuctionUserVO> depositStatus(@RequestParam(required=true) String auctionid,@RequestParam(required=true) String uid,HttpSession session,HttpServletRequest request) throws Exception{
-			String userid=Login.UID(session);
-			userid="Ma9ogkIXSW-y0uSrvfqVIQ";
+			String userid=Login.UID(request);
+			//userid="Ma9ogkIXSW-y0uSrvfqVIQ";
 			if(null==uid||""==uid){
 				uid=Login.UID(session);
 			}
