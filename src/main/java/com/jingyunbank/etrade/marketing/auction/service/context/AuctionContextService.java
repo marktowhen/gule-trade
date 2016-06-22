@@ -125,7 +125,7 @@ public class AuctionContextService implements IAuctionContextService {
 				listPriceLog=auctionPriceLogService.list(list.get(i).getID());
 				if(listPriceLog!=null&&listPriceLog.size()>0){
 					//listPriceLog.get(i).getAuctionUserID();
-					Users user=userService.selUserByUserId(listPriceLog.get(i).getAuctionUserID());
+					Users user=userService.selUserByUserId(listPriceLog.get(i).getUID());
 					if(i==0){
 						System.out.println(WxConstants.AUCTION_SUCCESS+"模板！！！！！！！！！！！！");
 						Map<String, String> dataMap = new HashMap<String,String>();
@@ -134,17 +134,17 @@ public class AuctionContextService implements IAuctionContextService {
 						dataMap.put("keyword2", listPriceLog.get(i).getPrice()+"");
 						dataMap.put("remark", "请在24小时内支付商品尾款，过期将扣除定金。");
 						//wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,listPriceLog.get(i).getUID(), dataMap);
-						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,"Ma9ogkIXSW-y0uSrvfqVIQ", dataMap);
+						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,user.getID(), dataMap);
 						System.out.println("胜出者发送通知"+user.getOpenId());
 					}else{
 						System.out.println(WxConstants.AUCTION_SUCCESS+"模板！！！！！！！！！！！！");
 						Map<String, String> dataMap = new HashMap<String,String>();
-						dataMap.put("first", "MR 程序员 ");
-						dataMap.put("keyword1", "时间：" + DateUtil.COMMON.getDateText(new Date()));
-						dataMap.put("keyword2", "100");
-						dataMap.put("remark", "感谢您的使用，祝您生活愉快！");
+						dataMap.put("first", "很遗憾！您竞拍失败 ");
+						dataMap.put("keyword1",auctionGoodsService.single(listPriceLog.get(i).getAuctionGoodsID()).get().getGID());
+						dataMap.put("keyword2", listPriceLog.get(i).getPrice()+"");
+						dataMap.put("remark", "定金会在三个工作日内返还到您的账户，请注意查收，祝您生活愉快。");
 						//wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,listPriceLog.get(i).getUID(), dataMap);
-						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,"Ma9ogkIXSW-y0uSrvfqVIQ", dataMap);
+						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,user.getID(), dataMap);
 						System.out.println("出局者发送通知  "+user.getOpenId());
 					}
 				}
