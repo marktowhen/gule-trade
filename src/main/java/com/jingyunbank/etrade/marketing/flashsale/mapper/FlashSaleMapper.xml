@@ -15,11 +15,11 @@
     <result column="flash_status" property="flashStatus" jdbcType="INTEGER" />
     <association property="goods" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsEntity">
 			<result column="g_name" property="name" javaType="String"/>
-			<result column="g_path" property="path" javaType="String"/>
 			<result column="about" property="about" javaType="String"/>
 	</association>
 	<association property="sku" javaType="com.jingyunbank.etrade.wap.goods.entity.GoodsSkuEntity">
 			<result column="k_properties_value" property="propertiesValue" javaType="String"/>
+			<result column="g_path" property="skuPath" javaType="String"/>
 	</association>
   </resultMap>
 	<sql id="Base_Column_List" >
@@ -47,7 +47,7 @@
 	
 	<select id="selectFlashSaleMany" resultMap="BaseResultMap">
 		SELECT 
-			<include refid="Base_Column_List"/>,g.name g_name,g.path g_path,g.about about,k.properties_value k_properties_value
+			<include refid="Base_Column_List"/>,g.name g_name,k.sku_path g_path,g.about about,k.properties_value k_properties_value
 		from flash_sale fs 
 		LEFT JOIN goods g on fs.gid=g.id
 		LEFT JOIN goods_sku k on fs.sku_id = k.id 
@@ -61,7 +61,7 @@
 	
 	<select id="selectFlashSaleByCondition" resultMap="BaseResultMap">
 		SELECT 
-			<include refid="Base_Column_List"/>,g.name g_name,g.path g_path,g.about about,k.properties_value k_properties_value
+			<include refid="Base_Column_List"/>,g.name g_name,k.sku_path g_path,g.about about,k.properties_value k_properties_value
 		from flash_sale fs 
 		LEFT JOIN goods g on fs.gid=g.id
 		LEFT JOIN goods_sku k on fs.sku_id = k.id 

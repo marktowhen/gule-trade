@@ -8,9 +8,9 @@ public class BannerVO {
 	private String type; //类型
 	@NotEmpty(message="PC端图片不能为空")
 	private String image; //图片
-	@NotEmpty(message="PC端跳转地址不能为空")
+	/*@NotEmpty(message="PC端跳转地址不能为空")
 	private String targetUrl; //跳转地址
-	private String wechatImage; //微信图片
+*/	private String wechatImage; //微信图片
 	private String wechatTargetUrl; //微站点跳转地址
 	private String alt;
 	private int order;
@@ -33,12 +33,6 @@ public class BannerVO {
 	}
 	public void setImage(String image) {
 		this.image = image;
-	}
-	public String getTargetUrl() {
-		return targetUrl;
-	}
-	public void setTargetUrl(String targetUrl) {
-		this.targetUrl = targetUrl;
 	}
 	public String getWechatImage() {
 		return wechatImage;

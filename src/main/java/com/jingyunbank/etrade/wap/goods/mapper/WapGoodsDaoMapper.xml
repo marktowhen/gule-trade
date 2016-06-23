@@ -70,7 +70,7 @@
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
 		<result column="is_sale_" property="sale" />
-
+		<result column="sku_path" property="skuPath" />
 	</resultMap>
 
 	<!-- skus map  by gid -->
@@ -86,6 +86,7 @@
 		<result column="sale_price_" property="salePrice" />
 		<result column="status_" property="status" />
 		<result column="is_sale_ " property="isSale" />
+		
 	</resultMap>
 
 
@@ -218,7 +219,7 @@
 		sale_price_, s.`is_sale`
 		is_sale_ ,s.`status`
 		status_ , 
-		g.`path` path_
+		s.`sku_path` sku_path
 	</sql>
 	<select id="selectGoodsSku" resultMap="skuMap" parameterType="string">
 		SELECT

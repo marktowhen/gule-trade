@@ -224,6 +224,7 @@ public class CartController {
 //		cart1.setOrders(iorders);
 		
 		String uid=Login.UID(request);
+		/*String uid="jOPUk8RuROWlZRtHlbvIEA";*/
 		Optional<Address> addressc = addressService.getDefaultAddress(uid);
 		if(addressc.isPresent()){
 			Address addr = addressc.get();
@@ -232,6 +233,8 @@ public class CartController {
 			cart.setCity(addr.getCity());
 			cart.setMobile(addr.getMobile());
 			cart.setReceiver(addr.getReceiver());
+		}else{
+			
 		}
 		List<OrdersInCartVO> orders = cart.getOrders();
 		BigDecimal cartprice = BigDecimal.ZERO;

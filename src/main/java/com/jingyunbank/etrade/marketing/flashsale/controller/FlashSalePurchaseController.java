@@ -65,6 +65,7 @@ public class FlashSalePurchaseController {
 		String uid = Login.UID(request);
 		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
 		/*System.out.println(Login.UID(request));*/
+		/*String uid="jOPUk8RuROWlZRtHlbvIEA";*/
 		Optional<Users> user = userService.single(uid);
 		
 		//库存决定是否是活动产品

@@ -71,7 +71,7 @@ public class GroupPurchaseController {
 			return Result.fail("团购商品不存在。");
 		}
 		String uid = Login.UID(request);
-		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
+		/*String uid = "jOPUk8RuROWlZRtHlbvIEA";*/
 		Optional<Users> leader = userService.single(uid);
 		//业务校验 比如库存 团购截止时间等
 		Result<String> startMatch = groupPurchaseContextService.startMatch(goods.get());
