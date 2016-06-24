@@ -40,11 +40,7 @@ public class PurchaseRequestVO {
 	private String zipcode;
 	private String UID;//下单人
 	private String uname;
-	/*@Size(min=1, max=12, message="支付类型错误。")
-	@NotNull*/
-	private String paytypeCode;//支付方式 code
-/*	@NotNull*/
-	private String paytypeName;
+	
 	
 	private String invoiceType;
 	private String invoiceTitle;//发票抬头
@@ -94,18 +90,6 @@ public class PurchaseRequestVO {
 	}
 	public void setUID(String uID) {
 		UID = uID;
-	}
-	public String getPaytypeCode() {
-		return paytypeCode;
-	}
-	public void setPaytypeCode(String paytypeCode) {
-		this.paytypeCode = paytypeCode;
-	}
-	public String getPaytypeName() {
-		return paytypeName;
-	}
-	public void setPaytypeName(String paytypeName) {
-		this.paytypeName = paytypeName;
 	}
 	public String getInvoiceType() {
 		return invoiceType;

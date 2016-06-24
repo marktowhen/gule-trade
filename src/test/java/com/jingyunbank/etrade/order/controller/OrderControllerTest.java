@@ -59,8 +59,8 @@ public class OrderControllerTest extends TestCaseBase {
 		vo.setMobile("18688888888");
 		vo.setZipcode("678922");
 		vo.setAddress("1111111111111111111111");
-		vo.setPaytypeCode("ONLINE");
-		vo.setPaytypeName("线上支付");
+		/*vo.setPaytypeCode("ONLINE");
+		vo.setPaytypeName("线上支付");*/
 		vo.setReceiver("XXXX");
 		vo.setInvoiceTitle("XSADFSADFAS");
 		vo.setInvoiceType("个人");

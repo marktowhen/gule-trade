@@ -28,6 +28,11 @@ public class PurchaseOrderVO {
 	private String deliveryTypeCode;
 	@NotNull
 	private String deliveryTypeName;
+	@Size(min=1, max=12, message="支付类型错误。")
+	@NotNull
+	private String paytypeCode;//支付方式 code
+	@NotNull
+	private String paytypeName;
 	@NotNull//订单计算出的邮费（主要用于数据校验）
 	@DecimalMin(value="0.00", inclusive=true)
 	private BigDecimal postage = new BigDecimal(0);
@@ -47,6 +52,34 @@ public class PurchaseOrderVO {
 	@NotNull
 	@Size(min=1)
 	private List<PurchaseGoodsVO> goods = new ArrayList<>();
+
+	/**
+	 * @return the paytypeCode
+	 */
+	public String getPaytypeCode() {
+		return paytypeCode;
+	}
+
+	/**
+	 * @param paytypeCode the paytypeCode to set
+	 */
+	public void setPaytypeCode(String paytypeCode) {
+		this.paytypeCode = paytypeCode;
+	}
+
+	/**
+	 * @return the paytypeName
+	 */
+	public String getPaytypeName() {
+		return paytypeName;
+	}
+
+	/**
+	 * @param paytypeName the paytypeName to set
+	 */
+	public void setPaytypeName(String paytypeName) {
+		this.paytypeName = paytypeName;
+	}
 
 	public String getMID() {
 		return MID;
