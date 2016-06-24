@@ -90,7 +90,7 @@ public class OrderContextService implements IOrderContextService {
 									pprice : price;
 				calculatedorderprice = calculatedorderprice.add(actualprice.multiply(BigDecimal.valueOf(count)).setScale(2, RoundingMode.HALF_UP));
 				//查询出商品对应的运费模板id
-				try {
+				/*try {
 					PostageCalculate post = new PostageCalculate();
 					post.setPostageID(wapGoodsService.singlePidByGid(orderGoods.getGID()));
 					post.setNumber(count);
@@ -100,14 +100,15 @@ public class OrderContextService implements IOrderContextService {
 					postList.add(post);
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 			//计算邮费 
-			if(!order.getType().equals("AUCTION")){
-				calculatedorderpostage = postageCalculateService.calculateMuti(postList);
-			}
+			/*if(!order.getType().equals("AUCTION")){*/
+				/*calculatedorderpostage = postageCalculateService.calculateMuti(postList);*/
+			/*}*/
 			calculatedorderprice = calculatedorderprice.add(calculatedorderpostage);
-			if(calculatedorderprice.compareTo(originorderprice) != 0
+			calculatedorderpostage = calculatedorderpostage.add(originorderpostage);
+			if((calculatedorderprice.add(originorderpostage)).compareTo(originorderprice) != 0
 					|| calculatedorderpostage.compareTo(originorderpostage) != 0){
 				return false;
 			}

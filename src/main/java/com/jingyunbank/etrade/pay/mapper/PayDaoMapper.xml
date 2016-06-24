@@ -35,7 +35,7 @@
 		insert into order_payment
 			(<include refid="order_payment_columns"/>)
 		values
-		<foreach collection="payments" item="p" index="i" open="" separator="," close="">
+		<foreach collection="payments" item="p" separator="," open="" close="">
 			(#{p.ID}, #{p.transno}, #{p.extransno}, #{p.OID}, #{p.UID}, #{p.MID}, #{p.mname}, #{p.addtime}, #{p.paidtime},
 			#{p.pipelineCode}, #{p.pipelineName}, #{p.done},
 			#{p.money}, #{p.note})

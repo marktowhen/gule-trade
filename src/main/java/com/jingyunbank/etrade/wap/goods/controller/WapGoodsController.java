@@ -308,7 +308,7 @@ public class WapGoodsController {
 		String uid = Login.UID(request);
 		/*String uid = "jOPUk8RuROWlZRtHlbvIEA";*/
 		String type = "2"; // 2代表收藏的是商品
-		List<GoodsShowVO> list = wapGoodsService.listFavGoods("uid", type).stream().map(bo -> {
+		List<GoodsShowVO> list = wapGoodsService.listFavGoods(uid, type).stream().map(bo -> {
 			GoodsShowVO vo = new GoodsShowVO();
 			BeanUtils.copyProperties(bo, vo);
 			return vo;
