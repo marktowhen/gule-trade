@@ -52,7 +52,7 @@
 	</sql>
 	
 	<select id="getGroupGoods" resultMap="GroupEntityResultMap">
-		select <include refid="group_with_goods" />,gg.gid giid,gg.groupprice groupprice,gi.path path,gs.properties_value propertyvalue,gi.name gname   from groups g 
+		select <include refid="group_with_goods" />,gg.gid giid,gg.groupprice groupprice,gs.sku_path path,gs.properties_value propertyvalue,gi.name gname   from groups g 
 		left join group_goods gg on gg.id=g.group_goods_id
 		left join goods gi on gi.id=gg.gid
 		left join goods_sku gs on gs.id = gg.skuid

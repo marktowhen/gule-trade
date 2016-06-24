@@ -76,6 +76,7 @@ public class GroupUserController {
 	 * @param request
 	 * @return
 	 */
+	@AuthBeforeOperation
 	@RequestMapping(value="/group/list",method=RequestMethod.GET)
 	public Result<List<GroupUserVO>> getListGroup(HttpServletRequest request){
 		String uid = Login.UID(request);

@@ -124,6 +124,7 @@ public class MessageController {
 	@RequestMapping(value="/list/{from}/{size}",method=RequestMethod.GET)
 	public Result<List<MessageVO>> getList(@PathVariable int from, @PathVariable int size,HttpServletRequest request) throws Exception{
 		String uid = Login.UID(request);
+		/*String uid="jOPUk8RuROWlZRtHlbvIEA";*/
 		Range range = new Range();
 		range.setFrom(from);
 		range.setTo(from+size);
