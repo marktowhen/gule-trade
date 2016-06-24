@@ -35,11 +35,11 @@ public class WxMessageServiceImpl implements IWxMessageService{
 		Users user=userService.selUserByUserId(userId);
 		if(user!=null){
 			openid=user.getOpenId();
-			if(openid!=null||openid!=""){
+			if(openid!=null&&openid!=""){
 				tplMsg.setOpenid(openid);
 				//微信公众号号的template id，开发者自行处理参数
 				tplMsg.setTemplateId(templateId); 
-				tplMsg.setUrl("http://mp.weixin.qq.com/");
+				tplMsg.setUrl("https://api.weixin.qq.com/");
 				tplMsg.setDataMap(dataMap);
 				JSONObject result = WxApiClient.sendTemplateMessage(tplMsg, mpAccount);
 				try {

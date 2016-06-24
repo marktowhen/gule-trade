@@ -88,7 +88,6 @@ public class AuctionContextService implements IAuctionContextService {
 				auctionGood.setEndTime(new Date((new Date().getTime()+delayTime*1000)));
 				auctionGoodsService.delay(auctionGood);
 			}else{
-				System.out.println("time is  enough");
 				/*System.out.println("不用推迟 。。。。。。。。");
 				auctionGood.setEndTime(new Date((new Date().getTime()+delayTime*9000)));
 				System.out.println(auctionGood.getEndTime()+"time is");*/
@@ -127,25 +126,26 @@ public class AuctionContextService implements IAuctionContextService {
 					//listPriceLog.get(i).getAuctionUserID();
 					Users user=userService.selUserByUserId(listPriceLog.get(i).getUID());
 					if(i==0){
-						System.out.println(WxConstants.AUCTION_SUCCESS+"模板！！！！！！！！！！！！");
 						Map<String, String> dataMap = new HashMap<String,String>();
 						dataMap.put("first", "恭喜！您已竞拍成功 ");
 						dataMap.put("keyword1",auctionGoodsService.single(listPriceLog.get(i).getAuctionGoodsID()).get().getGID());
 						dataMap.put("keyword2", listPriceLog.get(i).getPrice()+"");
 						dataMap.put("remark", "请在24小时内支付商品尾款，过期将扣除定金。");
 						//wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,listPriceLog.get(i).getUID(), dataMap);
-						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,user.getID(), dataMap);
-						System.out.println("胜出者发送通知"+user.getOpenId());
+						wxMessageService.sendMessageToUser(WxConstants.getString(WxConstants.AUCTION_SUCCESS),user.getID(), dataMap);
+						//System.out.println("胜出者发送通知"+user.getOpenId());
 					}else{
-						System.out.println(WxConstants.AUCTION_SUCCESS+"模板！！！！！！！！！！！！");
 						Map<String, String> dataMap = new HashMap<String,String>();
 						dataMap.put("first", "很遗憾！您竞拍失败 ");
 						dataMap.put("keyword1",auctionGoodsService.single(listPriceLog.get(i).getAuctionGoodsID()).get().getGID());
 						dataMap.put("keyword2", listPriceLog.get(i).getPrice()+"");
 						dataMap.put("remark", "定金会在三个工作日内返还到您的账户，请注意查收，祝您生活愉快。");
+						if(user!=null){
+							wxMessageService.sendMessageToUser(WxConstants.getString(WxConstants.AUCTION_SUCCESS),user.getID(), dataMap);
+						}
+						
 						//wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,listPriceLog.get(i).getUID(), dataMap);
-						wxMessageService.sendMessageToUser(WxConstants.AUCTION_SUCCESS,user.getID(), dataMap);
-						System.out.println("出局者发送通知  "+user.getOpenId());
+						//System.out.println("出局者发送通知  "+user.getOpenId());
 					}
 				}
 				
