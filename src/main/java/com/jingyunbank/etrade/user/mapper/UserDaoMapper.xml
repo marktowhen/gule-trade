@@ -17,7 +17,7 @@
 		<result column="openid" property="openId"/>
 	</resultMap>
 	<sql id="column_list">
-		ID,username,mobile,email,password,tradepwd,nickname,locked
+		ID,username,mobile,email,password,tradepwd,nickname,locked,openid 
 	</sql>
 	<!-- 添加注册用户 -->
 	<insert id="insert" parameterType="com.jingyunbank.etrade.user.entity.UserEntity">
