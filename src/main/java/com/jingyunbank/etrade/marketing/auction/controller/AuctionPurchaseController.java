@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jingyunbank.core.KeyGen;
 import com.jingyunbank.core.Result;
 import com.jingyunbank.core.util.UniqueSequence;
+import com.jingyunbank.core.web.AuthBeforeOperation;
 import com.jingyunbank.core.web.Login;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionGoods;
 import com.jingyunbank.etrade.api.marketing.auction.bo.AuctionPriceLog;
@@ -68,6 +69,7 @@ public class AuctionPurchaseController {
 		 * @return
 		 * @throws Exception 
 		 */
+	    @AuthBeforeOperation
 		@RequestMapping(value="/signUp/{auctionid}", method=RequestMethod.POST)
 		public Result<AuctionGoodsVO> signup(@PathVariable String auctionid,
 				@Valid @RequestBody CartVO cart,
@@ -101,6 +103,7 @@ public class AuctionPurchaseController {
 		 * @return
 		 * @throws Exception
 		 */
+	    @AuthBeforeOperation
 		@RequestMapping(value="/bidding", method=RequestMethod.GET)
 		public Result<Object> bidding(
 				@RequestParam String auctionid,int price,HttpSession session,HttpServletRequest request) throws Exception{
