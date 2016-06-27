@@ -100,6 +100,7 @@ public class GroupUserController {
 	@RequestMapping(value="/group/single/{id}",method=RequestMethod.GET)
 	public Result<GroupVO> getroupGoods(@PathVariable String id,HttpServletRequest request){
 		String uid = Login.UID(request);
+		/*String uid="jOPUk8RuROWlZRtHlbvIEA";*/
 		Optional<Group> bo=groupService.getGroupGoods(id);
 		GroupGoodsVO voGoods = new GroupGoodsVO();
 		BeanUtils.copyProperties(bo.get().getGoods(), voGoods);

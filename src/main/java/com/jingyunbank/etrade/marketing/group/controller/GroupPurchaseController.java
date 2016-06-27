@@ -87,7 +87,6 @@ public class GroupPurchaseController {
 		group.setStatus(Group.STATUS_NEW);
 		group.setLeader(leader.get());
 		group.setGoods(goods.get());
-		
 		//提交
 		CartVO cartVO = convertCartVO(group.getID(), leader.get().getID(),cart);
 		Orders orders = new Orders();
@@ -144,6 +143,7 @@ public class GroupPurchaseController {
 			cart1.setCity(addr.getCity());
 			cart1.setMobile(addr.getMobile());
 			cart1.setReceiver(addr.getReceiver());
+			cart1.setZipcode(addr.getZipcode());
 		}
 		List<OrdersInCartVO> orders = cart1.getOrders();
 		BigDecimal cartprice = BigDecimal.ZERO;

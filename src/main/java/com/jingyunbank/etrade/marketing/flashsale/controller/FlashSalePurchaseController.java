@@ -63,8 +63,7 @@ public class FlashSalePurchaseController {
 			return Result.fail("该商品不存在。");
 		}
 		String uid = Login.UID(request);
-		/*uid = "Ma9ogkIXSW-y0uSrvfqVIQ";*/
-		/*System.out.println(Login.UID(request));*/
+		
 		/*String uid="jOPUk8RuROWlZRtHlbvIEA";*/
 		Optional<Users> user = userService.single(uid);
 		
@@ -105,6 +104,7 @@ public class FlashSalePurchaseController {
 			cart1.setCity(addr.getCity());
 			cart1.setMobile(addr.getMobile());
 			cart1.setReceiver(addr.getReceiver());
+			cart1.setZipcode(addr.getZipcode());
 		}
 		List<OrdersInCartVO> orders = cart1.getOrders();
 		BigDecimal cartprice = BigDecimal.ZERO;

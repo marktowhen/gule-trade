@@ -46,7 +46,10 @@
 			<result column="gstatuscode" property="statusCode" javaType="String"/>
 			<result column="gstatusname" property="statusName" javaType="String"/>
 			<result column="oid" property="OID" javaType="String"/>
+			
+			<result column="skupath" property="skupath" javaType="String"/>
 		</collection>
+		
 	</resultMap>
 	<sql id="orders_columns">
 		id, orderno, receiver, uid, uname, mid, mname, address, mobile, zipcode, addtime, 
@@ -163,7 +166,7 @@
 			</if>
 		) o
 		left join order_goods og on og.oid = o.id 
-		left join goods_sku s on og.skuid = s.id
+		left join goods_sku gs on og.skuid = gs.id
 		order by o.addtime desc
 	</select>
 	

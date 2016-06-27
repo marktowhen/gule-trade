@@ -234,8 +234,6 @@ public class CartController {
 			cart.setMobile(addr.getMobile());
 			cart.setReceiver(addr.getReceiver());
 			cart.setZipcode(addr.getZipcode());
-		}else{
-			
 		}
 		List<OrdersInCartVO> orders = cart.getOrders();
 		BigDecimal cartprice = BigDecimal.ZERO;
