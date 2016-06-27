@@ -255,10 +255,11 @@ public class AuctionPurchaseController {
 					//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
 					orderpostage = BigDecimal.ZERO;//报名时没有邮费
 					//orderpostage = (orderprice.compareTo(BigDecimal.valueOf(68)) >= 0 ? BigDecimal.ZERO : orderpostage);
+					//无邮费纯价格
+					cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
 					order.setPostage(orderpostage);
 					order.setPrice(orderprice.add(orderpostage));
 					cartprice = cartprice.add(order.getPrice());
-					cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
 					
 				/*	for (GoodsInCartVO gs : goods) {
 						BigDecimal gspprice = gs.getPprice();
@@ -277,9 +278,10 @@ public class AuctionPurchaseController {
 					//满99包邮（因为无法获取到收货地址信息，所有暂且按99包邮算，待选择收货地址后，再刷新邮费）
 					orderpostage = (orderprice.compareTo(BigDecimal.valueOf(68)) >= 0 ? BigDecimal.ZERO : orderpostage);
 					order.setPostage(orderpostage);
+					//无邮费纯价格
+					cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
 					order.setPrice(orderprice.add(orderpostage));
 					cartprice = cartprice.add(order.getPrice());
-					cartpricewithoutpostage = cartpricewithoutpostage.add(orderprice);
 					
 				 }
 				
@@ -287,6 +289,7 @@ public class AuctionPurchaseController {
 			}
 			
 			cart1.setTotalPrice(cartprice);
+			cart1.setTotalPriceWithoutPostage(cartpricewithoutpostage);
 			return cart1;
 		}
 		
